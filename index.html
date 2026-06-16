@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <base target="_self">
+    <title>National Malaria Data Repository | ICF-SL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --blue:    #2c6793;
+            --blue-dk: #1f4a6a;
+            --blue-lt: #e8f0f7;
+            --white:   #ffffff;
+            --bg:      #f0f5f9;
+            --border:  #d0dde8;
+            --muted:   #6c7a89;
+            --gold:    #ffc107;
+        }
+
+        html, body { width: 100%; min-height: 100%; }
+
+        body {
+            font-family: 'Roboto', 'Segoe UI', sans-serif;
+            background: var(--bg);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ROLE MODAL */
+        .role-modal {
+            position: fixed; inset: 0;
+            background: #ffffff;
+            z-index: 10000;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .role-card {
+            background: white;
+            border-radius: 20px;
+            padding: 48px 56px;
+            max-width: 700px; width: 90%;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            border: 2px solid var(--border);
+        }
+
+        .role-logo-row { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; }
+        .role-logo-box { background: var(--blue-lt); border-radius: 10px; padding: 10px 14px; display: flex; align-items: center; }
+        .role-logo-box img { width: 80px; height: auto; border-radius: 5px; }
+
+        .role-card h1 { color: var(--blue); margin-bottom: 6px; font-size: 30px; font-weight: 700; }
+        .role-card h2 { color: var(--blue); margin-bottom: 8px; font-size: 18px; font-weight: 500; }
+        .role-card p  { color: var(--muted); margin-bottom: 28px; font-size: 13px; line-height: 1.6; }
+
+        .role-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 0 0 14px; }
+        .role-btn { padding: 16px 20px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.25s; box-shadow: 0 3px 10px rgba(0,0,0,0.1); font-family: inherit; }
+        .role-btn.national { background: var(--blue); color: white; }
+        .role-btn.district  { background: #2c6e5c; color: white; }
+        .role-btn.chiefdom  { background: #b4652c; color: white; }
+        .role-btn.phu       { background: #6c7a89; color: white; }
+        .role-btn.admin-btn { background: #1a3a5c; color: white; width: 100%; font-size: 13px; padding: 12px; border-radius: 10px; }
+        .role-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.15); filter: brightness(1.08); }
+
+        .password-input { display: none; margin-top: 20px; }
+        .password-input input { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; font-size: 14px; font-family: inherit; }
+        .password-input input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(44,103,147,0.1); }
+        .password-input button { background: var(--blue); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; font-family: inherit; font-size: 14px; }
+        .password-input button:hover { background: var(--blue-dk); }
+        .access-denied { color: #d32f2f; font-size: 12px; margin-top: 8px; display: none; }
+
+        /* ── MOBILE TOP BAR (hidden on desktop) ── */
+        .topbar {
+            display: none;
+            position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+            height: 56px;
+            background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dk) 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            align-items: center; padding: 0 12px; gap: 10px;
+        }
+
+        .topbar-hamburger {
+            width: 40px; height: 40px; background: transparent;
+            border: none; cursor: pointer; border-radius: 8px;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; gap: 5px;
+            transition: background 0.18s; flex-shrink: 0;
+        }
+        .topbar-hamburger:hover { background: rgba(255,255,255,0.12); }
+        .topbar-hamburger span {
+            display: block; width: 22px; height: 2px;
+            background: white; border-radius: 2px; transition: all 0.25s;
+        }
+        .topbar-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .topbar-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .topbar-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .topbar-brand { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+        .topbar-icon {
+            width: 30px; height: 30px; background: var(--gold); border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 700; color: var(--blue); flex-shrink: 0;
+        }
+        .topbar-labels { min-width: 0; }
+        .topbar-title { font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+        .topbar-page  { font-size: 10px; color: rgba(255,255,255,0.55); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+
+        /* ── SIDEBAR OVERLAY (mobile backdrop) ── */
+        .sidebar-overlay {
+            display: none;
+            position: fixed; inset: 0; z-index: 950;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+        }
+        .sidebar-overlay.visible { display: block; }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dk) 100%);
+            position: sticky; top: 0; height: 100vh;
+            flex-shrink: 0; overflow-y: auto;
+            display: flex; flex-direction: column;
+            box-shadow: 2px 0 15px rgba(0,0,0,0.15);
+            transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+            z-index: 960;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+        .sidebar-header {
+            padding: 18px 20px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            flex-shrink: 0; display: flex; align-items: center;
+        }
+
+        .sidebar-brand { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+
+        .brand-icon {
+            width: 34px; height: 34px;
+            background: var(--gold); border-radius: 7px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 700; color: var(--blue); flex-shrink: 0;
+        }
+
+        .brand-title { font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; line-height: 1.2; display: block; }
+        .brand-sub   { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 0.5px; display: block; }
+
+        /* Close X button (mobile only) */
+        .sidebar-close {
+            display: none;
+            width: 30px; height: 30px; background: rgba(255,255,255,0.1);
+            border: none; border-radius: 6px; cursor: pointer;
+            align-items: center; justify-content: center;
+            color: white; flex-shrink: 0; margin-left: 8px;
+            font-size: 18px; line-height: 1;
+        }
+        .sidebar-close:hover { background: rgba(255,255,255,0.2); }
+
+        .nav-scroll { flex: 1; padding: 8px 0; overflow-y: auto; }
+
+        .nav-section-label {
+            padding: 12px 18px 4px;
+            font-size: 9px; font-weight: 700;
+            color: rgba(255,255,255,0.35);
+            letter-spacing: 2px; text-transform: uppercase;
+        }
+
+        .nav-item {
+            width: 100%; background: transparent; border: none;
+            color: rgba(255,255,255,0.7);
+            padding: 11px 16px;
+            text-align: left; font-family: inherit;
+            font-size: 13px; font-weight: 500;
+            cursor: pointer; transition: all 0.18s;
+            border-left: 3px solid transparent;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .nav-item:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.95); border-left-color: var(--gold); }
+        .nav-item.active { background: rgba(255,255,255,0.15); color: white; border-left-color: var(--gold); font-weight: 600; }
+        .nav-item .nav-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.75; stroke: currentColor; fill: none; }
+        .nav-item.active .nav-icon { opacity: 1; }
+
+        .nav-group-btn {
+            width: 100%; background: transparent; border: none;
+            color: rgba(255,255,255,0.7);
+            padding: 11px 16px;
+            text-align: left; font-family: inherit;
+            font-size: 13px; font-weight: 500;
+            cursor: pointer; transition: all 0.18s;
+            border-left: 3px solid transparent;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .nav-group-btn:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.95); border-left-color: rgba(255,193,7,0.5); }
+        .nav-group-btn.open  { color: white; border-left-color: var(--gold); background: rgba(255,255,255,0.08); }
+        .nav-group-btn .nav-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.75; stroke: currentColor; fill: none; }
+        .nav-group-btn.open .nav-icon { opacity: 1; }
+        .nav-group-label { flex: 1; }
+        .nav-chevron { width: 13px; height: 13px; transition: transform 0.2s; opacity: 0.5; flex-shrink: 0; stroke: currentColor; fill: none; }
+        .nav-group-btn.open .nav-chevron { transform: rotate(180deg); opacity: 0.8; }
+
+        .nav-group-children {
+            overflow: hidden; max-height: 0;
+            transition: max-height 0.3s ease;
+            background: rgba(0,0,0,0.18);
+        }
+        .nav-group-children.open { max-height: 700px; }
+
+        .nav-child {
+            width: 100%; background: transparent; border: none;
+            color: rgba(255,255,255,0.6);
+            padding: 8px 16px 8px 42px;
+            text-align: left; font-family: inherit;
+            font-size: 12px; font-weight: 400;
+            cursor: pointer; transition: all 0.15s;
+            border-left: 3px solid transparent; display: block;
+        }
+        .nav-child:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.06); border-left-color: rgba(255,193,7,0.35); }
+        .nav-child.active { color: white; background: rgba(255,255,255,0.1); border-left-color: var(--gold); font-weight: 500; }
+
+        .sidebar-footer { padding: 12px 14px; flex-shrink: 0; border-top: 1px solid rgba(255,255,255,0.08); }
+        .logout-btn {
+            width: 100%; background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.6);
+            padding: 9px 14px; border-radius: 6px;
+            font-size: 12px; font-weight: 500; cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+            transition: all 0.18s; font-family: inherit;
+        }
+        .logout-btn:hover { background: rgba(255,80,80,0.15); border-color: rgba(255,120,120,0.3); color: #ffaaaa; }
+
+        /* ── MAIN ── */
+        .main { flex: 1; padding: 28px 32px; overflow-y: auto; min-width: 0; }
+
+        /* ── RESPONSIVE ── */
+
+        /* Tablet 769–1024px: narrower sidebar */
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .sidebar { width: 220px; }
+            .main { padding: 22px 24px; }
+            .nav-item, .nav-group-btn { font-size: 12px; padding: 10px 14px; }
+            .nav-child { font-size: 11px; padding: 7px 14px 7px 36px; }
+            .brand-title { font-size: 12px; }
+        }
+
+        /* Mobile ≤768px: slide-in drawer */
+        @media (max-width: 768px) {
+            body { display: block; }
+
+            .topbar { display: flex; }
+
+            .sidebar {
+                position: fixed;
+                top: 0; left: 0; bottom: 0;
+                width: 280px;
+                transform: translateX(-100%);
+                height: 100%;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+                box-shadow: 4px 0 24px rgba(0,0,0,0.3);
+            }
+
+            .sidebar-close { display: flex; }
+
+            .main {
+                width: 100%;
+                padding: 72px 16px 20px;
+                min-height: 100vh;
+            }
+
+            .cards-grid { grid-template-columns: 1fr; }
+            .hero { padding: 20px; }
+            .hero h1 { font-size: 22px; }
+            .role-card { padding: 28px 20px; }
+            .role-buttons { grid-template-columns: 1fr; gap: 10px; }
+            .slides-container iframe { min-height: 220px; }
+            .iframe-pane iframe { min-height: 70vh; }
+        }
+
+        /* Small phones ≤480px */
+        @media (max-width: 480px) {
+            .sidebar { width: min(88vw, 300px); }
+            .main { padding: 68px 12px 16px; }
+            .card-body { padding: 18px; }
+            .card-title { font-size: 17px; }
+            .hero h1 { font-size: 20px; }
+        }
+
+        .tab-content { display: none; animation: fadeIn 0.25s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* WELCOME */
+        .hero {
+            background: var(--white); border-radius: 12px;
+            padding: 28px 32px; margin-bottom: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--blue);
+        }
+        .hero-tag {
+            display: inline-block; background: var(--blue-lt); color: var(--blue);
+            font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+            padding: 4px 12px; border-radius: 20px; margin-bottom: 10px;
+        }
+        .hero h1 { font-size: 26px; color: var(--blue); font-weight: 700; margin-bottom: 8px; }
+        .hero p   { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+        .cards-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 24px; margin-bottom: 28px; }
+
+        .card {
+            background: var(--white); border-radius: 14px;
+            border: 2px solid var(--border); overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        .card:hover { transform: translateY(-6px); box-shadow: 0 16px 32px rgba(0,0,0,0.12); border-color: var(--blue); }
+        .card-stripe { height: 4px; background: linear-gradient(90deg, var(--blue), var(--blue-dk)); }
+        .card-body   { padding: 28px 32px; }
+        .card-icon-row { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
+        .card-icon { width: 56px; height: 56px; background: var(--blue-lt); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .card-icon svg { width: 28px; height: 28px; stroke: var(--blue); stroke-width: 1.5; fill: none; }
+        .card-num   { font-size: 12px; font-weight: 800; color: var(--blue); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+        .card-title { font-size: 20px; font-weight: 700; color: #1a2e3d; line-height: 1.3; margin-bottom: 4px; }
+        .card-divider { height: 1px; background: var(--border); margin: 18px 0 16px; }
+        .card-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+        .card-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; font-weight: 500; color: #2c4b62; line-height: 1.4; }
+        .card-list li::before { content: "\2022"; font-size: 18px; font-weight: bold; color: var(--gold); margin-top: -1px; flex-shrink: 0; }
+
+        .section-label {
+            color: var(--muted); font-size: 12px; font-weight: 700;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
+        }
+        .section-label::before { content: ''; width: 28px; height: 3px; background: var(--gold); flex-shrink: 0; }
+
+        .slides-container { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 24px; }
+        .slides-header { background: var(--blue-lt); padding: 10px 18px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--blue-dk); }
+        .slides-container iframe { width: 100%; border: none; display: block; min-height: 560px; }
+
+        .disclaimer-banner {
+            background: linear-gradient(135deg, #2c6793 0%, #1f4a6a 100%);
+            border-radius: 12px; padding: 26px 30px; margin-bottom: 28px;
+            border-left: 6px solid var(--gold);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        .disclaimer-banner p { font-size: 14px; font-weight: 500; color: #ffffff; line-height: 1.65; margin: 0; }
+
+        /* IFRAME PANE */
+        .iframe-pane {
+            width: 100%; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            border: 2px solid var(--border); background: var(--white);
+        }
+        .iframe-pane iframe { width: 100%; min-height: 85vh; border: none; display: block; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) { .cards-grid { grid-template-columns: 1fr; } .main { padding: 20px 18px; } }
+        @media (max-width: 680px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; } .role-buttons { grid-template-columns: 1fr; } .role-card { padding: 28px 20px; } }
+    </style>
+</head>
+<body>
+
+<!-- ROLE MODAL -->
+<div id="roleModal" class="role-modal">
+    <div class="role-card">
+        <div class="role-logo-row">
+            <div class="role-logo-box">
+                <img src="https://github.com/mohamedsillahkanu/gdp-dashboard-2/raw/6c7463b0d5c3be150aafae695a4bcbbd8aeb1499/ICF-SL.jpg" alt="ICF-SL">
+            </div>
+        </div>
+        <h1>Welcome to NMDR</h1>
+        <h2>Who are you?</h2>
+        <p>Select your role to access the National Malaria Data Repository</p>
+        <div class="role-buttons">
+            <button class="role-btn national" data-role="national">National Staff</button>
+            <button class="role-btn district"  data-role="district">District Staff</button>
+            <button class="role-btn chiefdom"  data-role="chiefdom">Chiefdom Supervisor</button>
+            <button class="role-btn phu"       data-role="phu">PHU Staff</button>
+        </div>
+        <button class="role-btn admin-btn" data-role="admin" style="margin-top:4px">&#128274; Admin</button>
+        <div id="passwordArea" class="password-input">
+            <input type="text"     id="roleUsername" placeholder="Username" style="display:none">
+            <input type="password" id="rolePassword" placeholder="Enter password">
+            <button id="submitRolePassword">Verify and Access</button>
+            <div id="passwordError" class="access-denied">Incorrect credentials. Access denied.</div>
+        </div>
+    </div>
+</div>
+
+<!-- MOBILE TOP BAR -->
+<div class="topbar" id="topbar">
+    <button class="topbar-hamburger" id="hamburgerBtn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+    </button>
+    <div class="topbar-brand">
+        <div class="topbar-icon">NM</div>
+        <div class="topbar-labels">
+            <span class="topbar-title">NMDR Portal</span>
+            <span class="topbar-page" id="topbarPage">Welcome</span>
+        </div>
+    </div>
+</div>
+
+<!-- OVERLAY -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-brand">
+            <div class="brand-icon">NM</div>
+            <div>
+                <span class="brand-title">NMDR Portal</span>
+                <span class="brand-sub">Sierra Leone &middot; NMCP</span>
+            </div>
+        </div>
+        <button class="sidebar-close" id="sidebarCloseBtn" aria-label="Close menu">&#10005;</button>
+    </div>
+
+    <div class="nav-scroll">
+
+        <div class="nav-section-label">Main</div>
+
+        <button class="nav-item active" data-tab="welcome">
+            <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Welcome
+        </button>
+
+        <button class="nav-item" data-tab="monitoring">
+            <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            Monitoring &amp; Evaluation
+        </button>
+
+        <div class="nav-section-label">Resources</div>
+
+        <div class="nav-group">
+            <button class="nav-group-btn" data-group="resources">
+                <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+                <span class="nav-group-label">Resources</span>
+                <svg class="nav-chevron" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="nav-group-children" id="children-resources">
+                <button class="nav-child" data-tab="user-guide">User Guide</button>
+                <button class="nav-child" data-tab="bulletins">Weekly Bulletins</button>
+                <button class="nav-child" data-tab="mpd">Malaria Programme Docs</button>
+                <button class="nav-child" data-tab="campaign-survey">Campaign &amp; Survey</button>
+                <button class="nav-child" data-tab="sbd-app">Data Collection Apps</button>
+                <button class="nav-child" data-tab="analytics-training">Analytics Learning</button>
+                <button class="nav-child" data-tab="automation">Automation Pipelines</button>
+            </div>
+        </div>
+
+        <div class="nav-section-label">Analysis</div>
+
+        <div class="nav-group">
+            <button class="nav-group-btn" data-group="retro">
+                <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span class="nav-group-label">Retrospective Analysis</span>
+                <svg class="nav-chevron" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="nav-group-children" id="children-retro">
+                <button class="nav-child" data-tab="snt">SNT 2015&#8211;2025</button>
+                <button class="nav-child" data-tab="mpr">MPR 2021&#8211;2023</button>
+                <button class="nav-child" data-tab="other-analysis">Other Analysis</button>
+            </div>
+        </div>
+
+        <div class="nav-section-label" id="adminSection" style="display:none">Admin</div>
+        <button class="nav-item" data-tab="admin-dashboard" id="adminTabBtn" style="display:none; color:rgba(255,220,80,0.9);">
+            <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2m0 16v2m7.07-5.07l-1.41-1.41M4.93 19.07l1.41-1.41M20 12h2M2 12h2"/></svg>
+            Admin Dashboard
+        </button>
+
+    </div>
+
+    <div class="sidebar-footer">
+        <button class="logout-btn" id="logoutBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Logout
+        </button>
+    </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+    <!-- WELCOME -->
+    <div id="welcome" class="tab-content active">
+        <div class="hero">
+            <div class="hero-tag">Sierra Leone NMCP</div>
+            <h1>National Malaria Data Repository</h1>
+            <p>A centralized, integrated platform for malaria surveillance, programme monitoring, and data-driven decision making across Sierra Leone.</p>
+        </div>
+
+        <div class="section-label">About the Repository</div>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-stripe"></div>
+                <div class="card-body">
+                    <div class="card-icon-row">
+                        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+                        <div><div class="card-num">What</div><div class="card-title">What is the NMDR?</div></div>
+                    </div>
+                    <div class="card-divider"></div>
+                    <ul class="card-list">
+                        <li>A national digital infrastructure for malaria programme data</li>
+                        <li>Hosted on DHIS2 integrated with HMIS, LMIS</li>
+                        <li>Developed by NMCP, ICF-SL, WHO, CHAI</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-stripe"></div>
+                <div class="card-body">
+                    <div class="card-icon-row">
+                        <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+                        <div><div class="card-num">Why</div><div class="card-title">Why the NMDR Exists</div></div>
+                    </div>
+                    <div class="card-divider"></div>
+                    <ul class="card-list">
+                        <li>Consolidate fragmented malaria data into one repository</li>
+                        <li>Eliminate data silos between systems</li>
+                        <li>Strengthen national data governance</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-stripe"></div>
+                <div class="card-body">
+                    <div class="card-icon-row">
+                        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
+                        <div><div class="card-num">Focus</div><div class="card-title">Focus Areas</div></div>
+                    </div>
+                    <div class="card-divider"></div>
+                    <ul class="card-list">
+                        <li>Case management &mdash; testing, treatment, reporting</li>
+                        <li>Vector control &mdash; IRS coverage, ITN distribution</li>
+                        <li>Malaria in pregnancy &mdash; IPTp, ANC attendance</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-stripe"></div>
+                <div class="card-body">
+                    <div class="card-icon-row">
+                        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+                        <div><div class="card-num">Benefits</div><div class="card-title">Expected Benefits</div></div>
+                    </div>
+                    <div class="card-divider"></div>
+                    <ul class="card-list">
+                        <li>Faster evidence-based programme planning</li>
+                        <li>Improved data quality through validation</li>
+                        <li>Enhanced transparency and accountability</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-label" style="margin-top:4px">NMDR Use Cases &mdash; WHO AFRO</div>
+        <div class="slides-container">
+            <div class="slides-header">NMDR Use Cases &mdash; WHO AFRO Presentation</div>
+            <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQFJZ7rG2K0i1Fpmu49KuUV3yifUdQ2MuVXOlbBCKcenHVUnWeri8xSyaix8OzE0w/pubembed?start=false&loop=false&delayms=3000" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" loading="lazy"></iframe>
+        </div>
+
+        <div class="disclaimer-banner">
+            <p><strong>DISCLAIMER:</strong> This platform fully follows WHO AFRO recommendations for the NMDR use cases. The modules have been reorganised and restructured solely to enhance clarity, usability, and user experience, making the platform more intuitive and accessible for all users. The core objectives, goals, and intent of the WHO AFRO NMDR use cases remain fully intact and unchanged.</p>
+        </div>
+    </div>
+
+    <!-- All other tabs: load from external HTML files via lazy iframe -->
+    <!-- MONITORING -->
+    <div id="monitoring" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-monitoring" src="" data-src="monitoring.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- USER GUIDE -->
+    <div id="user-guide" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-user-guide" src="" data-src="user_guide.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- WEEKLY BULLETINS -->
+    <div id="bulletins" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-bulletins" src="" data-src="bulletins.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- MALARIA PROGRAMME DOCS -->
+    <div id="mpd" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-mpd" src="" data-src="mpd.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- CAMPAIGN & SURVEY -->
+    <div id="campaign-survey" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-campaign-survey" src="" data-src="campaign_survey.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- DATA COLLECTION APPS -->
+    <div id="sbd-app" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-sbd-app" src="" data-src="data_collection_apps.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- ANALYTICS LEARNING -->
+    <div id="analytics-training" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-analytics-training" src="" data-src="analytics_learning.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- AUTOMATION PIPELINES -->
+    <div id="automation" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-automation" src="" data-src="automation.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- SNT 2015-2025 -->
+    <div id="snt" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-snt" src="" data-src="snt.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- MPR 2021-2023 -->
+    <div id="mpr" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-mpr" src="" data-src="mpr.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- OTHER ANALYSIS -->
+    <div id="other-analysis" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-other-analysis" src="" data-src="other_analysis.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div id="admin-dashboard" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-admin-dashboard" src="" data-src="admin_dashboard.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+</main>
+
+<script>
+/* ROLE-BASED ACCESS CONTROL */
+var currentUserRole = null;
+var selectedRole    = null;
+
+var rolePasswords = {
+    national: 'National@2026',
+    district: 'District@2026',
+    chiefdom: 'Chiefdom@2026',
+    phu:      'Phu@2026',
+    admin:    'admin'
+};
+
+var roleAccess = {
+    national: ['welcome','monitoring','user-guide','bulletins','mpd','campaign-survey',
+               'sbd-app','analytics-training','automation','snt','mpr','other-analysis'],
+    district: ['welcome','monitoring','user-guide','bulletins','analytics-training'],
+    chiefdom: ['welcome','monitoring','user-guide','bulletins','analytics-training'],
+    phu:      ['welcome','monitoring','user-guide','bulletins','analytics-training'],
+    admin:    ['welcome','monitoring','user-guide','bulletins','mpd','campaign-survey',
+               'sbd-app','analytics-training','automation','snt','mpr','other-analysis',
+               'admin-dashboard']
+};
+
+function enableTabsForRole(role) {
+    currentUserRole = role;
+    var allowed = {};
+    roleAccess[role].forEach(function(t){ allowed[t] = true; });
+
+    document.getElementById('roleModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+
+    var showAdmin = (role === 'admin');
+    document.getElementById('adminTabBtn').style.display  = showAdmin ? 'flex' : 'none';
+    document.getElementById('adminSection').style.display = showAdmin ? 'block' : 'none';
+
+    document.querySelectorAll('[data-tab]').forEach(function(btn){
+        var tab = btn.getAttribute('data-tab');
+        btn.style.opacity       = allowed[tab] ? '' : '0.3';
+        btn.style.pointerEvents = allowed[tab] ? '' : 'none';
+    });
+}
+
+document.querySelectorAll('.role-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+        selectedRole = this.getAttribute('data-role');
+        var pwArea     = document.getElementById('passwordArea');
+        var usernameEl = document.getElementById('roleUsername');
+        var pwEl       = document.getElementById('rolePassword');
+        var errEl      = document.getElementById('passwordError');
+        pwArea.style.display     = 'block';
+        errEl.style.display      = 'none';
+        pwEl.value               = '';
+        usernameEl.style.display = (selectedRole === 'admin') ? 'block' : 'none';
+        usernameEl.value         = '';
+        pwEl.placeholder         = (selectedRole === 'admin') ? 'Password' : 'Password for ' + selectedRole + ' staff';
+    });
+});
+
+function verifyPassword() {
+    if (!selectedRole) return;
+    var pw    = document.getElementById('rolePassword').value;
+    var user  = document.getElementById('roleUsername').value;
+    var errEl = document.getElementById('passwordError');
+    var ok    = false;
+    if (selectedRole === 'admin') {
+        ok = (user === 'admin' && pw === 'admin');
+    } else {
+        ok = (pw === rolePasswords[selectedRole]);
+    }
+    if (ok) {
+        enableTabsForRole(selectedRole);
+    } else {
+        errEl.textContent   = 'Incorrect credentials. Access denied.';
+        errEl.style.display = 'block';
+        document.getElementById('rolePassword').value = '';
+    }
+}
+
+document.getElementById('submitRolePassword').addEventListener('click', verifyPassword);
+document.getElementById('rolePassword').addEventListener('keypress', function(e){ if(e.key==='Enter') verifyPassword(); });
+
+/* TAB NAVIGATION + LAZY IFRAME LOADING */
+function activateTab(tabId) {
+    if (currentUserRole) {
+        var allowed = {};
+        roleAccess[currentUserRole].forEach(function(t){ allowed[t] = true; });
+        if (!allowed[tabId]) {
+            var role = currentUserRole.charAt(0).toUpperCase() + currentUserRole.slice(1);
+            alert('Access restricted. ' + role + ' role does not have permission for this section.');
+            return;
+        }
+    }
+
+    document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
+    var el = document.getElementById(tabId);
+    if (el) el.classList.add('active');
+
+    document.querySelectorAll('.nav-item[data-tab]').forEach(function(b){
+        b.classList.toggle('active', b.getAttribute('data-tab') === tabId);
+    });
+    document.querySelectorAll('.nav-child[data-tab]').forEach(function(b){
+        b.classList.toggle('active', b.getAttribute('data-tab') === tabId);
+    });
+
+    /* Lazy-load: set src from data-src on first visit */
+    var iframe = document.getElementById('frame-' + tabId);
+    if (iframe) {
+        var dataSrc = iframe.getAttribute('data-src');
+        if (dataSrc && iframe.src !== window.location.origin + '/' + dataSrc && !iframe.src.endsWith(dataSrc)) {
+            iframe.src = dataSrc;
+        }
+    }
+
+    /* Update topbar page label */
+    updateTopbarPage(tabId);
+
+    /* Close drawer on mobile after selection */
+    closeDrawer();
+
+    /* Auto-expand parent group */
+    var childBtn = document.querySelector('.nav-child[data-tab="' + tabId + '"]');
+    if (childBtn) {
+        var children = childBtn.closest('.nav-group-children');
+        if (children && !children.classList.contains('open')) {
+            openGroup(children.id.replace('children-', ''));
+        }
+    }
+}
+
+document.querySelectorAll('.nav-item[data-tab]').forEach(function(btn){
+    btn.addEventListener('click', function(){ activateTab(this.getAttribute('data-tab')); });
+});
+document.querySelectorAll('.nav-child[data-tab]').forEach(function(btn){
+    btn.addEventListener('click', function(){ activateTab(this.getAttribute('data-tab')); });
+});
+
+/* COLLAPSIBLE GROUPS */
+function openGroup(groupId) {
+    var c = document.getElementById('children-' + groupId);
+    var b = document.querySelector('[data-group="' + groupId + '"]');
+    if (c) c.classList.add('open');
+    if (b) b.classList.add('open');
+}
+
+function toggleGroup(groupId) {
+    var c = document.getElementById('children-' + groupId);
+    var b = document.querySelector('[data-group="' + groupId + '"]');
+    if (!c || !b) return;
+    var isOpen = c.classList.contains('open');
+    c.classList.toggle('open', !isOpen);
+    b.classList.toggle('open', !isOpen);
+}
+
+document.querySelectorAll('.nav-group-btn[data-group]').forEach(function(btn){
+    btn.addEventListener('click', function(){ toggleGroup(this.getAttribute('data-group')); });
+});
+
+/* HAMBURGER / DRAWER (mobile) */
+var hamburgerBtn   = document.getElementById('hamburgerBtn');
+var sidebar        = document.getElementById('sidebar');
+var sidebarOverlay = document.getElementById('sidebarOverlay');
+
+function openDrawer() {
+    sidebar.classList.add('open');
+    sidebarOverlay.classList.add('visible');
+    hamburgerBtn.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDrawer() {
+    sidebar.classList.remove('open');
+    sidebarOverlay.classList.remove('visible');
+    hamburgerBtn.classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+hamburgerBtn.addEventListener('click', function() {
+    sidebar.classList.contains('open') ? closeDrawer() : openDrawer();
+});
+
+document.getElementById('sidebarCloseBtn').addEventListener('click', closeDrawer);
+sidebarOverlay.addEventListener('click', closeDrawer);
+
+/* Close drawer on Escape key */
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeDrawer();
+});
+
+/* PAGE LABEL MAP for topbar */
+var pageLabelMap = {
+    'welcome':            'Welcome',
+    'monitoring':         'Monitoring & Evaluation',
+    'user-guide':         'User Guide',
+    'bulletins':          'Weekly Bulletins',
+    'mpd':                'Malaria Programme Docs',
+    'campaign-survey':    'Campaign & Survey',
+    'sbd-app':            'Data Collection Apps',
+    'analytics-training': 'Analytics Learning',
+    'automation':         'Automation Pipelines',
+    'snt':                'SNT 2015–2025',
+    'mpr':                'MPR 2021–2023',
+    'other-analysis':     'Other Analysis',
+    'admin-dashboard':    'Admin Dashboard'
+};
+
+function updateTopbarPage(tabId) {
+    var el = document.getElementById('topbarPage');
+    if (el) el.textContent = pageLabelMap[tabId] || tabId;
+}
+
+document.getElementById('logoutBtn').addEventListener('click', function(){
+    currentUserRole = null; selectedRole = null;
+
+    document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
+    document.getElementById('welcome').classList.add('active');
+
+    document.querySelectorAll('.nav-item[data-tab]').forEach(function(b){
+        b.classList.toggle('active', b.getAttribute('data-tab') === 'welcome');
+    });
+    document.querySelectorAll('.nav-child[data-tab]').forEach(function(b){ b.classList.remove('active'); });
+
+    updateTopbarPage('welcome');
+
+    document.getElementById('adminTabBtn').style.display  = 'none';
+    document.getElementById('adminSection').style.display = 'none';
+
+    document.querySelectorAll('[data-tab]').forEach(function(btn){
+        btn.style.opacity = ''; btn.style.pointerEvents = '';
+    });
+
+    /* Reset iframes so they reload fresh on next login */
+    document.querySelectorAll('.iframe-pane iframe').forEach(function(f){ f.src = ''; });
+
+    document.getElementById('passwordArea').style.display  = 'none';
+    document.getElementById('rolePassword').value          = '';
+    document.getElementById('passwordError').style.display = 'none';
+    document.getElementById('roleModal').style.display     = 'flex';
+    document.body.style.overflow = 'hidden';
+});
+</script>
+</body>
+</html>
