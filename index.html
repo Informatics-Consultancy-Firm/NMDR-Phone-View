@@ -277,14 +277,14 @@
 
             .cards-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 12px; }
             .hero { padding: 14px 16px; margin-bottom: 10px; }
-            .hero h1 { font-size: 18px; }
-            .hero p { font-size: 12px; }
-            .card-body { padding: 14px 16px; }
-            .card-icon { width: 38px; height: 38px; }
-            .card-icon svg { width: 18px; height: 18px; }
-            .card-title { font-size: 15px; }
-            .card-list li { font-size: 12px; }
-            .card-divider { margin: 8px 0 8px; }
+            .hero h1 { font-size: 20px; }
+            .hero p { font-size: 13px; }
+            .card-body { padding: 16px 18px; }
+            .card-icon { width: 42px; height: 42px; }
+            .card-icon svg { width: 20px; height: 20px; }
+            .card-title { font-size: 17px; }
+            .card-list li { font-size: 14px; }
+            .card-divider { margin: 10px 0 9px; }
             .section-label { margin-bottom: 8px; font-size: 10px; }
             /* slides-ratio-wrap handles iframe sizing — no override needed */
             .slides-container { margin-bottom: 12px; border-radius: 8px; }
@@ -300,10 +300,11 @@
         @media (max-width: 480px) {
             .sidebar { width: min(88vw, 300px); }
             .main { padding: 60px 10px 14px; }
-            .card-body { padding: 12px 14px; }
-            .card-title { font-size: 14px; }
-            .hero h1 { font-size: 17px; }
-            .hero p { font-size: 11px; }
+            .card-body { padding: 14px 16px; }
+            .card-title { font-size: 16px; }
+            .card-list li { font-size: 13px; }
+            .hero h1 { font-size: 18px; }
+            .hero p { font-size: 12px; }
             .iframe-pane iframe { min-height: 65vh; }
         }
 
@@ -343,16 +344,24 @@
         }
         .card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.1); border-color: var(--blue); }
         .card-stripe { height: 4px; background: linear-gradient(90deg, var(--blue), var(--blue-dk)); }
-        .card-body   { padding: 18px 22px; }
-        .card-icon-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
-        .card-icon { width: 46px; height: 46px; background: var(--blue-lt); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .card-icon svg { width: 22px; height: 22px; stroke: var(--blue); stroke-width: 1.5; fill: none; }
-        .card-num   { font-size: 11px; font-weight: 800; color: var(--blue); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
-        .card-title { font-size: 17px; font-weight: 700; color: #1a2e3d; line-height: 1.3; }
-        .card-divider { height: 1px; background: var(--border); margin: 12px 0 10px; }
-        .card-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-        .card-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; font-weight: 500; color: #2c4b62; line-height: 1.4; }
-        .card-list li::before { content: "\2022"; font-size: 16px; font-weight: bold; color: var(--gold); margin-top: -1px; flex-shrink: 0; }
+        .card-body   { padding: 20px 24px; }
+        .card-icon-row { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+        .card-icon { width: 50px; height: 50px; background: var(--blue-lt); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .card-icon svg { width: 24px; height: 24px; stroke: var(--blue); stroke-width: 1.5; fill: none; }
+        .card-num   { font-size: 12px; font-weight: 800; color: var(--blue); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
+        .card-title { font-size: 19px; font-weight: 700; color: #1a2e3d; line-height: 1.3; }
+        .card-divider { height: 1px; background: var(--border); margin: 14px 0 12px; }
+        .card-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .card-list li { display: flex; align-items: flex-start; gap: 9px; font-size: 14px; font-weight: 500; color: #2c4b62; line-height: 1.45; }
+        .card-list li::before { content: "\2022"; font-size: 17px; font-weight: bold; color: var(--gold); margin-top: -1px; flex-shrink: 0; }
+
+        /* Tablet ≤1024px — single column cards, slightly larger fonts */
+        @media (max-width: 1024px) {
+            .cards-grid { grid-template-columns: 1fr; gap: 12px; margin-bottom: 14px; }
+            .card-body { padding: 18px 20px; }
+            .card-title { font-size: 18px; }
+            .card-list li { font-size: 14px; }
+        }
 
         /* Slides — true aspect-ratio, no fixed height, no black bars */
         .slides-container { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 16px; }
@@ -470,10 +479,19 @@
             Welcome
         </button>
 
-        <button class="nav-item" data-tab="monitoring">
-            <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-            Monitoring &amp; Evaluation
-        </button>
+        <div class="nav-group">
+            <button class="nav-group-btn" data-group="monitoring">
+                <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                <span class="nav-group-label">Monitoring &amp; Evaluation</span>
+                <svg class="nav-chevron" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="nav-group-children" id="children-monitoring">
+                <button class="nav-child" data-tab="me-dqa">DQA</button>
+                <button class="nav-child" data-tab="me-routine">Routine Dashboard</button>
+                <button class="nav-child" data-tab="me-detailed">Detailed Dashboard</button>
+                <button class="nav-child" data-tab="me-comparative">Comparative Analysis</button>
+            </div>
+        </div>
 
         <div class="nav-section-label">Resources</div>
 
@@ -485,7 +503,7 @@
             </button>
             <div class="nav-group-children" id="children-resources">
                 <button class="nav-child" data-tab="user-guide">User Guide</button>
-                <button class="nav-child" data-tab="bulletins">Weekly Bulletins</button>
+                <button class="nav-child" data-tab="bulletins">Monthly Bulletin</button>
                 <button class="nav-child" data-tab="mpd">Malaria Programme Docs</button>
                 <button class="nav-child" data-tab="campaign-survey">Campaign &amp; Survey</button>
                 <button class="nav-child" data-tab="sbd-app">Data Collection Apps</button>
@@ -613,10 +631,24 @@
         </div>
     </div>
 
-    <!-- All other tabs: load from external HTML files via lazy iframe -->
-    <!-- MONITORING -->
-    <div id="monitoring" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-monitoring" src="" data-src="monitoring.html" loading="lazy" allow="fullscreen"></iframe></div>
+    <!-- M&E — DQA -->
+    <div id="me-dqa" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-me-dqa" src="" data-src="me_dqa.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- M&E — ROUTINE DASHBOARD -->
+    <div id="me-routine" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-me-routine" src="" data-src="me_routine.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- M&E — DETAILED DASHBOARD (linked to admin GAS) -->
+    <div id="me-detailed" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-me-detailed" src="" data-src="me_detailed.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- M&E — COMPARATIVE ANALYSIS -->
+    <div id="me-comparative" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-me-comparative" src="" data-src="me_comparative.html" loading="lazy" allow="fullscreen"></iframe></div>
     </div>
 
     <!-- USER GUIDE -->
@@ -690,12 +722,17 @@ var rolePasswords = {
 };
 
 var roleAccess = {
-    national: ['welcome','monitoring','user-guide','bulletins','mpd','campaign-survey',
+    national: ['welcome','me-dqa','me-routine','me-detailed','me-comparative',
+               'user-guide','bulletins','mpd','campaign-survey',
                'sbd-app','analytics-training','automation','snt','mpr','other-analysis'],
-    district: ['welcome','monitoring','user-guide','bulletins','analytics-training'],
-    chiefdom: ['welcome','monitoring','user-guide','bulletins','analytics-training'],
-    phu:      ['welcome','monitoring','user-guide','bulletins','analytics-training'],
-    admin:    ['welcome','monitoring','user-guide','bulletins','mpd','campaign-survey',
+    district: ['welcome','me-dqa','me-routine','me-detailed','me-comparative',
+               'user-guide','bulletins','analytics-training'],
+    chiefdom: ['welcome','me-dqa','me-routine','me-detailed','me-comparative',
+               'user-guide','bulletins','analytics-training'],
+    phu:      ['welcome','me-dqa','me-routine','me-detailed','me-comparative',
+               'user-guide','bulletins','analytics-training'],
+    admin:    ['welcome','me-dqa','me-routine','me-detailed','me-comparative',
+               'user-guide','bulletins','mpd','campaign-survey',
                'sbd-app','analytics-training','automation','snt','mpr','other-analysis',
                'admin-dashboard']
 };
@@ -868,9 +905,12 @@ document.addEventListener('keydown', function(e) {
 /* PAGE LABEL MAP for topbar */
 var pageLabelMap = {
     'welcome':            'Welcome',
-    'monitoring':         'Monitoring & Evaluation',
+    'me-dqa':             'DQA',
+    'me-routine':         'Routine Dashboard',
+    'me-detailed':        'Detailed Dashboard',
+    'me-comparative':     'Comparative Analysis',
     'user-guide':         'User Guide',
-    'bulletins':          'Weekly Bulletins',
+    'bulletins':          'Monthly Bulletin',
     'mpd':                'Malaria Programme Docs',
     'campaign-survey':    'Campaign & Survey',
     'sbd-app':            'Data Collection Apps',
