@@ -271,26 +271,40 @@
 
             .main {
                 width: 100%;
-                padding: 72px 16px 20px;
+                padding: 64px 12px 16px;
                 min-height: 100vh;
             }
 
-            .cards-grid { grid-template-columns: 1fr; }
-            .hero { padding: 20px; }
-            .hero h1 { font-size: 22px; }
+            .cards-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 12px; }
+            .hero { padding: 14px 16px; margin-bottom: 10px; }
+            .hero h1 { font-size: 18px; }
+            .hero p { font-size: 12px; }
+            .card-body { padding: 14px 16px; }
+            .card-icon { width: 38px; height: 38px; }
+            .card-icon svg { width: 18px; height: 18px; }
+            .card-title { font-size: 15px; }
+            .card-list li { font-size: 12px; }
+            .card-divider { margin: 8px 0 8px; }
+            .section-label { margin-bottom: 8px; font-size: 10px; }
+            /* slides-ratio-wrap handles iframe sizing — no override needed */
+            .slides-container { margin-bottom: 12px; border-radius: 8px; }
+            .slides-header { padding: 7px 12px; font-size: 11px; }
+            .disclaimer-banner { padding: 14px 16px; margin-bottom: 12px; }
+            .disclaimer-banner p { font-size: 12px; }
             .role-card { padding: 28px 20px; }
             .role-buttons { grid-template-columns: 1fr; gap: 10px; }
-            .slides-container iframe { min-height: 220px; }
             .iframe-pane iframe { min-height: 70vh; }
         }
 
         /* Small phones ≤480px */
         @media (max-width: 480px) {
             .sidebar { width: min(88vw, 300px); }
-            .main { padding: 68px 12px 16px; }
-            .card-body { padding: 18px; }
-            .card-title { font-size: 17px; }
-            .hero h1 { font-size: 20px; }
+            .main { padding: 60px 10px 14px; }
+            .card-body { padding: 12px 14px; }
+            .card-title { font-size: 14px; }
+            .hero h1 { font-size: 17px; }
+            .hero p { font-size: 11px; }
+            .iframe-pane iframe { min-height: 65vh; }
         }
 
         .tab-content { display: none; animation: fadeIn 0.25s ease; }
@@ -300,57 +314,67 @@
         /* WELCOME */
         .hero {
             background: var(--white); border-radius: 12px;
-            padding: 28px 32px; margin-bottom: 24px;
+            padding: 20px 24px; margin-bottom: 14px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.08);
             border-left: 4px solid var(--blue);
         }
         .hero-tag {
             display: inline-block; background: var(--blue-lt); color: var(--blue);
             font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-            padding: 4px 12px; border-radius: 20px; margin-bottom: 10px;
+            padding: 4px 12px; border-radius: 20px; margin-bottom: 8px;
         }
-        .hero h1 { font-size: 26px; color: var(--blue); font-weight: 700; margin-bottom: 8px; }
-        .hero p   { font-size: 13px; color: var(--muted); line-height: 1.7; }
-
-        .cards-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 24px; margin-bottom: 28px; }
-
-        .card {
-            background: var(--white); border-radius: 14px;
-            border: 2px solid var(--border); overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-        }
-        .card:hover { transform: translateY(-6px); box-shadow: 0 16px 32px rgba(0,0,0,0.12); border-color: var(--blue); }
-        .card-stripe { height: 4px; background: linear-gradient(90deg, var(--blue), var(--blue-dk)); }
-        .card-body   { padding: 28px 32px; }
-        .card-icon-row { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
-        .card-icon { width: 56px; height: 56px; background: var(--blue-lt); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .card-icon svg { width: 28px; height: 28px; stroke: var(--blue); stroke-width: 1.5; fill: none; }
-        .card-num   { font-size: 12px; font-weight: 800; color: var(--blue); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
-        .card-title { font-size: 20px; font-weight: 700; color: #1a2e3d; line-height: 1.3; margin-bottom: 4px; }
-        .card-divider { height: 1px; background: var(--border); margin: 18px 0 16px; }
-        .card-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-        .card-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; font-weight: 500; color: #2c4b62; line-height: 1.4; }
-        .card-list li::before { content: "\2022"; font-size: 18px; font-weight: bold; color: var(--gold); margin-top: -1px; flex-shrink: 0; }
+        .hero h1 { font-size: 24px; color: var(--blue); font-weight: 700; margin-bottom: 6px; }
+        .hero p   { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
         .section-label {
-            color: var(--muted); font-size: 12px; font-weight: 700;
+            color: var(--muted); font-size: 11px; font-weight: 700;
             letter-spacing: 1.5px; text-transform: uppercase;
-            margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
+            margin: 0 0 12px; display: flex; align-items: center; gap: 8px;
         }
-        .section-label::before { content: ''; width: 28px; height: 3px; background: var(--gold); flex-shrink: 0; }
+        .section-label::before { content: ''; width: 24px; height: 3px; background: var(--gold); flex-shrink: 0; }
 
-        .slides-container { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 24px; }
-        .slides-header { background: var(--blue-lt); padding: 10px 18px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--blue-dk); }
-        .slides-container iframe { width: 100%; border: none; display: block; min-height: 560px; }
+        .cards-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; margin-bottom: 16px; }
+
+        .card {
+            background: var(--white); border-radius: 12px;
+            border: 2px solid var(--border); overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.1); border-color: var(--blue); }
+        .card-stripe { height: 4px; background: linear-gradient(90deg, var(--blue), var(--blue-dk)); }
+        .card-body   { padding: 18px 22px; }
+        .card-icon-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+        .card-icon { width: 46px; height: 46px; background: var(--blue-lt); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .card-icon svg { width: 22px; height: 22px; stroke: var(--blue); stroke-width: 1.5; fill: none; }
+        .card-num   { font-size: 11px; font-weight: 800; color: var(--blue); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+        .card-title { font-size: 17px; font-weight: 700; color: #1a2e3d; line-height: 1.3; }
+        .card-divider { height: 1px; background: var(--border); margin: 12px 0 10px; }
+        .card-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+        .card-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; font-weight: 500; color: #2c4b62; line-height: 1.4; }
+        .card-list li::before { content: "\2022"; font-size: 16px; font-weight: bold; color: var(--gold); margin-top: -1px; flex-shrink: 0; }
+
+        /* Slides — true aspect-ratio, no fixed height, no black bars */
+        .slides-container { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 16px; }
+        .slides-header { background: var(--blue-lt); padding: 9px 16px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--blue-dk); }
+        .slides-ratio-wrap {
+            position: relative; width: 100%;
+            padding-top: 56.25%; /* 16:9 — exact Google Slides ratio */
+            overflow: hidden; background: var(--white);
+        }
+        .slides-ratio-wrap iframe {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: none; display: block;
+        }
 
         .disclaimer-banner {
             background: linear-gradient(135deg, #2c6793 0%, #1f4a6a 100%);
-            border-radius: 12px; padding: 26px 30px; margin-bottom: 28px;
-            border-left: 6px solid var(--gold);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            border-radius: 10px; padding: 18px 22px; margin-bottom: 16px;
+            border-left: 5px solid var(--gold);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
         }
-        .disclaimer-banner p { font-size: 14px; font-weight: 500; color: #ffffff; line-height: 1.65; margin: 0; }
+        .disclaimer-banner p { font-size: 13px; font-weight: 500; color: #ffffff; line-height: 1.6; margin: 0; }
 
         /* IFRAME PANE */
         .iframe-pane {
@@ -360,9 +384,22 @@
         }
         .iframe-pane iframe { width: 100%; min-height: 85vh; border: none; display: block; }
 
-        /* RESPONSIVE */
-        @media (max-width: 900px) { .cards-grid { grid-template-columns: 1fr; } .main { padding: 20px 18px; } }
-        @media (max-width: 680px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; } .role-buttons { grid-template-columns: 1fr; } .role-card { padding: 28px 20px; } }
+        /* Tablet 769–1024: narrower sidebar, standard layout */
+        @media (max-width: 480px) {
+            .iframe-pane iframe { min-height: 65vh; }
+        }
+        @media (max-width: 360px) {
+            .role-card h1 { font-size: 22px; }
+            .role-buttons { gap: 8px; }
+            .role-btn { padding: 13px 14px; font-size: 13px; }
+            .topbar-title { font-size: 12px; }
+            .topbar-page  { font-size: 9px; }
+            .nav-item, .nav-group-btn { font-size: 12px; padding: 10px 14px; }
+            .main { padding: 62px 10px 14px; }
+            .hero h1 { font-size: 19px; }
+            .cards-grid { gap: 10px; }
+            .card-body { padding: 16px; }
+        }
     </style>
 </head>
 <body>
@@ -566,7 +603,9 @@
         <div class="section-label" style="margin-top:4px">NMDR Use Cases &mdash; WHO AFRO</div>
         <div class="slides-container">
             <div class="slides-header">NMDR Use Cases &mdash; WHO AFRO Presentation</div>
-            <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQFJZ7rG2K0i1Fpmu49KuUV3yifUdQ2MuVXOlbBCKcenHVUnWeri8xSyaix8OzE0w/pubembed?start=false&loop=false&delayms=3000" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" loading="lazy"></iframe>
+            <div class="slides-ratio-wrap">
+                <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQFJZ7rG2K0i1Fpmu49KuUV3yifUdQ2MuVXOlbBCKcenHVUnWeri8xSyaix8OzE0w/pubembed?start=false&loop=false&delayms=3000" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" loading="lazy"></iframe>
+            </div>
         </div>
 
         <div class="disclaimer-banner">
