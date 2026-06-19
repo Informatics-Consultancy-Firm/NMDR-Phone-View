@@ -334,7 +334,27 @@
                 <button class="nav-child" data-tab="campaign-survey">Campaign &amp; Survey</button>
                 <button class="nav-child" data-tab="sbd-app">Data Collection Apps</button>
                 <button class="nav-child" data-tab="analytics-training">Analytics Learning</button>
-                <button class="nav-child" data-tab="automation">Automation Pipelines</button>
+            </div>
+        </div>
+
+        <div class="nav-group">
+            <button class="nav-group-btn" data-group="dmat">
+                <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                <span class="nav-group-label">D-MAT (Automation)</span>
+                <svg class="nav-chevron" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="nav-group-children" id="children-dmat">
+                <button class="nav-child" data-tab="dmat-dqa">Data Quality Assessment</button>
+                <button class="nav-child" data-tab="dmat-processing">Data Processing</button>
+                <button class="nav-child" data-tab="dmat-reporting">Reporting</button>
+                <button class="nav-child" data-tab="dmat-suspected">Suspected</button>
+                <button class="nav-child" data-tab="dmat-tested">Tested</button>
+                <button class="nav-child" data-tab="dmat-confirmed">Confirmed Cases</button>
+                <button class="nav-child" data-tab="dmat-treated">Confirmed and Treated</button>
+                <button class="nav-child" data-tab="dmat-presumptive">Presumptive Treatment</button>
+                <button class="nav-child" data-tab="dmat-comparative" style="font-weight:600;color:rgba(255,255,255,0.8);">Comparative Analysis</button>
+                <button class="nav-child" data-tab="dmat-u5"      style="padding-left:58px;font-size:11px;">&#8627; Under 5</button>
+                <button class="nav-child" data-tab="dmat-allages" style="padding-left:58px;font-size:11px;">&#8627; All Ages</button>
             </div>
         </div>
 
@@ -396,7 +416,7 @@
         </div>
     </div>
 
-    <!-- M&E — DQA (loads dqa_report.html from Google Drive via GAS) -->
+    <!-- M&E — DQA tab -->
     <div id="me-dqa" class="tab-content">
         <div class="hero" style="border-left-color:#2b5f8a;">
             <div class="hero-tag">Data Quality Assessment</div>
@@ -414,7 +434,7 @@
         <!-- loading / empty state -->
         <div id="meDqaEmpty" style="text-align:center;padding:60px 20px;background:var(--white);border-radius:12px;border:2px dashed var(--border);">
             <div class="dv-loader"></div>
-            <p style="font-size:13px;color:var(--muted);margin-top:14px;">Loading DQA report from Google Drive…</p>
+            <p style="font-size:13px;color:var(--muted);margin-top:14px;">Loading dashboard…</p>
         </div>
         <!-- iframe -->
         <div id="meDqaFrame" style="display:none;border-radius:12px;overflow:hidden;border:2px solid #2b5f8a;box-shadow:0 4px 16px rgba(0,0,0,0.1);">
@@ -471,9 +491,39 @@
         <div class="iframe-pane"><iframe id="frame-analytics-training" src="" data-src="analytics_learning.html" loading="lazy" allow="fullscreen"></iframe></div>
     </div>
 
-    <!-- AUTOMATION PIPELINES -->
-    <div id="automation" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-automation" src="" data-src="automation.html" loading="lazy" allow="fullscreen"></iframe></div>
+    <!-- D-MAT (AUTOMATION) SUB-TABS -->
+    <div id="dmat-dqa" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-dmat-dqa" src="" data-src="dqa.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="dmat-processing" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-dmat-processing" src="" data-src="dmat_processing.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="dmat-reporting" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-dmat-reporting" src="" data-src="dmat_reporting.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="dmat-suspected" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-dmat-suspected" src="" data-src="dmat_suspected.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="dmat-tested" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-dmat-tested" src="" data-src="dmat_tested.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="dmat-confirmed" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-dmat-confirmed" src="" data-src="dmat_confirmed.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="dmat-treated" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-dmat-treated" src="" data-src="dmat_treated.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="dmat-presumptive" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-dmat-presumptive" src="" data-src="dmat_presumptive.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="dmat-comparative" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-dmat-comparative" src="" data-src="dmat_comparative.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="dmat-u5" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-dmat-u5" src="" data-src="dmat_u5.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="dmat-allages" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-dmat-allages" src="" data-src="dmat_allages.html" loading="lazy" allow="fullscreen"></iframe></div>
     </div>
 
     <!-- SNT 2015-2025 -->
@@ -498,12 +548,12 @@
         <div style="background:#f8f9fa;border:3px solid #004080;border-radius:10px;overflow:hidden;margin-bottom:20px;font-family:'Roboto',sans-serif;">
             <div style="background:#004080;color:#fff;padding:12px 22px;font-size:14px;font-weight:700;letter-spacing:.5px;display:flex;align-items:center;gap:10px;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-                Publish to Dashboard &mdash; Google Drive via GAS
+                Publish to Dashboard
             </div>
             <div id="dvUpdateBar" style="display:none;padding:16px 22px;align-items:center;gap:16px;flex-wrap:wrap;background:#fff3cd;">
                 <div style="flex:1;">
                     <div style="font-size:14px;font-weight:700;color:#856404;">&#9888; Charts ready &mdash; save to Dashboard?</div>
-                    <div style="font-size:12px;color:#856404;margin-top:3px;">Files will be saved to Google Drive and served to all users immediately.</div>
+                    <div style="font-size:12px;color:#856404;margin-top:3px;">Charts and reports will be published to the dashboard for all users.</div>
                 </div>
                 <button onclick="dvPushToDashboard()" style="display:inline-flex;align-items:center;gap:8px;background:#004080;color:#fff;border:2px solid #004080;border-radius:6px;padding:10px 22px;font-family:'Roboto',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;cursor:pointer;white-space:nowrap;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -535,7 +585,7 @@
         <div id="adminPaneDqa" style="display:none;border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.1);border:2px solid #2b5f8a;border-top:3px solid #ffc107;">
             <div id="dqaEmbedStatus" style="display:none;padding:12px 20px;background:#d4edda;border-bottom:2px solid #28a745;font-family:'Roboto',sans-serif;font-size:13px;font-weight:700;color:#155724;align-items:center;gap:10px;">
                 <span>&#10004;</span>
-                <span id="dqaEmbedStatusMsg">DQA report saved to Drive &mdash; Dashboard tab updated.</span>
+                <span id="dqaEmbedStatusMsg">DQA report published — Dashboard updated.</span>
             </div>
             <iframe id="dqaEmbedIframe" src="" data-src="dqa_tool_v5_drive.html" title="DQA Tool" allow="fullscreen" referrerpolicy="strict-origin-when-cross-origin" style="width:100%;min-height:90vh;border:none;display:block;"></iframe>
         </div>
@@ -559,10 +609,14 @@ var rolePasswords = {
     admin:    'admin'
 };
 
+var DMAT_TABS = ['dmat-dqa','dmat-processing','dmat-reporting','dmat-suspected','dmat-tested',
+                 'dmat-confirmed','dmat-treated','dmat-presumptive',
+                 'dmat-comparative','dmat-u5','dmat-allages'];
+
 var roleAccess = {
     national: ['welcome','me-dqa','me-routine','me-detailed','me-comparative',
                'user-guide','bulletins','mpd','campaign-survey',
-               'sbd-app','analytics-training','automation','snt','mpr','other-analysis'],
+               'sbd-app','analytics-training','snt','mpr','other-analysis'].concat(DMAT_TABS),
     district: ['welcome','me-dqa','me-routine','me-detailed','me-comparative',
                'user-guide','bulletins','analytics-training'],
     chiefdom: ['welcome','me-dqa','me-routine','me-detailed','me-comparative',
@@ -571,8 +625,8 @@ var roleAccess = {
                'user-guide','bulletins','analytics-training'],
     admin:    ['welcome','me-dqa','me-routine','me-detailed','me-comparative',
                'user-guide','bulletins','mpd','campaign-survey',
-               'sbd-app','analytics-training','automation','snt','mpr','other-analysis',
-               'admin-dashboard']
+               'sbd-app','analytics-training','snt','mpr','other-analysis',
+               'admin-dashboard'].concat(DMAT_TABS)
 };
 
 function enableTabsForRole(role) {
@@ -631,7 +685,7 @@ document.getElementById('submitRolePassword').addEventListener('click', verifyPa
 document.getElementById('rolePassword').addEventListener('keypress', function(e){ if(e.key==='Enter') verifyPassword(); });
 
 /* ════════════════════════════════════════════
-   GAS ENDPOINT + DQA DRIVE LOADER
+   DASHBOARD ENDPOINT + DQA LOADER
 ════════════════════════════════════════════ */
 const DV_GAS = 'https://script.google.com/macros/s/AKfycbyTprTce5ft5gxSwY7jOku2GNeKMG8V-X1BrY0jB3QDPyuVWXwFPNr_CH80BRfcLcwD/exec';
 
@@ -667,7 +721,7 @@ function loadMeDqa() {
         doneP();
     }
 
-    setP(15, 'Fetching DQA report from Google Drive…');
+    setP(15, 'Loading dashboard…');
 
     fetch(DV_GAS + '?action=getDashboard')
         .then(r => { setP(50,'Parsing response…'); return r.json(); })
@@ -714,7 +768,18 @@ var pageLabelMap = {
     'me-detailed':'Detailed Dashboard','me-comparative':'Comparative Analysis',
     'user-guide':'User Guide','bulletins':'Monthly Bulletin','mpd':'Malaria Programme Docs',
     'campaign-survey':'Campaign & Survey','sbd-app':'Data Collection Apps',
-    'analytics-training':'Analytics Learning','automation':'Automation Pipelines',
+    'analytics-training':'Analytics Learning',
+    'dmat-dqa':'D-MAT · Data Quality Assessment',
+    'dmat-processing':'D-MAT · Data Processing',
+    'dmat-reporting':'D-MAT · Reporting',
+    'dmat-suspected':'D-MAT · Suspected',
+    'dmat-tested':'D-MAT · Tested',
+    'dmat-confirmed':'D-MAT · Confirmed Cases',
+    'dmat-treated':'D-MAT · Confirmed and Treated',
+    'dmat-presumptive':'D-MAT · Presumptive Treatment',
+    'dmat-comparative':'D-MAT · Comparative Analysis',
+    'dmat-u5':'D-MAT · Comparative · Under 5',
+    'dmat-allages':'D-MAT · Comparative · All Ages',
     'snt':'SNT 2015–2025','mpr':'MPR 2021–2023','other-analysis':'Other Analysis',
     'admin-dashboard':'Admin Dashboard'
 };
@@ -836,7 +901,7 @@ document.getElementById('logoutBtn').addEventListener('click', function(){
     document.querySelectorAll('iframe[data-src]').forEach(function(f){ f.src = ''; });
     // Reset DQA tab state
     document.getElementById('meDqaEmpty').style.display = 'block';
-    document.getElementById('meDqaEmpty').innerHTML = '<div class="dv-loader"></div><p style="font-size:13px;color:var(--muted);margin-top:14px;">Loading DQA report from Google Drive…</p>';
+    document.getElementById('meDqaEmpty').innerHTML = '<div class="dv-loader"></div><p style="font-size:13px;color:var(--muted);margin-top:14px;">Loading dashboard…</p>';
     document.getElementById('meDqaFrame').style.display  = 'none';
     document.getElementById('meDqaStats').style.display  = 'none';
     document.getElementById('meDqaIframe').srcdoc        = '';
@@ -848,7 +913,7 @@ document.getElementById('logoutBtn').addEventListener('click', function(){
 });
 
 /* ════════════════════════════════════════════
-   ADMIN DASHBOARD — GAS PUSH + SUB-TABS
+   ADMIN DASHBOARD — PUBLISH + SUB-TABS
 ════════════════════════════════════════════ */
 function dvStatus(msg,color){const el=document.getElementById('dvPushStatus');if(el){el.innerHTML=msg;el.style.color=color||'#28a745';}}
 function dvWorkflowLog(msg){const el=document.getElementById('dvWorkflowStatus');if(!el)return;if(!msg){el.style.display='none';el.textContent='';return;}el.style.display='block';el.textContent=msg;}
@@ -890,12 +955,12 @@ async function dvPushToDashboard(){
     const tprPeriod=(typeof da_tprState!=='undefined'&&da_tprState.config)?da_tprState.config.start+' → '+da_tprState.config.end:'';
     const period=[rsPeriod,tprPeriod].filter(Boolean).join(' | ');
     const titles={rsTitle1:rsTitle+' — All Facilities',rsTitle2:rsTitle+' — Active Facilities Only',tprTitle:document.getElementById('da_tprMapTitle')?.value||'NMCP Malaria TPR by Chiefdom'};
-    dvStatus('&#9654; Saving '+Object.keys(files).length+' charts to Google Drive…','#17a2b8');
-    dvWorkflowLog('Uploading via GAS proxy…');
+    dvStatus('&#9654; Publishing '+Object.keys(files).length+' charts to Dashboard…','#17a2b8');
+    dvWorkflowLog('Publishing…');
     try{
         const body=new URLSearchParams({action:'saveDashboard',files:JSON.stringify(files),ts,period,titles:JSON.stringify(titles)});
         const resp=await fetch(DV_GAS,{method:'POST',body});const data=await resp.json();
-        if(data.ok){const n=(data.saved||[]).length;dvStatus('&#10004; Dashboard updated — '+n+' files saved to Drive.','#28a745');dvWorkflowLog('&#10004; Saved: '+(data.saved||[]).join(', '));setTimeout(()=>dvWorkflowLog(''),6000);}
+        if(data.ok){const n=(data.saved||[]).length;dvStatus('&#10004; Dashboard updated — '+n+' charts published.','#28a745');dvWorkflowLog('&#10004; Saved: '+(data.saved||[]).join(', '));setTimeout(()=>dvWorkflowLog(''),6000);}
         else{dvStatus('&#10008; Save failed: '+(data.error||'unknown'),'#dc3545');dvWorkflowLog('&#10008; '+(data.error||'GAS error'));}
     }catch(err){dvStatus('&#10008; Network error: '+err.message,'#dc3545');dvWorkflowLog('&#10008; '+err.message);}
 }
@@ -908,7 +973,7 @@ window.addEventListener('message', function(e) {
         const statusMsg = document.getElementById('dqaEmbedStatusMsg');
         if (statusBar) {
             const p=e.data.period||'',s=e.data.avgScore||'',h=e.data.highPriority||'';
-            if(statusMsg) statusMsg.textContent='✔ DQA report saved to Drive'+(p?' — '+p:'')+(s?' · Avg: '+s:'')+(h?' · High priority: '+h:'');
+            if(statusMsg) statusMsg.textContent='✔ DQA report published'+(p?' — '+p:'')+(s?' · Avg: '+s:'')+(h?' · High priority: '+h:'');
             statusBar.style.display='flex';
         }
         dvShowUpdateBar();
