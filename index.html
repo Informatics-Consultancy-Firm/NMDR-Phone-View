@@ -71,7 +71,7 @@
         .password-input button:hover { background: var(--blue-dk); }
         .access-denied { color: #d32f2f; font-size: 12px; margin-top: 8px; display: none; }
 
-        /* ── MOBILE TOP BAR (hidden on desktop) ── */
+        /* MOBILE TOP BAR */
         .topbar {
             display: none;
             position: fixed; top: 0; left: 0; right: 0; z-index: 900;
@@ -80,7 +80,6 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             align-items: center; padding: 0 12px; gap: 10px;
         }
-
         .topbar-hamburger {
             width: 40px; height: 40px; background: transparent;
             border: none; cursor: pointer; border-radius: 8px;
@@ -89,35 +88,21 @@
             transition: background 0.18s; flex-shrink: 0;
         }
         .topbar-hamburger:hover { background: rgba(255,255,255,0.12); }
-        .topbar-hamburger span {
-            display: block; width: 22px; height: 2px;
-            background: white; border-radius: 2px; transition: all 0.25s;
-        }
+        .topbar-hamburger span { display: block; width: 22px; height: 2px; background: white; border-radius: 2px; transition: all 0.25s; }
         .topbar-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
         .topbar-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
         .topbar-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
         .topbar-brand { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
-        .topbar-icon {
-            width: 30px; height: 30px; background: var(--gold); border-radius: 6px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 11px; font-weight: 700; color: var(--blue); flex-shrink: 0;
-        }
+        .topbar-icon { width: 30px; height: 30px; background: var(--gold); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--blue); flex-shrink: 0; }
         .topbar-labels { min-width: 0; }
         .topbar-title { font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
         .topbar-page  { font-size: 10px; color: rgba(255,255,255,0.55); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
 
-        /* ── SIDEBAR OVERLAY (mobile backdrop) ── */
-        .sidebar-overlay {
-            display: none;
-            position: fixed; inset: 0; z-index: 950;
-            background: rgba(0,0,0,0.45);
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
-        }
+        /* SIDEBAR OVERLAY */
+        .sidebar-overlay { display: none; position: fixed; inset: 0; z-index: 950; background: rgba(0,0,0,0.45); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }
         .sidebar-overlay.visible { display: block; }
 
-        /* ── SIDEBAR ── */
+        /* SIDEBAR */
         .sidebar {
             width: 260px;
             background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dk) 100%);
@@ -128,73 +113,23 @@
             transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
             z-index: 960;
         }
-
         .sidebar::-webkit-scrollbar { width: 4px; }
         .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
-
-        .sidebar-header {
-            padding: 18px 20px;
-            border-bottom: 2px solid rgba(255,255,255,0.1);
-            flex-shrink: 0; display: flex; align-items: center;
-        }
-
+        .sidebar-header { padding: 18px 20px; border-bottom: 2px solid rgba(255,255,255,0.1); flex-shrink: 0; display: flex; align-items: center; }
         .sidebar-brand { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
-
-        .brand-icon {
-            width: 34px; height: 34px;
-            background: var(--gold); border-radius: 7px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; font-weight: 700; color: var(--blue); flex-shrink: 0;
-        }
-
+        .brand-icon { width: 34px; height: 34px; background: var(--gold); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--blue); flex-shrink: 0; }
         .brand-title { font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; line-height: 1.2; display: block; }
         .brand-sub   { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 0.5px; display: block; }
-
-        /* Close X button (mobile only) */
-        .sidebar-close {
-            display: none;
-            width: 30px; height: 30px; background: rgba(255,255,255,0.1);
-            border: none; border-radius: 6px; cursor: pointer;
-            align-items: center; justify-content: center;
-            color: white; flex-shrink: 0; margin-left: 8px;
-            font-size: 18px; line-height: 1;
-        }
+        .sidebar-close { display: none; width: 30px; height: 30px; background: rgba(255,255,255,0.1); border: none; border-radius: 6px; cursor: pointer; align-items: center; justify-content: center; color: white; flex-shrink: 0; margin-left: 8px; font-size: 18px; line-height: 1; }
         .sidebar-close:hover { background: rgba(255,255,255,0.2); }
-
         .nav-scroll { flex: 1; padding: 8px 0; overflow-y: auto; }
-
-        .nav-section-label {
-            padding: 12px 18px 4px;
-            font-size: 9px; font-weight: 700;
-            color: rgba(255,255,255,0.35);
-            letter-spacing: 2px; text-transform: uppercase;
-        }
-
-        .nav-item {
-            width: 100%; background: transparent; border: none;
-            color: rgba(255,255,255,0.7);
-            padding: 11px 16px;
-            text-align: left; font-family: inherit;
-            font-size: 13px; font-weight: 500;
-            cursor: pointer; transition: all 0.18s;
-            border-left: 3px solid transparent;
-            display: flex; align-items: center; gap: 10px;
-        }
+        .nav-section-label { padding: 12px 18px 4px; font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.35); letter-spacing: 2px; text-transform: uppercase; }
+        .nav-item { width: 100%; background: transparent; border: none; color: rgba(255,255,255,0.7); padding: 11px 16px; text-align: left; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.18s; border-left: 3px solid transparent; display: flex; align-items: center; gap: 10px; }
         .nav-item:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.95); border-left-color: var(--gold); }
         .nav-item.active { background: rgba(255,255,255,0.15); color: white; border-left-color: var(--gold); font-weight: 600; }
         .nav-item .nav-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.75; stroke: currentColor; fill: none; }
         .nav-item.active .nav-icon { opacity: 1; }
-
-        .nav-group-btn {
-            width: 100%; background: transparent; border: none;
-            color: rgba(255,255,255,0.7);
-            padding: 11px 16px;
-            text-align: left; font-family: inherit;
-            font-size: 13px; font-weight: 500;
-            cursor: pointer; transition: all 0.18s;
-            border-left: 3px solid transparent;
-            display: flex; align-items: center; gap: 10px;
-        }
+        .nav-group-btn { width: 100%; background: transparent; border: none; color: rgba(255,255,255,0.7); padding: 11px 16px; text-align: left; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.18s; border-left: 3px solid transparent; display: flex; align-items: center; gap: 10px; }
         .nav-group-btn:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.95); border-left-color: rgba(255,193,7,0.5); }
         .nav-group-btn.open  { color: white; border-left-color: var(--gold); background: rgba(255,255,255,0.08); }
         .nav-group-btn .nav-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.75; stroke: currentColor; fill: none; }
@@ -202,44 +137,19 @@
         .nav-group-label { flex: 1; }
         .nav-chevron { width: 13px; height: 13px; transition: transform 0.2s; opacity: 0.5; flex-shrink: 0; stroke: currentColor; fill: none; }
         .nav-group-btn.open .nav-chevron { transform: rotate(180deg); opacity: 0.8; }
-
-        .nav-group-children {
-            overflow: hidden; max-height: 0;
-            transition: max-height 0.3s ease;
-            background: rgba(0,0,0,0.18);
-        }
+        .nav-group-children { overflow: hidden; max-height: 0; transition: max-height 0.3s ease; background: rgba(0,0,0,0.18); }
         .nav-group-children.open { max-height: 700px; }
-
-        .nav-child {
-            width: 100%; background: transparent; border: none;
-            color: rgba(255,255,255,0.6);
-            padding: 8px 16px 8px 42px;
-            text-align: left; font-family: inherit;
-            font-size: 12px; font-weight: 400;
-            cursor: pointer; transition: all 0.15s;
-            border-left: 3px solid transparent; display: block;
-        }
+        .nav-child { width: 100%; background: transparent; border: none; color: rgba(255,255,255,0.6); padding: 8px 16px 8px 42px; text-align: left; font-family: inherit; font-size: 12px; font-weight: 400; cursor: pointer; transition: all 0.15s; border-left: 3px solid transparent; display: block; }
         .nav-child:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.06); border-left-color: rgba(255,193,7,0.35); }
         .nav-child.active { color: white; background: rgba(255,255,255,0.1); border-left-color: var(--gold); font-weight: 500; }
-
         .sidebar-footer { padding: 12px 14px; flex-shrink: 0; border-top: 1px solid rgba(255,255,255,0.08); }
-        .logout-btn {
-            width: 100%; background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.12);
-            color: rgba(255,255,255,0.6);
-            padding: 9px 14px; border-radius: 6px;
-            font-size: 12px; font-weight: 500; cursor: pointer;
-            display: flex; align-items: center; gap: 8px;
-            transition: all 0.18s; font-family: inherit;
-        }
+        .logout-btn { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.6); padding: 9px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.18s; font-family: inherit; }
         .logout-btn:hover { background: rgba(255,80,80,0.15); border-color: rgba(255,120,120,0.3); color: #ffaaaa; }
 
-        /* ── MAIN ── */
+        /* MAIN */
         .main { flex: 1; padding: 28px 32px; overflow-y: auto; min-width: 0; }
 
-        /* ── RESPONSIVE ── */
-
-        /* Tablet 769–1024px: narrower sidebar */
+        /* RESPONSIVE */
         @media (max-width: 1024px) and (min-width: 769px) {
             .sidebar { width: 220px; }
             .main { padding: 22px 24px; }
@@ -247,64 +157,27 @@
             .nav-child { font-size: 11px; padding: 7px 14px 7px 36px; }
             .brand-title { font-size: 12px; }
         }
-
-        /* Mobile ≤768px: slide-in drawer */
         @media (max-width: 768px) {
             body { display: block; }
-
             .topbar { display: flex; }
-
-            .sidebar {
-                position: fixed;
-                top: 0; left: 0; bottom: 0;
-                width: 280px;
-                transform: translateX(-100%);
-                height: 100%;
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-                box-shadow: 4px 0 24px rgba(0,0,0,0.3);
-            }
-
+            .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 280px; transform: translateX(-100%); height: 100%; }
+            .sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,0.3); }
             .sidebar-close { display: flex; }
-
-            .main {
-                width: 100%;
-                padding: 64px 12px 16px;
-                min-height: 100vh;
-            }
-
+            .main { width: 100%; padding: 64px 12px 16px; min-height: 100vh; }
             .cards-grid { grid-template-columns: 1fr; gap: 12px; margin-bottom: 14px; }
             .hero { padding: 14px 16px; margin-bottom: 10px; }
             .hero h1 { font-size: 20px; }
             .hero p { font-size: 13px; }
             .card-body { padding: 18px 20px; }
-            .card-icon { width: 46px; height: 46px; }
-            .card-icon svg { width: 22px; height: 22px; }
-            .card-title { font-size: 20px; }
-            .card-list li { font-size: 15px; }
-            .card-divider { margin: 12px 0 10px; }
-            .section-label { margin-bottom: 8px; font-size: 10px; }
-            /* slides-ratio-wrap handles iframe sizing — no override needed */
-            .slides-container { margin-bottom: 12px; border-radius: 8px; }
-            .slides-header { padding: 7px 12px; font-size: 11px; }
-            .disclaimer-banner { padding: 14px 16px; margin-bottom: 12px; }
-            .disclaimer-banner p { font-size: 12px; }
             .role-card { padding: 28px 20px; }
             .role-buttons { grid-template-columns: 1fr; gap: 10px; }
             .iframe-pane iframe { min-height: 70vh; }
         }
-
-        /* Small phones ≤480px */
         @media (max-width: 480px) {
             .sidebar { width: min(88vw, 300px); }
             .main { padding: 60px 10px 14px; }
             .card-body { padding: 16px 18px; }
-            .card-title { font-size: 18px; }
-            .card-list li { font-size: 15px; }
             .hero h1 { font-size: 18px; }
-            .hero p { font-size: 13px; }
             .iframe-pane iframe { min-height: 65vh; }
         }
 
@@ -313,35 +186,14 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
         /* WELCOME */
-        .hero {
-            background: var(--white); border-radius: 12px;
-            padding: 20px 24px; margin-bottom: 14px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            border-left: 4px solid var(--blue);
-        }
-        .hero-tag {
-            display: inline-block; background: var(--blue-lt); color: var(--blue);
-            font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-            padding: 4px 12px; border-radius: 20px; margin-bottom: 8px;
-        }
+        .hero { background: var(--white); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); border-left: 4px solid var(--blue); }
+        .hero-tag { display: inline-block; background: var(--blue-lt); color: var(--blue); font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 8px; }
         .hero h1 { font-size: 24px; color: var(--blue); font-weight: 700; margin-bottom: 6px; }
         .hero p   { font-size: 13px; color: var(--muted); line-height: 1.6; }
-
-        .section-label {
-            color: var(--muted); font-size: 11px; font-weight: 700;
-            letter-spacing: 1.5px; text-transform: uppercase;
-            margin: 0 0 12px; display: flex; align-items: center; gap: 8px;
-        }
+        .section-label { color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
         .section-label::before { content: ''; width: 24px; height: 3px; background: var(--gold); flex-shrink: 0; }
-
         .cards-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin-bottom: 18px; }
-
-        .card {
-            background: var(--white); border-radius: 12px;
-            border: 2px solid var(--border); overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
-        }
+        .card { background: var(--white); border-radius: 12px; border: 2px solid var(--border); overflow: hidden; transition: all 0.3s ease; box-shadow: 0 3px 10px rgba(0,0,0,0.06); }
         .card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.1); border-color: var(--blue); }
         .card-stripe { height: 4px; background: linear-gradient(90deg, var(--blue), var(--blue-dk)); }
         .card-body   { padding: 22px 26px; }
@@ -354,60 +206,37 @@
         .card-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
         .card-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 16px; font-weight: 500; color: #2c4b62; line-height: 1.5; }
         .card-list li::before { content: "\2022"; font-size: 20px; font-weight: bold; color: var(--gold); margin-top: -1px; flex-shrink: 0; }
-
-        /* Tablet ≤1024px — single column, keep large fonts */
         @media (max-width: 1024px) {
             .cards-grid { grid-template-columns: 1fr; gap: 14px; margin-bottom: 16px; }
             .card-body { padding: 20px 22px; }
             .card-title { font-size: 21px; }
-            .card-list li { font-size: 16px; }
         }
 
-        /* Slides — true aspect-ratio, no fixed height, no black bars */
         .slides-container { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 16px; }
         .slides-header { background: var(--blue-lt); padding: 9px 16px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--blue-dk); }
-        .slides-ratio-wrap {
-            position: relative; width: 100%;
-            padding-top: 56.25%; /* 16:9 — exact Google Slides ratio */
-            overflow: hidden; background: var(--white);
-        }
-        .slides-ratio-wrap iframe {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            border: none; display: block;
-        }
-
-        .disclaimer-banner {
-            background: linear-gradient(135deg, #2c6793 0%, #1f4a6a 100%);
-            border-radius: 10px; padding: 18px 22px; margin-bottom: 16px;
-            border-left: 5px solid var(--gold);
-            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
-        }
+        .slides-ratio-wrap { position: relative; width: 100%; padding-top: 56.25%; overflow: hidden; background: var(--white); }
+        .slides-ratio-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; display: block; }
+        .disclaimer-banner { background: linear-gradient(135deg, #2c6793 0%, #1f4a6a 100%); border-radius: 10px; padding: 18px 22px; margin-bottom: 16px; border-left: 5px solid var(--gold); box-shadow: 0 3px 12px rgba(0,0,0,0.12); }
         .disclaimer-banner p { font-size: 13px; font-weight: 500; color: #ffffff; line-height: 1.6; margin: 0; }
 
         /* IFRAME PANE */
-        .iframe-pane {
-            width: 100%; border-radius: 12px; overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-            border: 2px solid var(--border); background: var(--white);
-        }
+        .iframe-pane { width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.1); border: 2px solid var(--border); background: var(--white); }
         .iframe-pane iframe { width: 100%; min-height: 85vh; border: none; display: block; }
+        @media (max-width: 480px) { .iframe-pane iframe { min-height: 65vh; } }
 
-        /* Tablet 769–1024: narrower sidebar, standard layout */
-        @media (max-width: 480px) {
-            .iframe-pane iframe { min-height: 65vh; }
-        }
+        /* DV LOADER / PROGRESS */
+        .dv-loader { width: 36px; height: 36px; border: 4px solid #e0e8f0; border-top-color: #004080; border-radius: 50%; animation: dv-spin 0.8s linear infinite; margin: 0 auto; }
+        @keyframes dv-spin { to { transform: rotate(360deg); } }
+        .dv-progress { height: 5px; background: #e0e8f0; border-radius: 4px; overflow: hidden; margin: 10px 0 4px; }
+        .dv-progress-bar { height: 100%; background: linear-gradient(90deg,#004080,#17a2b8); border-radius: 4px; transition: width .4s ease; }
+
         @media (max-width: 360px) {
             .role-card h1 { font-size: 22px; }
             .role-buttons { gap: 8px; }
             .role-btn { padding: 13px 14px; font-size: 13px; }
             .topbar-title { font-size: 12px; }
-            .topbar-page  { font-size: 9px; }
             .nav-item, .nav-group-btn { font-size: 12px; padding: 10px 14px; }
             .main { padding: 62px 10px 14px; }
-            .hero h1 { font-size: 19px; }
-            .cards-grid { gap: 10px; }
-            .card-body { padding: 16px; }
         }
     </style>
 </head>
@@ -471,9 +300,7 @@
     </div>
 
     <div class="nav-scroll">
-
         <div class="nav-section-label">Main</div>
-
         <button class="nav-item active" data-tab="welcome">
             <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             Welcome
@@ -494,7 +321,6 @@
         </div>
 
         <div class="nav-section-label">Resources</div>
-
         <div class="nav-group">
             <button class="nav-group-btn" data-group="resources">
                 <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
@@ -513,7 +339,6 @@
         </div>
 
         <div class="nav-section-label">Analysis</div>
-
         <div class="nav-group">
             <button class="nav-group-btn" data-group="retro">
                 <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -532,7 +357,6 @@
             <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2m0 16v2m7.07-5.07l-1.41-1.41M4.93 19.07l1.41-1.41M20 12h2M2 12h2"/></svg>
             Admin Dashboard
         </button>
-
     </div>
 
     <div class="sidebar-footer">
@@ -553,71 +377,13 @@
             <h1>National Malaria Data Repository</h1>
             <p>A centralized, integrated platform for malaria surveillance, programme monitoring, and data-driven decision making across Sierra Leone.</p>
         </div>
-
         <div class="section-label">About the Repository</div>
         <div class="cards-grid">
-            <div class="card">
-                <div class="card-stripe"></div>
-                <div class="card-body">
-                    <div class="card-icon-row">
-                        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-                        <div><div class="card-num">What</div><div class="card-title">What is the NMDR?</div></div>
-                    </div>
-                    <div class="card-divider"></div>
-                    <ul class="card-list">
-                        <li>A national digital infrastructure for malaria programme data</li>
-                        <li>Hosted on DHIS2 integrated with HMIS, LMIS</li>
-                        <li>Developed by NMCP, ICF-SL, WHO, CHAI</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-stripe"></div>
-                <div class="card-body">
-                    <div class="card-icon-row">
-                        <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
-                        <div><div class="card-num">Why</div><div class="card-title">Why the NMDR Exists</div></div>
-                    </div>
-                    <div class="card-divider"></div>
-                    <ul class="card-list">
-                        <li>Consolidate fragmented malaria data into one repository</li>
-                        <li>Eliminate data silos between systems</li>
-                        <li>Strengthen national data governance</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-stripe"></div>
-                <div class="card-body">
-                    <div class="card-icon-row">
-                        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
-                        <div><div class="card-num">Focus</div><div class="card-title">Focus Areas</div></div>
-                    </div>
-                    <div class="card-divider"></div>
-                    <ul class="card-list">
-                        <li>Case management &mdash; testing, treatment, reporting</li>
-                        <li>Vector control &mdash; IRS coverage, ITN distribution</li>
-                        <li>Malaria in pregnancy &mdash; IPTp, ANC attendance</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-stripe"></div>
-                <div class="card-body">
-                    <div class="card-icon-row">
-                        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
-                        <div><div class="card-num">Benefits</div><div class="card-title">Expected Benefits</div></div>
-                    </div>
-                    <div class="card-divider"></div>
-                    <ul class="card-list">
-                        <li>Faster evidence-based programme planning</li>
-                        <li>Improved data quality through validation</li>
-                        <li>Enhanced transparency and accountability</li>
-                    </ul>
-                </div>
-            </div>
+            <div class="card"><div class="card-stripe"></div><div class="card-body"><div class="card-icon-row"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div><div class="card-num">What</div><div class="card-title">What is the NMDR?</div></div></div><div class="card-divider"></div><ul class="card-list"><li>A national digital infrastructure for malaria programme data</li><li>Hosted on DHIS2 integrated with HMIS, LMIS</li><li>Developed by NMCP, ICF-SL, WHO, CHAI</li></ul></div></div>
+            <div class="card"><div class="card-stripe"></div><div class="card-body"><div class="card-icon-row"><div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div><div><div class="card-num">Why</div><div class="card-title">Why the NMDR Exists</div></div></div><div class="card-divider"></div><ul class="card-list"><li>Consolidate fragmented malaria data into one repository</li><li>Eliminate data silos between systems</li><li>Strengthen national data governance</li></ul></div></div>
+            <div class="card"><div class="card-stripe"></div><div class="card-body"><div class="card-icon-row"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div><div><div class="card-num">Focus</div><div class="card-title">Focus Areas</div></div></div><div class="card-divider"></div><ul class="card-list"><li>Case management &mdash; testing, treatment, reporting</li><li>Vector control &mdash; IRS coverage, ITN distribution</li><li>Malaria in pregnancy &mdash; IPTp, ANC attendance</li></ul></div></div>
+            <div class="card"><div class="card-stripe"></div><div class="card-body"><div class="card-icon-row"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div><div class="card-num">Benefits</div><div class="card-title">Expected Benefits</div></div></div><div class="card-divider"></div><ul class="card-list"><li>Faster evidence-based programme planning</li><li>Improved data quality through validation</li><li>Enhanced transparency and accountability</li></ul></div></div>
         </div>
-
         <div class="section-label" style="margin-top:4px">NMDR Use Cases &mdash; WHO AFRO</div>
         <div class="slides-container">
             <div class="slides-header">NMDR Use Cases &mdash; WHO AFRO Presentation</div>
@@ -625,15 +391,39 @@
                 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQFJZ7rG2K0i1Fpmu49KuUV3yifUdQ2MuVXOlbBCKcenHVUnWeri8xSyaix8OzE0w/pubembed?start=false&loop=false&delayms=3000" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" loading="lazy"></iframe>
             </div>
         </div>
-
         <div class="disclaimer-banner">
-            <p><strong>DISCLAIMER:</strong> This platform fully follows WHO AFRO recommendations for the NMDR use cases. The modules have been reorganised and restructured solely to enhance clarity, usability, and user experience, making the platform more intuitive and accessible for all users. The core objectives, goals, and intent of the WHO AFRO NMDR use cases remain fully intact and unchanged.</p>
+            <p><strong>DISCLAIMER:</strong> This platform fully follows WHO AFRO recommendations for the NMDR use cases. The modules have been reorganised and restructured solely to enhance clarity, usability, and user experience. The core objectives, goals, and intent of the WHO AFRO NMDR use cases remain fully intact and unchanged.</p>
         </div>
     </div>
 
-    <!-- M&E — DQA -->
+    <!-- M&E — DQA (loads dqa_report.html from Google Drive via GAS) -->
     <div id="me-dqa" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-me-dqa" src="" data-src="me_dqa.html" loading="lazy" allow="fullscreen"></iframe></div>
+        <div class="hero" style="border-left-color:#2b5f8a;">
+            <div class="hero-tag">Data Quality Assessment</div>
+            <h1 id="meDqaTitle">DQA Report</h1>
+            <p id="meDqaSubtitle" style="color:var(--muted);">Latest DQA report published by the Administrator.</p>
+            <div class="dv-progress" id="meDqaProgress" style="display:none;"><div class="dv-progress-bar" id="meDqaBar" style="width:5%;"></div></div>
+            <div id="meDqaStatus" style="font-size:11px;color:var(--muted);margin-top:4px;display:none;"></div>
+        </div>
+        <!-- stat pills -->
+        <div id="meDqaStats" style="display:none;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
+            <span id="meDqaStatFac"   style="background:#e7f3ff;border:1px solid #3b78a8;color:#1e4d70;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;"></span>
+            <span id="meDqaStatScore" style="background:#fff3cd;border:1px solid #ffc107;color:#7d5a00;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;"></span>
+            <span id="meDqaStatHigh"  style="background:#f8d7da;border:1px solid #dc3545;color:#721c24;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;"></span>
+        </div>
+        <!-- loading / empty state -->
+        <div id="meDqaEmpty" style="text-align:center;padding:60px 20px;background:var(--white);border-radius:12px;border:2px dashed var(--border);">
+            <div class="dv-loader"></div>
+            <p style="font-size:13px;color:var(--muted);margin-top:14px;">Loading DQA report from Google Drive…</p>
+        </div>
+        <!-- iframe -->
+        <div id="meDqaFrame" style="display:none;border-radius:12px;overflow:hidden;border:2px solid #2b5f8a;box-shadow:0 4px 16px rgba(0,0,0,0.1);">
+            <div style="background:#2b5f8a;color:#fff;padding:9px 18px;font-size:12px;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
+                <span>&#128203; DQA Full Report</span>
+                <span id="meDqaMetaPill" style="font-size:11px;opacity:0.8;"></span>
+            </div>
+            <iframe id="meDqaIframe" srcdoc="" style="width:100%;height:1100px;border:none;display:block;"></iframe>
+        </div>
     </div>
 
     <!-- M&E — ROUTINE DASHBOARD -->
@@ -641,7 +431,7 @@
         <div class="iframe-pane"><iframe id="frame-me-routine" src="" data-src="me_routine.html" loading="lazy" allow="fullscreen"></iframe></div>
     </div>
 
-    <!-- M&E — DETAILED DASHBOARD (linked to admin GAS) -->
+    <!-- M&E — DETAILED DASHBOARD -->
     <div id="me-detailed" class="tab-content">
         <div class="iframe-pane"><iframe id="frame-me-detailed" src="" data-src="me_detailed.html" loading="lazy" allow="fullscreen"></iframe></div>
     </div>
@@ -703,13 +493,61 @@
 
     <!-- ADMIN DASHBOARD -->
     <div id="admin-dashboard" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-admin-dashboard" src="" data-src="admin_dashboard.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
+
+        <!-- Publish to Dashboard banner -->
+        <div style="background:#f8f9fa;border:3px solid #004080;border-radius:10px;overflow:hidden;margin-bottom:20px;font-family:'Roboto',sans-serif;">
+            <div style="background:#004080;color:#fff;padding:12px 22px;font-size:14px;font-weight:700;letter-spacing:.5px;display:flex;align-items:center;gap:10px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Publish to Dashboard &mdash; Google Drive via GAS
+            </div>
+            <div id="dvUpdateBar" style="display:none;padding:16px 22px;align-items:center;gap:16px;flex-wrap:wrap;background:#fff3cd;">
+                <div style="flex:1;">
+                    <div style="font-size:14px;font-weight:700;color:#856404;">&#9888; Charts ready &mdash; save to Dashboard?</div>
+                    <div style="font-size:12px;color:#856404;margin-top:3px;">Files will be saved to Google Drive and served to all users immediately.</div>
+                </div>
+                <button onclick="dvPushToDashboard()" style="display:inline-flex;align-items:center;gap:8px;background:#004080;color:#fff;border:2px solid #004080;border-radius:6px;padding:10px 22px;font-family:'Roboto',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;cursor:pointer;white-space:nowrap;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    Update Dashboard
+                </button>
+                <span id="dvPushStatus" style="font-size:12px;font-weight:700;"></span>
+            </div>
+            <div id="dvWorkflowStatus" style="display:none;padding:10px 22px;font-size:12px;font-family:'Courier New',monospace;background:#0d1117;color:#17a2b8;"></div>
+        </div>
+
+        <!-- Admin sub-tabs -->
+        <div style="display:flex;gap:0;background:var(--white);border-radius:10px 10px 0 0;border:2px solid var(--border);border-bottom:none;overflow:hidden;margin-bottom:0;">
+            <button id="adminTabAuto" onclick="switchAdminTab('auto')"
+                style="flex:1;padding:14px 20px;background:#004080;color:#fff;border:none;font-family:'Roboto',sans-serif;font-size:14px;font-weight:700;letter-spacing:.5px;cursor:pointer;border-right:2px solid rgba(255,255,255,0.2);transition:all .2s;">
+                &#9881; EPI AUTOMATION
+            </button>
+            <button id="adminTabDqa" onclick="switchAdminTab('dqa')"
+                style="flex:1;padding:14px 20px;background:rgba(0,0,0,0.04);color:#666;border:none;font-family:'Roboto',sans-serif;font-size:14px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .2s;">
+                &#128203; DQA TOOL
+            </button>
+        </div>
+
+        <!-- Pane: Automation -->
+        <div id="adminPaneAuto" style="border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.1);border:2px solid var(--border);border-top:none;">
+            <iframe id="autoIframe" src="automation.html" title="Admin Automation Dashboard" loading="lazy" allow="fullscreen" referrerpolicy="strict-origin-when-cross-origin" style="width:100%;min-height:85vh;border:none;display:block;"></iframe>
+        </div>
+
+        <!-- Pane: DQA Tool -->
+        <div id="adminPaneDqa" style="display:none;border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.1);border:2px solid #2b5f8a;border-top:3px solid #ffc107;">
+            <div id="dqaEmbedStatus" style="display:none;padding:12px 20px;background:#d4edda;border-bottom:2px solid #28a745;font-family:'Roboto',sans-serif;font-size:13px;font-weight:700;color:#155724;align-items:center;gap:10px;">
+                <span>&#10004;</span>
+                <span id="dqaEmbedStatusMsg">DQA report saved to Drive &mdash; Dashboard tab updated.</span>
+            </div>
+            <iframe id="dqaEmbedIframe" src="" data-src="dqa_tool_v5_drive.html" title="DQA Tool" allow="fullscreen" referrerpolicy="strict-origin-when-cross-origin" style="width:100%;min-height:90vh;border:none;display:block;"></iframe>
+        </div>
+
+    </div><!-- /admin-dashboard -->
 
 </main>
 
 <script>
-/* ROLE-BASED ACCESS CONTROL */
+/* ════════════════════════════════════════════
+   ROLE-BASED ACCESS CONTROL
+════════════════════════════════════════════ */
 var currentUserRole = null;
 var selectedRole    = null;
 
@@ -741,14 +579,11 @@ function enableTabsForRole(role) {
     currentUserRole = role;
     var allowed = {};
     roleAccess[role].forEach(function(t){ allowed[t] = true; });
-
     document.getElementById('roleModal').style.display = 'none';
     document.body.style.overflow = 'auto';
-
     var showAdmin = (role === 'admin');
     document.getElementById('adminTabBtn').style.display  = showAdmin ? 'flex' : 'none';
     document.getElementById('adminSection').style.display = showAdmin ? 'block' : 'none';
-
     document.querySelectorAll('[data-tab]').forEach(function(btn){
         var tab = btn.getAttribute('data-tab');
         btn.style.opacity       = allowed[tab] ? '' : '0.3';
@@ -795,22 +630,112 @@ function verifyPassword() {
 document.getElementById('submitRolePassword').addEventListener('click', verifyPassword);
 document.getElementById('rolePassword').addEventListener('keypress', function(e){ if(e.key==='Enter') verifyPassword(); });
 
-/* TAB NAVIGATION + LAZY IFRAME LOADING */
+/* ════════════════════════════════════════════
+   GAS ENDPOINT + DQA DRIVE LOADER
+════════════════════════════════════════════ */
+const DV_GAS = 'https://script.google.com/macros/s/AKfycbyTprTce5ft5gxSwY7jOku2GNeKMG8V-X1BrY0jB3QDPyuVWXwFPNr_CH80BRfcLcwD/exec';
+
+// Decode base64 data URL → HTML string → set as srcdoc
+function dvDecodeSrcdoc(dataUrl) {
+    const b64  = dataUrl.startsWith('data:') ? dataUrl.split(',')[1] : dataUrl;
+    return decodeURIComponent(escape(atob(b64)));
+}
+
+// Load DQA report into the M&E DQA tab — lazy, runs once on first click
+let meDqaLoaded = false;
+function loadMeDqa() {
+    if (meDqaLoaded) return;
+    meDqaLoaded = true;
+
+    const progEl  = document.getElementById('meDqaProgress');
+    const barEl   = document.getElementById('meDqaBar');
+    const statEl  = document.getElementById('meDqaStatus');
+    const emptyEl = document.getElementById('meDqaEmpty');
+    const frameEl = document.getElementById('meDqaFrame');
+    const ifEl    = document.getElementById('meDqaIframe');
+
+    function setP(pct, msg) {
+        if(progEl){ progEl.style.display='block'; barEl.style.width=pct+'%'; }
+        if(statEl){ statEl.style.display='block'; statEl.textContent=msg; }
+    }
+    function doneP() {
+        if(progEl) progEl.style.display='none';
+        if(statEl) statEl.style.display='none';
+    }
+    function showErr(msg) {
+        if(emptyEl) emptyEl.innerHTML='<p style="color:#dc3545;font-size:13px;font-weight:700;">&#9888; '+msg+'</p>';
+        doneP();
+    }
+
+    setP(15, 'Fetching DQA report from Google Drive…');
+
+    fetch(DV_GAS + '?action=getDashboard')
+        .then(r => { setP(50,'Parsing response…'); return r.json(); })
+        .then(resp => {
+            if (!resp.ok) { showErr(resp.error || 'No DQA report yet — admin must publish first.'); return; }
+            const images = resp.images || {};
+            const meta   = resp.meta   || {};
+            const titles = meta.titles || {};
+            const dqaUrl = images['dqa_report.html'] || '';
+            if (!dqaUrl) { showErr('No DQA report saved yet — admin must run and publish the DQA tool.'); return; }
+
+            setP(80, 'Rendering report…');
+            try {
+                const html = dvDecodeSrcdoc(dqaUrl);
+                if(emptyEl)  emptyEl.style.display  = 'none';
+                if(frameEl)  frameEl.style.display  = 'block';
+                if(ifEl)     ifEl.srcdoc             = html;
+
+                // Update hero
+                const t = titles.dqaTitle || 'DQA Report';
+                const p = titles.dqaPeriod || meta.period || '';
+                document.getElementById('meDqaTitle').textContent    = t;
+                document.getElementById('meDqaSubtitle').textContent = 'Period: ' + p + (meta.ts ? ' · Updated: ' + meta.ts : '');
+                document.getElementById('meDqaMetaPill').textContent  = p + (meta.ts ? ' · ' + meta.ts : '');
+
+                // Stat pills
+                if (titles.dqaFacilities || titles.dqaAvgScore || titles.dqaHighPriority) {
+                    document.getElementById('meDqaStats').style.display = 'flex';
+                    if(titles.dqaFacilities)  document.getElementById('meDqaStatFac').innerHTML   = '&#127968; '+titles.dqaFacilities;
+                    if(titles.dqaAvgScore)    document.getElementById('meDqaStatScore').innerHTML = '&#11088; Avg: '+titles.dqaAvgScore;
+                    if(titles.dqaHighPriority)document.getElementById('meDqaStatHigh').innerHTML  = '&#9888; '+titles.dqaHighPriority;
+                }
+                doneP();
+            } catch(e) { showErr('Failed to render DQA report: ' + e.message); }
+        })
+        .catch(err => showErr('Network error: ' + err.message));
+}
+
+/* ════════════════════════════════════════════
+   TAB NAVIGATION + LAZY IFRAME LOADING
+════════════════════════════════════════════ */
+var pageLabelMap = {
+    'welcome':'Welcome','me-dqa':'DQA','me-routine':'Routine Dashboard',
+    'me-detailed':'Detailed Dashboard','me-comparative':'Comparative Analysis',
+    'user-guide':'User Guide','bulletins':'Monthly Bulletin','mpd':'Malaria Programme Docs',
+    'campaign-survey':'Campaign & Survey','sbd-app':'Data Collection Apps',
+    'analytics-training':'Analytics Learning','automation':'Automation Pipelines',
+    'snt':'SNT 2015–2025','mpr':'MPR 2021–2023','other-analysis':'Other Analysis',
+    'admin-dashboard':'Admin Dashboard'
+};
+
+function updateTopbarPage(tabId) {
+    var el = document.getElementById('topbarPage');
+    if (el) el.textContent = pageLabelMap[tabId] || tabId;
+}
+
 function activateTab(tabId) {
     if (currentUserRole) {
         var allowed = {};
         roleAccess[currentUserRole].forEach(function(t){ allowed[t] = true; });
         if (!allowed[tabId]) {
-            var role = currentUserRole.charAt(0).toUpperCase() + currentUserRole.slice(1);
-            alert('Access restricted. ' + role + ' role does not have permission for this section.');
+            alert('Access restricted. This role does not have permission for this section.');
             return;
         }
     }
-
     document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
     var el = document.getElementById(tabId);
     if (el) el.classList.add('active');
-
     document.querySelectorAll('.nav-item[data-tab]').forEach(function(b){
         b.classList.toggle('active', b.getAttribute('data-tab') === tabId);
     });
@@ -818,22 +743,20 @@ function activateTab(tabId) {
         b.classList.toggle('active', b.getAttribute('data-tab') === tabId);
     });
 
-    /* Lazy-load: set src from data-src on first visit */
+    // Lazy-load generic iframes
     var iframe = document.getElementById('frame-' + tabId);
     if (iframe) {
         var dataSrc = iframe.getAttribute('data-src');
-        if (dataSrc && iframe.src !== window.location.origin + '/' + dataSrc && !iframe.src.endsWith(dataSrc)) {
-            iframe.src = dataSrc;
-        }
+        if (dataSrc && !iframe.src.endsWith(dataSrc)) iframe.src = dataSrc;
     }
 
-    /* Update topbar page label */
-    updateTopbarPage(tabId);
+    // Special lazy loaders
+    if (tabId === 'me-dqa') loadMeDqa();
 
-    /* Close drawer on mobile after selection */
+    updateTopbarPage(tabId);
     closeDrawer();
 
-    /* Auto-expand parent group */
+    // Auto-expand parent group
     var childBtn = document.querySelector('.nav-child[data-tab="' + tabId + '"]');
     if (childBtn) {
         var children = childBtn.closest('.nav-group-children');
@@ -857,7 +780,6 @@ function openGroup(groupId) {
     if (c) c.classList.add('open');
     if (b) b.classList.add('open');
 }
-
 function toggleGroup(groupId) {
     var c = document.getElementById('children-' + groupId);
     var b = document.querySelector('[data-group="' + groupId + '"]');
@@ -866,12 +788,11 @@ function toggleGroup(groupId) {
     c.classList.toggle('open', !isOpen);
     b.classList.toggle('open', !isOpen);
 }
-
 document.querySelectorAll('.nav-group-btn[data-group]').forEach(function(btn){
     btn.addEventListener('click', function(){ toggleGroup(this.getAttribute('data-group')); });
 });
 
-/* HAMBURGER / DRAWER (mobile) */
+/* HAMBURGER / DRAWER */
 var hamburgerBtn   = document.getElementById('hamburgerBtn');
 var sidebar        = document.getElementById('sidebar');
 var sidebarOverlay = document.getElementById('sidebarOverlay');
@@ -882,79 +803,121 @@ function openDrawer() {
     hamburgerBtn.classList.add('open');
     document.body.style.overflow = 'hidden';
 }
-
 function closeDrawer() {
     sidebar.classList.remove('open');
     sidebarOverlay.classList.remove('visible');
     hamburgerBtn.classList.remove('open');
     document.body.style.overflow = '';
 }
-
 hamburgerBtn.addEventListener('click', function() {
     sidebar.classList.contains('open') ? closeDrawer() : openDrawer();
 });
-
 document.getElementById('sidebarCloseBtn').addEventListener('click', closeDrawer);
 sidebarOverlay.addEventListener('click', closeDrawer);
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeDrawer(); });
 
-/* Close drawer on Escape key */
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeDrawer();
-});
-
-/* PAGE LABEL MAP for topbar */
-var pageLabelMap = {
-    'welcome':            'Welcome',
-    'me-dqa':             'DQA',
-    'me-routine':         'Routine Dashboard',
-    'me-detailed':        'Detailed Dashboard',
-    'me-comparative':     'Comparative Analysis',
-    'user-guide':         'User Guide',
-    'bulletins':          'Monthly Bulletin',
-    'mpd':                'Malaria Programme Docs',
-    'campaign-survey':    'Campaign & Survey',
-    'sbd-app':            'Data Collection Apps',
-    'analytics-training': 'Analytics Learning',
-    'automation':         'Automation Pipelines',
-    'snt':                'SNT 2015–2025',
-    'mpr':                'MPR 2021–2023',
-    'other-analysis':     'Other Analysis',
-    'admin-dashboard':    'Admin Dashboard'
-};
-
-function updateTopbarPage(tabId) {
-    var el = document.getElementById('topbarPage');
-    if (el) el.textContent = pageLabelMap[tabId] || tabId;
-}
-
+/* LOGOUT */
 document.getElementById('logoutBtn').addEventListener('click', function(){
     currentUserRole = null; selectedRole = null;
-
+    meDqaLoaded = false; // allow reload on next login
     document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
     document.getElementById('welcome').classList.add('active');
-
     document.querySelectorAll('.nav-item[data-tab]').forEach(function(b){
         b.classList.toggle('active', b.getAttribute('data-tab') === 'welcome');
     });
     document.querySelectorAll('.nav-child[data-tab]').forEach(function(b){ b.classList.remove('active'); });
-
     updateTopbarPage('welcome');
-
     document.getElementById('adminTabBtn').style.display  = 'none';
     document.getElementById('adminSection').style.display = 'none';
-
     document.querySelectorAll('[data-tab]').forEach(function(btn){
         btn.style.opacity = ''; btn.style.pointerEvents = '';
     });
-
-    /* Reset iframes so they reload fresh on next login */
-    document.querySelectorAll('.iframe-pane iframe').forEach(function(f){ f.src = ''; });
-
+    // Reset iframes
+    document.querySelectorAll('iframe[data-src]').forEach(function(f){ f.src = ''; });
+    // Reset DQA tab state
+    document.getElementById('meDqaEmpty').style.display = 'block';
+    document.getElementById('meDqaEmpty').innerHTML = '<div class="dv-loader"></div><p style="font-size:13px;color:var(--muted);margin-top:14px;">Loading DQA report from Google Drive…</p>';
+    document.getElementById('meDqaFrame').style.display  = 'none';
+    document.getElementById('meDqaStats').style.display  = 'none';
+    document.getElementById('meDqaIframe').srcdoc        = '';
     document.getElementById('passwordArea').style.display  = 'none';
     document.getElementById('rolePassword').value          = '';
     document.getElementById('passwordError').style.display = 'none';
     document.getElementById('roleModal').style.display     = 'flex';
     document.body.style.overflow = 'hidden';
+});
+
+/* ════════════════════════════════════════════
+   ADMIN DASHBOARD — GAS PUSH + SUB-TABS
+════════════════════════════════════════════ */
+function dvStatus(msg,color){const el=document.getElementById('dvPushStatus');if(el){el.innerHTML=msg;el.style.color=color||'#28a745';}}
+function dvWorkflowLog(msg){const el=document.getElementById('dvWorkflowStatus');if(!el)return;if(!msg){el.style.display='none';el.textContent='';return;}el.style.display='block';el.textContent=msg;}
+function dvShowUpdateBar(){const bar=document.getElementById('dvUpdateBar');if(bar){bar.style.display='flex';document.getElementById('dvPushStatus').textContent='';}}
+
+function switchAdminTab(tab) {
+    const paneAuto = document.getElementById('adminPaneAuto');
+    const paneDqa  = document.getElementById('adminPaneDqa');
+    const btnAuto  = document.getElementById('adminTabAuto');
+    const btnDqa   = document.getElementById('adminTabDqa');
+    if (tab === 'dqa') {
+        paneAuto.style.display = 'none';
+        paneDqa.style.display  = 'block';
+        btnAuto.style.background = 'rgba(0,0,0,0.04)'; btnAuto.style.color = '#666';
+        btnDqa.style.background  = '#2b5f8a';           btnDqa.style.color  = '#fff';
+        const iframe = document.getElementById('dqaEmbedIframe');
+        if (iframe && !iframe.src && iframe.getAttribute('data-src')) {
+            iframe.src = iframe.getAttribute('data-src');
+        }
+    } else {
+        paneAuto.style.display = 'block';
+        paneDqa.style.display  = 'none';
+        btnAuto.style.background = '#004080'; btnAuto.style.color = '#fff';
+        btnDqa.style.background  = 'rgba(0,0,0,0.04)'; btnDqa.style.color = '#666';
+    }
+}
+
+async function dvPushToDashboard(){
+    const now=new Date();const ts=now.toLocaleDateString('en-GB')+' '+now.toLocaleTimeString();
+    const files={};
+    const cv1=document.getElementById('da_rsCanvas1'),cv2=document.getElementById('da_rsCanvas2');
+    if(cv1&&cv1.width>0)files['reporting_status_all_facilities.png']=cv1.toDataURL('image/png');
+    if(cv2&&cv2.width>0)files['reporting_status_active_facilities.png']=cv2.toDataURL('image/png');
+    const tprYears=(typeof da_tprState!=='undefined'&&da_tprState.config)?da_tprState.config.years||[]:[];
+    tprYears.forEach(yr=>{const cv=document.getElementById('da_tprCanvas_'+yr);if(cv&&cv.width>0)files['tpr_'+yr+'.png']=cv.toDataURL('image/png');});
+    if(!Object.keys(files).length){dvStatus('&#9888; No charts ready. Run a pipeline first.','#856404');return;}
+    const rsTitle=document.getElementById('da_rsChartTitle')?.value||'NMCP Malaria EPI Reporting Status';
+    const rsPeriod=(typeof da_rsState!=='undefined'&&da_rsState.config)?da_rsState.config.start+' → '+da_rsState.config.end:'';
+    const tprPeriod=(typeof da_tprState!=='undefined'&&da_tprState.config)?da_tprState.config.start+' → '+da_tprState.config.end:'';
+    const period=[rsPeriod,tprPeriod].filter(Boolean).join(' | ');
+    const titles={rsTitle1:rsTitle+' — All Facilities',rsTitle2:rsTitle+' — Active Facilities Only',tprTitle:document.getElementById('da_tprMapTitle')?.value||'NMCP Malaria TPR by Chiefdom'};
+    dvStatus('&#9654; Saving '+Object.keys(files).length+' charts to Google Drive…','#17a2b8');
+    dvWorkflowLog('Uploading via GAS proxy…');
+    try{
+        const body=new URLSearchParams({action:'saveDashboard',files:JSON.stringify(files),ts,period,titles:JSON.stringify(titles)});
+        const resp=await fetch(DV_GAS,{method:'POST',body});const data=await resp.json();
+        if(data.ok){const n=(data.saved||[]).length;dvStatus('&#10004; Dashboard updated — '+n+' files saved to Drive.','#28a745');dvWorkflowLog('&#10004; Saved: '+(data.saved||[]).join(', '));setTimeout(()=>dvWorkflowLog(''),6000);}
+        else{dvStatus('&#10008; Save failed: '+(data.error||'unknown'),'#dc3545');dvWorkflowLog('&#10008; '+(data.error||'GAS error'));}
+    }catch(err){dvStatus('&#10008; Network error: '+err.message,'#dc3545');dvWorkflowLog('&#10008; '+err.message);}
+}
+
+// postMessage bridge: DQA tool iframe → parent
+window.addEventListener('message', function(e) {
+    if (!e.data || typeof e.data !== 'object') return;
+    if (e.data.type === 'dqa_saved') {
+        const statusBar = document.getElementById('dqaEmbedStatus');
+        const statusMsg = document.getElementById('dqaEmbedStatusMsg');
+        if (statusBar) {
+            const p=e.data.period||'',s=e.data.avgScore||'',h=e.data.highPriority||'';
+            if(statusMsg) statusMsg.textContent='✔ DQA report saved to Drive'+(p?' — '+p:'')+(s?' · Avg: '+s:'')+(h?' · High priority: '+h:'');
+            statusBar.style.display='flex';
+        }
+        dvShowUpdateBar();
+        const bar=document.getElementById('dvUpdateBar');
+        if(bar) bar.scrollIntoView({behavior:'smooth',block:'nearest'});
+        // Refresh M&E DQA tab on next visit so it picks up the new report
+        meDqaLoaded = false;
+    }
+    if (e.data.type === 'pipeline_done') dvShowUpdateBar();
 });
 </script>
 </body>
