@@ -314,9 +314,56 @@
             </button>
             <div class="nav-group-children" id="children-monitoring">
                 <button class="nav-child" data-tab="me-dqa">DQA</button>
-                <button class="nav-child" data-tab="me-routine">Routine Dashboard</button>
-                <button class="nav-child" data-tab="me-detailed">Detailed Dashboard</button>
-                <button class="nav-child" data-tab="me-comparative">Comparative Analysis</button>
+
+                <!-- Summary Dashboard — nested expand/collapse -->
+                <button class="nav-child" id="meSummaryToggle" onclick="toggleMeSummary(event)"
+                    style="display:flex;align-items:center;justify-content:space-between;font-weight:600;color:rgba(255,255,255,0.8);">
+                    <span>Summary Dashboard</span>
+                    <svg id="meSummaryChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="meSummaryChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;background:rgba(0,0,0,0.12);">
+                    <button class="nav-child" data-tab="me-summary-epi"   style="padding-left:62px;font-size:11px;">&#8627; Malaria EPI</button>
+                    <button class="nav-child" data-tab="me-summary-int"   style="padding-left:62px;font-size:11px;">&#8627; Intervention</button>
+                    <button class="nav-child" data-tab="me-summary-stock" style="padding-left:62px;font-size:11px;">&#8627; Stock</button>
+                </div>
+
+                <!-- Detailed Dashboard — nested expand/collapse -->
+                <button class="nav-child" id="meDetailedToggle" onclick="toggleMeDetailed(event)"
+                    style="display:flex;align-items:center;justify-content:space-between;font-weight:600;color:rgba(255,255,255,0.8);">
+                    <span>Detailed Dashboard</span>
+                    <svg id="meDetailedChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="meDetailedChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;background:rgba(0,0,0,0.12);">
+                    <button class="nav-child" data-tab="med-suspected"   style="padding-left:62px;font-size:11px;">&#8627; Suspected</button>
+                    <button class="nav-child" data-tab="med-tested"      style="padding-left:62px;font-size:11px;">&#8627; Tested</button>
+                    <button class="nav-child" data-tab="med-confirmed"   style="padding-left:62px;font-size:11px;">&#8627; Confirmed</button>
+                    <button class="nav-child" data-tab="med-treated"     style="padding-left:62px;font-size:11px;">&#8627; Confirmed and Treated</button>
+                    <button class="nav-child" data-tab="med-presumptive" style="padding-left:62px;font-size:11px;">&#8627; Presumptive Treatment</button>
+                    <button class="nav-child" id="medCompToggle" onclick="toggleMedComp(event)"
+                        style="padding-left:62px;font-size:11px;display:flex;align-items:center;justify-content:space-between;font-weight:600;color:rgba(255,255,255,0.75);">
+                        <span>&#8627; Comparative Analysis</span>
+                        <svg id="medCompChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div id="medCompChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;background:rgba(0,0,0,0.1);">
+                        <button class="nav-child" data-tab="med-comp-u5"      style="padding-left:78px;font-size:10px;">&#8627; Under Five</button>
+                        <button class="nav-child" data-tab="med-comp-allages" style="padding-left:78px;font-size:10px;">&#8627; All Ages</button>
+                    </div>
+                    <button class="nav-child" data-tab="med-reporting"   style="padding-left:62px;font-size:11px;">&#8627; Reporting Rate</button>
+                    <button class="nav-child" data-tab="med-testing"     style="padding-left:62px;font-size:11px;">&#8627; Testing Rate</button>
+                    <button class="nav-child" data-tab="med-tpr"         style="padding-left:62px;font-size:11px;">&#8627; Test Positivity Rate</button>
+                    <button class="nav-child" data-tab="med-cfr"         style="padding-left:62px;font-size:11px;">&#8627; Confirmed &amp; Treatment Rate</button>
+                    <button class="nav-child" data-tab="med-ptr"         style="padding-left:62px;font-size:11px;">&#8627; Presumptive Treatment Rate</button>
+                </div>
+                <!-- Comparative Analysis — nested expand/collapse -->
+                <button class="nav-child" id="meCompToggle" onclick="toggleMeComp(event)"
+                    style="display:flex;align-items:center;justify-content:space-between;font-weight:600;color:rgba(255,255,255,0.8);">
+                    <span>Comparative Analysis</span>
+                    <svg id="meCompChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="meCompChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;background:rgba(0,0,0,0.12);">
+                    <button class="nav-child" data-tab="me-comp-u5"      style="padding-left:62px;font-size:11px;">&#8627; Under 5</button>
+                    <button class="nav-child" data-tab="me-comp-allages" style="padding-left:62px;font-size:11px;">&#8627; All Ages</button>
+                </div>
             </div>
         </div>
 
@@ -352,9 +399,18 @@
                 <button class="nav-child" data-tab="dmat-confirmed">Confirmed Cases</button>
                 <button class="nav-child" data-tab="dmat-treated">Confirmed and Treated</button>
                 <button class="nav-child" data-tab="dmat-presumptive">Presumptive Treatment</button>
-                <button class="nav-child" data-tab="dmat-comparative" style="font-weight:600;color:rgba(255,255,255,0.8);">Comparative Analysis</button>
-                <button class="nav-child" data-tab="dmat-u5"      style="padding-left:58px;font-size:11px;">&#8627; Under 5</button>
-                <button class="nav-child" data-tab="dmat-allages" style="padding-left:58px;font-size:11px;">&#8627; All Ages</button>
+
+                <!-- Comparative Analysis — nested expand/collapse -->
+                <button class="nav-child dmat-comp-toggle" id="dmatCompToggle"
+                    onclick="toggleDmatComp(event)"
+                    style="display:flex;align-items:center;justify-content:space-between;font-weight:600;color:rgba(255,255,255,0.8);">
+                    <span>Comparative Analysis</span>
+                    <svg id="dmatCompChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="dmatCompChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;background:rgba(0,0,0,0.12);">
+                    <button class="nav-child" data-tab="dmat-u5"      style="padding-left:62px;font-size:11px;">&#8627; Under 5</button>
+                    <button class="nav-child" data-tab="dmat-allages" style="padding-left:62px;font-size:11px;">&#8627; All Ages</button>
+                </div>
             </div>
         </div>
 
@@ -446,20 +502,34 @@
         </div>
     </div>
 
-    <!-- M&E — ROUTINE DASHBOARD -->
-    <div id="me-routine" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-me-routine" src="" data-src="me_routine.html" loading="lazy" allow="fullscreen"></iframe></div>
+    <!-- M&E — SUMMARY DASHBOARD SUB-TABS -->
+    <div id="me-summary-epi" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-me-summary-epi" src="" data-src="me_summary_epi.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="me-summary-int" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-me-summary-int" src="" data-src="me_summary_int.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="me-summary-stock" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-me-summary-stock" src="" data-src="me_summary_stock.html" loading="lazy" allow="fullscreen"></iframe></div>
     </div>
 
-    <!-- M&E — DETAILED DASHBOARD -->
-    <div id="me-detailed" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-me-detailed" src="" data-src="me_detailed.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
+    <!-- M&E — DETAILED DASHBOARD SUB-TABS (load from Drive via GAS) -->
+    <div id="med-suspected"   class="tab-content"><div id="med-suspected-wrap"   class="me-detail-wrap"></div></div>
+    <div id="med-tested"      class="tab-content"><div id="med-tested-wrap"      class="me-detail-wrap"></div></div>
+    <div id="med-confirmed"   class="tab-content"><div id="med-confirmed-wrap"   class="me-detail-wrap"></div></div>
+    <div id="med-treated"     class="tab-content"><div id="med-treated-wrap"     class="me-detail-wrap"></div></div>
+    <div id="med-presumptive" class="tab-content"><div id="med-presumptive-wrap" class="me-detail-wrap"></div></div>
+    <div id="med-comp-u5"     class="tab-content"><div id="med-comp-u5-wrap"     class="me-detail-wrap"></div></div>
+    <div id="med-comp-allages"class="tab-content"><div id="med-comp-allages-wrap"class="me-detail-wrap"></div></div>
+    <div id="med-reporting"   class="tab-content"><div id="med-reporting-wrap"   class="me-detail-wrap"></div></div>
+    <div id="med-testing"     class="tab-content"><div id="med-testing-wrap"     class="me-detail-wrap"></div></div>
+    <div id="med-tpr"         class="tab-content"><div id="med-tpr-wrap"         class="me-detail-wrap"></div></div>
+    <div id="med-cfr"         class="tab-content"><div id="med-cfr-wrap"         class="me-detail-wrap"></div></div>
+    <div id="med-ptr"         class="tab-content"><div id="med-ptr-wrap"         class="me-detail-wrap"></div></div>
 
-    <!-- M&E — COMPARATIVE ANALYSIS -->
-    <div id="me-comparative" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-me-comparative" src="" data-src="me_comparative.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
+    <!-- M&E — COMPARATIVE ANALYSIS SUB-TABS (load from Drive) -->
+    <div id="me-comp-u5"      class="tab-content"><div id="me-comp-u5-wrap"      class="me-detail-wrap"></div></div>
+    <div id="me-comp-allages" class="tab-content"><div id="me-comp-allages-wrap" class="me-detail-wrap"></div></div>
 
     <!-- USER GUIDE -->
     <div id="user-guide" class="tab-content">
@@ -613,20 +683,32 @@ var DMAT_TABS = ['dmat-dqa','dmat-processing','dmat-reporting','dmat-suspected',
                  'dmat-confirmed','dmat-treated','dmat-presumptive',
                  'dmat-comparative','dmat-u5','dmat-allages'];
 
+var ME_SUMMARY_TABS = ['me-summary-epi','me-summary-int','me-summary-stock'];
+
+var ME_DETAIL_TABS = ['med-suspected','med-tested','med-confirmed','med-treated',
+                      'med-presumptive','med-comp-u5','med-comp-allages',
+                      'med-reporting','med-testing','med-tpr','med-cfr','med-ptr',
+                      'me-comp-u5','me-comp-allages'];
+
 var roleAccess = {
-    national: ['welcome','me-dqa','me-routine','me-detailed','me-comparative',
+    national: ['welcome','me-dqa','me-detailed',
                'user-guide','bulletins','mpd','campaign-survey',
-               'sbd-app','analytics-training','snt','mpr','other-analysis'].concat(DMAT_TABS),
-    district: ['welcome','me-dqa','me-routine','me-detailed','me-comparative',
-               'user-guide','bulletins','analytics-training'],
-    chiefdom: ['welcome','me-dqa','me-routine','me-detailed','me-comparative',
-               'user-guide','bulletins','analytics-training'],
-    phu:      ['welcome','me-dqa','me-routine','me-detailed','me-comparative',
-               'user-guide','bulletins','analytics-training'],
-    admin:    ['welcome','me-dqa','me-routine','me-detailed','me-comparative',
+               'sbd-app','analytics-training','snt','mpr','other-analysis']
+               .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS).concat(DMAT_TABS),
+    district: ['welcome','me-dqa','me-detailed',
+               'user-guide','bulletins','analytics-training']
+               .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS),
+    chiefdom: ['welcome','me-dqa','me-detailed',
+               'user-guide','bulletins','analytics-training']
+               .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS),
+    phu:      ['welcome','me-dqa','me-detailed',
+               'user-guide','bulletins','analytics-training']
+               .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS),
+    admin:    ['welcome','me-dqa','me-detailed',
                'user-guide','bulletins','mpd','campaign-survey',
                'sbd-app','analytics-training','snt','mpr','other-analysis',
-               'admin-dashboard'].concat(DMAT_TABS)
+               'admin-dashboard']
+               .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS).concat(DMAT_TABS)
 };
 
 function enableTabsForRole(role) {
@@ -764,8 +846,25 @@ function loadMeDqa() {
    TAB NAVIGATION + LAZY IFRAME LOADING
 ════════════════════════════════════════════ */
 var pageLabelMap = {
-    'welcome':'Welcome','me-dqa':'DQA','me-routine':'Routine Dashboard',
-    'me-detailed':'Detailed Dashboard','me-comparative':'Comparative Analysis',
+    'welcome':'Welcome','me-dqa':'DQA',
+    'me-summary-epi':'Summary · Malaria EPI',
+    'me-summary-int':'Summary · Intervention',
+    'me-summary-stock':'Summary · Stock',
+    'med-suspected':'Detailed · Suspected',
+    'med-tested':'Detailed · Tested',
+    'med-confirmed':'Detailed · Confirmed',
+    'med-treated':'Detailed · Confirmed and Treated',
+    'med-presumptive':'Detailed · Presumptive Treatment',
+    'med-comp-u5':'Detailed · Comparative · Under Five',
+    'med-comp-allages':'Detailed · Comparative · All Ages',
+    'med-reporting':'Detailed · Reporting Rate',
+    'med-testing':'Detailed · Testing Rate',
+    'med-tpr':'Detailed · Test Positivity Rate',
+    'med-cfr':'Detailed · Confirmed & Treatment Rate',
+    'med-ptr':'Detailed · Presumptive Treatment Rate',
+    'me-detailed':'Detailed Dashboard',
+    'me-comp-u5':'Comparative · Under 5',
+    'me-comp-allages':'Comparative · All Ages',
     'user-guide':'User Guide','bulletins':'Monthly Bulletin','mpd':'Malaria Programme Docs',
     'campaign-survey':'Campaign & Survey','sbd-app':'Data Collection Apps',
     'analytics-training':'Analytics Learning',
@@ -817,6 +916,7 @@ function activateTab(tabId) {
 
     // Special lazy loaders
     if (tabId === 'me-dqa') loadMeDqa();
+    if (MED_DRIVE_KEYS && MED_DRIVE_KEYS[tabId]) loadMedTab(tabId);
 
     updateTopbarPage(tabId);
     closeDrawer();
@@ -827,6 +927,55 @@ function activateTab(tabId) {
         var children = childBtn.closest('.nav-group-children');
         if (children && !children.classList.contains('open')) {
             openGroup(children.id.replace('children-', ''));
+        }
+        // Also expand Comparative Analysis sub-group if clicking its children
+        if (tabId === 'dmat-u5' || tabId === 'dmat-allages') {
+            var compChildren = document.getElementById('dmatCompChildren');
+            var compChevron  = document.getElementById('dmatCompChevron');
+            var compToggle   = document.getElementById('dmatCompToggle');
+            if (compChildren && compChildren.style.maxHeight === '0px' || !compChildren.style.maxHeight) {
+                if (compChildren) { compChildren.style.maxHeight = compChildren.scrollHeight + 'px'; }
+                if (compChevron)  { compChevron.style.transform  = 'rotate(180deg)'; }
+                if (compToggle)   { compToggle.classList.add('active'); }
+            }
+        }
+        // Auto-expand Summary Dashboard sub-group if clicking its children
+        if (tabId === 'me-summary-epi' || tabId === 'me-summary-int' || tabId === 'me-summary-stock') {
+            var sumChildren = document.getElementById('meSummaryChildren');
+            var sumChevron  = document.getElementById('meSummaryChevron');
+            var sumToggle   = document.getElementById('meSummaryToggle');
+            if (sumChildren && (!sumChildren.style.maxHeight || sumChildren.style.maxHeight === '0px')) {
+                if (sumChildren) { sumChildren.style.maxHeight = sumChildren.scrollHeight + 'px'; }
+                if (sumChevron)  { sumChevron.style.transform  = 'rotate(180deg)'; }
+                if (sumToggle)   { sumToggle.classList.add('active'); }
+            }
+        }
+        // Auto-expand Comparative Analysis sub-group (M&E)
+        if (tabId === 'me-comp-u5' || tabId === 'me-comp-allages') {
+            var meCC = document.getElementById('meCompChildren');
+            var meCH = document.getElementById('meCompChevron');
+            if (meCC && (!meCC.style.maxHeight || meCC.style.maxHeight === '0px')) {
+                meCC.style.maxHeight  = meCC.scrollHeight + 'px';
+                if (meCH) meCH.style.transform = 'rotate(180deg)';
+            }
+        }
+        // Auto-expand Detailed Dashboard sub-group
+        if (ME_DETAIL_TABS && ME_DETAIL_TABS.indexOf(tabId) !== -1) {
+            var detC = document.getElementById('meDetailedChildren');
+            var detCh = document.getElementById('meDetailedChevron');
+            if (detC && (!detC.style.maxHeight || detC.style.maxHeight === '0px')) {
+                detC.style.maxHeight  = '900px';
+                if (detCh) detCh.style.transform = 'rotate(180deg)';
+            }
+            // Also expand Comparative sub-group if it's one of those tabs
+            if (tabId === 'med-comp-u5' || tabId === 'med-comp-allages') {
+                var medCC = document.getElementById('medCompChildren');
+                var medCH = document.getElementById('medCompChevron');
+                if (medCC && (!medCC.style.maxHeight || medCC.style.maxHeight === '0px')) {
+                    medCC.style.maxHeight  = medCC.scrollHeight + 'px';
+                    if (medCH) medCH.style.transform = 'rotate(180deg)';
+                }
+            }
         }
     }
 }
@@ -845,6 +994,111 @@ function openGroup(groupId) {
     if (c) c.classList.add('open');
     if (b) b.classList.add('open');
 }
+// ── Detailed Dashboard — Drive file key map ───────────────────
+var MED_DRIVE_KEYS = {
+    'med-suspected':    'med_suspected.html',
+    'med-tested':       'med_tested.html',
+    'med-confirmed':    'med_confirmed.html',
+    'med-treated':      'med_treated.html',
+    'med-presumptive':  'med_presumptive.html',
+    'med-comp-u5':      'med_comp_u5.html',
+    'med-comp-allages': 'med_comp_allages.html',
+    'med-reporting':    'med_reporting.html',
+    'med-testing':      'med_testing.html',
+    'med-tpr':          'med_tpr.html',
+    'med-cfr':          'med_cfr.html',
+    'med-ptr':          'med_ptr.html',
+    'me-comp-u5':       'me_comp_u5.html',
+    'me-comp-allages':  'me_comp_allages.html'
+};
+
+var _medDriveCache   = null;
+var _medDrivePending = null;
+
+function loadMedTab(tabId) {
+    var wrap = document.getElementById(tabId + '-wrap');
+    if (!wrap || wrap.querySelector('iframe')) return;
+    var driveKey = MED_DRIVE_KEYS[tabId];
+    if (!driveKey) return;
+
+    wrap.innerHTML = '<div style="padding:60px 20px;text-align:center;">'
+        + '<div class="dv-loader"></div>'
+        + '<p style="font-size:13px;color:var(--muted);margin-top:14px;">Loading dashboard…</p></div>';
+
+    function render(images) {
+        var dataUrl = images[driveKey] || '';
+        if (!dataUrl) {
+            wrap.innerHTML = '<div style="padding:60px 20px;text-align:center;color:var(--muted);">'
+                + '<p style="font-size:13px;">No data published yet for this section.<br>'
+                + 'Admin must publish this report to the Dashboard.</p></div>';
+            return;
+        }
+        try {
+            var html   = dvDecodeSrcdoc(dataUrl);
+            var iframe = document.createElement('iframe');
+            iframe.style.cssText = 'width:100%;height:85vh;border:none;display:block;border-radius:10px;';
+            iframe.srcdoc = html;
+            wrap.innerHTML = '';
+            wrap.appendChild(iframe);
+        } catch(e) {
+            wrap.innerHTML = '<p style="color:#dc3545;padding:20px;">Error rendering: ' + e.message + '</p>';
+        }
+    }
+
+    if (_medDriveCache) { render(_medDriveCache); return; }
+    if (_medDrivePending) { _medDrivePending.then(render); return; }
+
+    _medDrivePending = fetch(DV_GAS + '?action=getDashboard')
+        .then(function(r){ return r.json(); })
+        .then(function(resp){
+            var imgs = (resp.ok && resp.images) ? resp.images : {};
+            _medDriveCache   = imgs;
+            _medDrivePending = null;
+            return imgs;
+        })
+        .catch(function(){ _medDrivePending = null; return {}; });
+
+    _medDrivePending.then(render);
+}
+
+function toggleMeComp(e) {
+    e.stopPropagation();
+    var c  = document.getElementById('meCompChildren');
+    var ch = document.getElementById('meCompChevron');
+    var t  = document.getElementById('meCompToggle');
+    var open = c.style.maxHeight !== '0px' && c.style.maxHeight !== '';
+    c.style.maxHeight  = open ? '0' : c.scrollHeight + 'px';
+    ch.style.transform = open ? '' : 'rotate(180deg)';
+    t.classList.toggle('active', !open);
+}
+
+function toggleMeDetailed(e) {
+    e.stopPropagation();
+    var c  = document.getElementById('meDetailedChildren');
+    var ch = document.getElementById('meDetailedChevron');
+    var t  = document.getElementById('meDetailedToggle');
+    var open = c.style.maxHeight !== '0px' && c.style.maxHeight !== '';
+    c.style.maxHeight  = open ? '0' : c.scrollHeight + 'px';
+    ch.style.transform = open ? '' : 'rotate(180deg)';
+    t.classList.toggle('active', !open);
+}
+
+function toggleMedComp(e) {
+    e.stopPropagation();
+    var c  = document.getElementById('medCompChildren');
+    var ch = document.getElementById('medCompChevron');
+    var open = c.style.maxHeight !== '0px' && c.style.maxHeight !== '';
+    c.style.maxHeight  = open ? '0' : (c.scrollHeight + 'px');
+    ch.style.transform = open ? '' : 'rotate(180deg)';
+    // ensure parent Detailed is open
+    var pc = document.getElementById('meDetailedChildren');
+    if (pc && (!pc.style.maxHeight || pc.style.maxHeight === '0px')) {
+        pc.style.maxHeight = '900px';
+        var pch = document.getElementById('meDetailedChevron');
+        if (pch) pch.style.transform = 'rotate(180deg)';
+    }
+}
+
 function toggleGroup(groupId) {
     var c = document.getElementById('children-' + groupId);
     var b = document.querySelector('[data-group="' + groupId + '"]');
@@ -852,6 +1106,40 @@ function toggleGroup(groupId) {
     var isOpen = c.classList.contains('open');
     c.classList.toggle('open', !isOpen);
     b.classList.toggle('open', !isOpen);
+}
+
+function toggleDmatComp(e) {
+    e.stopPropagation();
+    var children = document.getElementById('dmatCompChildren');
+    var chevron  = document.getElementById('dmatCompChevron');
+    var toggle   = document.getElementById('dmatCompToggle');
+    var isOpen   = children.style.maxHeight !== '0px' && children.style.maxHeight !== '';
+    if (isOpen) {
+        children.style.maxHeight = '0';
+        chevron.style.transform  = '';
+        toggle.classList.remove('active');
+    } else {
+        children.style.maxHeight = children.scrollHeight + 'px';
+        chevron.style.transform  = 'rotate(180deg)';
+        toggle.classList.add('active');
+    }
+}
+
+function toggleMeSummary(e) {
+    e.stopPropagation();
+    var children = document.getElementById('meSummaryChildren');
+    var chevron  = document.getElementById('meSummaryChevron');
+    var toggle   = document.getElementById('meSummaryToggle');
+    var isOpen   = children.style.maxHeight !== '0px' && children.style.maxHeight !== '';
+    if (isOpen) {
+        children.style.maxHeight = '0';
+        chevron.style.transform  = '';
+        toggle.classList.remove('active');
+    } else {
+        children.style.maxHeight = children.scrollHeight + 'px';
+        chevron.style.transform  = 'rotate(180deg)';
+        toggle.classList.add('active');
+    }
 }
 document.querySelectorAll('.nav-group-btn[data-group]').forEach(function(btn){
     btn.addEventListener('click', function(){ toggleGroup(this.getAttribute('data-group')); });
@@ -885,6 +1173,7 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close
 document.getElementById('logoutBtn').addEventListener('click', function(){
     currentUserRole = null; selectedRole = null;
     meDqaLoaded = false; // allow reload on next login
+    _medDriveCache = null;
     document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
     document.getElementById('welcome').classList.add('active');
     document.querySelectorAll('.nav-item[data-tab]').forEach(function(b){
