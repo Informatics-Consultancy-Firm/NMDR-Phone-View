@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICF-SL · DQA Tool v5.0 — DHIS2</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#f1f3f5;font-family:'Oswald',Arial,sans-serif;color:#000;font-weight:500;padding:20px;}
+.page-container{width:100%;max-width:1600px;margin:0 auto;}
+.page-header{background:linear-gradient(135deg,#2b5f8a 0%,#3b78a8 60%,#4a8dbf 100%);color:#fff;padding:28px 30px;text-align:center;border-radius:12px 12px 0 0;border-bottom:3px solid #ffffff66;}
+.logo-row{display:flex;justify-content:center;gap:20px;margin-bottom:14px;}
+.logo-box{background:#fff;border-radius:8px;padding:8px 12px;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.logo-box img{width:88px;height:auto;border-radius:6px;}
+.page-header h3{font-size:13px;font-weight:700;letter-spacing:1.5px;color:#ffc107;text-transform:uppercase;margin:8px 0 3px;}
+.page-header .tagline{font-size:11px;color:#cde;font-style:italic;font-weight:400;}
+.page-header h1{margin:14px 0 8px;font-size:26px;font-weight:700;letter-spacing:2px;}
+.page-header .subtitle{font-size:13px;color:#cde;font-weight:400;}
+.status-bar{background:#fff;border:4px double #3b78a8;border-top:none;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.meta-pill{background:#e7f3ff;border:1px solid #3b78a8;color:#3b78a8;border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700;}
+.content-card{border:4px double #3b78a8;border-radius:10px;background:#fff;box-shadow:0 4px 16px rgba(0,64,128,.1);margin-bottom:16px;}
+.content-inner{padding:22px;}
+.sec-hdr{background:linear-gradient(90deg,#2b5f8a,#3b78a8);color:#fff;padding:13px 18px;margin-bottom:18px;border-radius:8px;display:flex;align-items:center;gap:12px;border-left:5px solid #ffc107;}
+.sec-icon{background:#ffc107;color:#2b5f8a;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.sec-title{font-size:15px;font-weight:700;letter-spacing:.8px;}
+.btn{padding:9px 18px;border:2px solid #3b78a8;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;font-family:'Oswald',Arial,sans-serif;transition:all .2s;margin:3px;display:inline-flex;align-items:center;gap:7px;}
+.btn-primary{background:#3b78a8;color:#fff;}.btn-primary:hover{background:#2d6a9f;}
+.btn-success{background:#28a745;color:#fff;border-color:#28a745;}.btn-success:hover{background:#218838;}
+.btn-warning{background:#ffc107;color:#000;border-color:#ffc107;}
+.btn-danger{background:#dc3545;color:#fff;border-color:#dc3545;}
+.btn-lg{padding:14px 30px;font-size:15px;}
+.btn-sm{padding:5px 11px;font-size:11px;}
+.alert{padding:.8rem 1.1rem;border-radius:6px;margin:.75rem 0;font-size:13px;display:flex;align-items:center;gap:9px;}
+.alert-success{background:#d4edda;border:2px solid #28a745;color:#155724;}
+.alert-error{background:#f8d7da;border:2px solid #dc3545;color:#721c24;}
+.alert-info{background:#e7f3ff;border:2px solid #3b78a8;color:#1e4d70;}
+.alert-warning{background:#fff3cd;border:2px solid #ffc107;color:#7d5a00;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.8rem;margin:1rem 0;}
+.stat-card{background:#fff;padding:1.1rem;border-radius:8px;text-align:center;border:3px solid #3b78a8;transition:all .2s;}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,64,128,.15);}
+.stat-val{font-size:1.7rem;font-weight:700;color:#3b78a8;line-height:1;}
+.stat-lbl{font-size:10px;color:#666;margin-top:4px;text-transform:uppercase;letter-spacing:.4px;}
+.stat-card.s-green{border-color:#28a745;}.stat-card.s-green .stat-val{color:#28a745;}
+.stat-card.s-red{border-color:#dc3545;}.stat-card.s-red .stat-val{color:#dc3545;}
+.stat-card.s-amber{border-color:#b8700a;}.stat-card.s-amber .stat-val{color:#b8700a;}
+.stat-card.s-info{border-color:#17a2b8;}.stat-card.s-info .stat-val{color:#17a2b8;}
+.sum-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px;margin-bottom:18px;}
+.sum-card{background:#f8f9fa;border:3px solid #3b78a8;border-radius:8px;padding:16px;text-align:center;}
+.sum-card .sv{font-size:26px;font-weight:700;color:#3b78a8;}
+.sum-card .sl{font-size:10px;color:#666;margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;}
+.tab-bar{display:flex;gap:4px;margin-bottom:0;background:#f8f9fa;padding:10px;border-radius:8px;border:2px solid #3b78a8;flex-wrap:wrap;}
+.tab-btn{padding:8px 14px;background:#fff;border:2px solid #ddd;border-radius:6px;cursor:pointer;font-weight:700;font-size:11px;transition:all .2s;font-family:'Oswald',sans-serif;letter-spacing:.3px;}
+.tab-btn:hover{border-color:#3b78a8;}
+.tab-btn.active{background:#3b78a8;border-color:#3b78a8;color:#fff;}
+.tab-content{display:none;background:#fff;border:2px solid #3b78a8;border-radius:0 8px 8px 8px;padding:20px;margin-top:-2px;}
+.tab-content.active{display:block;}
+.tbl-wrap{overflow-x:auto;border-radius:8px;border:2px solid #3b78a8;margin:1rem 0;max-height:480px;overflow-y:auto;}
+.dqa-table{width:100%;border-collapse:collapse;font-size:12px;min-width:500px;}
+.dqa-table th{background:#3b78a8;color:#fff;padding:9px 11px;font-size:11px;text-align:left;font-weight:700;white-space:nowrap;position:sticky;top:0;z-index:5;}
+.dqa-table td{padding:8px 11px;border-bottom:1px solid #e0e8f0;}
+.dqa-table tr:nth-child(even){background:#f4f8fc;}
+.dqa-table tr:hover{background:#e7f3ff;}
+.dqa-table .passed{color:#28a745;font-weight:700;}
+.dqa-table .failed{color:#dc3545;font-weight:700;}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;}
+.badge-high{background:#f8d7da;color:#721c24;border:1px solid #dc3545;}
+.badge-medium{background:#fff3cd;color:#7d5a00;border:1px solid #ffc107;}
+.badge-low{background:#d4edda;color:#155724;border:1px solid #28a745;}
+.badge-excellent{background:#d4edda;color:#155724;}
+.badge-good{background:#d1ecf1;color:#0c5460;}
+.badge-moderate{background:#fff3cd;color:#7d5a00;}
+.badge-poor{background:#f8d7da;color:#721c24;}
+.badge-nodata{background:#e9ecef;color:#555;border:1px solid #aaa;}
+.plot-box{border:2px solid #3b78a8;border-radius:8px;min-height:380px;background:#fff;padding:8px;margin:12px 0;}
+.method-box{background:#e7f3ff;border:3px solid #3b78a8;border-radius:8px;padding:22px;margin-bottom:20px;}
+.method-box h3{color:#3b78a8;font-size:16px;margin-bottom:12px;border-bottom:3px solid #3b78a8;padding-bottom:8px;}
+.method-box h4{color:#3b78a8;font-size:13px;margin:16px 0 8px;}
+.formula{background:#fff;border:2px solid #3b78a8;border-radius:6px;padding:10px 16px;font-family:'Courier New',monospace;font-size:13px;margin:10px 0;font-weight:600;color:#2b5f8a;}
+.loading-overlay{position:fixed;inset:0;background:rgba(0,20,48,.85);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:14px;}
+.loading-overlay.hidden{display:none;}
+.spinner{border:5px solid rgba(255,255,255,.2);border-top:4px solid #fff;border-radius:50%;width:56px;height:56px;animation:spin .9s linear infinite;}
+.loading-text{color:#fff;font-size:14px;font-weight:700;letter-spacing:1px;text-align:center;}
+.loading-sub{color:#acd;font-size:11px;max-width:360px;text-align:center;line-height:1.6;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.bc-bar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:12px 16px;background:#e7f3ff;border:2px solid #3b78a8;border-radius:8px;margin-bottom:16px;}
+.bc-item{color:#3b78a8;cursor:pointer;padding:4px 10px;border-radius:4px;font-size:12px;font-weight:700;transition:background .2s;text-transform:uppercase;}
+.bc-item:hover{background:rgba(0,64,128,.1);}
+.bc-item.active{background:#3b78a8;color:#fff;cursor:default;}
+.bc-sep{color:#3b78a8;font-weight:700;}
+.nav-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:20px;}
+.nav-card{background:#fff;border:2px solid #dee2e6;border-radius:10px;padding:20px;cursor:pointer;position:relative;overflow:hidden;transition:all .3s;}
+.nav-card:hover{border-color:#3b78a8;box-shadow:0 6px 20px rgba(0,64,128,.15);transform:translateY(-3px);}
+.nav-card.no-data-card{border-color:#ccc;opacity:.85;}
+.nav-card.no-data-card:hover{border-color:#aaa;box-shadow:0 3px 10px rgba(0,0,0,.08);}
+.nav-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;}
+.nav-card.lv-region::before{background:linear-gradient(90deg,#1e4d70,#3b78a8,#2d6a9f);}
+.nav-card.lv-district::before{background:linear-gradient(90deg,#3b78a8,#0072ce);}
+.nav-card.lv-chiefdom::before{background:linear-gradient(90deg,#2d6a9f,#17a2b8);}
+.nav-card.lv-facility::before{background:linear-gradient(90deg,#3b78a8,#ffc107);}
+.nav-card.lv-facility.no-data-card::before{background:#ccc;}
+.nc-title{font-size:15px;font-weight:700;color:#2b5f8a;margin-bottom:4px;}
+.nc-sub{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;}
+.nc-counts{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.nc-cnt{text-align:center;flex:1;min-width:55px;}
+.nc-cnt-v{display:block;font-size:16px;font-weight:700;color:#3b78a8;}
+.nc-cnt-l{font-size:9px;color:#888;text-transform:uppercase;}
+.nc-hint{font-size:11px;color:#888;font-style:italic;text-align:center;border-top:1px solid #f0f0f0;padding-top:8px;margin-top:6px;}
+.ib-error{background:#f8d7da;color:#721c24;border:1px solid #dc3545;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;display:inline-flex;align-items:center;gap:4px;}
+.ib-ok{background:#d4edda;color:#155724;border:1px solid #28a745;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;display:inline-flex;align-items:center;gap:4px;}
+.ib-nodata{background:#e9ecef;color:#555;border:1px solid #aaa;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;display:inline-flex;align-items:center;gap:4px;}
+.pill{display:inline-block;padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700;white-space:nowrap;}
+.pill-hospital{background:#2b5f8a;color:#fff;}.pill-clinic{background:#2d6a9f;color:#fff;}
+.pill-chc{background:#ffc107;color:#2b5f8a;}.pill-chp{background:#3b78a8;color:#fff;}
+.pill-mchp{background:#e7f3ff;color:#2b5f8a;border:1px solid #3b78a8;}
+.pill-other{background:#e9ecef;color:#555;}
+.pill-high{background:#f8d7da;color:#721c24;}.pill-low{background:#fff3cd;color:#7d5a00;}.pill-na{background:#e9ecef;color:#555;}.pill-ok{background:#d4edda;color:#155724;}
+.pill-nodata{background:#e9ecef;color:#555;border:1px solid #bbb;}
+.fac-hdr{background:linear-gradient(135deg,#2b5f8a,#3b78a8);color:#fff;border-radius:10px;padding:18px 22px;margin-bottom:16px;border-bottom:3px solid #ffc107;}
+.fac-name{font-size:21px;font-weight:700;letter-spacing:1px;margin-bottom:6px;}
+.fac-meta{font-size:12px;color:#cde;display:flex;gap:18px;flex-wrap:wrap;}
+.matrix-wrap{overflow:auto;max-height:420px;border:2px solid #3b78a8;border-radius:8px;margin:1rem 0;}
+.matrix-table{border-collapse:collapse;font-size:11px;}
+.matrix-table th{background:#3b78a8;color:#fff;padding:7px 10px;white-space:nowrap;position:sticky;top:0;z-index:2;text-align:center;font-weight:700;}
+.matrix-table th.vc{text-align:left;min-width:180px;}
+.matrix-table td{padding:6px 10px;border:1px solid #e0e8f0;text-align:center;font-weight:700;}
+.matrix-table td.vc{text-align:left;background:#f8f9fa;color:#3b78a8;border-right:2px solid #3b78a8;}
+.cell-y{background:#d4f5de;color:#155724;}.cell-z{background:#fff9db;color:#8a6d00;}.cell-na{background:#f4f4f4;color:#bbb;font-size:10px;}
+.ind-table{width:100%;border-collapse:collapse;font-size:12px;}
+.ind-table th{background:#e7f3ff;color:#2b5f8a;padding:6px 9px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;text-align:right;}
+.ind-table th:first-child{text-align:left;}
+.ind-table td{padding:6px 9px;border-bottom:1px solid #e8f0f8;text-align:right;font-weight:700;}
+.ind-table td:first-child{text-align:left;color:#3b78a8;}
+.ind-table tr.row-hi td{background:#fff0f0;}.ind-table tr.row-lo td{background:#fffbe6;}
+.ind-table tr:hover td{background:#e7f3ff;}
+.month-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-bottom:18px;}
+.month-card{background:#f8f9fa;border:2px solid #3b78a8;border-radius:10px;overflow:hidden;}
+.month-card-hdr{background:#3b78a8;color:#fff;padding:9px 14px;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center;}
+.back-btn{background:#fff;color:#3b78a8;border:2px solid #3b78a8;padding:7px 16px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:700;text-transform:uppercase;font-family:'Oswald',sans-serif;margin-bottom:14px;transition:all .2s;}
+.back-btn:hover{background:#3b78a8;color:#fff;}
+.config-card{background:#f8f9fa;padding:1.2rem;border-radius:8px;border:2px solid #3b78a8;margin:1rem 0;}
+.type-filter-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 16px;background:#f0f6ff;border-bottom:2px solid #dce8f8;}
+.type-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:2px solid transparent;transition:all .15s;letter-spacing:.3px;user-select:none;}
+.type-chip.active{opacity:1;border-color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.18);}
+.type-chip.inactive{opacity:.38;filter:grayscale(.5);}
+.type-chip.chip-hospital{background:#004080;color:#fff;}
+.type-chip.chip-clinic{background:#17a2b8;color:#fff;}
+.type-chip.chip-chc{background:#6f42c1;color:#fff;}
+.type-chip.chip-chp{background:#28a745;color:#fff;}
+.type-chip.chip-mchp{background:#b8700a;color:#fff;}
+.type-chip.chip-all{background:#3b78a8;color:#fff;}
+.filter-label{font-size:11px;font-weight:700;color:#3b78a8;letter-spacing:.8px;text-transform:uppercase;}
+.page-footer{background:linear-gradient(135deg,#2b5f8a,#3b78a8);color:#fff;padding:18px 30px;text-align:center;font-size:12px;line-height:1.7;border-radius:0 0 12px 12px;}
+.footer-top{font-weight:700;font-size:13px;color:#ffc107;margin-bottom:4px;}
+.hidden{display:none!important;}
+.no-data{text-align:center;color:#888;font-style:italic;padding:30px;font-size:13px;}
+.nodata-banner{background:#f8f9fa;border:2px dashed #aaa;border-radius:8px;padding:18px;text-align:center;color:#777;font-size:13px;margin:12px 0;}
+/* Drive status spin */
+@keyframes driveSpin{to{transform:rotate(360deg);}}
+.drive-spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:driveSpin .8s linear infinite;margin-right:6px;vertical-align:middle;}
+/* Drive config banner */
+.drive-config-banner{background:#e7f3ff;border:2px solid #3b78a8;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:12px;color:#1e4d70;display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;}
+.drive-config-banner code{background:#fff;border:1px solid #b8d4f0;border-radius:4px;padding:2px 6px;font-size:11px;color:#1e4d70;}
+@media(max-width:768px){body{padding:6px;}.content-inner{padding:12px;}.page-header{padding:14px 12px;}.page-header h1{font-size:16px;}.page-header .subtitle{font-size:11px;}.logo-row{gap:10px;}.status-bar{padding:10px 12px;flex-direction:column;align-items:flex-start;gap:8px;}.meta-pill{font-size:10px;padding:2px 10px;}.stats-grid{grid-template-columns:1fr!important;}.sum-cards{grid-template-columns:1fr!important;}.nav-cards{grid-template-columns:1fr!important;}.tab-bar{gap:3px;padding:6px;flex-wrap:wrap;}.tab-btn{padding:6px 10px;font-size:11px;}.matrix-wrap{max-height:320px;overflow-x:auto;-webkit-overflow-scrolling:touch;}.matrix-table{min-width:500px;}.month-cards-grid{grid-template-columns:1fr!important;}.fac-hdr{padding:12px;}.fac-name{font-size:16px!important;}.tbl-wrap{font-size:11px;overflow-x:auto;-webkit-overflow-scrolling:touch;}.dqa-table{min-width:420px;}.dqa-table th,.dqa-table td{padding:6px 8px;}.btn{padding:7px 12px;font-size:11px;}.btn-lg{padding:9px 14px;font-size:12px;}.sec-hdr{padding:10px 12px;}.sec-title{font-size:13px;}.method-box{padding:12px;}.content-card{margin-bottom:10px;}.back-btn{padding:7px 12px;font-size:12px;}select,input[type=month],input[type=number],input[type=text]{font-size:16px!important;}
+  [style*="grid-template-columns:repeat(2"]{grid-template-columns:1fr!important;}
+  [style*="grid-template-columns:repeat(3"]{grid-template-columns:1fr!important;}
+  [style*="grid-template-columns:repeat(4"]{grid-template-columns:1fr!important;}
+  [style*="grid-template-columns:repeat(5"]{grid-template-columns:1fr!important;}
+  #r-coh-scatter > div[style*="grid-template-columns"]{grid-template-columns:1fr!important;}
+  .plot-box{min-height:280px!important;}
+  .nc-counts{flex-wrap:wrap;gap:6px;}
+  .nc-cnt{min-width:60px;}
+  .page-container{padding:0;}
+}
+@media(min-width:769px) and (max-width:1024px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .sum-cards{grid-template-columns:repeat(3,1fr)!important;}
+  .nav-cards{grid-template-columns:1fr!important;}
+  .month-cards-grid{grid-template-columns:1fr!important;}
+  [style*="grid-template-columns:repeat(2"]{grid-template-columns:1fr!important;}
+  [style*="grid-template-columns:repeat(3"]{grid-template-columns:1fr!important;}
+  [style*="grid-template-columns:repeat(4"]{grid-template-columns:repeat(2,1fr)!important;}
+  [style*="grid-template-columns:repeat(5"]{grid-template-columns:repeat(2,1fr)!important;}
+  #r-coh-scatter > div[style*="grid-template-columns"]{grid-template-columns:1fr!important;}
+  .content-inner{padding:16px;}
+}
+@media(max-width:480px){body{padding:4px;}.page-header h1{font-size:14px;letter-spacing:.3px;}.page-header h3{font-size:11px;}.logo-row{display:none;}.page-header{padding:12px 10px;border-radius:8px 8px 0 0;}.stats-grid{grid-template-columns:1fr!important;}.sum-cards{grid-template-columns:1fr!important;}.nav-cards{grid-template-columns:1fr!important;}.tab-bar{flex-direction:column;gap:2px;padding:6px;}.tab-btn{width:100%;text-align:left;padding:10px 14px;font-size:13px;border-radius:6px;border:2px solid #ddd;}.tab-btn.active{border-left:4px solid #3b78a8;border-bottom:2px solid #ddd;background:#3b78a8;color:#fff;}.matrix-wrap{max-height:260px;overflow-x:auto;}.month-cards-grid{grid-template-columns:1fr!important;}.status-bar{flex-direction:column;gap:6px;}.content-inner{padding:10px 8px;}
+  [style*="grid-template-columns:repeat(2"]{grid-template-columns:1fr!important;}
+  [style*="grid-template-columns:repeat(3"]{grid-template-columns:1fr!important;}
+  [style*="grid-template-columns:repeat(4"]{grid-template-columns:1fr!important;}
+  [style*="grid-template-columns:repeat(5"]{grid-template-columns:1fr!important;}
+  .nc-counts{flex-wrap:wrap;}
+  .nc-cnt{min-width:70px;flex:0 0 calc(50% - 6px);}
+}
+@media(pointer:coarse){.btn,.tab-btn,.back-btn,.nav-card{min-height:44px;}select,input{min-height:44px;}.tab-btn{min-height:40px;}}
+html.dashboard-mode body{padding:6px;}
+html.dashboard-mode .page-header{padding:10px 16px;border-radius:6px 6px 0 0;}
+html.dashboard-mode .page-header .logo-row{display:none;}
+html.dashboard-mode .page-header h3{font-size:10px;margin:0;}
+html.dashboard-mode .page-header .tagline{display:none;}
+html.dashboard-mode .page-header h1{font-size:16px;margin:4px 0 3px;}
+html.dashboard-mode .page-header .subtitle{font-size:10px;}
+html.dashboard-mode .page-footer{display:none;}
+html.dashboard-mode .content-inner{padding:12px;}
+</style>
+</head>
+<body>
+<script>
+(function(){
+  try{
+    if(window.self!==window.top||window.location.search.includes('widget')||document.referrer.includes('dhis')){
+      document.documentElement.classList.add('dashboard-mode');
+    }
+  }catch(e){document.documentElement.classList.add('dashboard-mode');}
+})();
+</script>
+
+<div id="loadingOverlay" class="loading-overlay hidden">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingMsg">Loading...</div>
+  <div class="loading-sub" id="loadingSub">Initialising...</div>
+</div>
+
+<div class="page-container">
+<div class="page-header">
+  <div class="logo-row"><div class="logo-box"><img src="https://github.com/mohamedsillahkanu/gdp-dashboard-2/raw/6c7463b0d5c3be150aafae695a4bcbbd8aeb1499/ICF-SL.jpg" alt="ICF-SL"></div></div>
+  <h3>Informatics Consultancy Firm – Sierra Leone (ICF-SL)</h3>
+  <p class="tagline">Driving Data-Driven Solutions for Health and Development</p>
+  <h1>DATA QUALITY ASSESSMENT TOOL v5.0</h1>
+  <p class="subtitle">Live DHIS2 Integration · All Facilities · Automated DQA · Scoring · Priority Ranking · HF Browser · Outlier Detection</p>
+</div>
+
+<div class="status-bar" style="flex-direction:column;align-items:flex-start;gap:12px;padding:16px 20px;">
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;width:100%;">
+
+    <!-- Mode toggle -->
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <label style="font-size:10px;font-weight:700;color:#3b78a8;text-transform:uppercase;letter-spacing:.6px;">Mode</label>
+      <div style="display:flex;border:1.5px solid #3b78a8;border-radius:6px;overflow:hidden;">
+        <button id="modeRange" onclick="setDqaMode('range')"
+          style="padding:7px 14px;font-size:12px;font-weight:700;font-family:inherit;border:none;background:#3b78a8;color:#fff;cursor:pointer;transition:all .2s;">
+          Range
+        </button>
+        <button id="modeSingle" onclick="setDqaMode('single')"
+          style="padding:7px 14px;font-size:12px;font-weight:700;font-family:inherit;border:none;background:#fff;color:#3b78a8;cursor:pointer;transition:all .2s;">
+          Single Month
+        </button>
+      </div>
+    </div>
+
+    <!-- Range inputs -->
+    <div id="inputRange" style="display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <label style="font-size:10px;font-weight:700;color:#3b78a8;text-transform:uppercase;letter-spacing:.6px;">Start Month</label>
+        <input type="month" id="cfgStart" style="padding:7px 10px;border:1.5px solid #3b78a8;border-radius:6px;font-size:13px;font-family:inherit;color:#222;">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <label style="font-size:10px;font-weight:700;color:#3b78a8;text-transform:uppercase;letter-spacing:.6px;">End Month</label>
+        <input type="month" id="cfgEnd" style="padding:7px 10px;border:1.5px solid #3b78a8;border-radius:6px;font-size:13px;font-family:inherit;color:#222;">
+      </div>
+    </div>
+
+    <!-- Single month input -->
+    <div id="inputSingle" style="display:none;flex-direction:column;gap:4px;">
+      <label style="font-size:10px;font-weight:700;color:#3b78a8;text-transform:uppercase;letter-spacing:.6px;">Month</label>
+      <input type="month" id="cfgSingle" style="padding:7px 10px;border:1.5px solid #3b78a8;border-radius:6px;font-size:13px;font-family:inherit;color:#222;">
+    </div>
+
+    <div style="margin-top:18px;">
+      <button class="btn btn-primary" onclick="runPipeline()" id="runBtn" style="padding:9px 22px;font-size:13px;background:#3b78a8;">&#9654; Run DQA Pipeline</button>
+    </div>
+    <div style="margin-top:18px;">
+      <button class="btn btn-sm" onclick="dqaReset()" style="background:#6c757d;color:#fff;border:none;padding:9px 14px;">↺ Reset</button>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <span class="meta-pill" id="metaPeriod">—</span>
+    <span class="meta-pill" id="metaFacs">—</span>
+    <span class="meta-pill" id="metaInds">—</span>
+    <span class="meta-pill" id="metaRecords">—</span>
+    <span class="meta-pill" id="metaInstance">NMCP DHIS2</span>
+    <span class="meta-pill" id="pipelineStatus" style="display:none;"></span>
+  </div>
+</div>
+<div style="background:#f0f6ff;border:4px double #3b78a8;border-top:none;padding:7px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+  <span style="font-size:11px;font-weight:700;color:#3b78a8;letter-spacing:.8px;text-transform:uppercase;">HF Types in Assessment:</span>
+  <span style="background:#004080;color:#fff;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;">Hospital</span>
+  <span style="background:#17a2b8;color:#fff;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;">Clinic</span>
+  <span style="background:#6f42c1;color:#fff;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;">CHC</span>
+  <span style="background:#28a745;color:#fff;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;">CHP</span>
+  <span style="background:#b8700a;color:#fff;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;">MCHP</span>
+  <span style="font-size:11px;color:#888;margin-left:4px;font-style:italic;">Other facility types excluded</span>
+</div>
+
+<div id="errBanner"></div>
+
+<div id="pipelinePanel" style="display:none;background:#0d1117;border:2px solid #3b78a8;border-radius:8px;margin-bottom:14px;overflow:hidden;">
+  <div style="background:#3b78a8;color:#fff;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:700;letter-spacing:.4px;">
+    <span>⏳ Pipeline Progress</span>
+    <span id="pctLabel" style="font-size:13px;font-weight:700;">0%</span>
+  </div>
+  <div style="padding:14px;">
+    <div style="height:7px;background:#1a1a2e;border-radius:4px;overflow:hidden;margin-bottom:12px;">
+      <div id="pbarFill" style="height:100%;background:linear-gradient(90deg,#3b78a8,#17a2b8);border-radius:4px;width:0%;transition:width .35s;"></div>
+    </div>
+    <div id="stepList" style="display:flex;flex-direction:column;gap:5px;max-height:200px;overflow-y:auto;"></div>
+  </div>
+</div>
+
+<div class="content-card hidden" id="s-results">
+  <div class="content-inner">
+    <div class="sec-hdr"><span class="sec-icon">4</span><span class="sec-title">DQA RESULTS &amp; PRIORITY RANKING</span></div>
+    <div class="sum-cards" id="sumCards"></div>
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="ranking" onclick="switchTab('ranking',this)">&#8645; Ranking</button>
+      <button class="tab-btn" data-tab="summary" onclick="switchTab('summary',this)">&#9634; Summary</button>
+      <button class="tab-btn" data-tab="nonrep" onclick="switchTab('nonrep',this)">&#9711; Non-Reporting</button>
+      <button class="tab-btn" data-tab="coherency" onclick="switchTab('coherency',this)">&#128279; Coherency</button>
+      <button class="tab-btn" data-tab="indicators" onclick="switchTab('indicators',this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-2px;margin-right:4px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Wrong Reporting</button>
+      <button class="tab-btn" data-tab="reporting" onclick="switchTab('reporting',this)">&#128196; Reporting</button>
+      <button class="tab-btn" data-tab="browser" onclick="switchTab('browser',this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-2px;margin-right:4px;"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>HF Browser</button>
+    </div>
+    <div id="tab-ranking"   class="tab-content active"><div id="r-ranking"></div></div>
+    <div id="tab-summary"   class="tab-content"><div id="r-summary"></div><div class="plot-box" id="plot-summary" style="min-height:360px;"></div></div>
+    <div id="tab-nonrep"    class="tab-content"><div id="r-nonrep"></div></div>
+    <div id="tab-coherency" class="tab-content"><div id="r-coherency"></div><div class="plot-box" id="plot-coh-bar"></div><div id="r-coh-scatter"></div></div>
+    <div id="tab-indicators"class="tab-content"><div id="r-indicators"></div></div>
+    <div id="tab-reporting" class="tab-content"><div id="r-reporting"></div><div class="plot-box" id="plot-reporting" style="min-height:360px;"></div></div>
+    <div id="tab-outliers"  class="tab-content"><div id="r-outliers"></div></div>
+    <div id="tab-browser"   class="tab-content">
+      <div class="bc-bar" id="bBreadcrumb"><span class="bc-item active" onclick="bShowProvinces()">All Provinces</span></div>
+      <div id="bContent"></div>
+    </div>
+
+    <!-- ── EXPORT BUTTONS (PATCH 1: Drive button + status span added) ── -->
+    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;margin-top:22px;padding-top:16px;border-top:2px solid #e0e0e0;">
+      <button class="btn btn-success btn-lg" onclick="exportExcel()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-2px;margin-right:4px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Excel Report</button>
+      <button class="btn btn-warning btn-lg" onclick="exportPriorityCSV()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-2px;margin-right:4px;"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Priority CSV</button>
+      <button class="btn btn-primary btn-lg" onclick="downloadDQAHtml()">&#11015; Download DQA (.html)</button>
+      <button class="btn btn-lg" id="dqaDriveBtn" onclick="saveDQAToGoogleDrive()"
+        style="background:#0f9d58;color:#fff;border-color:#0f9d58;gap:8px;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;">
+          <path d="M6.28 3l5.22 9.04L5.94 21H2L7.72 12 2 3h4.28zM15.5 3L22 15h-5.5L10 3h5.5zM16.5 21L9 9h5.5l7.5 12h-5.5z"/>
+        </svg>
+        Save to Google Drive
+      </button>
+    </div>
+    <!-- Drive status row — shown only when upload is running or complete -->
+    <div style="text-align:center;margin-top:10px;">
+      <span id="dqaDriveStatus" style="display:none;align-items:center;padding:8px 18px;border-radius:20px;font-size:12px;font-weight:700;color:#fff;max-width:700px;word-break:break-all;display:none;"></span>
+    </div>
+    <!-- Drive config note (shown once per session until dismissed) -->
+    <div id="driveConfigBanner" class="drive-config-banner" style="margin-top:14px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b78a8" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <div style="flex:1;">
+        <strong>Google Drive Integration:</strong> "Save to Google Drive" uses the same GAS endpoint as the NMDR Admin Dashboard.
+        The report is saved as <code>dqa_report.html</code> and automatically appears in the <strong>Dashboard tab → DQA Report</strong> section for all users.
+        No separate setup required — the existing <code>saveDashboard</code> GAS handler handles it.
+      </div>
+      <button onclick="document.getElementById('driveConfigBanner').style.display='none'"
+        style="background:transparent;border:none;cursor:pointer;color:#3b78a8;font-size:18px;line-height:1;padding:0 4px;flex-shrink:0;">&#10005;</button>
+    </div>
+  </div>
+</div>
+
+<div class="page-footer">
+  <div class="footer-top">National Malaria Control Programme · Ministry of Health, Sierra Leone</div>
+  <div>© 2025 ICF-SL | DQA Tool v5.0 — DHIS2 Integration | All Facilities · Scoring · Coherency · Indicators · Outliers · HF Browser · Google Drive Save</div>
+</div>
+</div>
+
+<script>
+/* ═══════════ GOOGLE DRIVE CONFIG ═══════════
+   Same Dashboard GAS endpoint used by the Admin panel in index.html.
+   File saved as "dqa_report.html" via the existing saveDashboard action.
+═══════════════════════════════════════════════════════ */
+const DQA_DRIVE_GAS = 'https://script.google.com/macros/s/AKfycbyTprTce5ft5gxSwY7jOku2GNeKMG8V-X1BrY0jB3QDPyuVWXwFPNr_CH80BRfcLcwD/exec';
+
+/* ═══════════ VARS ═══════════ */
+const ASSESSED_TYPES=['Hospital','Clinic','CHC','CHP','MCHP'];
+let ALL_VAR_KEYS=[];
+let VAR_LABELS={};
+const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTH_MAP={};MONTH_NAMES.forEach((m,i)=>{MONTH_MAP[String(i+1).padStart(2,'0')]=m;});
+const DIST_TO_PROV={
+  'Bo District':'Southern Province','Bonthe District':'Southern Province',
+  'Moyamba District':'Southern Province','Pujehun District':'Southern Province',
+  'Bombali District':'Northern Province','Falaba District':'Northern Province',
+  'Koinadugu District':'Northern Province','Tonkolili District':'Northern Province',
+  'Kambia District':'North West Province','Karene District':'North West Province',
+  'Port Loko District':'North West Province',
+  'Kailahun District':'Eastern Province','Kenema District':'Eastern Province',
+  'Kono District':'Eastern Province',
+  'Western Area Urban District':'Western Area','Western Area Rural District':'Western Area'
+};
+
+let CFG={"instance":{"name":"NMCP DHIS2","facilityLevel":5,"districtLevel":2,"chiefdomLevel":4,"periodStart":"202501"},"dataSets":{"facility":{"uid":"ij1VNJwxKCh","name":"HF01 Outpatient Morbidity"},"community":{"uid":"nufVxEfy3Ps","name":"HF04 Community Based Services (HTR/ETR)"},"inpatient":{"uid":"bAVZhrTQQAP","name":"HF05 Hospital Inpatients"}},"indicators":{"opd_u5":{"de":"jkVioQxQcnk","coc":"HXqTYVuY7MO","label":"OPD Attendance Under 5 (0-59m)"},"opd_5plus":{"de":"jkVioQxQcnk","coc":"YmxEkqHdy64","label":"OPD Attendance 5+ Years"},"susp_u5":{"de":"FJafyE1kzs4","coc":"m5T8uBNB8aN","label":"Suspected Malaria Under 5 (0-59m)"},"susp_5_14":{"de":"FJafyE1kzs4","coc":"j7j6iaknOFn","label":"Suspected Malaria 5-14 Years"},"susp_15plus":{"de":"FJafyE1kzs4","coc":"zK1aiw8zFac","label":"Suspected Malaria 15+ Years"},"micro_neg_u5":{"de":"Rijj3Fp9ksg","coc":"m5T8uBNB8aN","label":"Microscopy Negative Under 5"},"micro_neg_5_14":{"de":"Rijj3Fp9ksg","coc":"j7j6iaknOFn","label":"Microscopy Negative 5-14 Years"},"micro_neg_15plus":{"de":"Rijj3Fp9ksg","coc":"zK1aiw8zFac","label":"Microscopy Negative 15+ Years"},"micro_pos_u5":{"de":"Sz13vbo2Qwh","coc":"m5T8uBNB8aN","label":"Microscopy Positive Under 5"},"micro_pos_5_14":{"de":"Sz13vbo2Qwh","coc":"j7j6iaknOFn","label":"Microscopy Positive 5-14 Years"},"micro_pos_15plus":{"de":"Sz13vbo2Qwh","coc":"zK1aiw8zFac","label":"Microscopy Positive 15+ Years"},"rdt_neg_u5":{"de":"mXS2g1AiPsS","coc":"m5T8uBNB8aN","label":"RDT Negative Under 5"},"rdt_neg_5_14":{"de":"mXS2g1AiPsS","coc":"j7j6iaknOFn","label":"RDT Negative 5-14 Years"},"rdt_neg_15plus":{"de":"mXS2g1AiPsS","coc":"zK1aiw8zFac","label":"RDT Negative 15+ Years"},"rdt_pos_u5":{"de":"p6zQLDFjSfd","coc":"m5T8uBNB8aN","label":"RDT Positive Under 5"},"rdt_pos_5_14":{"de":"p6zQLDFjSfd","coc":"j7j6iaknOFn","label":"RDT Positive 5-14 Years"},"rdt_pos_15plus":{"de":"p6zQLDFjSfd","coc":"zK1aiw8zFac","label":"RDT Positive 15+ Years"},"act_lt24_u5":{"de":"wU8EdHifSLa","coc":"m5T8uBNB8aN","label":"ACT <24h Under 5"},"act_lt24_5_14":{"de":"wU8EdHifSLa","coc":"j7j6iaknOFn","label":"ACT <24h 5-14 Years"},"act_lt24_15plus":{"de":"wU8EdHifSLa","coc":"zK1aiw8zFac","label":"ACT <24h 15+ Years"},"act_gt24_u5":{"de":"XKTCuR0W3YN","coc":"m5T8uBNB8aN","label":"ACT >24h Under 5"},"act_gt24_5_14":{"de":"XKTCuR0W3YN","coc":"j7j6iaknOFn","label":"ACT >24h 5-14 Years"},"act_gt24_15plus":{"de":"XKTCuR0W3YN","coc":"zK1aiw8zFac","label":"ACT >24h 15+ Years"},"admission_u5":{"de":"C1DCcLAtafH","coc":"HllvX50cXC0","label":"Malaria Admission 0-59 Months"},"admission_5_14":{"de":"IcUrc8pkuwR","coc":"HllvX50cXC0","label":"Malaria Admission 5-14 Years"},"admission_15plus":{"de":"SdQVZnWzmtH","coc":"HllvX50cXC0","label":"Malaria Admission 15+ Years"},"death_01_59m":{"de":"r3HwIQFuQgM","coc":"A8dMUfhg6UE","label":"Child Death - Malaria 01-59 Months"},"death_05_09y":{"de":"r3HwIQFuQgM","coc":"cuvi0oNThtK","label":"Child Death - Malaria 05-09 Years"},"death_10_14y":{"de":"r3HwIQFuQgM","coc":"TkMu3ASPYIt","label":"Child Death - Malaria 10-14 Years"},"death_15plus_female":{"de":"KMoztqwsZl8","coc":"sGC3uyNcgGJ","label":"Death Malaria 15+ Years - Female"},"death_15plus_male":{"de":"KMoztqwsZl8","coc":"fJndZMaUVat","label":"Death Malaria 15+ Years - Male"},"com_susp_u5":{"de":"wfaQBIVQxWo","coc":"NtjMVmRfvHH","label":"Community Suspected Malaria Under 5"},"com_susp_5_14":{"de":"wfaQBIVQxWo","coc":"qDXW7WMLT99","label":"Community Suspected Malaria 5-14 Years"},"com_susp_15plus":{"de":"wfaQBIVQxWo","coc":"mdjRPpvLKdu","label":"Community Suspected Malaria 15+ Years"},"com_rdt_neg_u5":{"de":"YWvx4zYdp92","coc":"NtjMVmRfvHH","label":"Community RDT Negative Under 5"},"com_rdt_neg_5_14":{"de":"YWvx4zYdp92","coc":"qDXW7WMLT99","label":"Community RDT Negative 5-14 Years"},"com_rdt_neg_15plus":{"de":"YWvx4zYdp92","coc":"mdjRPpvLKdu","label":"Community RDT Negative 15+ Years"},"com_rdt_pos_u5":{"de":"T7xH8GwWpEM","coc":"NtjMVmRfvHH","label":"Community RDT Positive Under 5"},"com_rdt_pos_5_14":{"de":"T7xH8GwWpEM","coc":"qDXW7WMLT99","label":"Community RDT Positive 5-14 Years"},"com_rdt_pos_15plus":{"de":"T7xH8GwWpEM","coc":"mdjRPpvLKdu","label":"Community RDT Positive 15+ Years"},"com_act_lt24_u5":{"de":"h3zJa6hAgib","coc":"NtjMVmRfvHH","label":"Community ACT <24h Under 5"},"com_act_lt24_5_14":{"de":"h3zJa6hAgib","coc":"qDXW7WMLT99","label":"Community ACT <24h 5-14 Years"},"com_act_lt24_15plus":{"de":"h3zJa6hAgib","coc":"mdjRPpvLKdu","label":"Community ACT <24h 15+ Years"},"com_act_gt24_u5":{"de":"Imkks0HAl7E","coc":"NtjMVmRfvHH","label":"Community ACT >24h Under 5"},"com_act_gt24_5_14":{"de":"Imkks0HAl7E","coc":"qDXW7WMLT99","label":"Community ACT >24h 5-14 Years"},"com_act_gt24_15plus":{"de":"Imkks0HAl7E","coc":"mdjRPpvLKdu","label":"Community ACT >24h 15+ Years"}},"coherencyChecks":{"facility":[{"id":"FAC_OPD_SUSP_U5","label":"Facility: OPD U5 >= Suspected U5","lhs":"opd_u5","rhs":"susp_u5","direction":">="},{"id":"FAC_OPD_SUSP_5PLUS","label":"Facility: OPD 5+ >= Suspected 5+","lhs":"opd_5plus","rhs":["susp_5_14","susp_15plus"],"rhsOp":"sum","direction":">="},{"id":"FAC_SUSP_TESTED_U5","label":"Facility: Suspected U5 >= Total Tested U5","lhs":"susp_u5","rhs":["rdt_neg_u5","rdt_pos_u5","micro_neg_u5","micro_pos_u5"],"rhsOp":"sum","direction":">="},{"id":"FAC_SUSP_TESTED_5_14","label":"Facility: Suspected 5-14 >= Total Tested 5-14","lhs":"susp_5_14","rhs":["rdt_neg_5_14","rdt_pos_5_14","micro_neg_5_14","micro_pos_5_14"],"rhsOp":"sum","direction":">="},{"id":"FAC_SUSP_TESTED_15PLUS","label":"Facility: Suspected 15+ >= Total Tested 15+","lhs":"susp_15plus","rhs":["rdt_neg_15plus","rdt_pos_15plus","micro_neg_15plus","micro_pos_15plus"],"rhsOp":"sum","direction":">="},{"id":"FAC_CONF_ACT_U5","label":"Facility: Confirmed U5 >= ACT U5","lhs":["rdt_pos_u5","micro_pos_u5"],"lhsOp":"sum","rhs":["act_lt24_u5","act_gt24_u5"],"rhsOp":"sum","direction":">="},{"id":"FAC_CONF_ACT_5_14","label":"Facility: Confirmed 5-14 >= ACT 5-14","lhs":["rdt_pos_5_14","micro_pos_5_14"],"lhsOp":"sum","rhs":["act_lt24_5_14","act_gt24_5_14"],"rhsOp":"sum","direction":">="},{"id":"FAC_CONF_ACT_15PLUS","label":"Facility: Confirmed 15+ >= ACT 15+","lhs":["rdt_pos_15plus","micro_pos_15plus"],"lhsOp":"sum","rhs":["act_lt24_15plus","act_gt24_15plus"],"rhsOp":"sum","direction":">="}],"community":[{"id":"COM_SUSP_TESTED_U5","label":"Community: Suspected U5 >= Tested U5","lhs":"com_susp_u5","rhs":["com_rdt_neg_u5","com_rdt_pos_u5"],"rhsOp":"sum","direction":">="},{"id":"COM_SUSP_TESTED_5_14","label":"Community: Suspected 5-14 >= Tested 5-14","lhs":"com_susp_5_14","rhs":["com_rdt_neg_5_14","com_rdt_pos_5_14"],"rhsOp":"sum","direction":">="},{"id":"COM_SUSP_TESTED_15PLUS","label":"Community: Suspected 15+ >= Tested 15+","lhs":"com_susp_15plus","rhs":["com_rdt_neg_15plus","com_rdt_pos_15plus"],"rhsOp":"sum","direction":">="},{"id":"COM_CONF_ACT_U5","label":"Community: Confirmed U5 >= ACT U5","lhs":"com_rdt_pos_u5","rhs":["com_act_lt24_u5","com_act_gt24_u5"],"rhsOp":"sum","direction":">="},{"id":"COM_CONF_ACT_5_14","label":"Community: Confirmed 5-14 >= ACT 5-14","lhs":"com_rdt_pos_5_14","rhs":["com_act_lt24_5_14","com_act_gt24_5_14"],"rhsOp":"sum","direction":">="},{"id":"COM_CONF_ACT_15PLUS","label":"Community: Confirmed 15+ >= ACT 15+","lhs":"com_rdt_pos_15plus","rhs":["com_act_lt24_15plus","com_act_gt24_15plus"],"rhsOp":"sum","direction":">="}],"inpatient":{"checks":[{"id":"INP_ADM_DEATH_U5","label":"Admissions U5 >= Deaths U5","lhs":"admission_u5","rhs":"death_01_59m","direction":">="},{"id":"INP_ADM_DEATH_5_14","label":"Admissions 5-14 >= Deaths 5-14","lhs":"admission_5_14","rhs":["death_05_09y","death_10_14y"],"rhsOp":"sum","direction":">="},{"id":"INP_ADM_DEATH_15PLUS","label":"Admissions 15+ >= Deaths 15+","lhs":"admission_15plus","rhs":["death_15plus_female","death_15plus_male"],"rhsOp":"sum","direction":">="},{"id":"INP_ADM_DEATH_ALL","label":"Total Admissions >= Total Deaths","lhs":["admission_u5","admission_5_14","admission_15plus"],"lhsOp":"sum","rhs":["death_01_59m","death_05_09y","death_10_14y","death_15plus_female","death_15plus_male"],"rhsOp":"sum","direction":">="}]}},"facilityTypes":["Hospital","Clinic","CHC","CHP","MCHP"],"scoring":{"highPriorityThreshold":75,"mediumPriorityThreshold":95}},BASE='',rawData=[],MAP={},UID_TO_KEY={};
+let fullOUMap={};
+let allFacMeta={};
+let dqaResults={coherency:{},indicators:{},reporting:null,outliers:{},rankings:[],nonReporting:[],rowIssues:[]};
+let selectedAdminLevels=['district','chiefdom'];
+let selectedFacTypes=new Set(['Hospital','Clinic','CHC','CHP','MCHP']);
+const ALL_FAC_TYPES=['Hospital','Clinic','CHC','CHP','MCHP'];
+
+function toggleTypeChip(type){if(type==='All'){const allActive=ALL_FAC_TYPES.every(t=>selectedFacTypes.has(t));if(allActive){selectedFacTypes.clear();}else{ALL_FAC_TYPES.forEach(t=>selectedFacTypes.add(t));}}else{if(selectedFacTypes.has(type))selectedFacTypes.delete(type);else selectedFacTypes.add(type);}ALL_FAC_TYPES.forEach(t=>{const el=document.getElementById('chip-'+t);if(el){el.className=el.className.replace(/\b(active|inactive)\b/g,'').trim()+' '+(selectedFacTypes.has(t)?'active':'inactive');}});const allChip=document.getElementById('chip-All');if(allChip){const allOn=ALL_FAC_TYPES.every(t=>selectedFacTypes.has(t));allChip.className=allChip.className.replace(/\b(active|inactive)\b/g,'').trim()+' '+(allOn?'active':'inactive');}const cnt=document.getElementById('filterCount');if(cnt){const n=selectedFacTypes.size;cnt.textContent=n===ALL_FAC_TYPES.length?'':n+' of '+ALL_FAC_TYPES.length+' types selected';}renderedTabs={};displayResults();const activeTab=document.querySelector('.tab-btn.active');if(activeTab)switchTab(activeTab.dataset.tab,activeTab);}
+function getFilteredRankings(){return dqaResults.rankings.filter(r=>selectedFacTypes.has(r.type)||selectedFacTypes.has(r.admin?.type));}
+let renderedTabs={};
+let bRows=[],bHierarchy={};
+let bCohIssues=[],bWrIssues=[],bOutIssues=[],bIncIssues=[];
+let facRowLookup={};
+let bAllPeriods=[],bBrowserReady=false;
+let bCurProv=null,bCurDist=null,bCurChi=null,bCurFac=null;
+let bFacBounds={};
+
+const showLoad=(t,s)=>{document.getElementById('loadingOverlay').classList.remove('hidden');document.getElementById('loadingMsg').textContent=t||'Processing...';document.getElementById('loadingSub').textContent=s||'';};
+const hideLoad=()=>document.getElementById('loadingOverlay').classList.add('hidden');
+const hasCfg=k=>MAP[k]&&MAP[k]!=='__none__';
+function esc(s){return(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
+function getPriClass(s){return s<75?'high':s<95?'medium':'low';}
+function getPriLabel(s){return s<75?'HIGH':s<95?'MEDIUM':'LOW';}
+function getScoreClass(s){return s>=95?'excellent':s>=75?'good':s>=50?'moderate':'poor';}
+function showErr(msg){document.getElementById('errBanner').innerHTML=`<div class="alert alert-error" style="margin-bottom:12px;">⚠ ${msg}</div>`;}
+function clearErr(){document.getElementById('errBanner').innerHTML='';}
+function getFacType(name){
+  // Match on the LAST word (suffix) only — e.g. "Kambia CHP" → suffix = "CHP"
+  const u=(name||'').trim().toUpperCase();
+  const parts=u.split(/\s+/);
+  const suffix=parts[parts.length-1]||'';
+  // Exact suffix matches first (most specific)
+  if(suffix==='HOSPITAL') return'Hospital';
+  if(suffix==='MCHP')     return'MCHP';
+  if(suffix==='CHC')      return'CHC';
+  if(suffix==='CHP')      return'CHP';
+  // Clinic — suffix has many misspellings in Sierra Leone DHIS2 data
+  const clinicSuffixes=['CLINIC','CLINNIC','CLINNC','CLIMIC','CLINC','CLINIK','CLENIC','CLINCC','CLIN'];
+  if(clinicSuffixes.includes(suffix)) return'Clinic';
+  // Fallback: anywhere in name (catches e.g. "Freetown Hospital Annex")
+  if(u.includes('HOSPITAL')) return'Hospital';
+  if(u.includes('MCHP'))     return'MCHP';
+  if(u.includes('CHC'))      return'CHC';
+  if(u.includes('CHP'))      return'CHP';
+  if(clinicSuffixes.some(c=>u.includes(c))) return'Clinic';
+  return'Other';
+}
+
+async function api(path){const PROXY='https://script.google.com/macros/s/AKfycbyRXc68PYSmDSCYPakAS8Gc9R00kRjmsMYoDujPYMItyquXfwMAJUtRqXLiDlNWbSfDQQ/exec';const BASE_URL='https://sl.dhis2.org/hmis23';const AUTH='Basic bXVzYS1zaWxsYWhrYW51Ok5hdmlnYXRvci8yMDI0IQ==';const fullUrl=BASE_URL+'/api'+path;const pUrl=PROXY+'?url='+encodeURIComponent(fullUrl)+'&Authorization='+encodeURIComponent(AUTH);let r;try{r=await fetch(pUrl,{method:'GET',mode:'cors'});}catch(netErr){await new Promise(res=>setTimeout(res,1000));try{r=await fetch(pUrl,{method:'GET',mode:'cors'});}catch(e){throw new Error('Network error — proxy unreachable. Detail: '+e.message);}}if(!r.ok){let detail='';try{const t=await r.text();detail=t.slice(0,120);}catch(_){}throw new Error('DHIS2 API error '+r.status+' on '+path.slice(0,60)+(detail?' — '+detail:''));}return r.json();}
+
+async function loadAll(){clearErr();const start=(document.getElementById('cfgStart')||{}).value||'2026-01';const end=(document.getElementById('cfgEnd')||{}).value||'2026-12';const periods=getPeriods(start.replace('-',''),end.replace('-',''));if(!periods.length){showErr('No valid periods in selected range.');return;}document.getElementById('pipelinePanel').style.display='block';document.getElementById('s-results').classList.add('hidden');document.getElementById('stepList').innerHTML='';setStep=_setStep;addPipeStep('s1','Fetching level-5 OUs with district/chiefdom hierarchy');addPipeStep('s2','Building dx param from '+Object.keys(CFG.indicators||{}).filter(k=>!k.startsWith('_')).length+' de.coc indicators');addPipeStep('s3','Fetching analytics — '+periods.length+' periods batched by 24');addPipeStep('s4','Running DQA engine: coherency, wrong reporting, outliers, rankings');addPipeStep('s5','Rendering results dashboard');setBar(2);try{CFG.instance=CFG.instance||{};document.getElementById('metaInstance').textContent=CFG.instance.name||'NMCP DHIS2';document.getElementById('metaPeriod').textContent=periods[0]+'→'+periods[periods.length-1];ALL_VAR_KEYS=[];VAR_LABELS={};const inds=CFG.indicators||{};const configuredDxStrings=[];MAP={district:'district',chiefdom:'chiefdom',facility:'facility',period:'period'};UID_TO_KEY={};Object.keys(inds).forEach(k=>{if(k.startsWith('_'))return;const ind=inds[k];if(!ind||(!ind.uid&&!ind.de))return;ALL_VAR_KEYS.push(k);VAR_LABELS[k]=ind.label||k;if(ind.de&&ind.coc){const dxStr=ind.de+'.'+ind.coc;MAP[k]=k;UID_TO_KEY[dxStr]=k;configuredDxStrings.push(dxStr);}else if(ind.uid){MAP[k]=k;UID_TO_KEY[ind.uid]=k;configuredDxStrings.push(ind.uid);}else{MAP[k]='__none__';}});document.getElementById('metaInds').textContent=configuredDxStrings.length+' indicators';_setStep('s1','running');
+    const facLevel=CFG.instance.facilityLevel||5,distLevel=CFG.instance.districtLevel||2,chiLevel=CFG.instance.chiefdomLevel||4;
+    const ouResp=await api('/organisationUnits.json?level='+facLevel+'&fields=id,name,ancestors[id,name,level]&paging=false&pageSize=50000');
+    fullOUMap={};allFacMeta={};
+    (ouResp.organisationUnits||[]).forEach(ou=>{
+      const dA=ou.ancestors.find(a=>parseInt(a.level)===distLevel);
+      const cA=chiLevel?ou.ancestors.find(a=>parseInt(a.level)===chiLevel):null;
+      const dist=dA?dA.name:'Unknown',chi=cA?cA.name:'',prov=DIST_TO_PROV[dist]||dist;
+      const type=getFacType(ou.name);
+      if(!ASSESSED_TYPES.includes(type))return;
+      fullOUMap[ou.id]={id:ou.id,name:ou.name,district:dist,chiefdom:chi,province:prov,type};
+      allFacMeta[ou.id]={id:ou.id,name:ou.name,district:dist,chiefdom:chi,province:prov,type,hasData:false};
+    });
+    const nameToUids={};
+    Object.values(fullOUMap).forEach(ou=>{if(!nameToUids[ou.name])nameToUids[ou.name]=[];nameToUids[ou.name].push(ou.id);});
+    window.facDisplayName={};window.facNameToUids={};
+    Object.values(fullOUMap).forEach(ou=>{
+      const isDup=(nameToUids[ou.name]||[]).length>1;
+      const dispName=isDup?ou.name+' ('+ou.chiefdom+')':ou.name;
+      facDisplayName[ou.id]=dispName;
+      if(!facNameToUids[ou.name])facNameToUids[ou.name]=[];
+      facNameToUids[ou.name].push(ou.id);
+      allFacMeta[ou.id].displayName=dispName;
+    });
+    window.facMetaByDisplayName={};
+    Object.values(allFacMeta).forEach(meta=>{window.facMetaByDisplayName[meta.displayName||meta.name]=meta;});
+    const totalFacs=Object.keys(fullOUMap).length;
+    document.getElementById('metaFacs').textContent=totalFacs+' facilities';
+    _setStep('s1','done',totalFacs+' level-5 OUs · '+[...new Set(Object.values(fullOUMap).map(o=>o.district))].length+' districts');setBar(20);_setStep('s2','running');if(!configuredDxStrings.length)throw new Error('No valid indicator UIDs/de+coc in config');const dxParam=configuredDxStrings.join(';');_setStep('s2','done',configuredDxStrings.length+' de.coc strings built');setBar(25);_setStep('s3','running');const BATCH=24,allRows=[];for(let i=0;i<periods.length;i+=BATCH){const chunk=periods.slice(i,i+BATCH);_setStep('s3','running','Batch '+(Math.floor(i/BATCH)+1)+'/'+Math.ceil(periods.length/BATCH)+' — '+chunk[0]+'→'+chunk[chunk.length-1]);const resp=await api('/analytics.json?dimension=dx:'+dxParam+'&dimension=pe:'+chunk.join(';')+'&dimension=ou:LEVEL-'+facLevel+'&displayProperty=NAME&paging=false&ignoreLimit=true');if(resp.rows)allRows.push(...resp.rows);setBar(25+Math.round(((i+BATCH)/periods.length)*40));await new Promise(r=>setTimeout(r,80));}rawData=transform(allRows);
+    rawData.forEach(row=>{if(row.ouId&&allFacMeta[row.ouId])allFacMeta[row.ouId].hasData=true;});
+    // Rebuild facMetaByDisplayName NOW — after hasData flags are set
+    window.facMetaByDisplayName={};
+    Object.values(allFacMeta).forEach(meta=>{window.facMetaByDisplayName[meta.displayName||meta.name]=meta;});
+    document.getElementById('metaRecords').textContent=rawData.length.toLocaleString()+' records';_setStep('s3','done',allRows.length+' analytics rows → '+rawData.length+' facility-period records');setBar(65);_setStep('s4','running');dqaResults={coherency:{},indicators:{},reporting:null,outliers:{},rankings:[],nonReporting:[],rowIssues:[]};bBrowserReady=false;renderedTabs={};rawData.forEach((_,idx)=>{dqaResults.rowIssues[idx]={rowIndex:idx,facility:rawData[idx].facility,cohIssues:[],indIssues:[],outIssues:[]};});runCoherencyChecks();runIndicatorChecks();runReportingAnalysis();runOutlierDetection();calculateRankings();const nCoh=Object.values(dqaResults.coherency).reduce((s,c)=>s+c.failed,0);const nOut=Object.values(dqaResults.outliers).reduce((s,o)=>s+o.count,0);_setStep('s4','done',dqaResults.rankings.filter(r=>r.hasData).length+' facilities scored · '+nCoh+' coherency violations · '+nOut+' outliers');setBar(85);_setStep('s5','running');displayResults();document.getElementById('s-results').classList.remove('hidden');document.getElementById('s-results').scrollIntoView({behavior:'smooth'});_setStep('s5','done','Dashboard ready');setBar(100);setPipelineStatus('Done ✓','#28a745');}catch(err){showErr(err.message);console.error(err);setPipelineStatus('Error: '+err.message,'#dc3545');document.querySelectorAll('#stepList .step-running').forEach(el=>{el.className=el.className.replace('step-running','step-error');el.querySelector('.sd').textContent='✗';});}}
+
+function transform(analyticsRows){const byKey={};analyticsRows.forEach(r=>{const[dxUid,pe,ouId,value]=r;const varKey=UID_TO_KEY[dxUid];if(!varKey||!fullOUMap[ouId])return;const k=ouId+'|'+pe;if(!byKey[k]){byKey[k]={ouId,pe};ALL_VAR_KEYS.forEach(vk=>{byKey[k][vk]=0;});}byKey[k][varKey]=parseFloat(value)||0;});const rows=[];Object.values(byKey).forEach(rec=>{const ou=fullOUMap[rec.ouId];if(!ou)return;const pe=rec.pe,year=pe.substring(0,4),moIdx=parseInt(pe.substring(4,6))-1,month=MONTH_NAMES[moIdx]||pe,period=year+'-'+pe.substring(4,6);const dispName=(window.facDisplayName&&window.facDisplayName[rec.ouId])||ou.name;const flat={ouId:rec.ouId,facility:dispName,district:ou.district,chiefdom:ou.chiefdom,province:ou.province,type:ou.type,year,month,period};ALL_VAR_KEYS.forEach(k=>{flat[k]=rec[k]||0;});rows.push(flat);});return rows.sort((a,b)=>a.facility.localeCompare(b.facility)||a.period.localeCompare(b.period));}
+
+function resolveVal(row,keys){if(Array.isArray(keys))return keys.reduce((s,k)=>s+(parseFloat(row[k])||0),0);return parseFloat(row[keys])||0;}
+
+function runCoherencyChecks(){const cfgChecks=CFG.coherencyChecks||{};const allChecks=[];Object.keys(cfgChecks).forEach(section=>{if(section.startsWith('_'))return;const val=cfgChecks[section];const list=Array.isArray(val)?val:(Array.isArray(val?.checks)?val.checks:[]);list.forEach(ck=>{if(ck.id&&ck.lhs&&ck.rhs)allChecks.push({...ck,section});});});if(!allChecks.length){[{id:'susp-opd',label:'Suspected ≤ OPD',lhs:'opd',rhs:'susp',direction:'>=',section:'facility'},{id:'test-susp',label:'Tested ≤ Suspected',lhs:'susp',rhs:'tested',direction:'>=',section:'facility'},{id:'conf-test',label:'Confirmed ≤ Tested',lhs:'tested',rhs:'conf',direction:'>=',section:'facility'},{id:'conf-treat',label:'Confirmed ≤ Treated',lhs:'treated',rhs:'conf',direction:'>=',section:'facility'}].forEach(ck=>allChecks.push(ck));}allChecks.forEach(ck=>{const lhsKeys=Array.isArray(ck.lhs)?ck.lhs:[ck.lhs];const rhsKeys=Array.isArray(ck.rhs)?ck.rhs:[ck.rhs];const allKeys=[...lhsKeys,...rhsKeys];if(allKeys.some(k=>!hasCfg(k)))return;let passed=0,failed=0,total=0,failedRecs=[],passedPts=[],failedPts=[];rawData.forEach((row,idx)=>{const lv=resolveVal(row,ck.lhs),rv=resolveVal(row,ck.rhs);if(isNaN(lv)||isNaN(rv)||(lv===0&&rv===0))return;total++;const ok=(ck.direction==='>=')?lv>=rv:lv<=rv;if(ok){passed++;passedPts.push({x:lv,y:rv,facility:row.facility});}else{failed++;dqaResults.rowIssues[idx].cohIssues.push(ck.label||ck.id);failedRecs.push({facility:row.facility,year:row.year,period:row.period,x:lv,y:rv});failedPts.push({x:lv,y:rv,facility:row.facility});}});const name=ck.label||ck.id;dqaResults.coherency[ck.id]={name,xCol:Array.isArray(ck.lhs)?ck.lhs.join('+'):ck.lhs,yCol:Array.isArray(ck.rhs)?ck.rhs.join('+'):ck.rhs,xK:ck.lhs,yK:ck.rhs,section:ck.section||'facility',total,passed,failed,passRate:total>0?(passed/total*100).toFixed(1):0,failedRecs,passedPts,failedPts};});}
+
+function runIndicatorChecks(){const HC_TYPES=['Hospital','Clinic'];const CHC_TYPES=['CHC'];const FIELD_TYPES=['CHP','MCHP'];const microKeys=ALL_VAR_KEYS.filter(k=>hasCfg(k)&&(k==='micro'||k.startsWith('micro_')));const admKeys=ALL_VAR_KEYS.filter(k=>hasCfg(k)&&(k==='admission'||k.startsWith('admission_')));if(!microKeys.length&&!admKeys.length)return;let issues=0,total=0,recs=[];rawData.forEach((row,idx)=>{const ft=row.type||getFacType(row.facility);if(!FIELD_TYPES.includes(ft))return;total++;const found=[];microKeys.forEach(k=>{if((row[k]||0)>0)found.push((VAR_LABELS[k]||k)+':'+row[k]);});if(found.length>0){issues++;dqaResults.rowIssues[idx].indIssues.push('CHP/MCHP Microscopy: '+found.join(', '));recs.push({facility:row.facility,type:ft,year:row.year,vars:found.join(', ')});}});if(microKeys.length)dqaResults.indicators.micro_field={name:'CHP/MCHP reporting Microscopy (not expected)',description:'CHP and MCHP are community-level facilities and should not perform or record microscopy.',total,issues,rate:total>0?(issues/total*100).toFixed(1):0,recs};issues=0;total=0;recs=[];rawData.forEach((row,idx)=>{const ft=row.type||getFacType(row.facility);if(![...CHC_TYPES,...FIELD_TYPES].includes(ft))return;total++;const found=[];admKeys.forEach(k=>{if((row[k]||0)>0)found.push((VAR_LABELS[k]||k)+':'+row[k]);});if(found.length>0){issues++;dqaResults.rowIssues[idx].indIssues.push('Field Admissions: '+found.join(', '));recs.push({facility:row.facility,type:ft,year:row.year,vars:found.join(', ')});}});if(admKeys.length)dqaResults.indicators.adm_field={name:'CHC/CHP/MCHP reporting Admissions (not expected)',description:'Admissions are only expected from Hospitals and Clinics.',total,issues,rate:total>0?(issues/total*100).toFixed(1):0,recs};issues=0;total=0;recs=[];if(microKeys.length){const nonMicro=ALL_VAR_KEYS.filter(k=>hasCfg(k)&&!microKeys.includes(k)&&!admKeys.includes(k));rawData.forEach((row,idx)=>{const ft=row.type||getFacType(row.facility);if(!HC_TYPES.includes(ft))return;total++;const active=nonMicro.some(k=>(row[k]||0)>0);if(!active)return;const totalMicro=microKeys.reduce((s,k)=>s+(row[k]||0),0);if(totalMicro===0){issues++;dqaResults.rowIssues[idx].indIssues.push('Missing Microscopy');recs.push({facility:row.facility,type:ft,year:row.year,vars:'All microscopy keys = 0'});}});dqaResults.indicators.micro_missing={name:'Hospital/Clinic missing Microscopy while active',description:'Active Hospitals and Clinics are expected to record microscopy results.',total,issues,rate:total>0?(issues/total*100).toFixed(1):0,recs};}issues=0;total=0;recs=[];if(admKeys.length){const nonAdm=ALL_VAR_KEYS.filter(k=>hasCfg(k)&&!admKeys.includes(k)&&!microKeys.includes(k));rawData.forEach((row,idx)=>{const ft=row.type||getFacType(row.facility);if(!HC_TYPES.includes(ft))return;total++;const active=nonAdm.some(k=>(row[k]||0)>0);if(!active)return;const totalAdm=admKeys.reduce((s,k)=>s+(row[k]||0),0);if(totalAdm===0){issues++;dqaResults.rowIssues[idx].indIssues.push('Missing Admissions');recs.push({facility:row.facility,type:ft,year:row.year,vars:'All admission keys = 0'});}});dqaResults.indicators.adm_missing={name:'Hospital/Clinic missing Admissions while active',description:'Active Hospitals and Clinics are expected to record inpatient admission data.',total,issues,rate:total>0?(issues/total*100).toFixed(1):0,recs};}issues=0;total=0;recs=[];if(microKeys.length){const nonMicro=ALL_VAR_KEYS.filter(k=>hasCfg(k)&&!microKeys.includes(k)&&!admKeys.includes(k));rawData.forEach((row,idx)=>{const ft=row.type||getFacType(row.facility);if(!CHC_TYPES.includes(ft))return;total++;const active=nonMicro.some(k=>(row[k]||0)>0);if(!active)return;const totalMicro=microKeys.reduce((s,k)=>s+(row[k]||0),0);if(totalMicro===0){issues++;dqaResults.rowIssues[idx].indIssues.push('CHC Missing Microscopy');recs.push({facility:row.facility,type:ft,year:row.year,vars:'All microscopy keys = 0'});}});dqaResults.indicators.micro_chc_missing={name:'CHC missing Microscopy while active',description:'CHCs perform RDT and microscopy and are expected to record microscopy results when active.',total,issues,rate:total>0?(issues/total*100).toFixed(1):0,recs};}}
+
+function runReportingAnalysis(){const repVars=ALL_VAR_KEYS.filter(k=>hasCfg(k));if(!repVars.length)return;const _rStart=(document.getElementById('cfgStart')||{}).value?.replace('-','')||'';const _rEnd=(document.getElementById('cfgEnd')||{}).value?.replace('-','')||_rStart;if(!_rStart){return;}const periods=getPeriods(_rStart,_rEnd);const expected=periods.length||1;const numYears=new Set(periods.map(p=>p.substring(0,4))).size;const facReported={};rawData.forEach(row=>{const uid=row.ouId;if(!uid)return;if(!facReported[uid])facReported[uid]=0;if(repVars.some(k=>row[k]>0))facReported[uid]++;});const nonRep=[],repList=[];Object.entries(allFacMeta).forEach(([uid,meta])=>{const reported=facReported[uid]||0;const dispName=meta.displayName||meta.name;if(reported===0){nonRep.push({facility:dispName,admin:{district:meta.district,chiefdom:meta.chiefdom},type:meta.type,status:'No Data'});}else{repList.push({facility:dispName,reported,expected,rate:Math.min((reported/expected*100),100).toFixed(2),admin:{district:meta.district,chiefdom:meta.chiefdom},type:meta.type});}});dqaResults.nonReporting=nonRep;repList.sort((a,b)=>parseFloat(a.rate)-parseFloat(b.rate));const facRates={};repList.forEach(r=>{facRates[r.facility]={rate:r.rate};});const avgRate=repList.length>0?(repList.reduce((s,r)=>s+parseFloat(r.rate),0)/repList.length).toFixed(2):0;dqaResults.reporting={avgRate,numYears,expected,detailedRates:repList,facRates,totalFacilities:Object.keys(fullOUMap).length,reportingCount:repList.length,nonRepCount:nonRep.length};}
+
+function runOutlierDetection(){ALL_VAR_KEYS.filter(k=>hasCfg(k)).forEach(varKey=>{const byFac={};rawData.forEach((row,idx)=>{const fac=row.facility,val=parseFloat(row[varKey]);if(!fac||isNaN(val)||val<=0)return;if(!byFac[fac])byFac[fac]=[];byFac[fac].push({row,val,idx});});let allOutliers=[];Object.keys(byFac).forEach(fac=>{const items=byFac[fac];if(items.length<4)return;const sorted=items.map(i=>i.val).sort((a,b)=>a-b);const q1=sorted[Math.floor(sorted.length*.25)],q3=sorted[Math.floor(sorted.length*.75)],iqr=q3-q1;const lb=Math.max(0,q1-1.5*iqr),ub=q3+1.5*iqr;items.forEach(d=>{if(d.val>ub||d.val<lb){const dir=d.val>ub?'High':'Low';dqaResults.rowIssues[d.idx].outIssues.push(varKey+' '+dir);allOutliers.push({facility:fac,period:d.row.period,value:d.val,direction:dir,lb:lb.toFixed(1),ub:ub.toFixed(1)});}});});const totalVals=Object.values(byFac).reduce((s,g)=>s+g.length,0);dqaResults.outliers[varKey]={variable:varKey,label:VAR_LABELS[varKey]||varKey,total:totalVals,count:allOutliers.length,rate:totalVals>0?(allOutliers.length/totalVals*100).toFixed(1):0,outliers:allOutliers};});}
+
+function calculateRankings(){const facRatesMap=dqaResults.reporting?.facRates||{};const facData={};Object.entries(allFacMeta).forEach(([uid,meta])=>{const dispName=meta.displayName||meta.name;facData[dispName]={uid,cohTotal:0,cohPassed:0,indTotal:0,indIssues:0,outTotal:0,outCount:0,repRate:parseFloat(facRatesMap[dispName]?.rate||0),admin:{district:meta.district,chiefdom:meta.chiefdom},type:meta.type,hasData:meta.hasData};});Object.values(dqaResults.coherency).forEach(c=>{rawData.forEach(row=>{const fac=row.facility;if(fac&&facData[fac]){const lv=resolveVal(row,c.xK),rv=resolveVal(row,c.yK);if((lv>0||rv>0)){facData[fac].cohTotal++;const ok=(c.direction&&c.direction==='<=')?lv<=rv:lv>=rv;if(ok)facData[fac].cohPassed++;}}});});const nF=Math.max(Object.keys(facData).length,1);Object.values(dqaResults.indicators).forEach(ind=>{if(ind.recs)ind.recs.forEach(r=>{if(facData[r.facility])facData[r.facility].indIssues++;});Object.keys(facData).forEach(f=>{facData[f].indTotal+=Math.ceil(ind.total/nF);});});Object.values(dqaResults.outliers).forEach(o=>{o.outliers.forEach(out=>{if(facData[out.facility])facData[out.facility].outCount++;});Object.keys(facData).forEach(f=>{facData[f].outTotal+=Math.ceil(o.total/nF);});});dqaResults.rankings=Object.keys(facData).map(fac=>{const d=facData[fac];if(!d.hasData)return{facility:fac,admin:d.admin,type:d.type,hasData:false,repScore:'0.0',cohScore:'0.0',indScore:'0.0',outScore:'0.0',total:'0.0',repRate:'0.00',cohFailed:0,indIssues:0,outCount:0,rank:0};const rS=(d.repRate/100)*25,cS=d.cohTotal>0?(d.cohPassed/d.cohTotal)*25:25,iS=d.indTotal>0?Math.max(0,((d.indTotal-d.indIssues)/d.indTotal)*25):25,oS=d.outTotal>0?Math.max(0,((d.outTotal-d.outCount)/d.outTotal)*25):25;return{facility:fac,admin:d.admin,type:d.type,hasData:true,repScore:rS.toFixed(1),cohScore:cS.toFixed(1),indScore:iS.toFixed(1),outScore:oS.toFixed(1),total:(rS+cS+iS+oS).toFixed(1),repRate:d.repRate.toFixed(2),cohFailed:d.cohTotal-d.cohPassed,indIssues:d.indIssues,outCount:d.outCount};});dqaResults.rankings.sort((a,b)=>{if(!a.hasData&&!b.hasData)return a.facility.localeCompare(b.facility);if(!a.hasData)return 1;if(!b.hasData)return-1;return parseFloat(a.total)-parseFloat(b.total);});let rank=1;dqaResults.rankings.forEach(r=>{if(r.hasData){r.rank=rank++;}else{r.rank='—';}});}
+
+function displayResults(){const r=dqaResults.rankings,withData=r.filter(x=>x.hasData);const avgScore=withData.length>0?(withData.reduce((s,x)=>s+parseFloat(x.total),0)/withData.length).toFixed(1):0;const high=withData.filter(x=>parseFloat(x.total)<75).length;const nonRep=r.filter(x=>!x.hasData).length;const totalFacs=withData.length+nonRep;document.getElementById('sumCards').innerHTML=`<div class="sum-card"><div class="sv">${totalFacs}</div><div class="sl">Total Facilities</div></div><div class="sum-card"><div class="sv" style="color:#28a745;">${withData.length}</div><div class="sl">Reporting Facilities</div></div><div class="sum-card"><div class="sv" style="color:#dc3545;">${nonRep}</div><div class="sl">Non-Reporting</div></div><div class="sum-card"><div class="sv">${rawData.length.toLocaleString()}</div><div class="sl">Total Records</div></div><div class="sum-card"><div class="sv">${avgScore}%</div><div class="sl">Avg DQA Score</div></div><div class="sum-card"><div class="sv" style="color:#dc3545;">${high}</div><div class="sl">High Priority</div></div>`;displayRankingResults();renderedTabs.ranking=true;}
+
+function switchTab(name,btn){document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));if(btn)btn.classList.add('active');document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(!renderedTabs[name]){setTimeout(()=>{switch(name){case'ranking':displayRankingResults();break;case'summary':displaySummaryResults();break;case'nonrep':displayNonRepResults();break;case'coherency':displayCoherencyResults();break;case'indicators':displayIndicatorResults();break;case'reporting':displayReportingResults();break;case'outliers':displayOutlierResults();break;case'browser':initBrowser();break;}renderedTabs[name]=true;},60);}}
+
+function displayRankingResults(){const r=dqaResults.rankings;const periods=dqaResults.reporting?.detailedRates?.length?getPeriods((document.getElementById('cfgStart')||{}).value?.replace('-','')||'',(document.getElementById('cfgEnd')||{}).value?.replace('-','')||''):[];const expected=periods.length||dqaResults.reporting?.expected||1;const startLabel=(document.getElementById('cfgStart')||{}).value||'—';const endLabel=(document.getElementById('cfgEnd')||{}).value||'—';const periodLabel=formatPeriod(startLabel,endLabel);let html=`<div class="method-box"><h3>How Facilities Are Scored and Ranked</h3><div style="background:#fff3cd;border:2px solid #ffc107;border-radius:6px;padding:10px 16px;font-size:12px;color:#7d5a00;margin-bottom:14px;font-weight:700;">⚠ All DQA metrics are computed solely on <u>facilities that are actively reporting</u>. Non-reporting facilities are excluded from all scoring.</div><p style="font-size:13px;color:#444;margin-bottom:14px;">Every reporting facility receives a score out of <strong>100 points</strong> across four equal dimensions (25 points each). Ranked from lowest (highest need) to highest.</p><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:4px;"><div style="border-left:4px solid #3b78a8;padding-left:12px;"><h4>1 · Reporting Rate (25 pts)</h4><div class="formula">(Months reported ÷ ${expected} months) × 25</div></div><div style="border-left:4px solid #17a2b8;padding-left:12px;"><h4>2 · Coherency (25 pts)</h4><div class="formula">(Checks passed ÷ Total checks) × 25</div></div><div style="border-left:4px solid #6f42c1;padding-left:12px;"><h4>3 · Wrong Reporting (25 pts)</h4><div class="formula">((Rows − issues) ÷ Rows) × 25</div></div><div style="border-left:4px solid #28a745;padding-left:12px;"><h4>4 · Outlier Score (25 pts)</h4><div class="formula">((Non-zero − outliers) ÷ Non-zero) × 25</div></div></div><div style="margin-top:16px;padding-top:12px;border-top:2px solid #c8dcf0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:12px;"><div style="background:#f8d7da;border-radius:6px;padding:8px 12px;color:#721c24;"><strong>HIGH</strong> — Score &lt; 75</div><div style="background:#fff3cd;border-radius:6px;padding:8px 12px;color:#7d5a00;"><strong>MEDIUM</strong> — Score 75–94</div><div style="background:#d4edda;border-radius:6px;padding:8px 12px;color:#155724;"><strong>LOW</strong> — Score ≥ 95</div></div></div>`;html+=`<h4 style="color:#3b78a8;margin-bottom:12px;">All Facilities — Priority Ranking (${r.length} total) · ${periodLabel}</h4>`;html+='<div class="tbl-wrap"><table class="dqa-table"><thead><tr><th>Rank</th><th>Priority</th><th>Facility</th><th>Type</th><th>District</th><th>Chiefdom</th><th>Rep</th><th>Coh</th><th>Ind</th><th>Out</th><th>TOTAL</th></tr></thead><tbody>';r.forEach(row=>{if(!row.hasData){html+=`<tr style="opacity:.6;"><td>—</td><td><span class="badge badge-nodata">NO DATA</span></td><td>${row.facility}</td><td><span style="font-size:10px;color:#888;">${row.type}</span></td><td>${row.admin.district||'—'}</td><td>${row.admin.chiefdom||'—'}</td><td colspan="5" style="text-align:center;color:#aaa;font-size:11px;">No records in selected period</td></tr>`;}else{html+=`<tr><td><strong>#${row.rank}</strong></td><td><span class="badge badge-${getPriClass(row.total)}">${getPriLabel(row.total)}</span></td><td><strong>${row.facility}</strong></td><td><span style="font-size:10px;">${row.type}</span></td><td>${row.admin.district||'—'}</td><td>${row.admin.chiefdom||'—'}</td><td>${row.repScore}</td><td>${row.cohScore}</td><td>${row.indScore}</td><td>${row.outScore}</td><td><span class="badge badge-${getScoreClass(row.total)}">${row.total}</span></td></tr>`;}});html+='</tbody></table></div>';document.getElementById('r-ranking').innerHTML=html;}
+
+function displaySummaryResults(){const r=dqaResults.rankings,withData=r.filter(x=>x.hasData);const high=withData.filter(x=>parseFloat(x.total)<75).length,med=withData.filter(x=>parseFloat(x.total)>=75&&parseFloat(x.total)<95).length,low=withData.filter(x=>parseFloat(x.total)>=95).length;const cohChecks=Object.values(dqaResults.coherency);const avgCoh=cohChecks.length>0?(cohChecks.reduce((s,c)=>s+parseFloat(c.passRate),0)/cohChecks.length).toFixed(1):0;const totalInd=Object.values(dqaResults.indicators).reduce((s,i)=>s+i.issues,0);const totalOut=Object.values(dqaResults.outliers).reduce((s,o)=>s+o.count,0);document.getElementById('r-summary').innerHTML=`<div class="stats-grid"><div class="stat-card s-info"><div class="stat-val">${avgCoh}%</div><div class="stat-lbl">Coherency Pass Rate</div></div><div class="stat-card"><div class="stat-val">${totalInd}</div><div class="stat-lbl">Indicator Issues</div></div><div class="stat-card"><div class="stat-val">${totalOut}</div><div class="stat-lbl">Outliers Detected</div></div></div><div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-top:8px;"><div class="stat-card s-red"><div class="stat-val">${high}</div><div class="stat-lbl">High Priority</div></div><div class="stat-card s-amber"><div class="stat-val">${med}</div><div class="stat-lbl">Medium</div></div><div class="stat-card s-green"><div class="stat-val">${low}</div><div class="stat-lbl">Low Priority</div></div></div>`;setTimeout(()=>{if(!withData.length)return;const avgS=k=>withData.length>0?(withData.reduce((s,x)=>s+parseFloat(x[k]),0)/withData.length).toFixed(1):0;Plotly.newPlot('plot-summary',[{x:['Reporting','Coherency','Indicator','Outlier'],y:[parseFloat(avgS('repScore')),parseFloat(avgS('cohScore')),parseFloat(avgS('indScore')),parseFloat(avgS('outScore'))],type:'bar',marker:{color:['#3b78a8','#17a2b8','#6f42c1','#28a745']},text:[avgS('repScore')+'/25',avgS('cohScore')+'/25',avgS('indScore')+'/25',avgS('outScore')+'/25'],textposition:'outside',cliponaxis:false}],{title:{text:'<b>Average Score by Component</b>',font:{size:14,color:'#3b78a8'}},xaxis:{title:'Component'},yaxis:{title:'Avg Score (max 25)',range:[0,32]},margin:{t:80,b:60,l:60,r:30}},{responsive:true});},100);}
+
+function displayNonRepResults(){const nr=(dqaResults.nonReporting||[]).filter(r=>selectedFacTypes.has(r.type||getFacType(r.facility)));const expected=dqaResults.reporting?.expected||0;const startLabel=(document.getElementById('cfgStart')||{}).value||'—';const endLabel=(document.getElementById('cfgEnd')||{}).value||'—';const periodLabel=formatPeriod(startLabel,endLabel);let html=`<div class="method-box" style="margin-bottom:18px;"><h3>Non-Reporting Facilities</h3><p style="font-size:13px;color:#444;">A facility is non-reporting if it has zero records in the entire evaluation window (<strong>${periodLabel}, ${expected} months</strong>).</p></div>`;if(nr.length===0){html+='<div class="alert alert-success">✓ All facilities submitted at least one record.</div>';}else{html+=`<div class="alert alert-warning">⚠ <strong>${nr.length}</strong> of <strong>${Object.keys(allFacMeta).length}</strong> facilities have NO data.</div>`;html+='<div class="tbl-wrap"><table class="dqa-table"><thead><tr><th>#</th><th>Facility</th><th>Type</th><th>District</th><th>Chiefdom</th><th>Status</th></tr></thead><tbody>';nr.forEach((r,i)=>{html+=`<tr><td>${i+1}</td><td><strong>${r.facility}</strong></td><td>${r.type||'—'}</td><td>${r.admin.district||'—'}</td><td>${r.admin.chiefdom||'—'}</td><td><span class="badge badge-nodata">No Data</span></td></tr>`;});html+='</tbody></table></div>';}document.getElementById('r-nonrep').innerHTML=html;}
+
+function displayCoherencyResults(){const checks=Object.values(dqaResults.coherency);if(!checks.length){document.getElementById('r-coherency').innerHTML='<p class="no-data">No coherency checks available.</p>';return;}let html='<div class="tbl-wrap"><table class="dqa-table"><thead><tr><th>Check</th><th>Source</th><th>Total</th><th>Passed</th><th>Failed</th><th>Pass Rate</th></tr></thead><tbody>';checks.forEach(c=>{html+=`<tr><td><strong>${c.name}</strong></td><td><span style="font-size:10px;color:#3b78a8;text-transform:uppercase;">${c.section||'—'}</span></td><td>${c.total}</td><td class="passed">${c.passed}</td><td class="failed">${c.failed}</td><td><span class="badge badge-${getScoreClass(c.passRate)}">${c.passRate}%</span></td></tr>`;});html+='</tbody></table></div>';document.getElementById('r-coherency').innerHTML=html;setTimeout(()=>{Plotly.newPlot('plot-coh-bar',[{x:checks.map(c=>c.name),y:checks.map(c=>parseFloat(c.passRate)),type:'bar',marker:{color:'#3b78a8'},text:checks.map(c=>c.passRate+'%'),textposition:'outside',cliponaxis:false}],{title:{text:'<b>Coherency Pass Rates by Check</b>',font:{size:14,color:'#3b78a8'}},xaxis:{tickangle:-20,automargin:true},yaxis:{title:'Pass Rate (%)',range:[0,115]},margin:{t:80,b:120,l:60,r:30}},{responsive:true});},100);let sHtml='<h4 style="color:#3b78a8;margin:20px 0 12px;">Scatter Plots — LHS vs RHS per Check</h4><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">';checks.forEach((c,i)=>{sHtml+=`<div class="plot-box" id="cohSc_${i}" style="min-height:340px;"></div>`;});sHtml+='</div>';document.getElementById('r-coh-scatter').innerHTML=sHtml;setTimeout(()=>{checks.forEach((c,i)=>{const maxV=Math.max(...[...c.passedPts,...c.failedPts].map(p=>Math.max(p.x,p.y)),1);Plotly.newPlot('cohSc_'+i,[{x:c.passedPts.slice(0,1500).map(p=>p.x),y:c.passedPts.slice(0,1500).map(p=>p.y),mode:'markers',name:'Pass',marker:{color:'rgba(0,100,200,.5)',size:6},text:c.passedPts.slice(0,1500).map(p=>p.facility),hovertemplate:'<b>%{text}</b><br>LHS: %{x}<br>RHS: %{y}<extra>Pass</extra>'},{x:c.failedPts.slice(0,500).map(p=>p.x),y:c.failedPts.slice(0,500).map(p=>p.y),mode:'markers',name:'Fail',marker:{color:'rgba(220,53,69,.7)',size:8},text:c.failedPts.slice(0,500).map(p=>p.facility),hovertemplate:'<b>%{text}</b><br>LHS: %{x}<br>RHS: %{y}<extra>Fail</extra>'},{x:[0,maxV*1.05],y:[0,maxV*1.05],mode:'lines',name:'LHS = RHS',line:{color:'#ffc107',width:2,dash:'dash'},hoverinfo:'skip'}],{title:{text:'<b>'+c.name+'</b><br><sup>Pass: '+c.passed+' | Fail: '+c.failed+' | Rate: '+c.passRate+'%</sup>',font:{size:12,color:'#3b78a8'}},xaxis:{title:'LHS: '+c.xCol,zeroline:true},yaxis:{title:'RHS: '+c.yCol,zeroline:true},margin:{t:90,b:60,l:70,r:20}},{responsive:true});});},200);}
+
+function displayIndicatorResults(){const inds=Object.values(dqaResults.indicators);if(!inds.length){document.getElementById('r-indicators').innerHTML='<p class="no-data">No indicator checks configured.</p>';return;}const microKeys=ALL_VAR_KEYS.filter(k=>hasCfg(k)&&(k==='micro'||k.startsWith('micro_')));const admKeys=ALL_VAR_KEYS.filter(k=>hasCfg(k)&&(k==='admission'||k.startsWith('admission_')));let html=`<div class="method-box" style="margin-bottom:18px;"><h3>Wrong Reporting Rules</h3><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:10px;"><div><h4 style="color:#2b5f8a;">Hospital &amp; Clinic</h4><span style="background:#d4edda;color:#155724;padding:2px 7px;border-radius:10px;display:inline-block;margin:2px;font-size:11px;">✓ Must report Microscopy</span><br><span style="background:#d4edda;color:#155724;padding:2px 7px;border-radius:10px;display:inline-block;margin:2px;font-size:11px;">✓ Must report Admissions</span></div><div><h4 style="color:#6f42c1;">CHC</h4><span style="background:#d4edda;color:#155724;padding:2px 7px;border-radius:10px;display:inline-block;margin:2px;font-size:11px;">✓ Must report Microscopy</span><br><span style="background:#f8d7da;color:#721c24;padding:2px 7px;border-radius:10px;display:inline-block;margin:2px;font-size:11px;">✗ Must NOT report Admissions</span></div><div><h4 style="color:#dc3545;">CHP &amp; MCHP</h4><span style="background:#f8d7da;color:#721c24;padding:2px 7px;border-radius:10px;display:inline-block;margin:2px;font-size:11px;">✗ Must NOT report Microscopy</span><br><span style="background:#f8d7da;color:#721c24;padding:2px 7px;border-radius:10px;display:inline-block;margin:2px;font-size:11px;">✗ Must NOT report Admissions</span></div></div></div>`;inds.forEach(ind=>{const isIssue=ind.issues>0;html+=`<div class="config-card" style="border-left:5px solid ${isIssue?'#dc3545':'#28a745'};margin-bottom:14px;"><h4 style="color:#3b78a8;">${ind.name}</h4>${ind.description?`<p style="font-size:11px;color:#555;margin:4px 0 10px;">${ind.description}</p>`:''}<div class="stats-grid" style="grid-template-columns:repeat(3,1fr);"><div class="stat-card"><div class="stat-val">${ind.total}</div><div class="stat-lbl">Rows Checked</div></div><div class="stat-card ${isIssue?'s-red':'s-green'}"><div class="stat-val">${ind.issues}</div><div class="stat-lbl">Issues Found</div></div><div class="stat-card s-info"><div class="stat-val">${ind.rate}%</div><div class="stat-lbl">Issue Rate</div></div></div>`;if(ind.recs?.length>0){html+=`<details style="margin-top:10px;"><summary style="cursor:pointer;color:#3b78a8;font-weight:700;font-size:12px;">View Records (${ind.recs.length})</summary><div class="tbl-wrap" style="margin-top:8px;"><table class="dqa-table"><thead><tr><th>Facility</th><th>Type</th><th>Year</th><th>Variables</th></tr></thead><tbody>`;ind.recs.slice(0,100).forEach(r=>{html+=`<tr><td>${r.facility}</td><td><strong>${r.type||''}</strong></td><td>${r.year}</td><td style="font-size:11px;">${r.vars||r.missing||''}</td></tr>`;});html+='</tbody></table></div></details>';}html+='</div>';});document.getElementById('r-indicators').innerHTML=html;}
+
+function displayReportingResults(){const rep=dqaResults.reporting;if(!rep){document.getElementById('r-reporting').innerHTML='<p class="no-data">No reporting data.</p>';return;}const startLabel2=(document.getElementById('cfgStart')||{}).value||'—';const endLabel2=(document.getElementById('cfgEnd')||{}).value||'—';const periodLabel2=formatPeriod(startLabel2,endLabel2);let html=`<div class="alert alert-info"><strong>${rep.reportingCount}</strong> of <strong>${rep.totalFacilities}</strong> facilities reported | <strong>${rep.expected} months</strong> (${periodLabel2}) | Avg: <strong>${rep.avgRate}%</strong></div>`;html+=`<div class="stats-grid" style="grid-template-columns:repeat(4,1fr);"><div class="stat-card"><div class="stat-val">${rep.totalFacilities}</div><div class="stat-lbl">Total</div></div><div class="stat-card s-green"><div class="stat-val">${rep.reportingCount}</div><div class="stat-lbl">Reporting</div></div><div class="stat-card s-red"><div class="stat-val">${rep.nonRepCount}</div><div class="stat-lbl">Non-Reporting</div></div><div class="stat-card s-info"><div class="stat-val">${rep.avgRate}%</div><div class="stat-lbl">Avg Rate</div></div></div>`;const low=rep.detailedRates.filter(r=>parseFloat(r.rate)<80).slice(0,50);if(low.length>0){html+='<h4 style="color:#3b78a8;margin:16px 0 8px;">Facilities Below 80%</h4><div class="tbl-wrap"><table class="dqa-table"><thead><tr><th>Facility</th><th>Months Reported</th><th>Expected</th><th>Rate</th></tr></thead><tbody>';low.forEach(r=>{html+=`<tr><td>${r.facility}</td><td>${r.reported}</td><td>${r.expected}</td><td class="failed">${r.rate}%</td></tr>`;});html+='</tbody></table></div>';}document.getElementById('r-reporting').innerHTML=html;setTimeout(()=>{const rates=rep.detailedRates.map(r=>parseFloat(r.rate));const bins=['<80%','80–85%','86–90%','91–95%','96–99%','100%'];const counts=[0,0,0,0,0,0];rates.forEach(r=>{if(r<80)counts[0]++;else if(r<=85)counts[1]++;else if(r<=90)counts[2]++;else if(r<=95)counts[3]++;else if(r<100)counts[4]++;else counts[5]++;});Plotly.newPlot('plot-reporting',[{x:bins,y:counts,type:'bar',marker:{color:['#dc3545','#e07b39','#b8700a','#3b78a8','#17a2b8','#28a745']},text:counts,textposition:'outside',cliponaxis:false}],{title:{text:'<b>Reporting Rate Distribution</b>',font:{size:14,color:'#3b78a8'}},xaxis:{title:'Rate Range'},yaxis:{title:'Number of Facilities'},margin:{t:80,b:60,l:60,r:30}},{responsive:true});},100);}
+
+function displayOutlierResults(){const outs=Object.values(dqaResults.outliers);if(!outs.length){document.getElementById('r-outliers').innerHTML='<p class="no-data">No outlier detection configured.</p>';return;}function pct(arr,p){if(!arr.length)return 0;const idx=(arr.length-1)*p,lo=Math.floor(idx),hi=Math.ceil(idx);return lo===hi?arr[lo]:arr[lo]+(arr[hi]-arr[lo])*(idx-lo);}const byFac={};rawData.forEach(r=>{if(!byFac[r.facility]){byFac[r.facility]={};ALL_VAR_KEYS.forEach(k=>{byFac[r.facility][k]=[];});}ALL_VAR_KEYS.forEach(k=>{byFac[r.facility][k].push(r[k]||0);});});const localBounds={};Object.keys(byFac).forEach(f=>{localBounds[f]={};ALL_VAR_KEYS.forEach(k=>{const v=byFac[f][k].filter(x=>x>0).sort((a,b)=>a-b);if(v.length<4){localBounds[f][k]={lb:null,ub:null};return;}const q1=pct(v,.25),q3=pct(v,.75),iq=q3-q1;localBounds[f][k]={lb:Math.max(0,Math.round(q1-1.5*iq)),ub:Math.round(q3+1.5*iq)};});});let html='<div class="stats-grid" style="grid-template-columns:repeat(auto-fill,minmax(130px,1fr));">';outs.forEach(o=>{html+=`<div class="stat-card ${o.count>0?'s-red':'s-green'}"><div class="stat-val">${o.count}</div><div class="stat-lbl">${o.label}</div><div style="font-size:10px;color:#888;">${o.rate}%</div></div>`;});html+='</div><div class="plot-box" id="plot-out-bar" style="min-height:360px;"></div>';outs.forEach(o=>{if(!o.outliers.length)return;html+=`<div class="config-card" style="border:2px solid #3b78a8;margin-top:14px;"><h4 style="color:#3b78a8;">${o.label} — ${o.count} outliers (${o.rate}%)</h4><details><summary style="cursor:pointer;color:#3b78a8;font-weight:700;font-size:12px;">View Records</summary><div class="tbl-wrap" style="margin-top:8px;"><table class="dqa-table"><thead><tr><th>Facility</th><th>Period</th><th>Value</th><th style="color:#2d6a9f;">LB</th><th style="color:#b8700a;">UB</th><th>Direction</th></tr></thead><tbody>`;o.outliers.slice(0,100).forEach(r=>{html+=`<tr><td>${r.facility}</td><td>${r.period}</td><td><strong style="color:#1e4d70;">${r.value.toLocaleString()}</strong></td><td style="color:#2d6a9f;font-weight:700;">${r.lb}</td><td style="color:#b8700a;font-weight:700;">${r.ub}</td><td><span class="pill ${r.direction==='High'?'pill-high':'pill-low'}">${r.direction}</span></td></tr>`;});html+='</tbody></table></div></details></div>';});document.getElementById('r-outliers').innerHTML=html;setTimeout(()=>{const colors=['#3b78a8','#17a2b8','#6f42c1','#28a745','#dc3545','#b8700a','#ffc107','#e83e8c','#fd7e14','#20c997'];Plotly.newPlot('plot-out-bar',[{x:outs.map(o=>o.label),y:outs.map(o=>o.count),type:'bar',marker:{color:outs.map((_,i)=>colors[i%colors.length])},text:outs.map(o=>o.count+' ('+o.rate+'%)'),textposition:'outside',cliponaxis:false}],{title:{text:'<b>Outlier Counts by Variable</b>',font:{size:14,color:'#3b78a8'}},xaxis:{tickangle:-30,automargin:true},yaxis:{title:'Outlier Count'},margin:{t:80,b:130,l:60,r:30}},{responsive:true});},100);}
+
+/* ═══════════ BROWSER ═══════════ */
+function initBrowser(){if(bBrowserReady){bShowProvinces();return;}showLoad('Building browser...','');setTimeout(()=>{bRows=[];bHierarchy={};bCohIssues=[];bWrIssues=[];bOutIssues=[];bIncIssues=[];bFacBounds={};bAggregate();bComputeIQR();bRunChecks();bBuildHierarchy();bBrowserReady=true;bShowProvinces();hideLoad();},120);}
+function bAggregate(){rawData.forEach(row=>{const fac=(row.facility||'').trim();if(!fac)return;const period=row.period;const prov=row.province||DIST_TO_PROV[row.district]||row.district||'Unknown';const entry={province:prov,district:row.district||'',chiefdom:row.chiefdom||'',facility:fac,type:row.type||getFacType(fac),year:row.year,month:row.month,period,bounds:{}};ALL_VAR_KEYS.forEach(k=>{entry[k]=row[k]||0;});bRows.push(entry);});bAllPeriods=[...new Set(bRows.map(r=>r.period))].sort();}
+function bComputeIQR(){function pct(arr,p){if(!arr.length)return 0;const idx=(arr.length-1)*p,lo=Math.floor(idx),hi=Math.ceil(idx);return lo===hi?arr[lo]:arr[lo]+(arr[hi]-arr[lo])*(idx-lo);}const byFac={};bRows.forEach(r=>{if(!byFac[r.facility]){byFac[r.facility]={};ALL_VAR_KEYS.forEach(k=>byFac[r.facility][k]=[]);}ALL_VAR_KEYS.forEach(k=>byFac[r.facility][k].push(r[k]));});Object.keys(byFac).forEach(f=>{bFacBounds[f]={};ALL_VAR_KEYS.forEach(k=>{const v=byFac[f][k].filter(x=>x>0).sort((a,b)=>a-b);if(v.length<4){bFacBounds[f][k]={lb:null,ub:null};return;}const q1=pct(v,.25),q3=pct(v,.75),iq=q3-q1;bFacBounds[f][k]={lb:Math.max(0,Math.round(q1-1.5*iq)),ub:Math.round(q3+1.5*iq)};});});bRows.forEach(r=>{r.bounds=bFacBounds[r.facility]||{};});}
+function bRunChecks(){const cfgChecks=CFG&&CFG.coherencyChecks||{};const allCfgChecks=[];Object.keys(cfgChecks).forEach(section=>{if(section.startsWith('_'))return;const val=cfgChecks[section];const list=Array.isArray(val)?val:(Array.isArray(val?.checks)?val.checks:[]);list.forEach(ck=>{if(ck.id&&ck.lhs&&ck.rhs)allCfgChecks.push(ck);});});if(!allCfgChecks.length){allCfgChecks.push({id:'conf-test',label:'Confirmed > Tested',lhs:'tested',rhs:'conf',direction:'>='},{id:'conf-treat',label:'Treated > Confirmed',lhs:'conf',rhs:'treated',direction:'>='},{id:'susp-opd',label:'Suspected > OPD',lhs:'opd',rhs:'susp',direction:'>='},{id:'test-susp',label:'Tested > Suspected',lhs:'susp',rhs:'tested',direction:'>='},{id:'conf-susp',label:'Confirmed > Suspected',lhs:'susp',rhs:'conf',direction:'>='});}bRows.forEach(r=>{const base={province:r.province,district:r.district,chiefdom:r.chiefdom,facility:r.facility,type:r.type,year:r.year,month:r.month,period:r.period};allCfgChecks.forEach(ck=>{const lhsKeys=Array.isArray(ck.lhs)?ck.lhs:[ck.lhs];const rhsKeys=Array.isArray(ck.rhs)?ck.rhs:[ck.rhs];if([...lhsKeys,...rhsKeys].some(k=>!hasCfg(k)))return;const lv=resolveVal(r,ck.lhs),rv=resolveVal(r,ck.rhs);if(lv===0&&rv===0)return;const ok=(ck.direction==='>=')?lv>=rv:lv<=rv;if(!ok){const lhsLabel=lhsKeys.map(k=>VAR_LABELS[k]||k).join('+');const rhsLabel=rhsKeys.map(k=>VAR_LABELS[k]||k).join('+');bCohIssues.push({...base,check:ck.label||ck.id,v1:lhsLabel,v1v:lv,v2:rhsLabel,v2v:rv});}});const isHC=r.type==='Hospital'||r.type==='Clinic',isCHC=r.type==='CHC',isField=['CHP','MCHP'].includes(r.type);const active=ALL_VAR_KEYS.some(k=>r[k]>0);const microKeys=ALL_VAR_KEYS.filter(k=>hasCfg(k)&&(k==='micro'||k.startsWith('micro_')));const admKeys=ALL_VAR_KEYS.filter(k=>hasCfg(k)&&(k==='admission'||k.startsWith('admission_')));if(microKeys.length>0){const totalMicro=microKeys.reduce((s,k)=>s+(r[k]||0),0);if(isField&&totalMicro>0)bWrIssues.push({...base,rule:'CHP/MCHP — Microscopy not expected',detail:r.type+' reported total Microscopy '+totalMicro});if((isHC||isCHC)&&active&&totalMicro===0)bWrIssues.push({...base,rule:(isCHC?'CHC':'HC')+' — Microscopy missing',detail:'Active '+r.type+' with 0 Microscopy'});}if(admKeys.length>0){const totalAdm=admKeys.reduce((s,k)=>s+(r[k]||0),0);if((isCHC||isField)&&totalAdm>0)bWrIssues.push({...base,rule:r.type+' — Admissions not expected',detail:r.type+' reported Admissions '+totalAdm});if(isHC&&active&&totalAdm===0)bWrIssues.push({...base,rule:'HC — Admissions missing',detail:'Active '+r.type+' with 0 Admissions'});}ALL_VAR_KEYS.forEach(k=>{if(!hasCfg(k))return;const val=r[k]||0;if(!val||val===0)return;const b=r.bounds[k]||{lb:null,ub:null};if(b.ub!==null&&val>b.ub)bOutIssues.push({...base,variable:VAR_LABELS[k]||k,varKey:k,value:val,lb:b.lb,ub:b.ub,status:'High'});else if(b.lb!==null&&val>0&&val<b.lb)bOutIssues.push({...base,variable:VAR_LABELS[k]||k,varKey:k,value:val,lb:b.lb,ub:b.ub,status:'Low'});});});facRowLookup={};bRows.forEach(r=>{if(!facRowLookup[r.facility])facRowLookup[r.facility]={};facRowLookup[r.facility][r.period]=r;});const INC_GROUPS=[{id:'opd',label:'OPD Total (all ages)',keys:['opd_u5','opd_5plus']},{id:'susp',label:'Suspected Total (Facility + Community)',keys:['susp_u5','susp_5_14','susp_15plus','com_susp_u5','com_susp_5_14','com_susp_15plus']},{id:'tested',label:'Total Tested (Facility + Community)',keys:['rdt_neg_u5','rdt_pos_u5','micro_neg_u5','micro_pos_u5','rdt_neg_5_14','rdt_pos_5_14','micro_neg_5_14','micro_pos_5_14','rdt_neg_15plus','rdt_pos_15plus','micro_neg_15plus','micro_pos_15plus','com_rdt_neg_u5','com_rdt_pos_u5','com_rdt_neg_5_14','com_rdt_pos_5_14','com_rdt_neg_15plus','com_rdt_pos_15plus']},{id:'treated',label:'Treated with ACT (Facility + Community)',keys:['act_lt24_u5','act_gt24_u5','act_lt24_5_14','act_gt24_5_14','act_lt24_15plus','act_gt24_15plus','com_act_lt24_u5','com_act_gt24_u5','com_act_lt24_5_14','com_act_gt24_5_14','com_act_lt24_15plus','com_act_gt24_15plus']},{id:'confirmed',label:'Confirmed Cases (RDT Positive + Microscopy Positive)',keys:['rdt_pos_u5','rdt_pos_5_14','rdt_pos_15plus','micro_pos_u5','micro_pos_5_14','micro_pos_15plus','com_rdt_pos_u5','com_rdt_pos_5_14','com_rdt_pos_15plus']}];INC_GROUPS.forEach(g=>{g.configuredKeys=g.keys.filter(k=>hasCfg(k));});Object.entries(allFacMeta).forEach(([uid,meta])=>{if(!meta.hasData)return;const fac=meta.displayName||meta.name;const base={province:meta.province,district:meta.district,chiefdom:meta.chiefdom,facility:fac,type:meta.type};bAllPeriods.forEach(period=>{const yr=period.substring(0,4);const mon=MONTH_MAP[period.substring(5,7)]||period;const row=facRowLookup[fac]?facRowLookup[fac][period]:null;INC_GROUPS.forEach(g=>{if(!g.configuredKeys.length)return;const total=g.configuredKeys.reduce((s,k)=>s+(row?(parseFloat(row[k])||0):0),0);if(total===0){bIncIssues.push({...base,year:yr,month:mon,period,variable:g.label,groupId:g.id,issue:'Missing',detail:row?'Record exists but all values are 0':'No record for this period'});}});});});}
+
+function bBuildHierarchy(){Object.values(fullOUMap).forEach(ou=>{const prov=ou.province,dist=ou.district,chi=ou.chiefdom;const name=(window.facDisplayName&&window.facDisplayName[ou.id])||ou.name;if(!bHierarchy[prov])bHierarchy[prov]={};if(!bHierarchy[prov][dist])bHierarchy[prov][dist]={};if(!bHierarchy[prov][dist][chi])bHierarchy[prov][dist][chi]=[];if(!bHierarchy[prov][dist][chi].includes(name))bHierarchy[prov][dist][chi].push(name);});Object.keys(bHierarchy).forEach(p=>Object.keys(bHierarchy[p]).forEach(d=>Object.keys(bHierarchy[p][d]).forEach(c=>{bHierarchy[p][d][c].sort();})));}
+function bIssueBadge(n,hasData){if(!hasData)return'<span class="ib-nodata">No Data</span>';return n===0?'<span class="ib-ok">✓ No Issues</span>':`<span class="ib-error">⚠ ${n.toLocaleString()} Issues</span>`;}
+function bIssueCount(fn){return bCohIssues.filter(fn).length+bWrIssues.filter(fn).length+bOutIssues.filter(fn).length+bIncIssues.filter(fn).length;}
+function bBreadcrumb(){let h=`<span class="bc-item${!bCurProv?' active':''}" onclick="bShowProvinces()">All Provinces</span>`;if(bCurProv)h+=`<span class="bc-sep">›</span><span class="bc-item${!bCurDist?' active':''}" onclick="bShowDistricts('${esc(bCurProv)}')">${bCurProv}</span>`;if(bCurDist)h+=`<span class="bc-sep">›</span><span class="bc-item${!bCurChi?' active':''}" onclick="bShowChiefdoms('${esc(bCurDist)}')">${bCurDist}</span>`;if(bCurChi)h+=`<span class="bc-sep">›</span><span class="bc-item${!bCurFac?' active':''}" onclick="bShowFacilities('${esc(bCurChi)}')">${bCurChi}</span>`;if(bCurFac)h+=`<span class="bc-sep">›</span><span class="bc-item active">${bCurFac}</span>`;document.getElementById('bBreadcrumb').innerHTML=h;}
+function bShowProvinces(){bCurProv=null;bCurDist=null;bCurChi=null;bCurFac=null;bBreadcrumb();const provs=Object.keys(bHierarchy).sort();if(!provs.length){document.getElementById('bContent').innerHTML='<p class="no-data">No data.</p>';return;}let html='<div class="sec-hdr"><span class="sec-icon">P</span><span class="sec-title">SELECT PROVINCE / AREA</span></div><div class="nav-cards">';provs.forEach(prov=>{const dists=Object.keys(bHierarchy[prov]);let totChi=0,totFac=0,totData=0;dists.forEach(d=>{const chis=Object.keys(bHierarchy[prov][d]);totChi+=chis.length;chis.forEach(c=>{bHierarchy[prov][d][c].forEach(f=>{totFac++;if((window.facMetaByDisplayName||{})[f]?.hasData)totData++;});});});const issues=bIssueCount(r=>r.province===prov);html+=`<div class="nav-card lv-region" onclick="bShowDistricts('${esc(prov)}')"><div class="nc-title">${prov}</div><div class="nc-sub">Province / Area</div><div class="nc-counts"><div class="nc-cnt"><span class="nc-cnt-v">${dists.length}</span><span class="nc-cnt-l">Districts</span></div><div class="nc-cnt"><span class="nc-cnt-v">${totChi}</span><span class="nc-cnt-l">Chiefdoms</span></div><div class="nc-cnt"><span class="nc-cnt-v">${totFac}</span><span class="nc-cnt-l">Facilities</span></div><div class="nc-cnt"><span class="nc-cnt-v" style="color:#28a745;">${totData}</span><span class="nc-cnt-l">With Data</span></div></div>${bIssueBadge(issues,totData>0)}<div class="nc-hint">Click to view districts</div></div>`;});document.getElementById('bContent').innerHTML=html+'</div>';}
+function bShowDistricts(prov){bCurProv=prov;bCurDist=null;bCurChi=null;bCurFac=null;bBreadcrumb();const dists=Object.keys(bHierarchy[prov]||{}).sort();let html=`<button class="back-btn" onclick="bShowProvinces()">← Back</button><div class="sec-hdr"><span class="sec-icon">D</span><span class="sec-title">DISTRICTS — ${prov}</span></div><div class="nav-cards">`;dists.forEach(dist=>{const chis=Object.keys(bHierarchy[prov][dist]);let totFac=0,totData=0;chis.forEach(c=>{bHierarchy[prov][dist][c].forEach(f=>{totFac++;if((window.facMetaByDisplayName||{})[f]?.hasData)totData++;});});const issues=bIssueCount(r=>r.district===dist);html+=`<div class="nav-card lv-district" onclick="bShowChiefdoms('${esc(dist)}')"><div class="nc-title">${dist}</div><div class="nc-sub">District</div><div class="nc-counts"><div class="nc-cnt"><span class="nc-cnt-v">${chis.length}</span><span class="nc-cnt-l">Chiefdoms</span></div><div class="nc-cnt"><span class="nc-cnt-v">${totFac}</span><span class="nc-cnt-l">Facilities</span></div><div class="nc-cnt"><span class="nc-cnt-v" style="color:#28a745;">${totData}</span><span class="nc-cnt-l">With Data</span></div></div>${bIssueBadge(issues,totData>0)}<div class="nc-hint">Click to view chiefdoms</div></div>`;});document.getElementById('bContent').innerHTML=html+'</div>';}
+function bShowChiefdoms(dist){bCurDist=dist;bCurChi=null;bCurFac=null;bBreadcrumb();const prov=bCurProv,chis=Object.keys((bHierarchy[prov]||{})[dist]||{}).sort();let html=`<button class="back-btn" onclick="bShowDistricts('${esc(prov)}')">← Back</button><div class="sec-hdr"><span class="sec-icon">C</span><span class="sec-title">CHIEFDOMS — ${dist}</span></div><div class="nav-cards">`;chis.forEach(chi=>{const facs=bHierarchy[prov][dist][chi]||[];let totData=0;facs.forEach(f=>{if((window.facMetaByDisplayName||{})[f]?.hasData)totData++;});const issues=bIssueCount(r=>r.chiefdom===chi);html+=`<div class="nav-card lv-chiefdom" onclick="bShowFacilities('${esc(chi)}')"><div class="nc-title">${chi||'(No Chiefdom)'}</div><div class="nc-sub">Chiefdom</div><div class="nc-counts"><div class="nc-cnt"><span class="nc-cnt-v">${facs.length}</span><span class="nc-cnt-l">Facilities</span></div><div class="nc-cnt"><span class="nc-cnt-v" style="color:#28a745;">${totData}</span><span class="nc-cnt-l">With Data</span></div></div>${bIssueBadge(issues,totData>0)}<div class="nc-hint">Click to view health facilities</div></div>`;});document.getElementById('bContent').innerHTML=html+'</div>';}
+function bShowFacilities(chi){bCurChi=chi;bCurFac=null;bBreadcrumb();const prov=bCurProv,dist=bCurDist;const facs=(bHierarchy[prov]&&bHierarchy[prov][dist]&&bHierarchy[prov][dist][chi])||[];const pillMap={Hospital:'pill-hospital',Clinic:'pill-clinic',CHC:'pill-chc',CHP:'pill-chp',MCHP:'pill-mchp',Other:'pill-other'};
+// Build a fast set of facilities that have actual data rows
+const facsWithRows=new Set(bRows.map(r=>r.facility));
+let html=`<button class="back-btn" onclick="bShowChiefdoms('${esc(dist)}')">← Back</button><div class="sec-hdr"><span class="sec-icon">H</span><span class="sec-title">HEALTH FACILITIES — ${chi} (${facs.length})</span></div><div class="nav-cards">`;facs.forEach(fac=>{const meta=(window.facMetaByDisplayName&&window.facMetaByDisplayName[fac])||Object.values(allFacMeta).find(m=>(m.displayName||m.name)===fac)||{type:'Other',hasData:false};const pc=pillMap[meta.type]||'pill-other';
+// Use bRows as ground truth for hasData — more reliable than allFacMeta.hasData
+const hasData=facsWithRows.has(fac)||(meta.hasData===true);
+const issues=hasData?bIssueCount(r=>r.facility===fac):0;const rankEntry=dqaResults.rankings.find(r=>r.facility===fac);const score=rankEntry&&hasData?parseFloat(rankEntry.total):null;const scoreColor=score===null?'#888':score>=95?'#28a745':score>=75?'#17a2b8':score>=50?'#b8700a':'#dc3545';const periods=hasData?bRows.filter(r=>r.facility===fac).length:0;html+=`<div class="nav-card lv-facility${!hasData?' no-data-card':''}" data-fac="${fac.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" style="cursor:pointer;"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;"><div class="nc-title" style="font-size:13px;max-width:160px;">${fac}</div><span class="pill ${pc}">${meta.type}</span></div><div class="nc-sub">${chi} · ${dist}</div><div class="nc-counts"><div class="nc-cnt"><span class="nc-cnt-v" style="${!hasData?'color:#bbb;':''}">${periods}</span><span class="nc-cnt-l">Periods</span></div>${score!==null?'<div class="nc-cnt"><span class="nc-cnt-v" style="color:'+scoreColor+'">'+score+'</span><span class="nc-cnt-l">DQA Score</span></div>':''}</div>${bIssueBadge(issues,hasData)}<div class="nc-hint">${hasData?'Click to open DQA dashboard':'No data — registered in system'}</div></div>`;});document.getElementById('bContent').innerHTML=html+'</div>';document.getElementById('bContent').querySelectorAll('.nav-card[data-fac]').forEach(card=>{card.addEventListener('click',()=>{const fName=card.getAttribute('data-fac');if(fName)bShowDashboard(fName);});});}
+function bShowDashboard(fac){bCurFac=fac;bBreadcrumb();const meta=(window.facMetaByDisplayName||{})[fac]||Object.values(allFacMeta).find(m=>(m.displayName||m.name)===fac)||{type:'Other',hasData:false};const pillMap={Hospital:'pill-hospital',Clinic:'pill-clinic',CHC:'pill-chc',CHP:'pill-chp',MCHP:'pill-mchp',Other:'pill-other'},pc=pillMap[meta.type]||'pill-other';
+// Use bRows as ground truth — hasData on meta may be stale in downloaded HTML
+const hasData=bRows.some(r=>r.facility===fac)||(meta.hasData===true);const facRows=bRows.filter(r=>r.facility===fac).sort((a,b)=>a.period.localeCompare(b.period));const fCoh=bCohIssues.filter(r=>r.facility===fac),fWr=bWrIssues.filter(r=>r.facility===fac),fOut=bOutIssues.filter(r=>r.facility===fac),fInc=bIncIssues.filter(r=>r.facility===fac);const rankEntry=dqaResults.rankings.find(r=>r.facility===fac);let html=`<button class="back-btn" onclick="bShowFacilities('${esc(bCurChi)}')">← Back</button>`;html+=`<div class="fac-hdr"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.5rem;"><div><div class="fac-name">${fac}</div><div class="fac-meta"><span class="pill ${pc}">${meta.type}</span><span>${meta.chiefdom}</span><span>${meta.district}</span><span>${meta.province}</span></div></div><div style="text-align:right;">${hasData&&rankEntry?`<div style="font-size:24px;font-weight:700;color:#ffc107;">${rankEntry.total}<span style="font-size:12px;color:#cde;">/100</span></div><div><span class="badge badge-${getPriClass(rankEntry.total)}">${getPriLabel(rankEntry.total)}</span></div>`:'<div style="font-size:14px;color:#ffc107;">No Data</div>'}</div></div></div>`;if(!hasData){html+=`<div class="nodata-banner">📂 No records for ${fac} in the configured period.</div>`;document.getElementById('bContent').innerHTML=html;return;}html+=`<div class="stats-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:14px;"><div class="stat-card"><div class="stat-val">${facRows.length}</div><div class="stat-lbl">Periods</div></div><div class="stat-card ${fCoh.length>0?'s-red':'s-green'}"><div class="stat-val">${fCoh.length}</div><div class="stat-lbl">Coherency</div></div><div class="stat-card ${fWr.length>0?'s-red':'s-green'}"><div class="stat-val">${fWr.length}</div><div class="stat-lbl">Wrong Rep</div></div><div class="stat-card ${fOut.length>0?'s-amber':'s-green'}"><div class="stat-val">${fOut.length}</div><div class="stat-lbl">Outliers</div></div><div class="stat-card ${fInc.length>0?'s-amber':'s-green'}"><div class="stat-val">${fInc.length}</div><div class="stat-lbl">Incomplete</div></div></div>`;html+=`<div class="tab-bar"><button class="tab-btn active" onclick="bDqaTab('bp-rep',this)">Reporting Matrix</button><button class="tab-btn" onclick="bDqaTab('bp-monthly',this)">Monthly Indicators</button><button class="tab-btn" onclick="bDqaTab('bp-coh',this)">Coherency (${fCoh.length})</button><button class="tab-btn" onclick="bDqaTab('bp-wr',this)">Wrong Reporting (${fWr.length})</button><button class="tab-btn" onclick="bDqaTab('bp-out',this)">IQR Outliers (${fOut.length})</button><button class="tab-btn" onclick="bDqaTab('bp-inc',this)">Incomplete (${fInc.length})</button><button class="tab-btn" onclick="bDqaTab('bp-ts',this);bRenderOutlierTS('${esc(fac)}')">Outlier Trends</button><button class="tab-btn" onclick="bDqaTab('bp-comp',this);bRenderComparative('${esc(fac)}')">Comparative</button></div>`;const facPeriods=new Set(facRows.map(r=>r.period)),lookup={};facRows.forEach(r=>{lookup[r.period]=r;});let repHtml='<div class="matrix-wrap"><table class="matrix-table"><thead><tr><th class="vc">Variable</th>';bAllPeriods.forEach(p=>{repHtml+=`<th>${p}</th>`;});repHtml+='</tr></thead><tbody>';ALL_VAR_KEYS.forEach(k=>{if(!hasCfg(k))return;repHtml+=`<tr><td class="vc">${VAR_LABELS[k]}</td>`;bAllPeriods.forEach(p=>{if(!facPeriods.has(p))repHtml+='<td class="cell-na">—</td>';else if(!lookup[p]||lookup[p][k]===0)repHtml+='<td class="cell-z">0</td>';else repHtml+=`<td class="cell-y">${lookup[p][k].toLocaleString()}</td>`;});repHtml+='</tr>';});repHtml+='</tbody></table></div>';let monthHtml='<div class="month-cards-grid">';facRows.forEach(r=>{const hasIssue=fCoh.some(i=>i.period===r.period)||fWr.some(i=>i.period===r.period);monthHtml+=`<div class="month-card"><div class="month-card-hdr"><span>${r.month} ${r.year}</span>${hasIssue?'<span style="background:#ffc107;color:#2b5f8a;font-size:10px;padding:2px 8px;border-radius:10px;">Issues</span>':'<span style="background:rgba(255,255,255,.15);font-size:10px;padding:2px 8px;border-radius:10px;">OK</span>'}</div><table class="ind-table"><thead><tr><th>Variable</th><th>Value</th><th>LB</th><th>UB</th><th>Status</th></tr></thead><tbody>`;ALL_VAR_KEYS.forEach(k=>{if(!hasCfg(k))return;const val=r[k],b=r.bounds[k]||{lb:null,ub:null};let rCls='',pCls='pill-ok',pLbl='Normal';if(b.ub!==null&&val>b.ub){rCls='row-hi';pCls='pill-high';pLbl='High';}else if(b.lb!==null&&val>0&&val<b.lb){rCls='row-lo';pCls='pill-low';pLbl='Low';}if(val===0)monthHtml+=`<tr><td>${VAR_LABELS[k]}</td><td style="color:#bbb;">0</td><td style="color:#bbb;">—</td><td style="color:#bbb;">—</td><td><span class="pill pill-na">NA</span></td></tr>`;else monthHtml+=`<tr class="${rCls}"><td>${VAR_LABELS[k]}</td><td style="color:#1e4d70;font-size:13px;">${val.toLocaleString()}</td><td style="color:#2d6a9f;">${b.lb!==null?b.lb.toLocaleString():'—'}</td><td style="color:#b8700a;">${b.ub!==null?b.ub.toLocaleString():'—'}</td><td><span class="pill ${pCls}">${pLbl}</span></td></tr>`;});monthHtml+='</tbody></table></div>';});monthHtml+='</div>';const tblPane=(rows,cols)=>`<div class="tbl-wrap"><table class="dqa-table"><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`;const cohHtml=fCoh.length===0?'<p class="no-data">No coherency errors.</p>':tblPane(fCoh.map(r=>`<tr><td>${r.year}</td><td>${r.month}</td><td>${r.period}</td><td><strong>${r.check}</strong></td><td class="failed">${r.v1}=${r.v1v}</td><td class="passed">${r.v2}=${r.v2v}</td></tr>`).join(''),['Year','Month','Period','Check','Variable 1','Variable 2']);const wrHtml=fWr.length===0?'<p class="no-data">No wrong reporting errors.</p>':tblPane(fWr.map(r=>`<tr><td>${r.year}</td><td>${r.month}</td><td><strong>${r.rule}</strong></td><td style="font-size:11px;">${r.detail}</td></tr>`).join(''),['Year','Month','Rule','Detail']);const outHtml=fOut.length===0?'<p class="no-data">No IQR outliers.</p>':tblPane(fOut.map(r=>`<tr><td>${r.period}</td><td><strong>${r.variable}</strong></td><td><strong style="color:#3b78a8">${r.value.toLocaleString()}</strong></td><td style="color:#2d6a9f;">${r.lb!==null?r.lb.toLocaleString():'—'}</td><td style="color:#b8700a;">${r.ub!==null?r.ub.toLocaleString():'—'}</td><td><span class="pill ${r.status==='High'?'pill-high':'pill-low'}">${r.status}</span></td></tr>`).join(''),['Period','Variable','Value','LB','UB','Status']);let incHtml;if(fInc.length===0){incHtml='<p class="no-data">No incomplete reporting issues.</p>';}else{const incByPeriod={};fInc.forEach(r=>{if(!incByPeriod[r.period])incByPeriod[r.period]={period:r.period,year:r.year,month:r.month,missing:[]};incByPeriod[r.period].missing.push({label:r.variable,detail:r.detail});});const allGroups=['opd','susp','tested','confirmed','treated'];const GROUP_LABELS={opd:'OPD Total',susp:'Suspected (Fac+Comm)',tested:'Tested (Fac+Comm)',treated:'Treated ACT (Fac+Comm)',confirmed:'Confirmed Cases'};let tbl='<div class="tbl-wrap"><table class="dqa-table"><thead><tr><th>Period</th>';allGroups.forEach(g=>{tbl+=`<th>${GROUP_LABELS[g]||g}</th>`;});tbl+='<th>Missing</th></tr></thead><tbody>';bAllPeriods.forEach(period=>{const yr=period.substring(0,4),mon=MONTH_MAP[period.substring(5,7)]||period;const rec=incByPeriod[period];const missingGroups=new Set((rec?rec.missing:[]).map(m=>{if(m.label.includes('OPD'))return'opd';if(m.label.includes('Suspected'))return'susp';if(m.label.includes('Tested'))return'tested';if(m.label.includes('Confirmed'))return'confirmed';if(m.label.includes('Treated'))return'treated';return'';}));const hasRow=facRowLookup[fac]&&facRowLookup[fac][period];if(!hasRow&&!rec)return;tbl+=`<tr><td><strong>${mon} ${yr}</strong></td>`;allGroups.forEach(g=>{if(missingGroups.has(g)){tbl+=`<td style="background:#fff0f0;color:#dc3545;font-weight:700;text-align:center;">✗ Missing</td>`;}else{tbl+=`<td style="background:#f0fff4;color:#28a745;font-weight:700;text-align:center;">✓</td>`;}});tbl+=`<td><strong style="color:${missingGroups.size>0?'#dc3545':'#28a745'}">${missingGroups.size}</strong></td>`;tbl+='</tr>';});tbl+='</tbody></table></div>';incHtml=`<div class="alert alert-warning">⚠ <strong>${fInc.length}</strong> missing groups across <strong>${Object.keys(incByPeriod).length}</strong> periods</div>`+tbl;}const safeId=fac.replace(/[^a-z0-9]/gi,'_');html+=`<div id="bDashPanes"><div id="bp-rep">${repHtml}</div><div id="bp-monthly" class="hidden">${monthHtml}</div><div id="bp-coh" class="hidden">${cohHtml}</div><div id="bp-wr" class="hidden">${wrHtml}</div><div id="bp-out" class="hidden">${outHtml}</div><div id="bp-inc" class="hidden">${incHtml}</div><div id="bp-ts" class="hidden"><div id="bts-plots-${safeId}"></div></div><div id="bp-comp" class="hidden"><div id="bcomp-plots-${safeId}"></div></div></div>`;document.getElementById('bContent').innerHTML=html;}
+function bDqaTab(paneId,btn){document.querySelectorAll('#bDashPanes > div').forEach(p=>p.classList.add('hidden'));document.querySelectorAll('#bContent .tab-bar .tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById(paneId).classList.remove('hidden');btn.classList.add('active');}
+function bRenderOutlierTS(fac){const safeId=fac.replace(/[^a-z0-9]/gi,'_'),container=document.getElementById('bts-plots-'+safeId);if(!container||container.dataset.rendered)return;container.dataset.rendered='1';const facRows=bRows.filter(r=>r.facility===fac).sort((a,b)=>a.period.localeCompare(b.period));if(!facRows.length){container.innerHTML='<p class="no-data">No data.</p>';return;}const fOut=bOutIssues.filter(r=>r.facility===fac),byPeriod={};facRows.forEach(r=>{if(!byPeriod[r.period])byPeriod[r.period]={...r};});const sortedPeriods=Object.keys(byPeriod).sort();const outSet=new Map();fOut.forEach(o=>{if(!outSet.has(o.varKey))outSet.set(o.varKey,new Set());outSet.get(o.varKey).add(o.period);});let innerHtml='';ALL_VAR_KEYS.forEach((k,vi)=>{if(!hasCfg(k))return;const hasData=sortedPeriods.some(p=>(byPeriod[p]?.[k]||0)>0);if(!hasData)return;innerHtml+=`<div class="plot-box" id="bts_${safeId}_${vi}" style="min-height:300px;margin-bottom:14px;"></div>`;});container.innerHTML=innerHtml||'<p class="no-data">No data.</p>';setTimeout(()=>{ALL_VAR_KEYS.forEach((k,vi)=>{if(!hasCfg(k))return;const hasData=sortedPeriods.some(p=>(byPeriod[p]?.[k]||0)>0);if(!hasData)return;const elId='bts_'+safeId+'_'+vi,el=document.getElementById(elId);if(!el)return;const outPeriods=outSet.get(k)||new Set(),yAll=sortedPeriods.map(p=>byPeriod[p]?.[k]||0),xNorm=[],yNorm=[],xOut=[],yOut=[];sortedPeriods.forEach((p,i)=>{const y=yAll[i];if(y===0)return;if(outPeriods.has(p)){xOut.push(p);yOut.push(y);}else{xNorm.push(p);yNorm.push(y);}});const bounds=bFacBounds[fac]?.[k]||{lb:null,ub:null};const traces=[{x:sortedPeriods,y:yAll,type:'scatter',mode:'lines',line:{color:'rgba(0,64,128,.35)',width:1.5},showlegend:false},{x:xNorm,y:yNorm,mode:'markers',name:'Normal',marker:{color:'#3b78a8',size:7}}];if(xOut.length)traces.push({x:xOut,y:yOut,mode:'markers',name:'Outlier',marker:{color:'#dc3545',size:12,symbol:'circle',line:{color:'#8b0000',width:2}}});const shapes=[],annots=[];if(bounds.ub!==null){shapes.push({type:'line',x0:0,x1:1,xref:'paper',y0:bounds.ub,y1:bounds.ub,line:{color:'#dc3545',width:1.5,dash:'dot'}});annots.push({x:1,xref:'paper',y:bounds.ub,yref:'y',text:'UB: '+bounds.ub,showarrow:false,xanchor:'right',font:{color:'#dc3545',size:10},bgcolor:'rgba(255,255,255,.8)'});}if(bounds.lb!==null&&bounds.lb>0){shapes.push({type:'line',x0:0,x1:1,xref:'paper',y0:bounds.lb,y1:bounds.lb,line:{color:'#28a745',width:1.5,dash:'dot'}});annots.push({x:1,xref:'paper',y:bounds.lb,yref:'y',text:'LB: '+bounds.lb,showarrow:false,xanchor:'right',font:{color:'#28a745',size:10},bgcolor:'rgba(255,255,255,.8)'});}Plotly.newPlot(elId,traces,{title:{text:`<b>${VAR_LABELS[k]}</b>`,font:{size:12,color:'#3b78a8'}},xaxis:{title:'Period',tickangle:90,tickmode:'array',tickvals:sortedPeriods,ticktext:sortedPeriods,automargin:true},yaxis:{title:'Count',rangemode:'tozero'},shapes,annotations:annots,margin:{t:60,b:110,l:70,r:30}},{responsive:true});});},100);}
+function bRenderComparative(fac){const safeId=fac.replace(/[^a-z0-9]/gi,'_'),container=document.getElementById('bcomp-plots-'+safeId);if(!container||container.dataset.rendered)return;container.dataset.rendered='1';const facRows=bRows.filter(r=>r.facility===fac).sort((a,b)=>a.period.localeCompare(b.period));if(!facRows.length){container.innerHTML='<p class="no-data">No data.</p>';return;}const byPeriod={};facRows.forEach(r=>{if(!byPeriod[r.period]){byPeriod[r.period]={};ALL_VAR_KEYS.forEach(k=>byPeriod[r.period][k]=0);}ALL_VAR_KEYS.forEach(k=>byPeriod[r.period][k]+=(r[k]||0));});const periods=Object.keys(byPeriod).sort();const XAXIS={title:'Period',tickangle:90,tickmode:'array',tickvals:periods,ticktext:periods,automargin:true};const LEGEND={x:1,y:1,xanchor:'right',bgcolor:'rgba(255,255,255,.85)',bordercolor:'#3b78a8',borderwidth:1};let innerHtml='';const CPAL=['#3b78a8','#17a2b8','#6f42c1','#dc3545','#28a745','#b8700a','#ffc107','#e83e8c','#fd7e14','#20c997'];const configuredKeys=ALL_VAR_KEYS.filter(k=>hasCfg(k));const cascadeVars=configuredKeys.slice(0,5).map((k,i)=>({k,c:CPAL[i],l:VAR_LABELS[k]||k}));const otherVarKeys=configuredKeys.slice(5).filter(k=>periods.some(p=>(byPeriod[p][k]||0)>0));const otherVars=otherVarKeys.map((k,i)=>({k,c:CPAL[(i+5)%CPAL.length],l:VAR_LABELS[k]||k}));if(cascadeVars.length>0){innerHtml+=`<div class="plot-box" id="comp_cascade_${safeId}" style="min-height:300px;"></div>`;}if(otherVars.length>0)innerHtml+=`<div class="plot-box" id="comp_other_${safeId}" style="min-height:280px;"></div>`;container.innerHTML=innerHtml||'<p class="no-data">No data.</p>';setTimeout(()=>{if(cascadeVars.length>0&&document.getElementById('comp_cascade_'+safeId))Plotly.newPlot('comp_cascade_'+safeId,cascadeVars.map(v=>({x:periods,y:periods.map(p=>byPeriod[p][v.k]||0),type:'scatter',mode:'lines+markers',name:v.l,line:{color:v.c,width:2},marker:{size:7}})),{title:{text:'<b>Malaria Cascade</b>',font:{size:13,color:'#3b78a8'}},xaxis:XAXIS,yaxis:{title:'Count',rangemode:'tozero'},legend:LEGEND,margin:{t:60,b:110,l:70,r:20}},{responsive:true});if(otherVars.length>0&&document.getElementById('comp_other_'+safeId))Plotly.newPlot('comp_other_'+safeId,otherVars.map(v=>({x:periods,y:periods.map(p=>byPeriod[p][v.k]||0),type:'scatter',mode:'lines+markers',name:v.l,line:{color:v.c,width:2},marker:{size:7}})),{title:{text:'<b>Other Malaria Indicators</b>',font:{size:13,color:'#3b78a8'}},xaxis:XAXIS,yaxis:{title:'Count',rangemode:'tozero'},legend:LEGEND,margin:{t:60,b:110,l:70,r:20}},{responsive:true});},100);}
+
+/* ═══════════ EXPORTS ═══════════ */
+function exportExcel(){showLoad('Generating Excel...');setTimeout(()=>{const wb=XLSX.utils.book_new();const allFacsData=dqaResults.rankings.map(r=>({Rank:r.hasData?r.rank:'—',Priority:r.hasData?getPriLabel(r.total):'NO DATA',Facility:r.facility,Type:r.type,District:r.admin.district||'',Chiefdom:r.admin.chiefdom||'',...(r.hasData?{'Rep Score':r.repScore,'Coh Score':r.cohScore,'Ind Score':r.indScore,'Out Score':r.outScore,'Total Score':r.total,'Rep Rate':r.repRate+'%'}:{Note:'No data in period'})}));XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(allFacsData),'All Facilities');if(dqaResults.nonReporting?.length)XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(dqaResults.nonReporting.map((r,i)=>({No:i+1,Facility:r.facility,Type:r.type,District:r.admin.district||'',Chiefdom:r.admin.chiefdom||'',Status:r.status}))),'Non-Reporting');const cohData=Object.values(dqaResults.coherency).map(c=>({Check:c.name,Total:c.total,Passed:c.passed,Failed:c.failed,'Pass Rate':c.passRate+'%'}));if(cohData.length)XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(cohData),'Coherency');XLSX.writeFile(wb,'DQA_Report_'+new Date().toISOString().split('T')[0]+'.xlsx');hideLoad();},100);}
+function exportPriorityCSV(){let csv='Rank,Priority,Facility,Type,District,Chiefdom,Reporting,Coherency,Indicator,Outlier,Total Score,Reporting Rate\n';dqaResults.rankings.forEach(r=>{if(!r.hasData){csv+='—,NO DATA,"'+r.facility+'",'+r.type+','+(r.admin.district||'')+','+(r.admin.chiefdom||'')+',,,,,,\n';}else{csv+=r.rank+','+getPriLabel(r.total)+',"'+r.facility+'",'+r.type+','+(r.admin.district||'')+','+(r.admin.chiefdom||'')+','+r.repScore+','+r.cohScore+','+r.indScore+','+r.outScore+','+r.total+','+r.repRate+'%\n';}});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='Priority_List_'+new Date().toISOString().split('T')[0]+'.csv';a.click();}
+
+/* ═══════════ PATCH 3: buildDQAHtmlBlob() — shared blob builder ═══════════ */
+function buildDQAHtmlBlob(){
+  const start=(document.getElementById('cfgStart')||{}).value||'';
+  const end  =(document.getElementById('cfgEnd')||{}).value||'';
+
+  // ── Ensure browser data is built before snapshotting ──────────
+  // bRows/bHierarchy/bCohIssues etc. are only populated when the user
+  // clicks the HF Browser tab. If they save/download without opening
+  // the browser first, bRows is empty — so the downloaded HTML will
+  // show "No Data" in the HF Browser. Fix: eagerly run the browser
+  // build pipeline here if not already done.
+  if(!bBrowserReady || !bRows.length){
+    bRows=[];bHierarchy={};bCohIssues=[];bWrIssues=[];
+    bOutIssues=[];bIncIssues=[];bFacBounds={};
+    bAggregate();bComputeIQR();bRunChecks();bBuildHierarchy();
+    bBrowserReady=true;
+  }
+  const STATE={
+    start,end,rawData,dqaResults,fullOUMap,allFacMeta,
+    ALL_VAR_KEYS,VAR_LABELS,MAP,UID_TO_KEY,
+    bRows,bHierarchy,bCohIssues,bWrIssues,bOutIssues,
+    bIncIssues,bAllPeriods,facRowLookup,bFacBounds
+  };
+  const bootstrap=`<script id="__dqa_bootstrap__">
+(function(){
+  const S=${JSON.stringify(STATE)};
+  window.addEventListener('load',function(){
+    const cs=document.getElementById('cfgStart'),ce=document.getElementById('cfgEnd');
+    if(cs)cs.value=S.start; if(ce)ce.value=S.end;
+    rawData=S.rawData; dqaResults=S.dqaResults; fullOUMap=S.fullOUMap;
+    allFacMeta=S.allFacMeta; ALL_VAR_KEYS=S.ALL_VAR_KEYS; VAR_LABELS=S.VAR_LABELS;
+    MAP=S.MAP; UID_TO_KEY=S.UID_TO_KEY; bRows=S.bRows; bHierarchy=S.bHierarchy;
+    bCohIssues=S.bCohIssues; bWrIssues=S.bWrIssues; bOutIssues=S.bOutIssues;
+    bIncIssues=S.bIncIssues; bAllPeriods=S.bAllPeriods; facRowLookup=S.facRowLookup;
+    bFacBounds=S.bFacBounds||{};
+    bBrowserReady=true;
+    // Restore bounds on each bRow entry from bFacBounds
+    bRows.forEach(function(r){ r.bounds=bFacBounds[r.facility]||{}; });
+    // Rebuild window lookups that are not serialised in STATE
+    window.facDisplayName={};
+    window.facMetaByDisplayName={};
+    Object.values(allFacMeta).forEach(function(meta){
+      var dn=meta.displayName||meta.name;
+      window.facDisplayName[meta.id]=dn;
+      window.facMetaByDisplayName[dn]=meta;
+    });
+    try{
+      displayResults();
+      document.getElementById('s-results').classList.remove('hidden');
+      document.getElementById('pipelinePanel').style.display='none';
+      const ps=document.getElementById('pipelineStatus');
+      if(ps){ps.textContent='Saved report \xb7 '+formatPeriod(S.start,S.end);ps.style.display='inline-block';ps.style.background='rgba(40,167,69,.6)';}
+    }catch(e){console.error('DQA restore error:',e);}
+  });
+})();
+<\/script>`;
+
+  // ── DOM clone — safe surgical removal, no regex on HTML strings ──
+  const clone = document.documentElement.cloneNode(true);
+
+  // Helper: remove element by id from clone
+  function drop(id){ const el=clone.querySelector('#'+id); if(el) el.remove(); }
+  // Helper: remove element by selector
+  function dropQ(sel){ clone.querySelectorAll(sel).forEach(el=>el.remove()); }
+
+  // 1. Pipeline progress panel
+  drop('pipelinePanel');
+
+  // 2. Drive config info banner
+  drop('driveConfigBanner');
+
+  // 3. Drive status span + its wrapper div
+  const dsEl=clone.querySelector('#dqaDriveStatus');
+  if(dsEl){ const wrap=dsEl.closest('div[style*="text-align:center"]'); if(wrap) wrap.remove(); else dsEl.remove(); }
+
+  // 4. Remove all action buttons — pipeline, save, download, export
+  ['runPipeline','dqaReset','downloadDQAHtml','saveDQAToGoogleDrive',
+   'exportExcel','exportPriorityCSV'].forEach(fn=>{
+    clone.querySelectorAll('button[onclick*="'+fn+'"]').forEach(btn=>{
+      const wrap=btn.parentElement;
+      if(wrap && wrap.tagName==='DIV' && wrap.children.length===1) wrap.remove();
+      else btn.remove();
+    });
+  });
+  // Remove the entire export button row's parent div if it's now empty or near-empty
+  const dqaDriveBtn=clone.querySelector('#dqaDriveBtn');
+  if(dqaDriveBtn){ const wrap=dqaDriveBtn.closest('div[style*="justify-content:center"]'); if(wrap) wrap.remove(); }
+
+  // 4b. Remove XLSX library tag — not needed in read-only report
+  clone.querySelectorAll('script[src*="xlsx"]').forEach(el=>el.remove());
+
+  // 5. Replace export actions area with read-only caption
+  clone.querySelectorAll('div[style*="border-top:2px solid #e0e0e0"]').forEach(el=>{
+    el.innerHTML='<div style="text-align:center;padding:10px 0;font-size:12px;color:#6c757d;font-style:italic;">Saved DQA Report &mdash; '+formatPeriod(start,end)+' &middot; ICF-SL / NMCP</div>';
+  });
+
+  // 6. Remove the entire status bar (date inputs, mode toggle, run/reset buttons)
+  //    In the saved report the period is fixed — no pipeline controls needed
+  const statusBarEl = clone.querySelector('.status-bar');
+  if(statusBarEl){
+    // Replace with a simple read-only period banner
+    const banner = clone.createElement ? clone.createElement('div') : document.createElement('div');
+    const b = document.createElement('div');
+    b.style.cssText='background:#e7f3ff;border:4px double #3b78a8;border-top:none;padding:10px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;';
+    b.innerHTML='<span style="font-size:11px;font-weight:700;color:#3b78a8;text-transform:uppercase;letter-spacing:.8px;">DQA Period:</span>'
+      +'<span style="background:#3b78a8;color:#fff;padding:3px 14px;border-radius:20px;font-size:12px;font-weight:700;">'+formatPeriod(start,end)+'</span>'
+      +'<span style="font-size:11px;color:#888;margin-left:4px;font-style:italic;">Read-only saved report &middot; ICF-SL / NMCP</span>';
+    statusBarEl.parentNode.insertBefore(b, statusBarEl);
+    statusBarEl.remove();
+  }
+
+  // 6b. Also remove the HF type filter bar below the status bar
+  clone.querySelectorAll('div[style*="background:#f0f6ff"]').forEach(el=>{
+    if(el.textContent.includes('HF Types in Assessment')) el.remove();
+  });
+
+  // 7. Remove any previous bootstrap script
+  dropQ('script#__dqa_bootstrap__');
+
+  // 8. Remove loading overlay (not needed in saved report)
+  drop('loadingOverlay');
+
+  // Inject bootstrap before </body>
+  const bodyEl=clone.querySelector('body');
+  const bsScript=document.createElement('script');
+  bsScript.id='__dqa_bootstrap__';
+  // bootstrap variable starts with <script id="__dqa_bootstrap__"> and ends with <\/script>
+  // Extract just the JS content between those tags
+  const bsContent=bootstrap.replace(/^<script[^>]*>\n?/,'').replace(/<\\\/script>[\s\S]*$/,'');
+  bsScript.textContent=bsContent;
+  if(bodyEl) bodyEl.appendChild(bsScript);
+
+  const html='<!DOCTYPE html>\n'+clone.outerHTML;
+  return html;
+}
+
+/* ═══════════ PATCH 4: downloadDQAHtml() — local download ═══════════ */
+function downloadDQAHtml(){
+  const start=(document.getElementById('cfgStart')||{}).value||'';
+  const end  =(document.getElementById('cfgEnd')||{}).value||'';
+  const html=buildDQAHtmlBlob();
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download='DQA_NMCP_'+start+'_'+end+'.html';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+
+/* ═══════════ saveDQAToGoogleDrive() ═══════════
+   Uses the SAME GAS endpoint (DV_GAS) and SAME saveDashboard action as the
+   Reporting Status and TPR pipelines in the NMDR admin panel.
+   File key: "dqa_report.html"  — served back by getDashboard and shown on Dashboard tab.
+   No separate GAS handler needed beyond what RS/TPR already use.
+════════════════════════════════════════════════ */
+// Match the DV_GAS endpoint used by the NMDR admin dashboard
+const DV_GAS_FROM_DQA='https://script.google.com/macros/s/AKfycbyTprTce5ft5gxSwY7jOku2GNeKMG8V-X1BrY0jB3QDPyuVWXwFPNr_CH80BRfcLcwD/exec';
+
+async function saveDQAToGoogleDrive(){
+  const start=(document.getElementById('cfgStart')||{}).value||'';
+  const end  =(document.getElementById('cfgEnd')||{}).value||'';
+  if(!start||!end||!rawData.length){
+    showErr('Run the DQA pipeline first before saving to Drive.');
+    return;
+  }
+
+  const statusEl=document.getElementById('dqaDriveStatus');
+  const btnEl   =document.getElementById('dqaDriveBtn');
+
+  // ── Progress bar UI ──────────────────────────────────────────
+  function setDs(msg,color,pct){
+    if(!statusEl) return;
+    const pctStr = pct!=null ? ` (${pct}%)` : '';
+    statusEl.style.cssText='display:block;margin-top:12px;padding:12px 16px;border-radius:8px;border:2px solid '+color+';background:'+color+'18;';
+    statusEl.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-size:12px;font-weight:700;color:${color};">${msg}</span>
+        <span style="font-size:11px;font-weight:700;color:${color};">${pctStr}</span>
+      </div>
+      <div style="height:6px;background:#e0e0e0;border-radius:4px;overflow:hidden;">
+        <div style="height:100%;width:${pct!=null?pct:100}%;background:${color};border-radius:4px;transition:width .4s ease;${pct==null?'animation:indeterminate 1.4s infinite;':''}"></div>
+      </div>`;
+  }
+  function setDsDone(msg){
+    if(!statusEl) return;
+    statusEl.style.cssText='display:block;margin-top:12px;padding:12px 16px;border-radius:8px;border:2px solid #28a745;background:#d4edda;';
+    statusEl.innerHTML=`<span style="font-size:12px;font-weight:700;color:#155724;">✔ ${msg}</span>`;
+  }
+  function setDsErr(msg){
+    if(!statusEl) return;
+    statusEl.style.cssText='display:block;margin-top:12px;padding:12px 16px;border-radius:8px;border:2px solid #dc3545;background:#f8d7da;';
+    statusEl.innerHTML=`<span style="font-size:12px;font-weight:700;color:#721c24;">✗ ${msg}</span>`;
+  }
+
+  // Add indeterminate animation if not already present
+  if(!document.getElementById('driveSpinStyle')){
+    const s=document.createElement('style');
+    s.id='driveSpinStyle';
+    s.textContent='@keyframes indeterminate{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}';
+    document.head.appendChild(s);
+  }
+
+  if(btnEl){btnEl.disabled=true;btnEl.style.opacity='.55';}
+
+  // Stage 1 — Build HTML blob
+  setDs('Stage 1/4 — Building report snapshot…','#17a2b8',10);
+  await new Promise(r=>setTimeout(r,30)); // yield to let UI update
+  let html;
+  try{ html=buildDQAHtmlBlob(); }
+  catch(e){
+    setDsErr('Build failed: '+e.message);
+    if(btnEl){btnEl.disabled=false;btnEl.style.opacity='1';}
+    return;
+  }
+
+  // Stage 2 — Encode to base64
+  const rawKB = Math.round(html.length/1024);
+  setDs(`Stage 2/4 — Encoding ${rawKB} KB to base64…`,'#17a2b8',30);
+  await new Promise(r=>setTimeout(r,30));
+  let b64;
+  try{
+    const bytes=new TextEncoder().encode(html);
+    let binary='';
+    const chunk=8192;
+    for(let i=0;i<bytes.length;i+=chunk){
+      binary+=String.fromCharCode(...bytes.subarray(i,i+chunk));
+    }
+    b64=btoa(binary);
+  }catch(e){
+    setDsErr('Encoding failed: '+e.message);
+    if(btnEl){btnEl.disabled=false;btnEl.style.opacity='1';}
+    return;
+  }
+
+  // Stage 3 — Upload to GAS/Drive
+  const sizeKB=Math.round(b64.length/1024);
+  setDs(`Stage 3/4 — Uploading ${sizeKB} KB to Google Drive…`,'#f0a500',55);
+  await new Promise(r=>setTimeout(r,30));
+
+  try{
+    const now=new Date();
+    const ts=now.toLocaleDateString('en-GB')+' '+now.toLocaleTimeString();
+    const period=formatPeriod(start,end);
+    const rankings=dqaResults.rankings||[];
+    const withData=rankings.filter(r=>r.hasData);
+    const high=withData.filter(r=>parseFloat(r.total)<75).length;
+    const avg=withData.length>0?(withData.reduce((s,r)=>s+parseFloat(r.total),0)/withData.length).toFixed(1):0;
+
+    const files={'dqa_report.html':'data:text/html;base64,'+b64};
+    const titles={
+      dqaTitle:'DQA Report \xb7 '+period,
+      dqaPeriod:period,
+      dqaFacilities:withData.length+' reporting / '+(rankings.length)+' total',
+      dqaAvgScore:avg+'%',
+      dqaHighPriority:high+' high priority'
+    };
+
+    const body=new URLSearchParams({
+      action:'saveDashboard',files:JSON.stringify(files),ts,period,titles:JSON.stringify(titles)
+    });
+
+    const resp=await fetch(DV_GAS_FROM_DQA,{method:'POST',body});
+
+    // Stage 4 — Processing response
+    setDs('Stage 4/4 — GAS processing…','#f0a500',85);
+    const data=await resp.json();
+
+    if(data.ok){
+      setDsDone('Saved to Dashboard · '+period+' · Avg score: '+avg+'% · High priority: '+high);
+      try{
+        window.parent.postMessage({
+          type:'dqa_saved',period,avgScore:avg+'%',highPriority:high+' facilities'
+        },'*');
+      }catch(pe){}
+    } else {
+      setDsErr('Drive error: '+(data.error||'Unknown — check GAS'));
+    }
+  }catch(e){
+    setDsErr('Upload failed: '+e.message);
+  } finally {
+    if(btnEl){btnEl.disabled=false;btnEl.style.opacity='1';}
+  }
+}
+
+/* ═══════════ PIPELINE HELPERS ═══════════ */
+const _stepEls={};
+function addPipeStep(id,txt){const d=document.createElement('div');d.id='ps_'+id;d.style.cssText='display:flex;align-items:flex-start;gap:9px;padding:5px 10px;border-radius:5px;font-size:11px;font-family:Courier New,monospace;background:#1a1a2e;color:#555;';d.innerHTML='<span class="sd" style="width:14px;flex-shrink:0;color:#555;">○</span><span>'+txt+'</span>';document.getElementById('stepList').appendChild(d);_stepEls[id]=d;}
+function _setStep(id,status,msg){const el=_stepEls[id];if(!el)return;const colors={running:{bg:'#1a2e4a',color:'#17a2b8',dot:'»'},done:{bg:'#0a2e0a',color:'#28a745',dot:'✓'},error:{bg:'#2e0a0a',color:'#dc3545',dot:'✗'}};const c=colors[status]||{bg:'#1a1a2e',color:'#555',dot:'○'};el.style.background=c.bg;el.style.color=c.color;el.className=status==='running'?'step-running':'';el.querySelector('.sd').textContent=c.dot;if(msg)el.querySelector('span:last-child').textContent=(status==='running'?'» ':status==='done'?'✓ ':'✗ ')+msg;}
+function setBar(p){document.getElementById('pbarFill').style.width=p+'%';document.getElementById('pctLabel').textContent=Math.round(p)+'%';}
+function setPipelineStatus(txt,color){const el=document.getElementById('pipelineStatus');if(!el)return;el.style.display='inline-block';el.style.background=color||'#3b78a8';el.style.color='#fff';el.textContent=txt;}
+function getPeriods(startStr,endStr){const periods=[];let yr=parseInt(startStr.substring(0,4)),mo=parseInt(startStr.substring(4,6));const eY=parseInt((endStr||startStr).substring(0,4));const eMo=parseInt((endStr||startStr).substring(4,6));while(yr<eY||(yr===eY&&mo<=eMo)){periods.push(yr+String(mo).padStart(2,'0'));mo++;if(mo>12){mo=1;yr++;}}return periods;}
+function formatPeriod(start, end) {
+  return (start === end) ? start : (start + ' \u2192 ' + end);
+}
+function setDqaMode(mode){  const isRange = mode==='range';
+  document.getElementById('inputRange').style.display  = isRange ? 'flex'  : 'none';
+  document.getElementById('inputSingle').style.display = isRange ? 'none'  : 'flex';
+  document.getElementById('modeRange').style.background  = isRange ? '#3b78a8' : '#fff';
+  document.getElementById('modeRange').style.color        = isRange ? '#fff'    : '#3b78a8';
+  document.getElementById('modeSingle').style.background = isRange ? '#fff'    : '#3b78a8';
+  document.getElementById('modeSingle').style.color       = isRange ? '#3b78a8' : '#fff';
+}
+function runPipeline(){
+  const isSingle = document.getElementById('inputSingle').style.display !== 'none';
+  let start, end;
+  if(isSingle){
+    const m = (document.getElementById('cfgSingle')||{}).value;
+    if(!m){showErr('Select a month.');return;}
+    start = m; end = m;
+    // Keep cfgStart/cfgEnd in sync so the rest of the pipeline reads them correctly
+    document.getElementById('cfgStart').value = m;
+    document.getElementById('cfgEnd').value   = m;
+  } else {
+    start = (document.getElementById('cfgStart')||{}).value;
+    end   = (document.getElementById('cfgEnd')||{}).value;
+    if(!start||!end||start>end){showErr('Select a valid start and end month.');return;}
+  }
+  document.getElementById('pipelinePanel').style.display='block';
+  document.getElementById('stepList').innerHTML='';
+  Object.keys(_stepEls).forEach(k=>delete _stepEls[k]);
+  setBar(0);setPipelineStatus('Running\u2026','#ffc107');loadAll();
+}
+function dqaReset(){document.getElementById('pipelinePanel').style.display='none';document.getElementById('s-results').classList.add('hidden');document.getElementById('errBanner').innerHTML='';document.getElementById('metaPeriod').textContent='—';document.getElementById('metaFacs').textContent='—';document.getElementById('metaRecords').textContent='—';const ps=document.getElementById('pipelineStatus');if(ps)ps.style.display='none';const ds=document.getElementById('dqaDriveStatus');if(ds)ds.style.display='none';rawData=[];fullOUMap={};allFacMeta={};dqaResults={coherency:{},indicators:{},reporting:null,outliers:{},rankings:[],nonReporting:[],rowIssues:[]};bBrowserReady=false;renderedTabs={};}
+window.addEventListener('load',()=>{document.getElementById('pipelineStatus').style.display='inline-block';document.getElementById('pipelineStatus').textContent='Ready — select date range and click Run';document.getElementById('pipelineStatus').style.background='rgba(59,120,168,.5)';document.getElementById('pipelineStatus').style.color='#fff';});
+</script>
+</body>
+</html>
