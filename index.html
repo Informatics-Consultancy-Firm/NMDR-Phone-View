@@ -623,7 +623,9 @@
     <div id="hmis-extraction" class="tab-content">
         <div class="iframe-pane"><iframe id="frame-hmis-extraction" src="" data-src="hmis_extraction.html" loading="lazy" allow="fullscreen"></iframe></div>
     </div>
-    <div id="hmis-epi-dashboard" class="tab-content"><div id="hmis-epi-dashboard-wrap" class="me-detail-wrap"></div></div>
+    <div id="hmis-epi-dashboard" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-hmis-epi-dashboard" src="" data-src="mal_epi.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
     <!-- 1.0.2.2 eIDSR (Weekly) sub-tabs -->
     <div id="eidsr-extraction" class="tab-content">
         <div class="iframe-pane"><iframe id="frame-eidsr-extraction" src="" data-src="eidsr_extraction.html" loading="lazy" allow="fullscreen"></iframe></div>
@@ -1179,9 +1181,7 @@ var MED_DRIVE_KEYS = {
     // Summary Dashboard
     'me-summary-epi':   'malaria_epi.html',
     'me-summary-int':   'intervention.html',
-    'me-summary-stock': 'stock.html',
-    // Malaria EPI Dashboard (HMIS)
-    'hmis-epi-dashboard': 'mal_epi.html'
+    'me-summary-stock': 'stock.html'
 };
 
 var _medDriveCache   = null;
