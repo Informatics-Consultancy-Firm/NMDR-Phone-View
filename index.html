@@ -122,14 +122,14 @@
         .brand-sub   { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 0.5px; display: block; }
         .sidebar-close { display: none; width: 30px; height: 30px; background: rgba(255,255,255,0.1); border: none; border-radius: 6px; cursor: pointer; align-items: center; justify-content: center; color: white; flex-shrink: 0; margin-left: 8px; font-size: 18px; line-height: 1; }
         .sidebar-close:hover { background: rgba(255,255,255,0.2); }
-        .nav-scroll { flex: 1; padding: 8px 0; overflow-y: auto; }
-        .nav-section-label { padding: 12px 18px 4px; font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.35); letter-spacing: 2px; text-transform: uppercase; }
-        .nav-item { width: 100%; background: transparent; border: none; color: rgba(255,255,255,0.7); padding: 11px 16px; text-align: left; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.18s; border-left: 3px solid transparent; display: flex; align-items: center; gap: 10px; }
+        .nav-scroll { flex: 1; padding: 10px 0; overflow-y: auto; }
+        .nav-section-label { padding: 16px 18px 5px; font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.35); letter-spacing: 2px; text-transform: uppercase; }
+        .nav-item { width: 100%; background: transparent; border: none; color: rgba(255,255,255,0.7); padding: 14px 16px; text-align: left; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.18s; border-left: 3px solid transparent; display: flex; align-items: center; gap: 10px; }
         .nav-item:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.95); border-left-color: var(--gold); }
         .nav-item.active { background: rgba(255,255,255,0.15); color: white; border-left-color: var(--gold); font-weight: 600; }
         .nav-item .nav-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.75; stroke: currentColor; fill: none; }
         .nav-item.active .nav-icon { opacity: 1; }
-        .nav-group-btn { width: 100%; background: transparent; border: none; color: rgba(255,255,255,0.7); padding: 11px 16px; text-align: left; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.18s; border-left: 3px solid transparent; display: flex; align-items: center; gap: 10px; }
+        .nav-group-btn { width: 100%; background: transparent; border: none; color: rgba(255,255,255,0.7); padding: 14px 16px; text-align: left; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.18s; border-left: 3px solid transparent; display: flex; align-items: center; gap: 10px; }
         .nav-group-btn:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.95); border-left-color: rgba(255,193,7,0.5); }
         .nav-group-btn.open  { color: white; border-left-color: var(--gold); background: rgba(255,255,255,0.08); }
         .nav-group-btn .nav-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.75; stroke: currentColor; fill: none; }
@@ -138,10 +138,24 @@
         .nav-chevron { width: 13px; height: 13px; transition: transform 0.2s; opacity: 0.5; flex-shrink: 0; stroke: currentColor; fill: none; }
         .nav-group-btn.open .nav-chevron { transform: rotate(180deg); opacity: 0.8; }
         .nav-group-children { overflow: hidden; max-height: 0; transition: max-height 0.3s ease; background: rgba(0,0,0,0.18); }
-        .nav-group-children.open { max-height: 700px; }
-        .nav-child { width: 100%; background: transparent; border: none; color: rgba(255,255,255,0.6); padding: 8px 16px 8px 42px; text-align: left; font-family: inherit; font-size: 12px; font-weight: 400; cursor: pointer; transition: all 0.15s; border-left: 3px solid transparent; display: block; }
-        .nav-child:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.06); border-left-color: rgba(255,193,7,0.35); }
-        .nav-child.active { color: white; background: rgba(255,255,255,0.1); border-left-color: var(--gold); font-weight: 500; }
+        .nav-group-children.open { max-height: 2000px; }
+        .nav-child { width: 100%; background: transparent; border: none; color: rgba(255,255,255,0.6); padding: 12px 16px 12px 24px; text-align: left; font-family: inherit; font-size: 12px; font-weight: 400; cursor: pointer; transition: all 0.15s; border-left: 3px solid transparent; display: block; }
+        .nav-child:hover { color: rgba(255,255,255,0.95); background: rgba(255,255,255,0.08); border-left-color: rgba(255,193,7,0.5); }
+        .nav-child.active { color: #fff !important; background: rgba(255,193,7,0.18) !important; border-left: 3px solid var(--gold) !important; font-weight: 700 !important; }
+        /* Nav level helpers — generous vertical padding at every depth */
+        .nav-l1-toggle { display:flex !important; align-items:center; justify-content:space-between; font-weight:600 !important; color:rgba(255,255,255,0.85) !important; padding: 13px 14px 13px 24px !important; font-size:12.5px !important; }
+        .nav-l2        { padding: 11px 14px 11px 36px !important; font-size:12px !important; }
+        .nav-l2-toggle { display:flex !important; align-items:center; justify-content:space-between; font-weight:600 !important; color:rgba(255,255,255,0.8) !important; padding: 11px 14px 11px 36px !important; font-size:12px !important; width:100%; background:transparent; border:none; cursor:pointer; font-family:inherit; border-left:3px solid transparent; }
+        .nav-l3        { padding: 10px 14px 10px 50px !important; font-size:11.5px !important; }
+        .nav-l3-toggle { display:flex !important; align-items:center; justify-content:space-between; font-weight:600 !important; color:rgba(255,255,255,0.75) !important; padding: 10px 14px 10px 50px !important; font-size:11.5px !important; width:100%; background:transparent; border:none; cursor:pointer; font-family:inherit; border-left:3px solid transparent; }
+        .nav-l4        { padding: 9px 14px 9px 64px !important; font-size:11px !important; }
+        /* Active state for nav-item (top level) */
+        .nav-item.active { background: rgba(255,193,7,0.18) !important; color: white !important; border-left-color: var(--gold) !important; font-weight: 700 !important; }
+        /* Active highlight also on toggle parents */
+        .nav-l1-toggle.active, .nav-l2-toggle.active, .nav-l3-toggle.active {
+            color: #fff !important; background: rgba(255,193,7,0.12) !important;
+            border-left: 3px solid rgba(255,193,7,0.6) !important; font-weight:700 !important;
+        }
         .sidebar-footer { padding: 12px 14px; flex-shrink: 0; border-top: 1px solid rgba(255,255,255,0.08); }
         .logout-btn { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.6); padding: 9px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.18s; font-family: inherit; }
         .logout-btn:hover { background: rgba(255,80,80,0.15); border-color: rgba(255,120,120,0.3); color: #ffaaaa; }
@@ -300,135 +314,215 @@
     </div>
 
     <div class="nav-scroll">
-        <div class="nav-section-label">Main</div>
-        <button class="nav-item active" data-tab="welcome">
+        <button class="nav-item active" data-tab="welcome" style="margin-top:6px;">
             <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             Welcome
         </button>
 
+        <!-- ══ 1.0 MALARIA SURVEILLANCE ══ -->
+        <div class="nav-section-label" style="margin-top:10px;">1.0 Malaria Surveillance</div>
         <div class="nav-group">
-            <button class="nav-group-btn" data-group="monitoring">
+            <button class="nav-group-btn" data-group="surveillance">
                 <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                <span class="nav-group-label">Monitoring &amp; Evaluation</span>
+                <span class="nav-group-label">1.0 Malaria Surveillance</span>
                 <svg class="nav-chevron" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
-            <div class="nav-group-children" id="children-monitoring">
-                <button class="nav-child" data-tab="me-dqa">DQA</button>
+            <div class="nav-group-children" id="children-surveillance">
 
-                <!-- Summary Dashboard — nested expand/collapse -->
-                <button class="nav-child" id="meSummaryToggle" onclick="toggleMeSummary(event)"
-                    style="display:flex;align-items:center;justify-content:space-between;font-weight:600;color:rgba(255,255,255,0.8);">
-                    <span>Summary Dashboard</span>
-                    <svg id="meSummaryChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;"><polyline points="6 9 12 15 18 9"/></svg>
+                <!-- 1.0.1 Monitoring and Evaluation -->
+                <button class="nav-child nav-l1-toggle" id="meToggle" onclick="toggleNestedGroup('meChildren','meChevron','meToggle',event)">
+                    <span>1.0.1 Monitoring &amp; Evaluation</span>
+                    <svg id="meChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
-                <div id="meSummaryChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;background:rgba(0,0,0,0.12);">
-                    <button class="nav-child" data-tab="me-summary-epi"   style="padding-left:62px;font-size:11px;">&#8627; Malaria EPI</button>
-                    <button class="nav-child" data-tab="me-summary-int"   style="padding-left:62px;font-size:11px;">&#8627; Intervention</button>
-                    <button class="nav-child" data-tab="me-summary-stock" style="padding-left:62px;font-size:11px;">&#8627; Stock</button>
-                </div>
+                <div id="meChildren" style="overflow:hidden;max-height:0;transition:max-height .3s ease;">
+                    <button class="nav-child nav-l2" data-tab="me-dqa">1.0.1.1 Data Quality Assessment</button>
 
-                <!-- Detailed Dashboard — nested expand/collapse -->
-                <button class="nav-child" id="meDetailedToggle" onclick="toggleMeDetailed(event)"
-                    style="display:flex;align-items:center;justify-content:space-between;font-weight:600;color:rgba(255,255,255,0.8);">
-                    <span>Detailed Dashboard</span>
-                    <svg id="meDetailedChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;"><polyline points="6 9 12 15 18 9"/></svg>
-                </button>
-                <div id="meDetailedChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;background:rgba(0,0,0,0.12);">
-                    <button class="nav-child" data-tab="med-suspected"   style="padding-left:62px;font-size:11px;">&#8627; Suspected</button>
-                    <button class="nav-child" data-tab="med-tested"      style="padding-left:62px;font-size:11px;">&#8627; Tested</button>
-                    <button class="nav-child" data-tab="med-confirmed"   style="padding-left:62px;font-size:11px;">&#8627; Confirmed</button>
-                    <button class="nav-child" data-tab="med-treated"     style="padding-left:62px;font-size:11px;">&#8627; Confirmed and Treated</button>
-                    <button class="nav-child" data-tab="med-presumptive" style="padding-left:62px;font-size:11px;">&#8627; Presumptive Treatment</button>
-                    <button class="nav-child" id="medCompToggle" onclick="toggleMedComp(event)"
-                        style="padding-left:62px;font-size:11px;display:flex;align-items:center;justify-content:space-between;font-weight:600;color:rgba(255,255,255,0.75);">
-                        <span>&#8627; Comparative Analysis</span>
-                        <svg id="medCompChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;"><polyline points="6 9 12 15 18 9"/></svg>
+                    <!-- 1.0.1.2 Key Malaria Data Elements -->
+                    <button class="nav-child nav-l2-toggle" id="meDetailedToggle" onclick="toggleNestedGroup('meDetailedChildren','meDetailedChevron','meDetailedToggle',event)">
+                        <span>1.0.1.2 Key Malaria Data Elements</span>
+                        <svg id="meDetailedChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
                     </button>
-                    <div id="medCompChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;background:rgba(0,0,0,0.1);">
-                        <button class="nav-child" data-tab="med-comp-u5"      style="padding-left:78px;font-size:10px;">&#8627; Under Five</button>
-                        <button class="nav-child" data-tab="med-comp-allages" style="padding-left:78px;font-size:10px;">&#8627; All Ages</button>
+                    <div id="meDetailedChildren" style="overflow:hidden;max-height:0;transition:max-height .5s ease;">
+                        <button class="nav-child nav-l3" data-tab="med-suspected">1.0.1.2.1 Fever Suspected Malaria</button>
+                        <button class="nav-child nav-l3" data-tab="med-tested">1.0.1.2.2 Tested</button>
+                        <button class="nav-child nav-l3" data-tab="med-confirmed">1.0.1.2.3 Confirmed Malaria Case</button>
+                        <button class="nav-child nav-l3" data-tab="med-treated">1.0.1.2.4 Confirmed and Treated</button>
+                        <button class="nav-child nav-l3" data-tab="med-presumptive">1.0.1.2.5 Presumptive Treatment</button>
+                        <button class="nav-child nav-l3" data-tab="med-ptr">1.0.1.2.6 Treated</button>
                     </div>
-                    <button class="nav-child" data-tab="med-reporting"   style="padding-left:62px;font-size:11px;">&#8627; Reporting Rate</button>
-                    <button class="nav-child" data-tab="med-testing"     style="padding-left:62px;font-size:11px;">&#8627; Testing Rate</button>
-                    <button class="nav-child" data-tab="med-tpr"         style="padding-left:62px;font-size:11px;">&#8627; Test Positivity Rate</button>
-                    <button class="nav-child" data-tab="med-cfr"         style="padding-left:62px;font-size:11px;">&#8627; Confirmed &amp; Treatment Rate</button>
-                    <button class="nav-child" data-tab="med-ptr"         style="padding-left:62px;font-size:11px;">&#8627; Presumptive Treatment Rate</button>
+
+                    <!-- 1.0.1.3 Key Malaria Indicators -->
+                    <button class="nav-child nav-l2-toggle" id="meIndicatorsToggle" onclick="toggleNestedGroup('meIndicatorsChildren','meIndicatorsChevron','meIndicatorsToggle',event)">
+                        <span>1.0.1.3 Key Malaria Indicators</span>
+                        <svg id="meIndicatorsChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div id="meIndicatorsChildren" style="overflow:hidden;max-height:0;transition:max-height .4s ease;">
+                        <button class="nav-child nav-l3" data-tab="med-reporting">1.0.1.3.1 Reporting Rate</button>
+                        <button class="nav-child nav-l3" data-tab="med-testing">1.0.1.3.2 Testing Rate</button>
+                        <button class="nav-child nav-l3" data-tab="med-tpr">1.0.1.3.3 Test Positivity Rate</button>
+                        <button class="nav-child nav-l3" data-tab="med-cfr">1.0.1.3.4 Confirmed &amp; Treatment Rate</button>
+                    </div>
+
+                    <!-- 1.0.1.4 Comparative Analysis on Key Indicators -->
+                    <button class="nav-child nav-l2-toggle" id="meCompIndToggle" onclick="toggleNestedGroup('meCompIndChildren','meCompIndChevron','meCompIndToggle',event)">
+                        <span>1.0.1.4 Comparative Analysis on Key Indicators</span>
+                        <svg id="meCompIndChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div id="meCompIndChildren" style="overflow:hidden;max-height:0;transition:max-height .4s ease;">
+                        <button class="nav-child nav-l3" data-tab="med-comp-u5">1.0.1.4.1 Under Five</button>
+                        <button class="nav-child nav-l3" data-tab="med-comp-allages">1.0.1.4.2 All Ages</button>
+                    </div>
                 </div>
-                <!-- Comparative Analysis — nested expand/collapse -->
-                <button class="nav-child" id="meCompToggle" onclick="toggleMeComp(event)"
-                    style="display:flex;align-items:center;justify-content:space-between;font-weight:600;color:rgba(255,255,255,0.8);">
-                    <span>Comparative Analysis</span>
-                    <svg id="meCompChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;"><polyline points="6 9 12 15 18 9"/></svg>
+
+                <!-- 1.0.2 Malaria EPI -->
+                <button class="nav-child nav-l1-toggle" id="malariaEpiToggle" onclick="toggleNestedGroup('malariaEpiChildren','malariaEpiChevron','malariaEpiToggle',event)">
+                    <span>1.0.2 Malaria EPI</span>
+                    <svg id="malariaEpiChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
-                <div id="meCompChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;background:rgba(0,0,0,0.12);">
-                    <button class="nav-child" data-tab="me-comp-u5"      style="padding-left:62px;font-size:11px;">&#8627; Under 5</button>
-                    <button class="nav-child" data-tab="me-comp-allages" style="padding-left:62px;font-size:11px;">&#8627; All Ages</button>
+                <div id="malariaEpiChildren" style="overflow:hidden;max-height:0;transition:max-height .3s ease;">
+                    <button class="nav-child nav-l2-toggle" id="hmisToggle" onclick="toggleNestedGroup('hmisChildren','hmisChevron','hmisToggle',event)">
+                        <span>1.0.2.1 HMIS (Monthly)</span>
+                        <svg id="hmisChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div id="hmisChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;">
+                        <button class="nav-child nav-l3" data-tab="hmis-extraction">1.0.2.1.1 Data Extraction</button>
+                        <button class="nav-child nav-l3" data-tab="hmis-epi-dashboard">1.0.2.1.2 Malaria EPI Dashboard</button>
+                    </div>
+                    <button class="nav-child nav-l2-toggle" id="eidsrToggle" onclick="toggleNestedGroup('eidsrChildren','eidsrChevron','eidsrToggle',event)">
+                        <span>1.0.2.2 eIDSR (Weekly)</span>
+                        <svg id="eidsrChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div id="eidsrChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;">
+                        <button class="nav-child nav-l3" data-tab="eidsr-extraction">1.0.2.2.1 Data Extraction</button>
+                        <button class="nav-child nav-l3" data-tab="eidsr-dashboard">1.0.2.2.2 Dashboard</button>
+                    </div>
+                </div>
+
+                <!-- 1.0.3 Therapeutic Efficacy Study (TES) -->
+                <button class="nav-child nav-l1-toggle" id="tesToggle" onclick="toggleNestedGroup('tesChildren','tesChevron','tesToggle',event)">
+                    <span>1.0.3 Therapeutic Efficacy Study</span>
+                    <svg id="tesChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="tesChildren" style="overflow:hidden;max-height:0;transition:max-height .3s ease;">
+                    <button class="nav-child nav-l2" data-tab="tes-data">1.0.3.1 Data</button>
+                    <button class="nav-child nav-l2" data-tab="tes-report">1.0.3.2 Report</button>
+                    <button class="nav-child nav-l2" data-tab="tes-dashboard">1.0.3.3 Dashboard</button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ══ 2.0 SUPPLY CHAIN MANAGEMENT ══ -->
+        <div class="nav-section-label" style="margin-top:10px;">2.0 Supply Chain</div>
+        <div class="nav-group">
+            <button class="nav-group-btn" data-group="supplychain">
+                <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                <span class="nav-group-label">2.0 Supply Chain Management</span>
+                <svg class="nav-chevron" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="nav-group-children" id="children-supplychain">
+                <button class="nav-child nav-l1-toggle" id="quantToggle" onclick="toggleNestedGroup('quantChildren','quantChevron','quantToggle',event)">
+                    <span>2.0.1 Quantification</span>
+                    <svg id="quantChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="quantChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;">
+                    <button class="nav-child nav-l2" data-tab="quant-data">2.0.1.1 Data</button>
+                    <button class="nav-child nav-l2" data-tab="quant-dashboard">2.0.1.2 Dashboard</button>
+                </div>
+                <button class="nav-child nav-l1-toggle" id="supplyTrackToggle" onclick="toggleNestedGroup('supplyTrackChildren','supplyTrackChevron','supplyTrackToggle',event)">
+                    <span>2.0.2 Supply Tracking</span>
+                    <svg id="supplyTrackChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="supplyTrackChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;">
+                    <button class="nav-child nav-l2" data-tab="supply-track-data">2.0.2.1 Data</button>
+                    <button class="nav-child nav-l2" data-tab="supply-track-dashboard">2.0.2.2 Dashboard</button>
                 </div>
             </div>
         </div>
 
-        <div class="nav-section-label">Resources</div>
+        <!-- ══ 3.0 INTERVENTIONS ══ -->
+        <div class="nav-section-label" style="margin-top:10px;">3.0 Interventions</div>
+        <div class="nav-group">
+            <button class="nav-group-btn" data-group="interventions">
+                <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span class="nav-group-label">3.0 Interventions</span>
+                <svg class="nav-chevron" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="nav-group-children" id="children-interventions">
+                <button class="nav-child nav-l2" data-tab="routine-interventions">3.0.1 Routine Interventions</button>
+                <button class="nav-child nav-l2-toggle" id="pastIntToggle" onclick="toggleNestedGroup('pastIntChildren','pastIntChevron','pastIntToggle',event)">
+                    <span>3.0.2 Past Interventions (Campaign)</span>
+                    <svg id="pastIntChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="pastIntChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;">
+                    <button class="nav-child nav-l3" data-tab="int-mass-itn">3.0.2.1 Mass ITN</button>
+                    <button class="nav-child nav-l3" data-tab="int-sbd">3.0.2.2 SBD</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ 4.0 RESOURCES ══ -->
+        <div class="nav-section-label" style="margin-top:10px;">4.0 Resources</div>
         <div class="nav-group">
             <button class="nav-group-btn" data-group="resources">
                 <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-                <span class="nav-group-label">Resources</span>
+                <span class="nav-group-label">4.0 Resources</span>
                 <svg class="nav-chevron" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="nav-group-children" id="children-resources">
-                <button class="nav-child" data-tab="user-guide">User Guide</button>
-                <button class="nav-child" data-tab="bulletins">Monthly Bulletin</button>
-                <button class="nav-child" data-tab="mpd">Malaria Programme Docs</button>
-                <button class="nav-child" data-tab="campaign-survey">Campaign &amp; Survey</button>
-                <button class="nav-child" data-tab="sbd-app">Data Collection Apps</button>
-                <button class="nav-child" data-tab="analytics-training">Analytics Learning</button>
+                <button class="nav-child nav-l2" data-tab="user-guide">4.0.1 User Guide</button>
+                <button class="nav-child nav-l2" data-tab="bulletins">4.0.2 Monthly Bulletin</button>
+                <button class="nav-child nav-l2" data-tab="mpd">4.0.3 Malaria Programme Docs</button>
+                <button class="nav-child nav-l2" data-tab="campaign-survey">4.0.4 Campaign &amp; Survey</button>
+                <button class="nav-child nav-l2" data-tab="sbd-app">4.0.5 Data Collection Apps</button>
+                <button class="nav-child nav-l2" data-tab="analytics-training">4.0.6 Analytics Learning</button>
             </div>
         </div>
 
+        <!-- ══ 5.0 D-MAT (AUTOMATION) ══ -->
+        <div class="nav-section-label" style="margin-top:10px;">5.0 D-MAT Automation</div>
         <div class="nav-group">
             <button class="nav-group-btn" data-group="dmat">
                 <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                <span class="nav-group-label">D-MAT (Automation)</span>
+                <span class="nav-group-label">5.0 D-MAT (Automation)</span>
                 <svg class="nav-chevron" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="nav-group-children" id="children-dmat">
-                <button class="nav-child" data-tab="dmat-dqa">Data Quality Assessment</button>
-                <button class="nav-child" data-tab="dmat-processing">Data Processing</button>
-                <button class="nav-child" data-tab="dmat-reporting">Reporting</button>
-                <button class="nav-child" data-tab="dmat-suspected">Suspected</button>
-                <button class="nav-child" data-tab="dmat-tested">Tested</button>
-                <button class="nav-child" data-tab="dmat-confirmed">Confirmed Cases</button>
-                <button class="nav-child" data-tab="dmat-treated">Confirmed and Treated</button>
-                <button class="nav-child" data-tab="dmat-presumptive">Presumptive Treatment</button>
-
-                <!-- Comparative Analysis — nested expand/collapse -->
-                <button class="nav-child dmat-comp-toggle" id="dmatCompToggle"
-                    onclick="toggleDmatComp(event)"
-                    style="display:flex;align-items:center;justify-content:space-between;font-weight:600;color:rgba(255,255,255,0.8);">
-                    <span>Comparative Analysis</span>
-                    <svg id="dmatCompChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;"><polyline points="6 9 12 15 18 9"/></svg>
+                <button class="nav-child nav-l2" data-tab="dmat-dqa">5.0.1 Data Quality Assessment</button>
+                <button class="nav-child nav-l2" data-tab="dmat-processing">5.0.2 Data Processing</button>
+                <button class="nav-child nav-l2" data-tab="dmat-reporting">5.0.3 Reporting</button>
+                <button class="nav-child nav-l2" data-tab="dmat-suspected">5.0.4 Suspected</button>
+                <button class="nav-child nav-l2" data-tab="dmat-tested">5.0.5 Tested</button>
+                <button class="nav-child nav-l2" data-tab="dmat-confirmed">5.0.6 Confirmed Cases</button>
+                <button class="nav-child nav-l2" data-tab="dmat-treated">5.0.7 Confirmed and Treated</button>
+                <button class="nav-child nav-l2" data-tab="dmat-presumptive">5.0.8 Presumptive Treatment</button>
+                <button class="nav-child nav-l2-toggle" id="dmatCompToggle" onclick="toggleNestedGroup('dmatCompChildren','dmatCompChevron','dmatCompToggle',event)">
+                    <span>5.0.9 Comparative Analysis</span>
+                    <svg id="dmatCompChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
-                <div id="dmatCompChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;background:rgba(0,0,0,0.12);">
-                    <button class="nav-child" data-tab="dmat-u5"      style="padding-left:62px;font-size:11px;">&#8627; Under 5</button>
-                    <button class="nav-child" data-tab="dmat-allages" style="padding-left:62px;font-size:11px;">&#8627; All Ages</button>
+                <div id="dmatCompChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;">
+                    <button class="nav-child nav-l3" data-tab="dmat-u5">5.0.9.1 Under 5</button>
+                    <button class="nav-child nav-l3" data-tab="dmat-allages">5.0.9.2 All Ages</button>
                 </div>
             </div>
         </div>
 
-        <div class="nav-section-label">Analysis</div>
+        <!-- ══ 6.0 RETROSPECTIVE ANALYSIS ══ -->
+        <div class="nav-section-label" style="margin-top:10px;">6.0 Retrospective Analysis</div>
         <div class="nav-group">
             <button class="nav-group-btn" data-group="retro">
                 <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span class="nav-group-label">Retrospective Analysis</span>
+                <span class="nav-group-label">6.0 Retrospective Analysis</span>
                 <svg class="nav-chevron" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="nav-group-children" id="children-retro">
-                <button class="nav-child" data-tab="snt">SNT 2015&#8211;2025</button>
-                <button class="nav-child" data-tab="mpr">MPR 2021&#8211;2023</button>
-                <button class="nav-child" data-tab="other-analysis">Other Analysis</button>
+                <button class="nav-child nav-l2" data-tab="snt">6.0.1 SNT 2015&#8211;2025</button>
+                <button class="nav-child nav-l2" data-tab="mpr">6.0.2 MPR 2021&#8211;2023</button>
+                <button class="nav-child nav-l2" data-tab="other-analysis">6.0.3 Other Analysis</button>
             </div>
         </div>
 
-        <div class="nav-section-label" id="adminSection" style="display:none">Admin</div>
+        <div class="nav-section-label" id="adminSection" style="display:none;margin-top:10px;">Admin</div>
         <button class="nav-item" data-tab="admin-dashboard" id="adminTabBtn" style="display:none; color:rgba(255,220,80,0.9);">
             <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2m0 16v2m7.07-5.07l-1.41-1.41M4.93 19.07l1.41-1.41M20 12h2M2 12h2"/></svg>
             Admin Dashboard
@@ -502,16 +596,10 @@
         </div>
     </div>
 
-    <!-- M&E — SUMMARY DASHBOARD SUB-TABS -->
-    <div id="me-summary-epi" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-me-summary-epi" src="" data-src="me_summary_epi.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="me-summary-int" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-me-summary-int" src="" data-src="me_summary_int.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="me-summary-stock" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-me-summary-stock" src="" data-src="me_summary_stock.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
+    <!-- M&E — SUMMARY DASHBOARD SUB-TABS (load from Drive via GAS) -->
+    <div id="me-summary-epi"   class="tab-content"><div id="me-summary-epi-wrap"   class="me-detail-wrap"></div></div>
+    <div id="me-summary-int"   class="tab-content"><div id="me-summary-int-wrap"   class="me-detail-wrap"></div></div>
+    <div id="me-summary-stock" class="tab-content"><div id="me-summary-stock-wrap" class="me-detail-wrap"></div></div>
 
     <!-- M&E — DETAILED DASHBOARD SUB-TABS (load from Drive via GAS) -->
     <div id="med-suspected"   class="tab-content"><div id="med-suspected-wrap"   class="me-detail-wrap"></div></div>
@@ -530,6 +618,55 @@
     <!-- M&E — COMPARATIVE ANALYSIS SUB-TABS (load from Drive) -->
     <div id="me-comp-u5"      class="tab-content"><div id="me-comp-u5-wrap"      class="me-detail-wrap"></div></div>
     <div id="me-comp-allages" class="tab-content"><div id="me-comp-allages-wrap" class="me-detail-wrap"></div></div>
+
+    <!-- 1.0.2 MALARIA EPI — HMIS (Monthly) -->
+    <div id="hmis-extraction" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-hmis-extraction" src="" data-src="hmis_extraction.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="hmis-epi-dashboard" class="tab-content"><div id="hmis-epi-dashboard-wrap" class="me-detail-wrap"></div></div>
+    <!-- 1.0.2.2 eIDSR (Weekly) sub-tabs -->
+    <div id="eidsr-extraction" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-eidsr-extraction" src="" data-src="eidsr_extraction.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="eidsr-dashboard" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-eidsr-dashboard" src="" data-src="eidsr_dashboard.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- 1.0.3 TES -->
+    <div id="tes-data" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-tes-data" src="" data-src="tes_data.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="tes-report" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-tes-report" src="" data-src="tes_report.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="tes-dashboard" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-tes-dashboard" src="" data-src="tes_dashboard.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- 2.0 SUPPLY CHAIN MANAGEMENT -->
+    <div id="quant-data" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-quant-data" src="" data-src="quant_data.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="quant-dashboard" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-quant-dashboard" src="" data-src="quant_dashboard.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="supply-track-data" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-supply-track-data" src="" data-src="supply_track_data.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="supply-track-dashboard" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-supply-track-dashboard" src="" data-src="supply_track_dashboard.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- 3.0 INTERVENTIONS -->
+    <div id="routine-interventions" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-routine-interventions" src="" data-src="routine_interventions.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="int-mass-itn" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-int-mass-itn" src="" data-src="int_mass_itn.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="int-sbd" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-int-sbd" src="" data-src="int_sbd.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
 
     <!-- USER GUIDE -->
     <div id="user-guide" class="tab-content">
@@ -690,25 +827,34 @@ var ME_DETAIL_TABS = ['med-suspected','med-tested','med-confirmed','med-treated'
                       'med-reporting','med-testing','med-tpr','med-cfr','med-ptr',
                       'me-comp-u5','me-comp-allages'];
 
+var MALARIA_EPI_TABS = ['hmis-extraction','hmis-epi-dashboard','eidsr-extraction','eidsr-dashboard'];
+var TES_TABS         = ['tes-data','tes-report','tes-dashboard'];
+var INT_TABS         = ['routine-interventions','int-mass-itn','int-sbd'];
+var SCM_TABS         = ['quant-data','quant-dashboard','supply-track-data','supply-track-dashboard'];
+
 var roleAccess = {
     national: ['welcome','me-dqa','me-detailed',
                'user-guide','bulletins','mpd','campaign-survey',
                'sbd-app','analytics-training','snt','mpr','other-analysis']
-               .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS).concat(DMAT_TABS),
+               .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS).concat(DMAT_TABS)
+               .concat(MALARIA_EPI_TABS).concat(TES_TABS).concat(SCM_TABS).concat(INT_TABS),
     district: ['welcome','me-dqa','me-detailed',
                'user-guide','bulletins','analytics-training']
-               .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS),
+               .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS)
+               .concat(MALARIA_EPI_TABS).concat(TES_TABS).concat(INT_TABS),
     chiefdom: ['welcome','me-dqa','me-detailed',
                'user-guide','bulletins','analytics-training']
-               .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS),
+               .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS)
+               .concat(MALARIA_EPI_TABS).concat(INT_TABS),
     phu:      ['welcome','me-dqa','me-detailed',
                'user-guide','bulletins','analytics-training']
-               .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS),
+               .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS).concat(INT_TABS),
     admin:    ['welcome','me-dqa','me-detailed',
                'user-guide','bulletins','mpd','campaign-survey',
                'sbd-app','analytics-training','snt','mpr','other-analysis',
                'admin-dashboard']
                .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS).concat(DMAT_TABS)
+               .concat(MALARIA_EPI_TABS).concat(TES_TABS).concat(SCM_TABS).concat(INT_TABS)
 };
 
 function enableTabsForRole(role) {
@@ -846,25 +992,39 @@ function loadMeDqa() {
    TAB NAVIGATION + LAZY IFRAME LOADING
 ════════════════════════════════════════════ */
 var pageLabelMap = {
-    'welcome':'Welcome','me-dqa':'DQA',
-    'me-summary-epi':'Summary · Malaria EPI',
-    'me-summary-int':'Summary · Intervention',
-    'me-summary-stock':'Summary · Stock',
-    'med-suspected':'Detailed · Suspected',
-    'med-tested':'Detailed · Tested',
-    'med-confirmed':'Detailed · Confirmed',
-    'med-treated':'Detailed · Confirmed and Treated',
-    'med-presumptive':'Detailed · Presumptive Treatment',
-    'med-comp-u5':'Detailed · Comparative · Under Five',
-    'med-comp-allages':'Detailed · Comparative · All Ages',
-    'med-reporting':'Detailed · Reporting Rate',
-    'med-testing':'Detailed · Testing Rate',
-    'med-tpr':'Detailed · Test Positivity Rate',
-    'med-cfr':'Detailed · Confirmed & Treatment Rate',
-    'med-ptr':'Detailed · Presumptive Treatment Rate',
-    'me-detailed':'Detailed Dashboard',
+    'welcome':'Welcome','me-dqa':'M&E · DQA',
+    'me-summary-epi':'Detailed · Malaria EPI (Summary)',
+    'me-summary-int':'Detailed · Intervention (Summary)',
+    'me-summary-stock':'Detailed · Stock (Summary)',
+    'med-suspected':'Key Data · Fever Suspected Malaria',
+    'med-tested':'Key Data · Tested',
+    'med-confirmed':'Key Data · Confirmed Malaria Case',
+    'med-treated':'Key Data · Confirmed and Treated',
+    'med-presumptive':'Key Data · Presumptive Treatment',
+    'med-ptr':'Key Data · Treated',
+    'med-reporting':'Key Indicators · Reporting Rate',
+    'med-testing':'Key Indicators · Testing Rate',
+    'med-tpr':'Key Indicators · Test Positivity Rate',
+    'med-cfr':'Key Indicators · Confirmed & Treatment Rate',
+    'med-comp-u5':'Comparative · Under Five',
+    'med-comp-allages':'Comparative · All Ages',
+    'me-detailed':'Key Malaria Data Elements',
     'me-comp-u5':'Comparative · Under 5',
     'me-comp-allages':'Comparative · All Ages',
+    'hmis-extraction':'HMIS · Data Extraction',
+    'hmis-epi-dashboard':'HMIS · EPI Dashboard',
+    'eidsr-extraction':'eIDSR · Data Extraction',
+    'eidsr-dashboard':'eIDSR · Dashboard',
+    'tes-data':'TES · Data',
+    'tes-report':'TES · Report',
+    'tes-dashboard':'TES · Dashboard',
+    'quant-data':'Quantification · Data',
+    'quant-dashboard':'Quantification · Dashboard',
+    'supply-track-data':'Supply Tracking · Data',
+    'supply-track-dashboard':'Supply Tracking · Dashboard',
+    'routine-interventions':'3.0 Interventions · Routine',
+    'int-mass-itn':'3.0 Interventions · Mass ITN',
+    'int-sbd':'3.0 Interventions · SBD',
     'user-guide':'User Guide','bulletins':'Monthly Bulletin','mpd':'Malaria Programme Docs',
     'campaign-survey':'Campaign & Survey','sbd-app':'Data Collection Apps',
     'analytics-training':'Analytics Learning',
@@ -900,11 +1060,14 @@ function activateTab(tabId) {
     document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
     var el = document.getElementById(tabId);
     if (el) el.classList.add('active');
-    document.querySelectorAll('.nav-item[data-tab]').forEach(function(b){
-        b.classList.toggle('active', b.getAttribute('data-tab') === tabId);
+
+    // Clear all active states
+    document.querySelectorAll('.nav-item[data-tab], .nav-child[data-tab]').forEach(function(b){
+        b.classList.remove('active');
     });
-    document.querySelectorAll('.nav-child[data-tab]').forEach(function(b){
-        b.classList.toggle('active', b.getAttribute('data-tab') === tabId);
+    // Set active on the matching button
+    document.querySelectorAll('[data-tab="' + tabId + '"]').forEach(function(b){
+        b.classList.add('active');
     });
 
     // Lazy-load generic iframes
@@ -921,61 +1084,32 @@ function activateTab(tabId) {
     updateTopbarPage(tabId);
     closeDrawer();
 
-    // Auto-expand parent group
+    // Auto-expand all ancestor containers and open the nav-group
     var childBtn = document.querySelector('.nav-child[data-tab="' + tabId + '"]');
     if (childBtn) {
-        var children = childBtn.closest('.nav-group-children');
-        if (children && !children.classList.contains('open')) {
-            openGroup(children.id.replace('children-', ''));
+        // Open top-level nav-group
+        var groupChildren = childBtn.closest('.nav-group-children');
+        if (groupChildren && !groupChildren.classList.contains('open')) {
+            openGroup(groupChildren.id.replace('children-', ''));
         }
-        // Also expand Comparative Analysis sub-group if clicking its children
-        if (tabId === 'dmat-u5' || tabId === 'dmat-allages') {
-            var compChildren = document.getElementById('dmatCompChildren');
-            var compChevron  = document.getElementById('dmatCompChevron');
-            var compToggle   = document.getElementById('dmatCompToggle');
-            if (compChildren && compChildren.style.maxHeight === '0px' || !compChildren.style.maxHeight) {
-                if (compChildren) { compChildren.style.maxHeight = compChildren.scrollHeight + 'px'; }
-                if (compChevron)  { compChevron.style.transform  = 'rotate(180deg)'; }
-                if (compToggle)   { compToggle.classList.add('active'); }
-            }
-        }
-        // Auto-expand Summary Dashboard sub-group if clicking its children
-        if (tabId === 'me-summary-epi' || tabId === 'me-summary-int' || tabId === 'me-summary-stock') {
-            var sumChildren = document.getElementById('meSummaryChildren');
-            var sumChevron  = document.getElementById('meSummaryChevron');
-            var sumToggle   = document.getElementById('meSummaryToggle');
-            if (sumChildren && (!sumChildren.style.maxHeight || sumChildren.style.maxHeight === '0px')) {
-                if (sumChildren) { sumChildren.style.maxHeight = sumChildren.scrollHeight + 'px'; }
-                if (sumChevron)  { sumChevron.style.transform  = 'rotate(180deg)'; }
-                if (sumToggle)   { sumToggle.classList.add('active'); }
-            }
-        }
-        // Auto-expand Comparative Analysis sub-group (M&E)
-        if (tabId === 'me-comp-u5' || tabId === 'me-comp-allages') {
-            var meCC = document.getElementById('meCompChildren');
-            var meCH = document.getElementById('meCompChevron');
-            if (meCC && (!meCC.style.maxHeight || meCC.style.maxHeight === '0px')) {
-                meCC.style.maxHeight  = meCC.scrollHeight + 'px';
-                if (meCH) meCH.style.transform = 'rotate(180deg)';
-            }
-        }
-        // Auto-expand Detailed Dashboard sub-group
-        if (ME_DETAIL_TABS && ME_DETAIL_TABS.indexOf(tabId) !== -1) {
-            var detC = document.getElementById('meDetailedChildren');
-            var detCh = document.getElementById('meDetailedChevron');
-            if (detC && (!detC.style.maxHeight || detC.style.maxHeight === '0px')) {
-                detC.style.maxHeight  = '900px';
-                if (detCh) detCh.style.transform = 'rotate(180deg)';
-            }
-            // Also expand Comparative sub-group if it's one of those tabs
-            if (tabId === 'med-comp-u5' || tabId === 'med-comp-allages') {
-                var medCC = document.getElementById('medCompChildren');
-                var medCH = document.getElementById('medCompChevron');
-                if (medCC && (!medCC.style.maxHeight || medCC.style.maxHeight === '0px')) {
-                    medCC.style.maxHeight  = medCC.scrollHeight + 'px';
-                    if (medCH) medCH.style.transform = 'rotate(180deg)';
+        // Walk up, expanding every collapsed nested container
+        var node = childBtn.parentElement;
+        while (node && !node.classList.contains('nav-group-children')) {
+            if (node.id) {
+                var isCollapsed = !node.style.maxHeight || node.style.maxHeight === '0px';
+                if (isCollapsed) {
+                    node.style.maxHeight = '2000px';
+                    // Rotate chevron
+                    var chevronId = node.id.replace('Children', 'Chevron');
+                    var chevron = document.getElementById(chevronId);
+                    if (chevron) chevron.style.transform = 'rotate(180deg)';
+                    // Highlight toggle button
+                    var toggleId = node.id.replace('Children', 'Toggle');
+                    var toggleBtn = document.getElementById(toggleId);
+                    if (toggleBtn) toggleBtn.classList.add('active');
                 }
             }
+            node = node.parentElement;
         }
     }
 }
@@ -994,8 +1128,40 @@ function openGroup(groupId) {
     if (c) c.classList.add('open');
     if (b) b.classList.add('open');
 }
-// ── Detailed Dashboard — Drive file key map ───────────────────
+
+/* UNIFIED NESTED GROUP TOGGLE — used by all inline expand/collapse buttons */
+function toggleNestedGroup(childrenId, chevronId, toggleId, e) {
+    if (e) e.stopPropagation();
+    var c  = document.getElementById(childrenId);
+    var ch = document.getElementById(chevronId);
+    var t  = toggleId ? document.getElementById(toggleId) : null;
+    if (!c) return;
+    var isOpen = c.style.maxHeight !== '0px' && c.style.maxHeight !== '' && c.style.maxHeight !== '0';
+    if (isOpen) {
+        c.style.maxHeight = '0';
+        if (ch) ch.style.transform = '';
+        if (t)  t.classList.remove('active');
+    } else {
+        // Use a large value so child expansions never clip siblings
+        c.style.maxHeight = '2000px';
+        if (ch) ch.style.transform = 'rotate(180deg)';
+        if (t)  t.classList.add('active');
+        // Also bump all ancestor containers so they never clip this expansion
+        var parent = c.parentElement;
+        while (parent) {
+            if (parent.id && (parent.classList.contains('nav-group-children') === false) &&
+                parent.style.maxHeight && parent.style.maxHeight !== '0px') {
+                parent.style.maxHeight = '2000px';
+            }
+            parent = parent.parentElement;
+            if (parent && parent.classList && parent.classList.contains('nav-scroll')) break;
+        }
+    }
+}
+
+// ── Drive file key map (Detailed Dashboard + Summary Dashboard) ───────────────
 var MED_DRIVE_KEYS = {
+    // Detailed Dashboard
     'med-suspected':    'med_suspected.html',
     'med-tested':       'med_tested.html',
     'med-confirmed':    'med_confirmed.html',
@@ -1009,7 +1175,13 @@ var MED_DRIVE_KEYS = {
     'med-cfr':          'med_cfr.html',
     'med-ptr':          'med_ptr.html',
     'me-comp-u5':       'me_comp_u5.html',
-    'me-comp-allages':  'me_comp_allages.html'
+    'me-comp-allages':  'me_comp_allages.html',
+    // Summary Dashboard
+    'me-summary-epi':   'malaria_epi.html',
+    'me-summary-int':   'intervention.html',
+    'me-summary-stock': 'stock.html',
+    // Malaria EPI Dashboard (HMIS)
+    'hmis-epi-dashboard': 'mal_epi.html'
 };
 
 var _medDriveCache   = null;
@@ -1061,44 +1233,6 @@ function loadMedTab(tabId) {
     _medDrivePending.then(render);
 }
 
-function toggleMeComp(e) {
-    e.stopPropagation();
-    var c  = document.getElementById('meCompChildren');
-    var ch = document.getElementById('meCompChevron');
-    var t  = document.getElementById('meCompToggle');
-    var open = c.style.maxHeight !== '0px' && c.style.maxHeight !== '';
-    c.style.maxHeight  = open ? '0' : c.scrollHeight + 'px';
-    ch.style.transform = open ? '' : 'rotate(180deg)';
-    t.classList.toggle('active', !open);
-}
-
-function toggleMeDetailed(e) {
-    e.stopPropagation();
-    var c  = document.getElementById('meDetailedChildren');
-    var ch = document.getElementById('meDetailedChevron');
-    var t  = document.getElementById('meDetailedToggle');
-    var open = c.style.maxHeight !== '0px' && c.style.maxHeight !== '';
-    c.style.maxHeight  = open ? '0' : c.scrollHeight + 'px';
-    ch.style.transform = open ? '' : 'rotate(180deg)';
-    t.classList.toggle('active', !open);
-}
-
-function toggleMedComp(e) {
-    e.stopPropagation();
-    var c  = document.getElementById('medCompChildren');
-    var ch = document.getElementById('medCompChevron');
-    var open = c.style.maxHeight !== '0px' && c.style.maxHeight !== '';
-    c.style.maxHeight  = open ? '0' : (c.scrollHeight + 'px');
-    ch.style.transform = open ? '' : 'rotate(180deg)';
-    // ensure parent Detailed is open
-    var pc = document.getElementById('meDetailedChildren');
-    if (pc && (!pc.style.maxHeight || pc.style.maxHeight === '0px')) {
-        pc.style.maxHeight = '900px';
-        var pch = document.getElementById('meDetailedChevron');
-        if (pch) pch.style.transform = 'rotate(180deg)';
-    }
-}
-
 function toggleGroup(groupId) {
     var c = document.getElementById('children-' + groupId);
     var b = document.querySelector('[data-group="' + groupId + '"]');
@@ -1108,39 +1242,6 @@ function toggleGroup(groupId) {
     b.classList.toggle('open', !isOpen);
 }
 
-function toggleDmatComp(e) {
-    e.stopPropagation();
-    var children = document.getElementById('dmatCompChildren');
-    var chevron  = document.getElementById('dmatCompChevron');
-    var toggle   = document.getElementById('dmatCompToggle');
-    var isOpen   = children.style.maxHeight !== '0px' && children.style.maxHeight !== '';
-    if (isOpen) {
-        children.style.maxHeight = '0';
-        chevron.style.transform  = '';
-        toggle.classList.remove('active');
-    } else {
-        children.style.maxHeight = children.scrollHeight + 'px';
-        chevron.style.transform  = 'rotate(180deg)';
-        toggle.classList.add('active');
-    }
-}
-
-function toggleMeSummary(e) {
-    e.stopPropagation();
-    var children = document.getElementById('meSummaryChildren');
-    var chevron  = document.getElementById('meSummaryChevron');
-    var toggle   = document.getElementById('meSummaryToggle');
-    var isOpen   = children.style.maxHeight !== '0px' && children.style.maxHeight !== '';
-    if (isOpen) {
-        children.style.maxHeight = '0';
-        chevron.style.transform  = '';
-        toggle.classList.remove('active');
-    } else {
-        children.style.maxHeight = children.scrollHeight + 'px';
-        chevron.style.transform  = 'rotate(180deg)';
-        toggle.classList.add('active');
-    }
-}
 document.querySelectorAll('.nav-group-btn[data-group]').forEach(function(btn){
     btn.addEventListener('click', function(){ toggleGroup(this.getAttribute('data-group')); });
 });
@@ -1188,6 +1289,8 @@ document.getElementById('logoutBtn').addEventListener('click', function(){
     });
     // Reset iframes
     document.querySelectorAll('iframe[data-src]').forEach(function(f){ f.src = ''; });
+    // Reset Drive-loaded wrap divs (Detailed + Summary)
+    document.querySelectorAll('.me-detail-wrap').forEach(function(w){ w.innerHTML = ''; });
     // Reset DQA tab state
     document.getElementById('meDqaEmpty').style.display = 'block';
     document.getElementById('meDqaEmpty').innerHTML = '<div class="dv-loader"></div><p style="font-size:13px;color:var(--muted);margin-top:14px;">Loading dashboard…</p>';
