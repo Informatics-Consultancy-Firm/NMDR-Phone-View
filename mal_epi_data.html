@@ -81,7 +81,6 @@
             color: #2c6693; font-size: 14px; font-weight: 700;
             cursor: pointer;
         }
-        /* Multi-select checkbox dropdown */
         .multi-select-wrapper { position: relative; }
         .multi-select-btn {
             background: #ffffff; border: 2px solid #2c6693;
@@ -116,6 +115,15 @@
         }
         .btn:hover { background: #1f4a6a; transform: translateY(-2px); }
         .btn-secondary { background: transparent; border: 1px solid rgba(255, 255, 255, 0.5); color: #ffffff; }
+        .btn-drive {
+            background: #0f9d58; color: #fff; border: none;
+            padding: 14px 28px; border-radius: 10px;
+            font-size: 14px; font-weight: 800; cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .btn-drive:hover { background: #0b8043; transform: translateY(-2px); }
+        .btn-drive:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
         .alert {
             padding: 18px 24px; border-radius: 12px; margin-bottom: 25px;
             display: flex; align-items: center; gap: 15px; font-weight: 700;
@@ -144,7 +152,7 @@
         .progress-detail { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 6px; min-height: 16px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        .section { margin-bottom: 30px; scroll-margin-top: 20px; }
+        .section { margin-bottom: 30px; scroll-margin-top: calc(var(--sticky-h, 80px) + 8px); }
         .section-header {
             background: linear-gradient(135deg, #2c6693, #1f4a6a);
             color: white; padding: 20px 30px;
@@ -212,8 +220,6 @@
             flex-direction: column;
             gap: 20px;
         }
-
-        /* How It Works panel */
         .cfg-how {
             background: rgba(255,255,255,.07);
             border: 1px solid rgba(255,255,255,.18);
@@ -233,14 +239,8 @@
             display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
         }
-        .cfg-step-head {
-            font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 3px;
-        }
-        .cfg-step-desc {
-            font-size: 12px; color: rgba(255,255,255,.58); line-height: 1.55;
-        }
-
-        /* Period selector card */
+        .cfg-step-head { font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 3px; }
+        .cfg-step-desc { font-size: 12px; color: rgba(255,255,255,.58); line-height: 1.55; }
         .cfg-form {
             background: rgba(255,255,255,.97);
             border-radius: 16px;
@@ -252,20 +252,9 @@
             letter-spacing: 1.5px; text-transform: uppercase;
             text-align: center; margin-bottom: 6px;
         }
-        .cfg-form-sub {
-            font-size: 12px; color: #6c7a89;
-            text-align: center; margin-bottom: 22px;
-        }
-        .cfg-months {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-        .cfg-input {
-            width: 100%; font-size: 15px; font-weight: 700;
-            color: #2c6693; padding: 12px 14px;
-        }
+        .cfg-form-sub { font-size: 12px; color: #6c7a89; text-align: center; margin-bottom: 22px; }
+        .cfg-months { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+        .cfg-input { width: 100%; font-size: 15px; font-weight: 700; color: #2c6693; padding: 12px 14px; }
         .cfg-run-btn {
             width: 100%;
             background: linear-gradient(135deg, #2c6693, #1f4a6a);
@@ -277,23 +266,13 @@
         }
         .cfg-run-btn:hover  { transform: translateY(-2px); }
         .cfg-run-btn:active { transform: translateY(0); }
-        .cfg-credit {
-            text-align: center; margin-top: 14px;
-            font-size: 11px; color: #8899aa;
-        }
+        .cfg-credit { text-align: center; margin-top: 14px; font-size: 11px; color: #8899aa; }
 
-        /* ── Tablet/Laptop: side-by-side ── */
         @media (min-width: 640px) {
-            .cfg-wrap {
-                max-width: 900px;
-                flex-direction: row;
-                align-items: flex-start;
-            }
+            .cfg-wrap { max-width: 900px; flex-direction: row; align-items: flex-start; }
             .cfg-how  { flex: 1.1; }
             .cfg-form { flex: 0.9; }
         }
-
-        /* ── Phone: single column ── */
         @media (max-width: 639px) {
             .cfg-wrap   { padding: 0 4px; flex-direction: column; max-width: 100%; }
             .cfg-how    { padding: 18px 16px; }
@@ -304,84 +283,52 @@
             .title    { font-size: 26px !important; }
             .subtitle { font-size: 14px !important; }
         }
-
-        /* ── Dashboard responsive ── */
         @media (max-width: 768px) {
             .charts-grid  { grid-template-columns: 1fr; }
             .summary-grid { grid-template-columns: 1fr; }
             .filters      { grid-template-columns: 1fr; }
         }
 
-        /* Pipeline step list */
         #stepList { display: flex; flex-direction: column; gap: 8px; }
         .step-item {
-            display: grid;
-            grid-template-columns: 72px 1fr;
-            gap: 10px;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            border: 1px solid rgba(255,255,255,.08);
-            transition: background .2s;
+            display: grid; grid-template-columns: 72px 1fr;
+            gap: 10px; padding: 12px 16px; border-radius: 8px;
+            font-size: 13px; border: 1px solid rgba(255,255,255,.08); transition: background .2s;
         }
         .step-item.pending { background: rgba(255,255,255,.04); }
         .step-item.running { background: rgba(74,144,196,.2); border-color: rgba(74,144,196,.5); }
         .step-item.done    { background: rgba(76,175,80,.12);  border-color: rgba(76,175,80,.4); }
         .step-item.error   { background: rgba(244,67,54,.15);  border-color: rgba(244,67,54,.5); }
-        .step-num {
-            font-size: 10px; font-weight: 800; text-transform: uppercase;
-            letter-spacing: .8px; color: rgba(255,255,255,.45);
-            padding-top: 2px;
-        }
+        .step-num { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: rgba(255,255,255,.45); padding-top: 2px; }
         .step-item.running .step-num { color: #7dd3f0; }
         .step-item.done    .step-num { color: #81c784; }
         .step-item.error   .step-num { color: #ef9a9a; }
-        .step-label {
-            font-weight: 700; color: rgba(255,255,255,.55);
-            line-height: 1.4;
-        }
+        .step-label { font-weight: 700; color: rgba(255,255,255,.55); line-height: 1.4; }
         .step-item.running .step-label { color: #e0f0ff; }
         .step-item.done    .step-label { color: #c8f0c8; }
         .step-item.error   .step-label { color: #ffd0d0; }
-        .step-status {
-            grid-column: 2; font-size: 11px; font-weight: 600;
-            color: rgba(255,255,255,.4); margin-top: 3px;
-            line-height: 1.4;
-        }
+        .step-status { grid-column: 2; font-size: 11px; font-weight: 600; color: rgba(255,255,255,.4); margin-top: 3px; line-height: 1.4; }
         .step-item.running .step-status { color: #7dd3f0; }
         .step-item.done    .step-status { color: #81c784; }
         .step-item.error   .step-status { color: #ef9a9a; }
 
         /* ── Sticky dashboard header ── */
         #stickyBar {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 900;
+            position: fixed; top: 0; left: 0; right: 0; z-index: 900;
             background: linear-gradient(135deg, #2c6693 0%, #1f4a6a 100%);
             box-shadow: 0 3px 16px rgba(0,0,0,.35);
         }
         #stickyTitle {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 20px 6px;
-            gap: 12px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 20px 6px; gap: 12px;
         }
-        .sticky-title-text {
-            font-size: 20px; font-weight: 900; color: #fff;
-            letter-spacing: .5px; line-height: 1.2;
-        }
-        .sticky-subtitle {
-            font-size: 12px; color: rgba(255,255,255,.7);
-            font-weight: 600; margin-top: 2px;
-        }
+        .sticky-title-text { font-size: 20px; font-weight: 900; color: #fff; letter-spacing: .5px; line-height: 1.2; }
+        .sticky-subtitle { font-size: 12px; color: rgba(255,255,255,.7); font-weight: 600; margin-top: 2px; }
         #stickyFilters {
-            border-radius: 0 !important;
-            border: none !important;
+            border-radius: 0 !important; border: none !important;
             border-top: 1px solid rgba(255,255,255,.15) !important;
             background: rgba(255,255,255,.96) !important;
-            padding: 10px 16px !important;
-            margin: 0 !important;
+            padding: 10px 16px !important; margin: 0 !important;
         }
         .sticky-actions {
             display: flex; gap: 10px; justify-content: center;
@@ -389,25 +336,30 @@
             background: rgba(0,0,0,.15);
             flex-wrap: wrap;
         }
-        .sticky-actions .btn {
-            padding: 7px 16px; font-size: 12px;
-        }
-        /* Push scrollable content below sticky bar */
-        #dashScrollContent {
-            padding-top: var(--sticky-h, 160px);
-        }
-        /* Nav toggle now inside sticky — remove old fixed positioning */
+        .sticky-actions .btn { padding: 7px 16px; font-size: 12px; }
+        .sticky-actions .btn-drive { padding: 7px 16px; font-size: 12px; }
+        #dashScrollContent { padding-top: var(--sticky-h, 80px); }
         #stickyTitle .nav-toggle {
-            position: static !important;
-            top: auto !important; right: auto !important;
-            padding: 8px 14px; font-size: 13px;
-            flex-shrink: 0;
+            position: static !important; top: auto !important; right: auto !important;
+            padding: 8px 14px; font-size: 13px; flex-shrink: 0;
         }
-        /* Nav menu anchors below sticky bar */
-        #navMenu {
-            top: var(--sticky-h, 160px) !important;
-            right: 20px !important;
+        #navMenu { top: var(--sticky-h, 80px) !important; right: 20px !important; }
+
+        /* ── Drive save status ── */
+        #driveStatusBar {
+            display: none;
+            margin: 0 0 16px 0;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 12px; font-weight: 700;
+            border: 2px solid #3b78a8;
         }
+        #driveStatusBar.ds-uploading { border-color: #f0a500; background: #fff8e1; color: #7d5a00; }
+        #driveStatusBar.ds-done      { border-color: #28a745; background: #d4edda; color: #155724; }
+        #driveStatusBar.ds-error     { border-color: #d32f2f; background: #fde8e0; color: #7a2800; }
+        .ds-progress-wrap { height: 6px; background: #e0e0e0; border-radius: 4px; overflow: hidden; margin-top: 8px; }
+        .ds-progress-fill { height: 100%; border-radius: 4px; transition: width .4s ease; }
+        @keyframes indeterminate { 0%{transform:translateX(-100%)} 100%{transform:translateX(400%)} }
 
         @media (max-width: 639px) {
             .sticky-title-text { font-size: 15px; }
@@ -416,6 +368,7 @@
             #stickyFilters     { padding: 8px 10px !important; }
             .sticky-actions    { padding: 6px 10px 8px; gap: 6px; }
             .sticky-actions .btn { padding: 6px 10px; font-size: 11px; }
+            .sticky-actions .btn-drive { padding: 6px 10px; font-size: 11px; }
         }
     </style>
 </head>
@@ -429,12 +382,9 @@
             </div>
 
             <div class="cfg-wrap">
-
-                <!-- How It Works -->
                 <div class="cfg-how">
                     <div class="cfg-how-title">How It Works</div>
                     <div class="cfg-steps">
-
                         <div class="cfg-step">
                             <div class="cfg-step-num">1</div>
                             <div class="cfg-step-body">
@@ -442,7 +392,6 @@
                                 <div class="cfg-step-desc">Loads all Level-5 health facilities from DHIS2 with district &amp; chiefdom hierarchy. Classifies each as Hospital, Clinic, CHC, CHP or MCHP — all other types excluded.</div>
                             </div>
                         </div>
-
                         <div class="cfg-step">
                             <div class="cfg-step-num">2</div>
                             <div class="cfg-step-body">
@@ -450,7 +399,6 @@
                                 <div class="cfg-step-desc">Packages 48 malaria indicator de.coc pairs and the selected periods into optimised batches for the DHIS2 analytics API — typically just 2–4 API calls total.</div>
                             </div>
                         </div>
-
                         <div class="cfg-step">
                             <div class="cfg-step-num">3</div>
                             <div class="cfg-step-body">
@@ -458,7 +406,6 @@
                                 <div class="cfg-step-desc">Pulls pre-aggregated data from DHIS2. Applies Sierra Leone reporting rules: microscopy excluded for CHP &amp; MCHP; admissions excluded for CHC, CHP &amp; MCHP.</div>
                             </div>
                         </div>
-
                         <div class="cfg-step">
                             <div class="cfg-step-num">4</div>
                             <div class="cfg-step-body">
@@ -466,19 +413,16 @@
                                 <div class="cfg-step-desc">Computes total suspected, total tested (RDT + microscopy), confirmed cases, ACT treatments, admissions, deaths and cascade rates per facility per month.</div>
                             </div>
                         </div>
-
                         <div class="cfg-step">
                             <div class="cfg-step-num">5</div>
                             <div class="cfg-step-body">
                                 <div class="cfg-step-head">Render Dashboard</div>
-                                <div class="cfg-step-desc">Builds interactive charts, summary cards and district/facility filters. All charts show count with percentage on hover.</div>
+                                <div class="cfg-step-desc">Builds interactive charts, summary cards and district/facility filters. Save snapshot to Google Drive for sharing via the NMDR portal.</div>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
-                <!-- Select Period -->
                 <div class="cfg-form">
                     <div class="cfg-form-title">Select Period</div>
                     <div class="cfg-form-sub">Choose the date range then click Run Pipeline to fetch data from DHIS2.</div>
@@ -496,8 +440,7 @@
                     <button class="cfg-run-btn" onclick="runPipeline()">&#9654; Run Pipeline</button>
                     <div class="cfg-credit">Developed by Informatics Consultancy Firm – Sierra Leone (ICF-SL) &nbsp;·&nbsp; NMCP Sierra Leone</div>
                 </div>
-
-            </div><!-- /cfg-wrap -->
+            </div>
         </div>
     </div>
 
@@ -531,7 +474,6 @@
 
         <!-- ── Sticky header bar ── -->
         <div id="stickyBar">
-            <!-- Title row -->
             <div id="stickyTitle">
                 <div>
                     <div class="sticky-title-text">Malaria Analytics Dashboard</div>
@@ -542,7 +484,6 @@
                     <span class="nav-arrow" id="navArrow">&#9660;</span>
                 </button>
             </div>
-            <!-- Filters -->
             <div class="filters" id="stickyFilters">
                 <div class="filter-group">
                     <label class="filter-label">District</label>
@@ -603,15 +544,21 @@
                 </div>
             </div>
 
-            <!-- Action buttons inside sticky bar -->
             <div class="sticky-actions">
                 <button class="btn" onclick="showConfigScreen()" style="background:rgba(255,255,255,.2);">&#8592; New Query</button>
                 <button class="btn btn-secondary" onclick="resetFilters()">Reset Filters</button>
                 <button class="btn btn-secondary" onclick="exportData()">Export CSV</button>
+                <button class="btn btn-secondary" onclick="downloadSnapshot()">&#11015; Snapshot</button>
+                <!-- ── NEW: Save to Google Drive ── -->
+                <button class="btn-drive" id="driveSaveBtn" onclick="saveDashboardToDrive()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;">
+                        <path d="M6.28 3l5.22 9.04L5.94 21H2L7.72 12 2 3h4.28zM15.5 3L22 15h-5.5L10 3h5.5zM16.5 21L9 9h5.5l7.5 12h-5.5z"/>
+                    </svg>
+                    Save to Drive
+                </button>
             </div>
-        </div><!-- /stickyBar -->
+        </div>
 
-        <!-- Nav menu (outside sticky so it overlays content) -->
         <div class="nav-menu" id="navMenu">
             <h3>Quick Navigation</h3>
             <div class="nav-item" onclick="scrollToSection('summary')">Summary Overview</div>
@@ -624,7 +571,6 @@
             <div class="nav-item" onclick="scrollToSection('deaths')">Malaria Deaths</div>
         </div>
 
-        <!-- Scrollable content -->
         <div id="dashScrollContent">
         <div class="container">
 
@@ -636,7 +582,14 @@
                 </div>
             </div>
 
-            <!-- Facility type breakdown bar -->
+            <!-- ── Drive save status bar ── -->
+            <div id="driveStatusBar">
+                <div id="driveStatusMsg"></div>
+                <div class="ds-progress-wrap" id="driveProgressWrap" style="display:none;">
+                    <div class="ds-progress-fill" id="driveProgressFill" style="width:0%;background:#f0a500;"></div>
+                </div>
+            </div>
+
             <div id="facTypeBar" style="display:none;background:#fff;border:2px solid #2c6693;border-radius:12px;margin-bottom:22px;overflow:hidden;">
                 <div style="background:linear-gradient(135deg,#2c6693,#1f4a6a);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
                     <div>
@@ -765,99 +718,74 @@
 // ═══════════════════════════════════════════════════════════════
 //  NMCP Malaria Analytics Dashboard  v5
 //  GAS Proxy → sl.dhis2.org/hmis23
-//  Fetch pattern: /api/analytics.json  (LEVEL-5, all periods, all DEs in ~2 batches)
-//  — replaces dataValueSets loop; ~10-50× fewer HTTP calls
+//  Added: Google Drive save (same pattern as DQA Tool v5)
 // ═══════════════════════════════════════════════════════════════
 
 const PROXY    = 'https://script.google.com/macros/s/AKfycbyRXc68PYSmDSCYPakAS8Gc9R00kRjmsMYoDujPYMItyquXfwMAJUtRqXLiDlNWbSfDQQ/exec';
 const BASE_URL = 'https://sl.dhis2.org/hmis23';
 const AUTH     = 'Basic ' + btoa('musa-sillahkanu:Navigator/2024!');
 
+// ── Same GAS endpoint used by DQA Tool + NMDR Admin Dashboard ──
+const DRIVE_GAS = 'https://script.google.com/macros/s/AKfycbyTprTce5ft5gxSwY7jOku2GNeKMG8V-X1BrY0jB3QDPyuVWXwFPNr_CH80BRfcLcwD/exec';
+
 const LEVEL_DIST  = 2;
 const LEVEL_CHIEF = 4;
 const LEVEL_PHU   = 5;
 
-// ── de.coc → slot field mapping ──────────────────────────────
-// Each entry: { dxStr, totalField, splitField?, excludeTypes? }
-// dxStr        = "DE_UID.COC_UID"  (what we send in dx=)
-// totalField   = field to accumulate the value into
-// splitField   = optional extra field (age/gender disaggregation)
-// excludeTypes = facility types whose values must be IGNORED even if DHIS2 returns them
-//
-// Sierra Leone reporting rules:
-//   Microscopy (pos & neg) : NOT reported by CHP, MCHP
-//   Admissions             : NOT reported by CHC, CHP, MCHP
 const EXCL_MICRO = ['CHP','MCHP'];
 const EXCL_ADM   = ['CHC','CHP','MCHP'];
 
 const DX_MAP = [
-    // OPD
     { dxStr:'jkVioQxQcnk.HXqTYVuY7MO', totalField:'opd',                splitField:'opdUnder5'        },
     { dxStr:'jkVioQxQcnk.YmxEkqHdy64', totalField:'opd',                splitField:'opdOver5'         },
-    // Suspected HF
     { dxStr:'FJafyE1kzs4.m5T8uBNB8aN', totalField:'suspectedHF',        splitField:'suspectedHF_U5'   },
     { dxStr:'FJafyE1kzs4.j7j6iaknOFn', totalField:'suspectedHF',        splitField:'suspectedHF_5_14' },
     { dxStr:'FJafyE1kzs4.zK1aiw8zFac', totalField:'suspectedHF',        splitField:'suspectedHF_15plus'},
-    // Suspected Community
     { dxStr:'wfaQBIVQxWo.NtjMVmRfvHH', totalField:'suspectedCommunity', splitField:'suspectedCom_U5'   },
     { dxStr:'wfaQBIVQxWo.qDXW7WMLT99', totalField:'suspectedCommunity', splitField:'suspectedCom_5_14' },
     { dxStr:'wfaQBIVQxWo.mdjRPpvLKdu', totalField:'suspectedCommunity', splitField:'suspectedCom_15plus'},
-    // RDT Positive HF
     { dxStr:'p6zQLDFjSfd.m5T8uBNB8aN', totalField:'rdtPosHF',           splitField:'rdtPosHF_U5'      },
     { dxStr:'p6zQLDFjSfd.j7j6iaknOFn', totalField:'rdtPosHF',           splitField:'rdtPosHF_5_14'    },
     { dxStr:'p6zQLDFjSfd.zK1aiw8zFac', totalField:'rdtPosHF',           splitField:'rdtPosHF_15plus'  },
-    // RDT Negative HF
     { dxStr:'mXS2g1AiPsS.m5T8uBNB8aN', totalField:'rdtNegHF' },
     { dxStr:'mXS2g1AiPsS.j7j6iaknOFn', totalField:'rdtNegHF' },
     { dxStr:'mXS2g1AiPsS.zK1aiw8zFac', totalField:'rdtNegHF' },
-    // RDT Positive Community
     { dxStr:'T7xH8GwWpEM.NtjMVmRfvHH', totalField:'rdtPosCom',          splitField:'rdtPosCom_U5'     },
     { dxStr:'T7xH8GwWpEM.qDXW7WMLT99', totalField:'rdtPosCom',          splitField:'rdtPosCom_5_14'   },
     { dxStr:'T7xH8GwWpEM.mdjRPpvLKdu', totalField:'rdtPosCom',          splitField:'rdtPosCom_15plus' },
-    // RDT Negative Community
     { dxStr:'YWvx4zYdp92.NtjMVmRfvHH', totalField:'rdtNegCom' },
     { dxStr:'YWvx4zYdp92.qDXW7WMLT99', totalField:'rdtNegCom' },
     { dxStr:'YWvx4zYdp92.mdjRPpvLKdu', totalField:'rdtNegCom' },
-    // Microscopy Positive  — CHP & MCHP excluded
     { dxStr:'Sz13vbo2Qwh.m5T8uBNB8aN', totalField:'microPos', splitField:'microPos_U5',     excludeTypes: EXCL_MICRO },
     { dxStr:'Sz13vbo2Qwh.j7j6iaknOFn', totalField:'microPos', splitField:'microPos_5_14',   excludeTypes: EXCL_MICRO },
     { dxStr:'Sz13vbo2Qwh.zK1aiw8zFac', totalField:'microPos', splitField:'microPos_15plus', excludeTypes: EXCL_MICRO },
-    // Microscopy Negative  — CHP & MCHP excluded
     { dxStr:'Rijj3Fp9ksg.m5T8uBNB8aN', totalField:'microNeg', excludeTypes: EXCL_MICRO },
     { dxStr:'Rijj3Fp9ksg.j7j6iaknOFn', totalField:'microNeg', excludeTypes: EXCL_MICRO },
     { dxStr:'Rijj3Fp9ksg.zK1aiw8zFac', totalField:'microNeg', excludeTypes: EXCL_MICRO },
-    // ACT HF
     { dxStr:'wU8EdHifSLa.m5T8uBNB8aN', totalField:'actUnder24' },
     { dxStr:'wU8EdHifSLa.j7j6iaknOFn', totalField:'actUnder24' },
     { dxStr:'wU8EdHifSLa.zK1aiw8zFac', totalField:'actUnder24' },
     { dxStr:'XKTCuR0W3YN.m5T8uBNB8aN', totalField:'actOver24' },
     { dxStr:'XKTCuR0W3YN.j7j6iaknOFn', totalField:'actOver24' },
     { dxStr:'XKTCuR0W3YN.zK1aiw8zFac', totalField:'actOver24' },
-    // ACT Community
     { dxStr:'h3zJa6hAgib.NtjMVmRfvHH', totalField:'actComUnder24' },
     { dxStr:'h3zJa6hAgib.qDXW7WMLT99', totalField:'actComUnder24' },
     { dxStr:'h3zJa6hAgib.mdjRPpvLKdu', totalField:'actComUnder24' },
     { dxStr:'Imkks0HAl7E.NtjMVmRfvHH', totalField:'actComOver24' },
     { dxStr:'Imkks0HAl7E.qDXW7WMLT99', totalField:'actComOver24' },
     { dxStr:'Imkks0HAl7E.mdjRPpvLKdu', totalField:'actComOver24' },
-    // Admissions  — CHC, CHP & MCHP excluded
     { dxStr:'C1DCcLAtafH.HllvX50cXC0', totalField:'admUnder5', excludeTypes: EXCL_ADM },
     { dxStr:'IcUrc8pkuwR.HllvX50cXC0', totalField:'adm5_14',   excludeTypes: EXCL_ADM },
     { dxStr:'SdQVZnWzmtH.HllvX50cXC0', totalField:'admOver15', excludeTypes: EXCL_ADM },
-    // Deaths Children
     { dxStr:'r3HwIQFuQgM.A8dMUfhg6UE', totalField:'deathChild', splitField:'deathChild_1_59m'  },
     { dxStr:'r3HwIQFuQgM.cuvi0oNThtK', totalField:'deathChild', splitField:'deathChild_5_9y'   },
     { dxStr:'r3HwIQFuQgM.TkMu3ASPYIt', totalField:'deathChild', splitField:'deathChild_10_14y' },
-    // Deaths Adults
     { dxStr:'KMoztqwsZl8.sGC3uyNcgGJ', totalField:'deathAdult', splitField:'deathAdult_Female' },
     { dxStr:'KMoztqwsZl8.fJndZMaUVat', totalField:'deathAdult', splitField:'deathAdult_Male'   },
 ];
 
-// Build reverse lookup:  dxStr → { totalField, splitField, excludeTypes }
 const DX_LOOKUP = {};
 DX_MAP.forEach(d => { DX_LOOKUP[d.dxStr] = d; });
-
-// All unique dx strings for the analytics query
 const ALL_DX = [...new Set(DX_MAP.map(d => d.dxStr))];
 
 // ── State ──
@@ -867,8 +795,10 @@ let charts       = {};
 let _ouHierarchy = {};
 let _phuIds      = [];
 let _running     = false;
+let _cfgStart    = '';
+let _cfgEnd      = '';
 
-// ── Core fetch via GAS proxy ──────────────────────────────────
+// ── Core fetch via GAS proxy ──
 async function dhis2(path) {
     const url  = BASE_URL + path;
     const pUrl = PROXY + '?url=' + encodeURIComponent(url) + '&Authorization=' + encodeURIComponent(AUTH);
@@ -910,7 +840,7 @@ function getHFType(name) {
     return 'Other';
 }
 
-// ── Progress UI ──────────────────────────────────────────────
+// ── Progress UI ──
 const stepEls = {};
 
 function setProgress(pct, phase, detail) {
@@ -955,7 +885,6 @@ function updateStatus(msg, isError) {
     document.getElementById('statusAlert').classList.toggle('error', !!isError);
 }
 
-// Keep padding-top in sync with actual sticky bar height
 function syncStickyHeight() {
     const bar = document.getElementById('stickyBar');
     if (bar) {
@@ -964,10 +893,8 @@ function syncStickyHeight() {
     }
 }
 window.addEventListener('resize', syncStickyHeight);
-// Call after dashboard becomes visible
-const _origShowDash = function(){};
 
-// ── Nav ──────────────────────────────────────────────────────
+// ── Nav ──
 function toggleNav() {
     document.getElementById('navMenu').classList.toggle('active');
     document.getElementById('navArrow').classList.toggle('collapsed');
@@ -979,7 +906,7 @@ function scrollToSection(id) {
     document.getElementById('navArrow').classList.remove('collapsed');
 }
 
-// ── Slot helpers ─────────────────────────────────────────────
+// ── Slot helpers ──
 let _accMap = {};
 
 function emptySlot(ouId, period) {
@@ -1019,7 +946,7 @@ function showConfigScreen() {
     document.getElementById('dashboardScreen').style.display = 'none';
 }
 
-// ── Main pipeline ─────────────────────────────────────────────
+// ── Main pipeline ──
 async function runPipeline() {
     if (_running) return;
     const start = (document.getElementById('cfgStart') || {}).value;
@@ -1035,6 +962,10 @@ async function runPipeline() {
         return;
     }
     if (errEl) errEl.style.display = 'none';
+
+    // Store config for Drive save
+    _cfgStart = start;
+    _cfgEnd   = end;
 
     document.getElementById('configScreen').style.display    = 'none';
     document.getElementById('pipelineScreen').style.display  = 'block';
@@ -1053,7 +984,6 @@ async function runPipeline() {
     setProgress(0, 'Starting…', '');
 
     try {
-        // ── Step 1: Fetch Level-5 org unit hierarchy ──────────
         addStep('s_ou', 'Fetch facility registry — load all Level-5 health facilities with district and chiefdom hierarchy, classify into Hospital / Clinic / CHC / CHP / MCHP, exclude all other types');
         setStep('s_ou', 'running');
         setProgress(3, 'Step 1 — Org units…', 'Querying DHIS2');
@@ -1082,8 +1012,6 @@ async function runPipeline() {
         });
 
         _phuIds = Object.keys(_ouHierarchy);
-
-        // Count by type for display
         const typeCounts = { Hospital:0, Clinic:0, CHC:0, CHP:0, MCHP:0 };
         Object.values(_ouHierarchy).forEach(o => { if (typeCounts[o.hfType] !== undefined) typeCounts[o.hfType]++; });
         const typeBreakdown = ASSESSED_TYPES.map(t => t + ': ' + typeCounts[t]).join(' · ');
@@ -1095,22 +1023,18 @@ async function runPipeline() {
         );
         setProgress(15, 'Step 1 done', '');
 
-        // Populate geographic dropdowns immediately
         populateGeoFilters();
         await sleep(40);
 
-        // ── Step 2: Build dx param & period list ──────────────
         addStep('s_plan', 'Build query plan — split all 48 indicator de.coc pairs and selected periods into optimised batches for the DHIS2 analytics API');
         setStep('s_plan', 'running');
 
         const periods   = genPeriods(start, end);
-        // Batch dx strings to keep URL length manageable (≤40 per call)
         const DX_BATCH  = 40;
         const dxBatches = [];
         for (let i = 0; i < ALL_DX.length; i += DX_BATCH)
             dxBatches.push(ALL_DX.slice(i, i + DX_BATCH));
 
-        // Batch periods to keep URL length manageable (≤24 per call)
         const PE_BATCH  = 24;
         const pBatches  = [];
         for (let i = 0; i < periods.length; i += PE_BATCH)
@@ -1125,7 +1049,6 @@ async function runPipeline() {
         setProgress(20, 'Step 2 done', '');
         await sleep(40);
 
-        // ── Step 3: Fetch analytics ───────────────────────────
         addStep('s_fetch', 'Fetch analytics — query DHIS2 pre-aggregated data; apply reporting rules: microscopy zeroed for CHP/MCHP, admissions zeroed for CHC/CHP/MCHP');
         setStep('s_fetch', 'running');
 
@@ -1134,7 +1057,6 @@ async function runPipeline() {
 
         for (let di = 0; di < dxBatches.length; di++) {
             const dxParam = dxBatches[di].join(';');
-
             for (let pi = 0; pi < pBatches.length; pi++) {
                 const peParam = pBatches[pi].join(';');
                 callsDone++;
@@ -1155,7 +1077,6 @@ async function runPipeline() {
                 );
 
                 (resp.rows || []).forEach(row => {
-                    // row = [dxStr, period, ouId, value]
                     const [dxStr, period, ouId, rawVal] = row;
                     const val = parseFloat(rawVal) || 0;
                     if (!val || !_ouHierarchy[ouId]) return;
@@ -1163,8 +1084,6 @@ async function runPipeline() {
                     const mapping = DX_LOOKUP[dxStr];
                     if (!mapping) return;
 
-                    // ── Facility-type exclusion rules ──
-                    // Skip microscopy for CHP/MCHP; skip admissions for CHC/CHP/MCHP
                     const ouType = _ouHierarchy[ouId].hfType;
                     if (mapping.excludeTypes && mapping.excludeTypes.includes(ouType)) return;
 
@@ -1183,7 +1102,6 @@ async function runPipeline() {
             totalCalls + ' analytics call(s) · ' + totalRows.toLocaleString() + ' data points processed · Microscopy excluded for CHP/MCHP · Admissions excluded for CHC/CHP/MCHP');
         setProgress(86, 'Step 3 done', '');
 
-        // ── Step 4: Derive computed fields ────────────────────
         addStep('s_derive', 'Derive indicators — compute total suspected, total tested (RDT + microscopy), confirmed cases, ACT treatment, admissions, deaths, and cascade rates per facility-month');
         setStep('s_derive', 'running');
         setProgress(90, 'Step 4 — Deriving indicators…', '');
@@ -1205,7 +1123,6 @@ async function runPipeline() {
         setStep('s_derive', 'done', rawData.length.toLocaleString() + ' facility-month records');
         setProgress(95, 'Step 4 done', '');
 
-        // ── Step 5: Render ────────────────────────────────────
         addStep('s_render', 'Render dashboard — populate district/chiefdom/facility filters, build charts and summary cards from processed data');
         setStep('s_render', 'running');
         setProgress(97, 'Step 5 — Rendering…', '');
@@ -1222,6 +1139,7 @@ async function runPipeline() {
         await sleep(400);
         document.getElementById('pipelineScreen').style.display  = 'none';
         document.getElementById('dashboardScreen').style.display = 'block';
+        syncStickyHeight();
         setTimeout(syncStickyHeight, 50);
 
     } catch (err) {
@@ -1241,7 +1159,7 @@ async function runPipeline() {
     }
 }
 
-// ── Populate geographic filters ──
+// ── Geo filters ──
 function populateGeoFilters() {
     const distSet = {};
     _phuIds.forEach(id => {
@@ -1281,13 +1199,12 @@ function handleLevel4Change() {
     const l5 = document.getElementById('level5Filter');
     l5.innerHTML = '<option value="all">All Facilities</option>';
     if (chief !== 'all') {
-        // value = OU ID (unique), display = name (may have duplicates across chiefdoms)
         _phuIds
             .filter(id => _ouHierarchy[id] && _ouHierarchy[id].chiefdomName === chief)
             .sort((a, b) => (_ouHierarchy[a].name || '').localeCompare(_ouHierarchy[b].name || ''))
             .forEach(id => {
                 const o = document.createElement('option');
-                o.value = id;                          // ← UID, not name
+                o.value = id;
                 o.textContent = _ouHierarchy[id].name;
                 l5.appendChild(o);
             });
@@ -1295,7 +1212,6 @@ function handleLevel4Change() {
     applyFilters();
 }
 
-// ── Populate year/month filters from loaded data ──
 function populateTimeFilters() {
     const years  = [...new Set(rawData.map(r => r.year))].sort();
     const months = [...new Set(rawData.map(r => r.month))].sort();
@@ -1322,14 +1238,12 @@ function populateTimeFilters() {
         mDD.appendChild(d);
     });
 
-    // Reset All checked
     document.getElementById('yearAll').checked  = true;
     document.getElementById('monthAll').checked = true;
     document.getElementById('yearBtnLabel').textContent  = 'All Years';
     document.getElementById('monthBtnLabel').textContent = 'All Months';
 }
 
-// ── Apply filters ──
 function applyFilters() {
     const l2     = document.getElementById('level2Filter').value;
     const l4     = document.getElementById('level4Filter').value;
@@ -1344,7 +1258,7 @@ function applyFilters() {
     filteredData = rawData.filter(r => {
         if (l2     !== 'all' && r.level2 !== l2)     return false;
         if (l4     !== 'all' && r.level4 !== l4)     return false;
-        if (l5     !== 'all' && r.ou     !== l5)     return false;   // compare UID not name
+        if (l5     !== 'all' && r.ou     !== l5)     return false;
         if (hfType !== 'all' && r.hfType !== hfType) return false;
         if (!allYears  && !yChecks.includes(r.year))  return false;
         if (!allMonths && !mChecks.includes(r.month)) return false;
@@ -1381,6 +1295,18 @@ function exportData() {
     a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
     a.download = 'malaria_data_' + new Date().toISOString().slice(0,10) + '.csv';
     a.click();
+}
+
+function downloadSnapshot() {
+    if (!rawData.length) { alert('Run the pipeline first — no data loaded yet.'); return; }
+    const html = buildDashboardHtml();
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'malaria_dashboard_' + _cfgStart + '_' + _cfgEnd + '.html';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
 }
 
 // ── Multi-select helpers ──
@@ -1421,7 +1347,6 @@ function onMonthChange() {
     updateMultiLabel('month','All Months'); applyFilters();
 }
 
-
 function getTotals(data) {
     const t = { opd:0, suspected:0, totalTests:0, confirmed:0, actTreatment:0,
                 confirmedAndTreated:0, presumptiveTreatment:0, admissions:0, deaths:0 };
@@ -1443,488 +1368,711 @@ function destroyChart(id) {
     if (charts[id]) { charts[id].destroy(); delete charts[id]; }
 }
 
-function exportData() {
-    if (!filteredData.length) { alert('No data to export'); return; }
-    const headers = ['level2','level4','level5','hfType','year','month',
-                     'opd','suspected','totalTests','confirmed','actTreatment',
-                     'confirmedAndTreated','presumptiveTreatment','admissions','deaths'];
-    const csv = [headers.join(',')];
-    filteredData.forEach(r => { csv.push(headers.map(h => r[h] ?? '').join(',')); });
-    const a = document.createElement('a');
-    a.href     = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv.join('\n'));
-    a.download = `malaria_data_${new Date().toISOString().slice(0,10)}.csv`;
-    a.click();
+// ═══════════════════════════════════════════════════════════════
+//  GOOGLE DRIVE SAVE — ported from DQA Tool v5
+//  Builds a standalone HTML snapshot, base64-encodes it,
+//  POSTs to the same GAS saveDashboard endpoint used by DQA
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * buildDashboardHtml()
+ * ---------------------
+ * Produces a fully self-contained static HTML snapshot:
+ *   1. Captures every Chart.js canvas as a base64 PNG image
+ *   2. Clones the live DOM
+ *   3. Embeds rawData + ouHierarchy as JSON in a bootstrap <script>
+ *   4. Bootstrap restores all state and calls renderDashboard() on load
+ *   5. Filters, navigation, charts — full functionality identical to live tool
+ *
+ * WHY no canvas→image conversion:
+ *   If we replace <canvas> with <img>, Chart.js has nothing to draw onto when
+ *   applyFilters() → renderDashboard() runs after a filter change, so charts
+ *   would stay frozen. Keeping the <canvas> elements means renderDashboard()
+ *   works exactly as in the live tool.
+ *   cloneNode() gives blank canvases — the bootstrap re-renders them on load.
+ */
+function buildDashboardHtml() {
+    const start  = _cfgStart;
+    const end    = _cfgEnd;
+    const totals = getTotals(rawData);
+    const tpr    = calcPct(totals.confirmed, totals.totalTests);
+
+    // ── Step 1: Clone the full DOM — keeps all scripts, styles, canvases, nav
+    const clone = document.documentElement.cloneNode(true);
+
+    function drop(id)   { const el = clone.querySelector('#' + id); if (el) el.remove(); }
+    function dropQ(sel) { clone.querySelectorAll(sel).forEach(el => el.remove()); }
+
+    // ── Step 2: Remove screens not needed in snapshot ──────────────────
+    drop('configScreen');
+    drop('pipelineScreen');
+    drop('driveSaveBtn');
+    drop('driveStatusBar');
+
+    // ── Step 3: Show dashboard screen ──────────────────────────────────
+    const dashScreen = clone.querySelector('#dashboardScreen');
+    if (dashScreen) dashScreen.style.display = 'block';
+
+    // ── Step 4: Update subtitle & status ───────────────────────────────
+    const stickySubEl = clone.querySelector('.sticky-subtitle');
+    if (stickySubEl) stickySubEl.textContent = start + ' → ' + end + ' · ' + rawData.length.toLocaleString() + ' records · ICF-SL / NMCP';
+
+    const statusMsg  = clone.querySelector('#statusMessage');
+    if (statusMsg)  statusMsg.textContent = 'Saved snapshot · ' + start + ' → ' + end + ' · ' + rawData.length.toLocaleString() + ' records';
+    const lastUpdate = clone.querySelector('#lastUpdate');
+    if (lastUpdate) lastUpdate.textContent = new Date().toLocaleString();
+
+    // ── Step 5: Info banner ─────────────────────────────────────────────
+    const container = clone.querySelector('#dashScrollContent .container');
+    if (container) {
+        const banner = document.createElement('div');
+        banner.style.cssText = 'background:#e3f2fd;border:2px solid #2c6693;border-radius:10px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:14px;font-weight:700;color:#1f4a6a;font-size:13px;flex-wrap:wrap;';
+        banner.innerHTML =
+            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2c6693" stroke-width="2.5" stroke-linecap="round">'
+          + '<path d="M6.28 3l5.22 9.04L5.94 21H2L7.72 12 2 3h4.28zM15.5 3L22 15h-5.5L10 3h5.5zM16.5 21L9 9h5.5l7.5 12h-5.5z"/></svg>'
+          + '<div><strong>Malaria Analytics Dashboard — Saved Snapshot</strong>'
+          + ' &nbsp;·&nbsp; Period: <strong>' + start + ' → ' + end + '</strong>'
+          + ' &nbsp;·&nbsp; ' + rawData.length.toLocaleString() + ' facility-month records'
+          + ' &nbsp;·&nbsp; TPR: <strong>' + tpr + '%</strong>'
+          + ' &nbsp;·&nbsp; Confirmed: <strong>' + formatNumber(totals.confirmed) + '</strong>'
+          + ' &nbsp;·&nbsp; Saved ' + new Date().toLocaleDateString('en-GB') + ' · ICF-SL / NMCP</div>';
+        container.insertBefore(banner, container.firstChild);
+    }
+
+    // ── Step 6: Remove any previous bootstrap, inject new one ──────────
+    // The bootstrap runs after Chart.js loads (it is placed at end of <body>).
+    // It restores all state globals then calls the full renderDashboard() —
+    // exactly what the live pipeline does — so charts draw, filters work,
+    // nav works, everything works identically to the live tool.
+    dropQ('script#__dash_bootstrap__');
+
+    const STATE = {
+        start, end,
+        rawData,
+        ouHierarchy:   _ouHierarchy,
+        typeCounts:    window._typeCounts    || {},
+        totalAssessed: window._totalAssessed || 0
+    };
+
+    const bootstrapJs = `
+(function(){
+    var S = ${JSON.stringify(STATE)};
+
+    // Restore all state globals
+    rawData        = S.rawData;
+    filteredData   = S.rawData.slice();
+    _ouHierarchy   = S.ouHierarchy;
+    _phuIds        = Object.keys(S.ouHierarchy);
+    _cfgStart      = S.start;
+    _cfgEnd        = S.end;
+    window._typeCounts    = S.typeCounts;
+    window._totalAssessed = S.totalAssessed;
+
+    // Show dashboard, hide other screens
+    document.getElementById('configScreen').style.display    = 'none';
+    document.getElementById('pipelineScreen').style.display  = 'none';
+    document.getElementById('dashboardScreen').style.display = 'block';
+
+    // Populate all filter dropdowns
+    populateGeoFilters();
+    populateTimeFilters();
+
+    // Full render — draws all Chart.js charts onto the canvas elements,
+    // populates summary cards, facility type bar. Identical to live pipeline.
+    renderDashboard();
+
+    // Sync sticky bar height so nav menu positions correctly
+    syncStickyHeight();
+    setTimeout(syncStickyHeight, 200);
+})();`;
+
+    const bodyEl   = clone.querySelector('body');
+    const bsScript = document.createElement('script');
+    bsScript.id    = '__dash_bootstrap__';
+    bsScript.textContent = bootstrapJs;
+    if (bodyEl) bodyEl.appendChild(bsScript);
+
+    return '<!DOCTYPE html>\n' + clone.outerHTML;
 }
 
-// ── Multi-select helpers ──────────────────────────────────────
-function toggleMultiDropdown(which) {
-    document.getElementById(which + 'Dropdown').classList.toggle('open');
-}
-document.addEventListener('click', function(e) {
-    ['year','month'].forEach(w => {
-        const wrapper = document.getElementById(w + 'Wrapper');
-        if (wrapper && !wrapper.contains(e.target)) {
-            document.getElementById(w + 'Dropdown').classList.remove('open');
+/**
+ * driveStatusUI(msg, cssClass, pct)
+ * Show progress in the #driveStatusBar element
+ */
+function driveStatusUI(msg, cssClass, pct) {
+    const bar  = document.getElementById('driveStatusBar');
+    const msgEl = document.getElementById('driveStatusMsg');
+    const pw   = document.getElementById('driveProgressWrap');
+    const pf   = document.getElementById('driveProgressFill');
+    if (!bar) return;
+
+    bar.style.display = 'block';
+    bar.className = 'ds-uploading'; // reset
+    if (cssClass) bar.className = cssClass;
+    if (msgEl) msgEl.textContent = msg;
+
+    if (pct != null) {
+        if (pw) pw.style.display = 'block';
+        if (pf) {
+            pf.style.width = pct + '%';
+            pf.style.background = cssClass === 'ds-done' ? '#28a745'
+                                 : cssClass === 'ds-error' ? '#d32f2f' : '#f0a500';
         }
-    });
-});
-function updateMultiLabel(which, allLabel) {
-    const checks = [...document.querySelectorAll(`#${which}Dropdown input[type="checkbox"]:not(#${which}All):checked`)];
-    const allCb  = document.getElementById(which + 'All');
-    const btn    = document.getElementById(which + 'BtnLabel');
-    if (allCb.checked || checks.length === 0) btn.textContent = allLabel;
-    else if (checks.length === 1) btn.textContent = checks[0].parentElement.querySelector('label').textContent;
-    else btn.textContent = checks.length + ' selected';
-}
-function toggleAllYear(cb) {
-    if (cb.checked) document.querySelectorAll('#yearDropdown input[type="checkbox"]:not(#yearAll)').forEach(c => c.checked = false);
-    updateMultiLabel('year','All Years'); applyFilters();
-}
-function toggleAllMonth(cb) {
-    if (cb.checked) document.querySelectorAll('#monthDropdown input[type="checkbox"]:not(#monthAll)').forEach(c => c.checked = false);
-    updateMultiLabel('month','All Months'); applyFilters();
-}
-function onYearChange() {
-    const any = [...document.querySelectorAll('#yearDropdown input[type="checkbox"]:not(#yearAll):checked')].length > 0;
-    document.getElementById('yearAll').checked = !any;
-    updateMultiLabel('year','All Years'); applyFilters();
-}
-function onMonthChange() {
-    const any = [...document.querySelectorAll('#monthDropdown input[type="checkbox"]:not(#monthAll):checked')].length > 0;
-    document.getElementById('monthAll').checked = !any;
-    updateMultiLabel('month','All Months'); applyFilters();
+    } else {
+        // Indeterminate — animate
+        if (pw) pw.style.display = 'block';
+        if (pf) {
+            pf.style.width = '100%';
+            pf.style.animation = 'indeterminate 1.4s infinite';
+            pf.style.background = '#f0a500';
+        }
+    }
 }
 
+/**
+ * saveDashboardToDrive()
+ * ----------------------
+ * 4-stage upload matching DQA Tool pattern exactly:
+ *   Stage 1 — Build HTML snapshot
+ *   Stage 2 — Base64-encode
+ *   Stage 3 — POST to GAS
+ *   Stage 4 — Process response
+ */
+async function saveDashboardToDrive() {
+    if (!rawData.length) {
+        alert('Run the pipeline first — no data loaded yet.');
+        return;
+    }
 
-        // ── Shared tooltip/plugin factories ─────────────────────
+    const btn = document.getElementById('driveSaveBtn');
+    if (btn) { btn.disabled = true; }
 
-        // Pie tooltip: "Label: 1,234 (56.7%)"
-        function pieOpts(colors) {
-            return {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 14 } },
-                    tooltip: {
-                        callbacks: {
-                            label: function(ctx) {
-                                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                                const val   = ctx.parsed;
-                                const pct   = total > 0 ? ((val / total) * 100).toFixed(1) : '0.0';
-                                return ' ' + ctx.label + ': ' + val.toLocaleString() + ' (' + pct + '%)';
-                            }
-                        }
-                    }
-                }
-            };
+    try {
+        // Stage 1 — Build snapshot
+        driveStatusUI('Stage 1/4 — Building dashboard snapshot…', 'ds-uploading', 10);
+        await sleep(30);
+
+        let html;
+        try {
+            html = buildDashboardHtml();
+        } catch (e) {
+            driveStatusUI('Build failed: ' + e.message, 'ds-error', 100);
+            if (btn) btn.disabled = false;
+            return;
         }
 
-        // Bar tooltip: "Count (X%)" where X% = share of dataset total
-        function barOpts(extraOpts) {
-            const base = {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(ctx) {
-                                const vals  = ctx.dataset.data;
-                                const total = vals.reduce((a, b) => a + (b || 0), 0);
-                                const val   = ctx.parsed.y !== undefined ? ctx.parsed.y : ctx.parsed.x;
-                                const pct   = total > 0 ? ((val / total) * 100).toFixed(1) : '0.0';
-                                return ' ' + val.toLocaleString() + ' (' + pct + '%)';
-                            }
-                        }
-                    }
-                }
-            };
-            return Object.assign({}, base, extraOpts || {});
+        // Stage 2 — Base64 encode
+        const rawKB = Math.round(html.length / 1024);
+        driveStatusUI('Stage 2/4 — Encoding ' + rawKB + ' KB to base64…', 'ds-uploading', 30);
+        await sleep(30);
+
+        let b64;
+        try {
+            const bytes = new TextEncoder().encode(html);
+            let binary = '';
+            const chunk = 8192;
+            for (let i = 0; i < bytes.length; i += chunk)
+                binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+            b64 = btoa(binary);
+        } catch (e) {
+            driveStatusUI('Encoding failed: ' + e.message, 'ds-error', 100);
+            if (btn) btn.disabled = false;
+            return;
         }
 
-        // Line tooltip: plain count
-        function lineOpts(extraOpts) {
-            const base = {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: { y: { beginAtZero: true } },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(ctx) {
-                                return ' ' + ctx.dataset.label + ': ' + (ctx.parsed.y || 0).toLocaleString();
-                            }
-                        }
-                    }
-                }
-            };
-            return Object.assign({}, base, extraOpts || {});
-        }
+        // Stage 3 — Upload to GAS
+        const sizeKB = Math.round(b64.length / 1024);
+        driveStatusUI('Stage 3/4 — Uploading ' + sizeKB + ' KB to Google Drive…', 'ds-uploading', 55);
+        await sleep(30);
 
-        // Pill colours per facility type
-        const TYPE_COLORS = {
-            Hospital: { bg:'#1e3a5f', text:'#fff' },
-            Clinic:   { bg:'#17a2b8', text:'#fff' },
-            CHC:      { bg:'#6f42c1', text:'#fff' },
-            CHP:      { bg:'#28a745', text:'#fff' },
-            MCHP:     { bg:'#b8700a', text:'#fff' },
+        const now      = new Date();
+        const ts       = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString();
+        const period   = _cfgStart + ' → ' + _cfgEnd;
+        const totals   = getTotals(rawData);
+        const tpr      = calcPct(totals.confirmed, totals.totalTests) + '%';
+
+        // File key: malaria_dashboard.html — shown on Dashboard tab in NMDR portal
+        const files  = { 'malaria_dashboard.html': 'data:text/html;base64,' + b64 };
+        const titles = {
+            dashTitle:   'Malaria Dashboard · ' + period,
+            dashPeriod:  period,
+            dashRecords: rawData.length.toLocaleString() + ' facility-month records',
+            dashTPR:     'TPR: ' + tpr,
+            dashConfirmed: formatNumber(totals.confirmed) + ' confirmed cases'
         };
 
-        function renderFacTypeBar() {
-            const tc    = window._typeCounts   || {};
-            const total = window._totalAssessed || 0;
-            const bar   = document.getElementById('facTypeBar');
-            if (!bar) return;
-            bar.style.display = 'block';
+        const body = new URLSearchParams({
+            action:  'saveDashboard',
+            files:   JSON.stringify(files),
+            ts,
+            period,
+            titles:  JSON.stringify(titles)
+        });
 
-            document.getElementById('facTypeTotalBadge').textContent = total.toLocaleString();
-
-            const TYPES = ['Hospital','Clinic','CHC','CHP','MCHP'];
-
-            // Stacked proportion bar
-            const stackEl = document.getElementById('facTypeStackBar');
-            stackEl.innerHTML = '';
-            const wrap = document.createElement('div');
-            wrap.style.cssText = 'width:100%;';
-            const labelRow = document.createElement('div');
-            labelRow.style.cssText = 'display:flex;justify-content:space-between;margin-bottom:5px;';
-            labelRow.innerHTML = '<span style="font-size:10px;color:rgba(255,255,255,.5);font-weight:700;text-transform:uppercase;letter-spacing:.8px;">Proportion by type</span>'
-                               + '<span style="font-size:10px;color:rgba(255,255,255,.5);font-weight:700;">' + total.toLocaleString() + ' total</span>';
-            wrap.appendChild(labelRow);
-            const track = document.createElement('div');
-            track.style.cssText = 'display:flex;height:14px;border-radius:8px;overflow:hidden;width:100%;';
-            TYPES.forEach(t => {
-                const n   = tc[t] || 0;
-                const pct = total > 0 ? (n / total * 100) : 0;
-                if (!pct) return;
-                const seg = document.createElement('div');
-                seg.style.cssText = 'width:' + pct + '%;background:' + TYPE_COLORS[t].bg + ';';
-                seg.title = t + ': ' + n + ' (' + pct.toFixed(1) + '%)';
-                track.appendChild(seg);
-            });
-            wrap.appendChild(track);
-            stackEl.appendChild(wrap);
-
-            // Per-type card pills
-            const pillsEl = document.getElementById('facTypePills');
-            pillsEl.innerHTML = '';
-            TYPES.forEach((t, i) => {
-                const n   = tc[t] || 0;
-                const pct = total > 0 ? ((n / total) * 100).toFixed(1) : '0.0';
-                const c   = TYPE_COLORS[t];
-                const card = document.createElement('div');
-                card.style.cssText = 'flex:1;min-width:120px;padding:14px 18px;border-right:' + (i < TYPES.length-1 ? '1px solid #e3f2fd' : 'none') + ';';
-                card.innerHTML =
-                    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">'
-                  +   '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + c.bg + ';flex-shrink:0;"></span>'
-                  +   '<span style="font-size:11px;font-weight:800;color:#2c6693;text-transform:uppercase;letter-spacing:.6px;">' + t + '</span>'
-                  + '</div>'
-                  + '<div style="font-size:26px;font-weight:900;color:#1f4a6a;line-height:1;margin-bottom:3px;">' + n.toLocaleString() + '</div>'
-                  + '<div style="font-size:12px;font-weight:700;color:#2c6693;">' + pct + '% of total</div>';
-                pillsEl.appendChild(card);
-            });
+        let resp;
+        try {
+            resp = await fetch(DRIVE_GAS, { method: 'POST', body });
+        } catch (netErr) {
+            driveStatusUI('Network error — could not reach GAS endpoint. ' + netErr.message, 'ds-error', 100);
+            if (btn) btn.disabled = false;
+            return;
         }
 
-        function renderDashboard() {
-            document.getElementById('loadingIndicator').style.display = 'none';
-            document.getElementById('dashboardContent').style.display = 'block';
-            renderFacTypeBar();
+        // Stage 4 — Process response
+        driveStatusUI('Stage 4/4 — GAS processing response…', 'ds-uploading', 85);
+        let data;
+        try { data = await resp.json(); }
+        catch (e) { data = {}; }
 
-            const totals = getTotals(filteredData);
-            document.getElementById('totalOPD').innerHTML              = formatNumber(totals.opd);
-            document.getElementById('totalSuspected').innerHTML        = formatNumber(totals.suspected);
-            document.getElementById('totalTests').innerHTML            = formatNumber(totals.totalTests);
-            document.getElementById('totalConfirmed').innerHTML        = formatNumber(totals.confirmed);
-            document.getElementById('totalACT').innerHTML              = formatNumber(totals.actTreatment);
-            document.getElementById('totalConfirmedTreated').innerHTML = formatNumber(totals.confirmedAndTreated);
-            document.getElementById('totalPresumptive').innerHTML      = formatNumber(totals.presumptiveTreatment);
-            document.getElementById('totalAdmissions').innerHTML       = formatNumber(totals.admissions);
-            document.getElementById('totalDeaths').innerHTML           = formatNumber(totals.deaths);
-            document.getElementById('positivityRate').innerHTML        = calcPct(totals.confirmed, totals.totalTests) + '%';
-            document.getElementById('treatmentRate').innerHTML         = calcPct(totals.confirmedAndTreated, totals.actTreatment) + '%';
-            document.getElementById('confirmedTreatmentRate').innerHTML= calcPct(totals.confirmedAndTreated, totals.confirmed) + '%';
-            document.getElementById('presumptiveTreatmentRate').innerHTML = calcPct(totals.presumptiveTreatment, totals.actTreatment) + '%';
-            document.getElementById('cfrRate').innerHTML               = calcPct(totals.deaths, totals.admissions) + '%';
-
-            // Monthly aggregation
-            const monthly = {};
-            filteredData.forEach(r => {
-                const key = `${r.year}-${r.month}`;
-                if (!monthly[key]) monthly[key] = { opd:0, suspected:0, tests:0, confirmed:0, treatment:0, admissions:0, deaths:0 };
-                monthly[key].opd        += r.opd           || 0;
-                monthly[key].suspected  += r.suspected     || 0;
-                monthly[key].tests      += r.totalTests    || 0;
-                monthly[key].confirmed  += r.confirmed     || 0;
-                monthly[key].treatment  += r.actTreatment  || 0;
-                monthly[key].admissions += r.admissions    || 0;
-                monthly[key].deaths     += r.deaths        || 0;
-            });
-            const labels = Object.keys(monthly).sort();
-
-            // ── OPD ──────────────────────────────────────────────
-            let opdU5 = 0, opdO5 = 0;
-            filteredData.forEach(r => { opdU5 += r.opdUnder5 || 0; opdO5 += r.opdOver5 || 0; });
-
-            destroyChart('opdAgeChart');
-            charts.opdAgeChart = new Chart(document.getElementById('opdAgeChart'), {
-                type: 'pie',
-                data: { labels: ['Under 5', '5+ years'], datasets: [{ data: [opdU5, opdO5], backgroundColor: ['#2c6693', '#4a90c4'] }] },
-                options: pieOpts()
-            });
-
-            destroyChart('opdTrendChart');
-            charts.opdTrendChart = new Chart(document.getElementById('opdTrendChart'), {
-                type: 'line',
-                data: { labels, datasets: [{ label: 'OPD Visits', data: labels.map(l => monthly[l].opd), borderColor: '#2c6693', tension: 0.4, fill: true, borderWidth: 3 }] },
-                options: lineOpts()
-            });
-
-            destroyChart('opdCompChart');
-            charts.opdCompChart = new Chart(document.getElementById('opdCompChart'), {
-                type: 'bar',
-                data: { labels: ['Under 5', '5+ years'], datasets: [{ data: [opdU5, opdO5], backgroundColor: ['#2c6693', '#4a90c4'] }] },
-                options: barOpts()
-            });
-
-            const byDistrict = {};
-            filteredData.forEach(r => { if (r.level2) byDistrict[r.level2] = (byDistrict[r.level2] || 0) + (r.opd || 0); });
-            const districtSorted = Object.entries(byDistrict).sort((a, b) => b[1] - a[1]);
-            document.getElementById('opdRegionChart').parentElement.style.height = Math.max(350, districtSorted.length * 30) + 'px';
-            destroyChart('opdRegionChart');
-            charts.opdRegionChart = new Chart(document.getElementById('opdRegionChart'), {
-                type: 'bar',
-                data: { labels: districtSorted.map(d => d[0]), datasets: [{ data: districtSorted.map(d => d[1]), backgroundColor: '#2c6693' }] },
-                options: barOpts({ indexAxis: 'y' })
-            });
-
-            // ── Suspected ────────────────────────────────────────
-            let facSusp = 0, comSusp = 0;
-            filteredData.forEach(r => { facSusp += r.suspectedHF || 0; comSusp += r.suspectedCommunity || 0; });
-            destroyChart('suspectedLocationChart');
-            charts.suspectedLocationChart = new Chart(document.getElementById('suspectedLocationChart'), {
-                type: 'pie',
-                data: { labels: ['Health Facility', 'Community'], datasets: [{ data: [facSusp, comSusp], backgroundColor: ['#2c6693', '#4a90c4'] }] },
-                options: pieOpts()
-            });
-
-            let suspU5 = 0, susp5_14 = 0, susp15p = 0;
-            filteredData.forEach(r => {
-                suspU5   += (r.suspectedHF_U5    || 0) + (r.suspectedCom_U5    || 0);
-                susp5_14 += (r.suspectedHF_5_14  || 0) + (r.suspectedCom_5_14  || 0);
-                susp15p  += (r.suspectedHF_15plus || 0) + (r.suspectedCom_15plus|| 0);
-            });
-            destroyChart('suspectedAgeChart');
-            charts.suspectedAgeChart = new Chart(document.getElementById('suspectedAgeChart'), {
-                type: 'bar',
-                data: { labels: ['Under 5', '5-14 years', '15+ years'], datasets: [{ data: [suspU5, susp5_14, susp15p], backgroundColor: ['#fbbf24', '#f59e0b', '#d97706'] }] },
-                options: barOpts()
-            });
-
-            destroyChart('suspectedTrendChart');
-            charts.suspectedTrendChart = new Chart(document.getElementById('suspectedTrendChart'), {
-                type: 'line',
-                data: { labels, datasets: [{ label: 'Suspected Cases', data: labels.map(l => monthly[l].suspected), borderColor: '#fbbf24', tension: 0.4, fill: true, borderWidth: 3 }] },
-                options: lineOpts()
-            });
-
-            const suspByDistrict = {};
-            filteredData.forEach(r => { if (r.level2) suspByDistrict[r.level2] = (suspByDistrict[r.level2] || 0) + (r.suspected || 0); });
-            const suspDS = Object.entries(suspByDistrict).sort((a, b) => b[1] - a[1]);
-            document.getElementById('suspectedRegionChart').parentElement.style.height = Math.max(350, suspDS.length * 30) + 'px';
-            destroyChart('suspectedRegionChart');
-            charts.suspectedRegionChart = new Chart(document.getElementById('suspectedRegionChart'), {
-                type: 'bar',
-                data: { labels: suspDS.map(d => d[0]), datasets: [{ data: suspDS.map(d => d[1]), backgroundColor: '#fbbf24' }] },
-                options: barOpts({ indexAxis: 'y' })
-            });
-
-            // ── Testing ───────────────────────────────────────────
-            let rdtTests = 0, microTests = 0;
-            filteredData.forEach(r => { rdtTests += r.rdtTests || 0; microTests += r.microTests || 0; });
-            destroyChart('testMethodChart');
-            charts.testMethodChart = new Chart(document.getElementById('testMethodChart'), {
-                type: 'pie',
-                data: { labels: ['RDT Tests', 'Microscopy'], datasets: [{ data: [rdtTests, microTests], backgroundColor: ['#2c6693', '#4a90c4'] }] },
-                options: pieOpts()
-            });
-
-            let facTests = 0, comTests = 0;
-            filteredData.forEach(r => {
-                facTests += (r.rdtPosHF || 0) + (r.rdtNegHF || 0) + (r.microPos || 0) + (r.microNeg || 0);
-                comTests += (r.rdtPosCom || 0) + (r.rdtNegCom || 0);
-            });
-            destroyChart('testLocationChart');
-            charts.testLocationChart = new Chart(document.getElementById('testLocationChart'), {
-                type: 'bar',
-                data: { labels: ['Health Facility', 'Community'], datasets: [{ data: [facTests, comTests], backgroundColor: ['#2c6693', '#4a90c4'] }] },
-                options: barOpts()
-            });
-
-            let posTests = 0, negTests = 0;
-            filteredData.forEach(r => { posTests += r.confirmed || 0; negTests += (r.totalTests || 0) - (r.confirmed || 0); });
-            destroyChart('testResultsChart');
-            charts.testResultsChart = new Chart(document.getElementById('testResultsChart'), {
-                type: 'pie',
-                data: { labels: ['Positive', 'Negative'], datasets: [{ data: [posTests, negTests], backgroundColor: ['#d32f2f', '#4caf50'] }] },
-                options: pieOpts()
-            });
-
-            destroyChart('testTrendChart');
-            charts.testTrendChart = new Chart(document.getElementById('testTrendChart'), {
-                type: 'line',
-                data: { labels, datasets: [{ label: 'Total Tests', data: labels.map(l => monthly[l].tests), borderColor: '#2c6693', tension: 0.4, fill: true, borderWidth: 3 }] },
-                options: lineOpts()
-            });
-
-            // ── Confirmed ─────────────────────────────────────────
-            let confU5 = 0, conf5_14 = 0, conf15p = 0;
-            filteredData.forEach(r => {
-                confU5   += (r.rdtPosHF_U5    || 0) + (r.rdtPosCom_U5    || 0) + (r.microPos_U5    || 0);
-                conf5_14 += (r.rdtPosHF_5_14  || 0) + (r.rdtPosCom_5_14  || 0) + (r.microPos_5_14  || 0);
-                conf15p  += (r.rdtPosHF_15plus || 0) + (r.rdtPosCom_15plus|| 0) + (r.microPos_15plus|| 0);
-            });
-            destroyChart('confirmedAgeChart');
-            charts.confirmedAgeChart = new Chart(document.getElementById('confirmedAgeChart'), {
-                type: 'pie',
-                data: { labels: ['Under 5', '5-14 years', '15+ years'], datasets: [{ data: [confU5, conf5_14, conf15p], backgroundColor: ['#2c6693', '#4a90c4', '#87b5d9'] }] },
-                options: pieOpts()
-            });
-
-            let facConf = 0, comConf = 0;
-            filteredData.forEach(r => { facConf += (r.rdtPosHF || 0) + (r.microPos || 0); comConf += r.rdtPosCom || 0; });
-            destroyChart('confirmedLocationChart');
-            charts.confirmedLocationChart = new Chart(document.getElementById('confirmedLocationChart'), {
-                type: 'bar',
-                data: { labels: ['Health Facility', 'Community'], datasets: [{ data: [facConf, comConf], backgroundColor: ['#2c6693', '#4a90c4'] }] },
-                options: barOpts()
-            });
-
-            destroyChart('confirmedTrendChart');
-            charts.confirmedTrendChart = new Chart(document.getElementById('confirmedTrendChart'), {
-                type: 'line',
-                data: { labels, datasets: [{ label: 'Confirmed Cases', data: labels.map(l => monthly[l].confirmed), borderColor: '#d32f2f', tension: 0.4, fill: true, borderWidth: 3 }] },
-                options: lineOpts()
-            });
-
-            const confByDistrict = {};
-            filteredData.forEach(r => { if (r.level2) confByDistrict[r.level2] = (confByDistrict[r.level2] || 0) + (r.confirmed || 0); });
-            const confDS = Object.entries(confByDistrict).sort((a, b) => b[1] - a[1]);
-            document.getElementById('confirmedRegionChart').parentElement.style.height = Math.max(350, confDS.length * 30) + 'px';
-            destroyChart('confirmedRegionChart');
-            charts.confirmedRegionChart = new Chart(document.getElementById('confirmedRegionChart'), {
-                type: 'bar',
-                data: { labels: confDS.map(d => d[0]), datasets: [{ data: confDS.map(d => d[1]), backgroundColor: '#d32f2f' }] },
-                options: barOpts({ indexAxis: 'y' })
-            });
-
-            // ── Treatment ─────────────────────────────────────────
-            let under24 = 0, over24 = 0;
-            filteredData.forEach(r => { under24 += (r.actUnder24 || 0) + (r.actComUnder24 || 0); over24 += (r.actOver24 || 0) + (r.actComOver24 || 0); });
-            destroyChart('treatmentTimeChart');
-            charts.treatmentTimeChart = new Chart(document.getElementById('treatmentTimeChart'), {
-                type: 'pie',
-                data: { labels: ['Within 24hrs', 'After 24hrs'], datasets: [{ data: [under24, over24], backgroundColor: ['#4caf50', '#ff9800'] }] },
-                options: pieOpts()
-            });
-
-            const hfU24  = filteredData.reduce((s, r) => s + (r.actUnder24    || 0), 0);
-            const hfO24  = filteredData.reduce((s, r) => s + (r.actOver24     || 0), 0);
-            const comU24 = filteredData.reduce((s, r) => s + (r.actComUnder24 || 0), 0);
-            const comO24 = filteredData.reduce((s, r) => s + (r.actComOver24  || 0), 0);
-            destroyChart('treatmentAgeChart');
-            charts.treatmentAgeChart = new Chart(document.getElementById('treatmentAgeChart'), {
-                type: 'pie',
-                data: { labels: ['Health Facility', 'Community'], datasets: [{ data: [hfU24 + hfO24, comU24 + comO24], backgroundColor: ['#2c6693', '#4a90c4'] }] },
-                options: pieOpts()
-            });
-
-            destroyChart('treatmentLocationChart');
-            charts.treatmentLocationChart = new Chart(document.getElementById('treatmentLocationChart'), {
-                type: 'bar',
-                data: {
-                    labels: ['HF < 24h', 'HF > 24h', 'Community < 24h', 'Community > 24h'],
-                    datasets: [{ data: [hfU24, hfO24, comU24, comO24], backgroundColor: ['#2c6693', '#4a90c4', '#4caf50', '#ff9800'] }]
-                },
-                options: barOpts()
-            });
-
-            destroyChart('treatmentTrendChart');
-            charts.treatmentTrendChart = new Chart(document.getElementById('treatmentTrendChart'), {
-                type: 'line',
-                data: { labels, datasets: [{ label: 'ACT Treatments', data: labels.map(l => monthly[l].treatment), borderColor: '#4caf50', tension: 0.4, fill: true, borderWidth: 3 }] },
-                options: lineOpts()
-            });
-
-            // ── Admissions ────────────────────────────────────────
-            let u5Adm = 0, age5_14Adm = 0, ov15Adm = 0;
-            filteredData.forEach(r => { u5Adm += r.admUnder5 || 0; age5_14Adm += r.adm5_14 || 0; ov15Adm += r.admOver15 || 0; });
-            destroyChart('admissionsAgeChart');
-            charts.admissionsAgeChart = new Chart(document.getElementById('admissionsAgeChart'), {
-                type: 'pie',
-                data: { labels: ['Under 5', '5-14 Years', '15+ Years'], datasets: [{ data: [u5Adm, age5_14Adm, ov15Adm], backgroundColor: ['#2c6693', '#4a90c4', '#87b5d9'] }] },
-                options: pieOpts()
-            });
-
-            destroyChart('admissionsTrendChart');
-            charts.admissionsTrendChart = new Chart(document.getElementById('admissionsTrendChart'), {
-                type: 'line',
-                data: { labels, datasets: [{ label: 'Admissions', data: labels.map(l => monthly[l].admissions), borderColor: '#2c6693', tension: 0.4, fill: true, borderWidth: 3 }] },
-                options: lineOpts()
-            });
-
-            const admByDistrict = {};
-            filteredData.forEach(r => { if (r.level2) admByDistrict[r.level2] = (admByDistrict[r.level2] || 0) + (r.admissions || 0); });
-            const admDS = Object.entries(admByDistrict).sort((a, b) => b[1] - a[1]);
-            document.getElementById('admissionsRegionChart').parentElement.style.height = Math.max(350, admDS.length * 30) + 'px';
-            destroyChart('admissionsRegionChart');
-            charts.admissionsRegionChart = new Chart(document.getElementById('admissionsRegionChart'), {
-                type: 'bar',
-                data: { labels: admDS.map(d => d[0]), datasets: [{ data: admDS.map(d => d[1]), backgroundColor: '#2c6693' }] },
-                options: barOpts({ indexAxis: 'y' })
-            });
-
-            // ── Deaths ────────────────────────────────────────────
-            let death1_59m = 0, death5_9y = 0, death10_14y = 0, deathAdult = 0;
-            filteredData.forEach(r => {
-                death1_59m  += r.deathChild_1_59m  || 0;
-                death5_9y   += r.deathChild_5_9y   || 0;
-                death10_14y += r.deathChild_10_14y || 0;
-                deathAdult  += r.deathAdult         || 0;
-            });
-            destroyChart('deathsAgeChart');
-            charts.deathsAgeChart = new Chart(document.getElementById('deathsAgeChart'), {
-                type: 'bar',
-                data: { labels: ['1-59 months', '5-9 years', '10-14 years', '15+ years'], datasets: [{ data: [death1_59m, death5_9y, death10_14y, deathAdult], backgroundColor: ['#d32f2f', '#e57373', '#ef9a9a', '#c62828'] }] },
-                options: barOpts()
-            });
-
-            let deathFemale = 0, deathMale = 0;
-            filteredData.forEach(r => { deathFemale += r.deathAdult_Female || 0; deathMale += r.deathAdult_Male || 0; });
-            destroyChart('deathsGenderChart');
-            charts.deathsGenderChart = new Chart(document.getElementById('deathsGenderChart'), {
-                type: 'pie',
-                data: { labels: ['Female', 'Male'], datasets: [{ data: [deathFemale, deathMale], backgroundColor: ['#ec4899', '#3b82f6'] }] },
-                options: pieOpts()
-            });
-
-            destroyChart('deathsTrendChart');
-            charts.deathsTrendChart = new Chart(document.getElementById('deathsTrendChart'), {
-                type: 'line',
-                data: { labels, datasets: [{ label: 'Deaths', data: labels.map(l => monthly[l].deaths), borderColor: '#d32f2f', tension: 0.4, fill: true, borderWidth: 3 }] },
-                options: lineOpts()
-            });
-
-            const deathByDistrict = {};
-            filteredData.forEach(r => { if (r.level2) deathByDistrict[r.level2] = (deathByDistrict[r.level2] || 0) + (r.deaths || 0); });
-            const deathDS = Object.entries(deathByDistrict).sort((a, b) => b[1] - a[1]);
-            document.getElementById('deathsRegionChart').parentElement.style.height = Math.max(350, deathDS.length * 30) + 'px';
-            destroyChart('deathsRegionChart');
-            charts.deathsRegionChart = new Chart(document.getElementById('deathsRegionChart'), {
-                type: 'bar',
-                data: { labels: deathDS.map(d => d[0]), datasets: [{ data: deathDS.map(d => d[1]), backgroundColor: '#d32f2f' }] },
-                options: barOpts({ indexAxis: 'y' })
-            });
+        if (data.ok) {
+            driveStatusUI(
+                '✔ Saved to Google Drive · ' + period +
+                ' · ' + rawData.length.toLocaleString() + ' records · TPR: ' + tpr,
+                'ds-done', 100
+            );
+            // Notify parent frame (NMDR portal) if embedded
+            try {
+                window.parent.postMessage({
+                    type: 'malaria_dashboard_saved', period, tpr,
+                    records: rawData.length
+                }, '*');
+            } catch (_) {}
+        } else {
+            driveStatusUI(
+                'Drive error: ' + (data.error || 'Unknown — check GAS endpoint'),
+                'ds-error', 100
+            );
         }
+
+    } finally {
+        if (btn) btn.disabled = false;
+    }
+}
+
+
+// ── Chart factory helpers ──
+function pieOpts(colors) {
+    return {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 14 } },
+            tooltip: {
+                callbacks: {
+                    label: function(ctx) {
+                        const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                        const val   = ctx.parsed;
+                        const pct   = total > 0 ? ((val / total) * 100).toFixed(1) : '0.0';
+                        return ' ' + ctx.label + ': ' + val.toLocaleString() + ' (' + pct + '%)';
+                    }
+                }
+            }
+        }
+    };
+}
+
+function barOpts(extraOpts) {
+    const base = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: function(ctx) {
+                        const vals  = ctx.dataset.data;
+                        const total = vals.reduce((a, b) => a + (b || 0), 0);
+                        const val   = ctx.parsed.y !== undefined ? ctx.parsed.y : ctx.parsed.x;
+                        const pct   = total > 0 ? ((val / total) * 100).toFixed(1) : '0.0';
+                        return ' ' + val.toLocaleString() + ' (' + pct + '%)';
+                    }
+                }
+            }
+        }
+    };
+    return Object.assign({}, base, extraOpts || {});
+}
+
+function lineOpts(extraOpts) {
+    const base = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true } },
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function(ctx) {
+                        return ' ' + ctx.dataset.label + ': ' + (ctx.parsed.y || 0).toLocaleString();
+                    }
+                }
+            }
+        }
+    };
+    return Object.assign({}, base, extraOpts || {});
+}
+
+const TYPE_COLORS = {
+    Hospital: { bg:'#1e3a5f', text:'#fff' },
+    Clinic:   { bg:'#17a2b8', text:'#fff' },
+    CHC:      { bg:'#6f42c1', text:'#fff' },
+    CHP:      { bg:'#28a745', text:'#fff' },
+    MCHP:     { bg:'#b8700a', text:'#fff' },
+};
+
+function renderFacTypeBar() {
+    const tc    = window._typeCounts   || {};
+    const total = window._totalAssessed || 0;
+    const bar   = document.getElementById('facTypeBar');
+    if (!bar) return;
+    bar.style.display = 'block';
+
+    document.getElementById('facTypeTotalBadge').textContent = total.toLocaleString();
+
+    const TYPES = ['Hospital','Clinic','CHC','CHP','MCHP'];
+
+    const stackEl = document.getElementById('facTypeStackBar');
+    stackEl.innerHTML = '';
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'width:100%;';
+    const labelRow = document.createElement('div');
+    labelRow.style.cssText = 'display:flex;justify-content:space-between;margin-bottom:5px;';
+    labelRow.innerHTML = '<span style="font-size:10px;color:rgba(255,255,255,.5);font-weight:700;text-transform:uppercase;letter-spacing:.8px;">Proportion by type</span>'
+                       + '<span style="font-size:10px;color:rgba(255,255,255,.5);font-weight:700;">' + total.toLocaleString() + ' total</span>';
+    wrap.appendChild(labelRow);
+    const track = document.createElement('div');
+    track.style.cssText = 'display:flex;height:14px;border-radius:8px;overflow:hidden;width:100%;';
+    TYPES.forEach(t => {
+        const n   = tc[t] || 0;
+        const pct = total > 0 ? (n / total * 100) : 0;
+        if (!pct) return;
+        const seg = document.createElement('div');
+        seg.style.cssText = 'width:' + pct + '%;background:' + TYPE_COLORS[t].bg + ';';
+        seg.title = t + ': ' + n + ' (' + pct.toFixed(1) + '%)';
+        track.appendChild(seg);
+    });
+    wrap.appendChild(track);
+    stackEl.appendChild(wrap);
+
+    const pillsEl = document.getElementById('facTypePills');
+    pillsEl.innerHTML = '';
+    TYPES.forEach((t, i) => {
+        const n   = tc[t] || 0;
+        const pct = total > 0 ? ((n / total) * 100).toFixed(1) : '0.0';
+        const c   = TYPE_COLORS[t];
+        const card = document.createElement('div');
+        card.style.cssText = 'flex:1;min-width:120px;padding:14px 18px;border-right:' + (i < TYPES.length-1 ? '1px solid #e3f2fd' : 'none') + ';';
+        card.innerHTML =
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">'
+          +   '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + c.bg + ';flex-shrink:0;"></span>'
+          +   '<span style="font-size:11px;font-weight:800;color:#2c6693;text-transform:uppercase;letter-spacing:.6px;">' + t + '</span>'
+          + '</div>'
+          + '<div style="font-size:26px;font-weight:900;color:#1f4a6a;line-height:1;margin-bottom:3px;">' + n.toLocaleString() + '</div>'
+          + '<div style="font-size:12px;font-weight:700;color:#2c6693;">' + pct + '% of total</div>';
+        pillsEl.appendChild(card);
+    });
+}
+
+function renderDashboard() {
+    const loadEl = document.getElementById('loadingIndicator');
+    const contEl = document.getElementById('dashboardContent');
+    if (loadEl) loadEl.style.display = 'none';
+    if (contEl) contEl.style.display = 'block';
+    renderFacTypeBar();
+
+    const totals = getTotals(filteredData);
+    document.getElementById('totalOPD').innerHTML              = formatNumber(totals.opd);
+    document.getElementById('totalSuspected').innerHTML        = formatNumber(totals.suspected);
+    document.getElementById('totalTests').innerHTML            = formatNumber(totals.totalTests);
+    document.getElementById('totalConfirmed').innerHTML        = formatNumber(totals.confirmed);
+    document.getElementById('totalACT').innerHTML              = formatNumber(totals.actTreatment);
+    document.getElementById('totalConfirmedTreated').innerHTML = formatNumber(totals.confirmedAndTreated);
+    document.getElementById('totalPresumptive').innerHTML      = formatNumber(totals.presumptiveTreatment);
+    document.getElementById('totalAdmissions').innerHTML       = formatNumber(totals.admissions);
+    document.getElementById('totalDeaths').innerHTML           = formatNumber(totals.deaths);
+    document.getElementById('positivityRate').innerHTML        = calcPct(totals.confirmed, totals.totalTests) + '%';
+    document.getElementById('treatmentRate').innerHTML         = calcPct(totals.confirmedAndTreated, totals.actTreatment) + '%';
+    document.getElementById('confirmedTreatmentRate').innerHTML= calcPct(totals.confirmedAndTreated, totals.confirmed) + '%';
+    document.getElementById('presumptiveTreatmentRate').innerHTML = calcPct(totals.presumptiveTreatment, totals.actTreatment) + '%';
+    document.getElementById('cfrRate').innerHTML               = calcPct(totals.deaths, totals.admissions) + '%';
+
+    const monthly = {};
+    filteredData.forEach(r => {
+        const key = `${r.year}-${r.month}`;
+        if (!monthly[key]) monthly[key] = { opd:0, suspected:0, tests:0, confirmed:0, treatment:0, admissions:0, deaths:0 };
+        monthly[key].opd        += r.opd           || 0;
+        monthly[key].suspected  += r.suspected     || 0;
+        monthly[key].tests      += r.totalTests    || 0;
+        monthly[key].confirmed  += r.confirmed     || 0;
+        monthly[key].treatment  += r.actTreatment  || 0;
+        monthly[key].admissions += r.admissions    || 0;
+        monthly[key].deaths     += r.deaths        || 0;
+    });
+    const labels = Object.keys(monthly).sort();
+
+    // ── OPD ──
+    let opdU5 = 0, opdO5 = 0;
+    filteredData.forEach(r => { opdU5 += r.opdUnder5 || 0; opdO5 += r.opdOver5 || 0; });
+
+    destroyChart('opdAgeChart');
+    charts.opdAgeChart = new Chart(document.getElementById('opdAgeChart'), {
+        type: 'pie',
+        data: { labels: ['Under 5', '5+ years'], datasets: [{ data: [opdU5, opdO5], backgroundColor: ['#2c6693', '#4a90c4'] }] },
+        options: pieOpts()
+    });
+
+    destroyChart('opdTrendChart');
+    charts.opdTrendChart = new Chart(document.getElementById('opdTrendChart'), {
+        type: 'line',
+        data: { labels, datasets: [{ label: 'OPD Visits', data: labels.map(l => monthly[l].opd), borderColor: '#2c6693', tension: 0.4, fill: true, borderWidth: 3 }] },
+        options: lineOpts()
+    });
+
+    destroyChart('opdCompChart');
+    charts.opdCompChart = new Chart(document.getElementById('opdCompChart'), {
+        type: 'bar',
+        data: { labels: ['Under 5', '5+ years'], datasets: [{ data: [opdU5, opdO5], backgroundColor: ['#2c6693', '#4a90c4'] }] },
+        options: barOpts()
+    });
+
+    const byDistrict = {};
+    filteredData.forEach(r => { if (r.level2) byDistrict[r.level2] = (byDistrict[r.level2] || 0) + (r.opd || 0); });
+    const districtSorted = Object.entries(byDistrict).sort((a, b) => b[1] - a[1]);
+    document.getElementById('opdRegionChart').parentElement.style.height = Math.max(350, districtSorted.length * 30) + 'px';
+    destroyChart('opdRegionChart');
+    charts.opdRegionChart = new Chart(document.getElementById('opdRegionChart'), {
+        type: 'bar',
+        data: { labels: districtSorted.map(d => d[0]), datasets: [{ data: districtSorted.map(d => d[1]), backgroundColor: '#2c6693' }] },
+        options: barOpts({ indexAxis: 'y' })
+    });
+
+    // ── Suspected ──
+    let facSusp = 0, comSusp = 0;
+    filteredData.forEach(r => { facSusp += r.suspectedHF || 0; comSusp += r.suspectedCommunity || 0; });
+    destroyChart('suspectedLocationChart');
+    charts.suspectedLocationChart = new Chart(document.getElementById('suspectedLocationChart'), {
+        type: 'pie',
+        data: { labels: ['Health Facility', 'Community'], datasets: [{ data: [facSusp, comSusp], backgroundColor: ['#2c6693', '#4a90c4'] }] },
+        options: pieOpts()
+    });
+
+    let suspU5 = 0, susp5_14 = 0, susp15p = 0;
+    filteredData.forEach(r => {
+        suspU5   += (r.suspectedHF_U5    || 0) + (r.suspectedCom_U5    || 0);
+        susp5_14 += (r.suspectedHF_5_14  || 0) + (r.suspectedCom_5_14  || 0);
+        susp15p  += (r.suspectedHF_15plus || 0) + (r.suspectedCom_15plus|| 0);
+    });
+    destroyChart('suspectedAgeChart');
+    charts.suspectedAgeChart = new Chart(document.getElementById('suspectedAgeChart'), {
+        type: 'bar',
+        data: { labels: ['Under 5', '5-14 years', '15+ years'], datasets: [{ data: [suspU5, susp5_14, susp15p], backgroundColor: ['#fbbf24', '#f59e0b', '#d97706'] }] },
+        options: barOpts()
+    });
+
+    destroyChart('suspectedTrendChart');
+    charts.suspectedTrendChart = new Chart(document.getElementById('suspectedTrendChart'), {
+        type: 'line',
+        data: { labels, datasets: [{ label: 'Suspected Cases', data: labels.map(l => monthly[l].suspected), borderColor: '#fbbf24', tension: 0.4, fill: true, borderWidth: 3 }] },
+        options: lineOpts()
+    });
+
+    const suspByDistrict = {};
+    filteredData.forEach(r => { if (r.level2) suspByDistrict[r.level2] = (suspByDistrict[r.level2] || 0) + (r.suspected || 0); });
+    const suspDS = Object.entries(suspByDistrict).sort((a, b) => b[1] - a[1]);
+    document.getElementById('suspectedRegionChart').parentElement.style.height = Math.max(350, suspDS.length * 30) + 'px';
+    destroyChart('suspectedRegionChart');
+    charts.suspectedRegionChart = new Chart(document.getElementById('suspectedRegionChart'), {
+        type: 'bar',
+        data: { labels: suspDS.map(d => d[0]), datasets: [{ data: suspDS.map(d => d[1]), backgroundColor: '#fbbf24' }] },
+        options: barOpts({ indexAxis: 'y' })
+    });
+
+    // ── Testing ──
+    let rdtTests = 0, microTests = 0;
+    filteredData.forEach(r => { rdtTests += r.rdtTests || 0; microTests += r.microTests || 0; });
+    destroyChart('testMethodChart');
+    charts.testMethodChart = new Chart(document.getElementById('testMethodChart'), {
+        type: 'pie',
+        data: { labels: ['RDT Tests', 'Microscopy'], datasets: [{ data: [rdtTests, microTests], backgroundColor: ['#2c6693', '#4a90c4'] }] },
+        options: pieOpts()
+    });
+
+    let facTests = 0, comTests = 0;
+    filteredData.forEach(r => {
+        facTests += (r.rdtPosHF || 0) + (r.rdtNegHF || 0) + (r.microPos || 0) + (r.microNeg || 0);
+        comTests += (r.rdtPosCom || 0) + (r.rdtNegCom || 0);
+    });
+    destroyChart('testLocationChart');
+    charts.testLocationChart = new Chart(document.getElementById('testLocationChart'), {
+        type: 'bar',
+        data: { labels: ['Health Facility', 'Community'], datasets: [{ data: [facTests, comTests], backgroundColor: ['#2c6693', '#4a90c4'] }] },
+        options: barOpts()
+    });
+
+    let posTests = 0, negTests = 0;
+    filteredData.forEach(r => { posTests += r.confirmed || 0; negTests += (r.totalTests || 0) - (r.confirmed || 0); });
+    destroyChart('testResultsChart');
+    charts.testResultsChart = new Chart(document.getElementById('testResultsChart'), {
+        type: 'pie',
+        data: { labels: ['Positive', 'Negative'], datasets: [{ data: [posTests, negTests], backgroundColor: ['#d32f2f', '#4caf50'] }] },
+        options: pieOpts()
+    });
+
+    destroyChart('testTrendChart');
+    charts.testTrendChart = new Chart(document.getElementById('testTrendChart'), {
+        type: 'line',
+        data: { labels, datasets: [{ label: 'Total Tests', data: labels.map(l => monthly[l].tests), borderColor: '#2c6693', tension: 0.4, fill: true, borderWidth: 3 }] },
+        options: lineOpts()
+    });
+
+    // ── Confirmed ──
+    let confU5 = 0, conf5_14 = 0, conf15p = 0;
+    filteredData.forEach(r => {
+        confU5   += (r.rdtPosHF_U5    || 0) + (r.rdtPosCom_U5    || 0) + (r.microPos_U5    || 0);
+        conf5_14 += (r.rdtPosHF_5_14  || 0) + (r.rdtPosCom_5_14  || 0) + (r.microPos_5_14  || 0);
+        conf15p  += (r.rdtPosHF_15plus || 0) + (r.rdtPosCom_15plus|| 0) + (r.microPos_15plus|| 0);
+    });
+    destroyChart('confirmedAgeChart');
+    charts.confirmedAgeChart = new Chart(document.getElementById('confirmedAgeChart'), {
+        type: 'pie',
+        data: { labels: ['Under 5', '5-14 years', '15+ years'], datasets: [{ data: [confU5, conf5_14, conf15p], backgroundColor: ['#2c6693', '#4a90c4', '#87b5d9'] }] },
+        options: pieOpts()
+    });
+
+    let facConf = 0, comConf = 0;
+    filteredData.forEach(r => { facConf += (r.rdtPosHF || 0) + (r.microPos || 0); comConf += r.rdtPosCom || 0; });
+    destroyChart('confirmedLocationChart');
+    charts.confirmedLocationChart = new Chart(document.getElementById('confirmedLocationChart'), {
+        type: 'bar',
+        data: { labels: ['Health Facility', 'Community'], datasets: [{ data: [facConf, comConf], backgroundColor: ['#2c6693', '#4a90c4'] }] },
+        options: barOpts()
+    });
+
+    destroyChart('confirmedTrendChart');
+    charts.confirmedTrendChart = new Chart(document.getElementById('confirmedTrendChart'), {
+        type: 'line',
+        data: { labels, datasets: [{ label: 'Confirmed Cases', data: labels.map(l => monthly[l].confirmed), borderColor: '#d32f2f', tension: 0.4, fill: true, borderWidth: 3 }] },
+        options: lineOpts()
+    });
+
+    const confByDistrict = {};
+    filteredData.forEach(r => { if (r.level2) confByDistrict[r.level2] = (confByDistrict[r.level2] || 0) + (r.confirmed || 0); });
+    const confDS = Object.entries(confByDistrict).sort((a, b) => b[1] - a[1]);
+    document.getElementById('confirmedRegionChart').parentElement.style.height = Math.max(350, confDS.length * 30) + 'px';
+    destroyChart('confirmedRegionChart');
+    charts.confirmedRegionChart = new Chart(document.getElementById('confirmedRegionChart'), {
+        type: 'bar',
+        data: { labels: confDS.map(d => d[0]), datasets: [{ data: confDS.map(d => d[1]), backgroundColor: '#d32f2f' }] },
+        options: barOpts({ indexAxis: 'y' })
+    });
+
+    // ── Treatment ──
+    let under24 = 0, over24 = 0;
+    filteredData.forEach(r => { under24 += (r.actUnder24 || 0) + (r.actComUnder24 || 0); over24 += (r.actOver24 || 0) + (r.actComOver24 || 0); });
+    destroyChart('treatmentTimeChart');
+    charts.treatmentTimeChart = new Chart(document.getElementById('treatmentTimeChart'), {
+        type: 'pie',
+        data: { labels: ['Within 24hrs', 'After 24hrs'], datasets: [{ data: [under24, over24], backgroundColor: ['#4caf50', '#ff9800'] }] },
+        options: pieOpts()
+    });
+
+    const hfU24  = filteredData.reduce((s, r) => s + (r.actUnder24    || 0), 0);
+    const hfO24  = filteredData.reduce((s, r) => s + (r.actOver24     || 0), 0);
+    const comU24 = filteredData.reduce((s, r) => s + (r.actComUnder24 || 0), 0);
+    const comO24 = filteredData.reduce((s, r) => s + (r.actComOver24  || 0), 0);
+    destroyChart('treatmentAgeChart');
+    charts.treatmentAgeChart = new Chart(document.getElementById('treatmentAgeChart'), {
+        type: 'pie',
+        data: { labels: ['Health Facility', 'Community'], datasets: [{ data: [hfU24 + hfO24, comU24 + comO24], backgroundColor: ['#2c6693', '#4a90c4'] }] },
+        options: pieOpts()
+    });
+
+    destroyChart('treatmentLocationChart');
+    charts.treatmentLocationChart = new Chart(document.getElementById('treatmentLocationChart'), {
+        type: 'bar',
+        data: {
+            labels: ['HF < 24h', 'HF > 24h', 'Community < 24h', 'Community > 24h'],
+            datasets: [{ data: [hfU24, hfO24, comU24, comO24], backgroundColor: ['#2c6693', '#4a90c4', '#4caf50', '#ff9800'] }]
+        },
+        options: barOpts()
+    });
+
+    destroyChart('treatmentTrendChart');
+    charts.treatmentTrendChart = new Chart(document.getElementById('treatmentTrendChart'), {
+        type: 'line',
+        data: { labels, datasets: [{ label: 'ACT Treatments', data: labels.map(l => monthly[l].treatment), borderColor: '#4caf50', tension: 0.4, fill: true, borderWidth: 3 }] },
+        options: lineOpts()
+    });
+
+    // ── Admissions ──
+    let u5Adm = 0, age5_14Adm = 0, ov15Adm = 0;
+    filteredData.forEach(r => { u5Adm += r.admUnder5 || 0; age5_14Adm += r.adm5_14 || 0; ov15Adm += r.admOver15 || 0; });
+    destroyChart('admissionsAgeChart');
+    charts.admissionsAgeChart = new Chart(document.getElementById('admissionsAgeChart'), {
+        type: 'pie',
+        data: { labels: ['Under 5', '5-14 Years', '15+ Years'], datasets: [{ data: [u5Adm, age5_14Adm, ov15Adm], backgroundColor: ['#2c6693', '#4a90c4', '#87b5d9'] }] },
+        options: pieOpts()
+    });
+
+    destroyChart('admissionsTrendChart');
+    charts.admissionsTrendChart = new Chart(document.getElementById('admissionsTrendChart'), {
+        type: 'line',
+        data: { labels, datasets: [{ label: 'Admissions', data: labels.map(l => monthly[l].admissions), borderColor: '#2c6693', tension: 0.4, fill: true, borderWidth: 3 }] },
+        options: lineOpts()
+    });
+
+    const admByDistrict = {};
+    filteredData.forEach(r => { if (r.level2) admByDistrict[r.level2] = (admByDistrict[r.level2] || 0) + (r.admissions || 0); });
+    const admDS = Object.entries(admByDistrict).sort((a, b) => b[1] - a[1]);
+    document.getElementById('admissionsRegionChart').parentElement.style.height = Math.max(350, admDS.length * 30) + 'px';
+    destroyChart('admissionsRegionChart');
+    charts.admissionsRegionChart = new Chart(document.getElementById('admissionsRegionChart'), {
+        type: 'bar',
+        data: { labels: admDS.map(d => d[0]), datasets: [{ data: admDS.map(d => d[1]), backgroundColor: '#2c6693' }] },
+        options: barOpts({ indexAxis: 'y' })
+    });
+
+    // ── Deaths ──
+    let death1_59m = 0, death5_9y = 0, death10_14y = 0, deathAdult = 0;
+    filteredData.forEach(r => {
+        death1_59m  += r.deathChild_1_59m  || 0;
+        death5_9y   += r.deathChild_5_9y   || 0;
+        death10_14y += r.deathChild_10_14y || 0;
+        deathAdult  += r.deathAdult         || 0;
+    });
+    destroyChart('deathsAgeChart');
+    charts.deathsAgeChart = new Chart(document.getElementById('deathsAgeChart'), {
+        type: 'bar',
+        data: { labels: ['1-59 months', '5-9 years', '10-14 years', '15+ years'], datasets: [{ data: [death1_59m, death5_9y, death10_14y, deathAdult], backgroundColor: ['#d32f2f', '#e57373', '#ef9a9a', '#c62828'] }] },
+        options: barOpts()
+    });
+
+    let deathFemale = 0, deathMale = 0;
+    filteredData.forEach(r => { deathFemale += r.deathAdult_Female || 0; deathMale += r.deathAdult_Male || 0; });
+    destroyChart('deathsGenderChart');
+    charts.deathsGenderChart = new Chart(document.getElementById('deathsGenderChart'), {
+        type: 'pie',
+        data: { labels: ['Female', 'Male'], datasets: [{ data: [deathFemale, deathMale], backgroundColor: ['#ec4899', '#3b82f6'] }] },
+        options: pieOpts()
+    });
+
+    destroyChart('deathsTrendChart');
+    charts.deathsTrendChart = new Chart(document.getElementById('deathsTrendChart'), {
+        type: 'line',
+        data: { labels, datasets: [{ label: 'Deaths', data: labels.map(l => monthly[l].deaths), borderColor: '#d32f2f', tension: 0.4, fill: true, borderWidth: 3 }] },
+        options: lineOpts()
+    });
+
+    const deathByDistrict = {};
+    filteredData.forEach(r => { if (r.level2) deathByDistrict[r.level2] = (deathByDistrict[r.level2] || 0) + (r.deaths || 0); });
+    const deathDS = Object.entries(deathByDistrict).sort((a, b) => b[1] - a[1]);
+    document.getElementById('deathsRegionChart').parentElement.style.height = Math.max(350, deathDS.length * 30) + 'px';
+    destroyChart('deathsRegionChart');
+    charts.deathsRegionChart = new Chart(document.getElementById('deathsRegionChart'), {
+        type: 'bar',
+        data: { labels: deathDS.map(d => d[0]), datasets: [{ data: deathDS.map(d => d[1]), backgroundColor: '#d32f2f' }] },
+        options: barOpts({ indexAxis: 'y' })
+    });
+}
     </script>
 </body>
 </html>
