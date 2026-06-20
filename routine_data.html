@@ -351,6 +351,72 @@
         .step-item.running .step-status { color: #7dd3f0; }
         .step-item.done    .step-status { color: #81c784; }
         .step-item.error   .step-status { color: #ef9a9a; }
+
+        /* ── Sticky dashboard header ── */
+        #stickyBar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 900;
+            background: linear-gradient(135deg, #2c6693 0%, #1f4a6a 100%);
+            box-shadow: 0 3px 16px rgba(0,0,0,.35);
+        }
+        #stickyTitle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px 6px;
+            gap: 12px;
+        }
+        .sticky-title-text {
+            font-size: 20px; font-weight: 900; color: #fff;
+            letter-spacing: .5px; line-height: 1.2;
+        }
+        .sticky-subtitle {
+            font-size: 12px; color: rgba(255,255,255,.7);
+            font-weight: 600; margin-top: 2px;
+        }
+        #stickyFilters {
+            border-radius: 0 !important;
+            border: none !important;
+            border-top: 1px solid rgba(255,255,255,.15) !important;
+            background: rgba(255,255,255,.96) !important;
+            padding: 10px 16px !important;
+            margin: 0 !important;
+        }
+        .sticky-actions {
+            display: flex; gap: 10px; justify-content: center;
+            padding: 8px 16px 10px;
+            background: rgba(0,0,0,.15);
+            flex-wrap: wrap;
+        }
+        .sticky-actions .btn {
+            padding: 7px 16px; font-size: 12px;
+        }
+        /* Push scrollable content below sticky bar */
+        #dashScrollContent {
+            padding-top: var(--sticky-h, 160px);
+        }
+        /* Nav toggle now inside sticky — remove old fixed positioning */
+        #stickyTitle .nav-toggle {
+            position: static !important;
+            top: auto !important; right: auto !important;
+            padding: 8px 14px; font-size: 13px;
+            flex-shrink: 0;
+        }
+        /* Nav menu anchors below sticky bar */
+        #navMenu {
+            top: var(--sticky-h, 160px) !important;
+            right: 20px !important;
+        }
+
+        @media (max-width: 639px) {
+            .sticky-title-text { font-size: 15px; }
+            .sticky-subtitle   { font-size: 11px; }
+            #stickyTitle       { padding: 8px 12px 5px; }
+            #stickyFilters     { padding: 8px 10px !important; }
+            .sticky-actions    { padding: 6px 10px 8px; gap: 6px; }
+            .sticky-actions .btn { padding: 6px 10px; font-size: 11px; }
+        }
     </style>
 </head>
 <body>
@@ -463,31 +529,21 @@
     <!-- ═══ SCREEN 3: FULL DASHBOARD ═══ -->
     <div id="dashboardScreen" style="display:none;">
 
-        <button class="nav-toggle" onclick="toggleNav()">
-            <span>Navigation</span>
-            <span class="nav-arrow" id="navArrow">&#9660;</span>
-        </button>
-
-        <div class="nav-menu" id="navMenu">
-            <h3>Quick Navigation</h3>
-            <div class="nav-item" onclick="scrollToSection('summary')">Summary Overview</div>
-            <div class="nav-item" onclick="scrollToSection('opd')">OPD Visits</div>
-            <div class="nav-item" onclick="scrollToSection('suspected')">Suspected Cases</div>
-            <div class="nav-item" onclick="scrollToSection('testing')">Testing</div>
-            <div class="nav-item" onclick="scrollToSection('confirmed')">Confirmed Cases</div>
-            <div class="nav-item" onclick="scrollToSection('treatment')">Treatment</div>
-            <div class="nav-item" onclick="scrollToSection('admissions')">Admissions</div>
-            <div class="nav-item" onclick="scrollToSection('deaths')">Malaria Deaths</div>
-        </div>
-
-        <div class="container">
-            <div class="header">
-                <h1 class="title">Malaria Analytics Dashboard</h1>
-                <p class="subtitle" id="dashSubtitle">Comprehensive Malaria Surveillance &mdash; Sierra Leone HMIS</p>
+        <!-- ── Sticky header bar ── -->
+        <div id="stickyBar">
+            <!-- Title row -->
+            <div id="stickyTitle">
+                <div>
+                    <div class="sticky-title-text">Malaria Analytics Dashboard</div>
+                    <div class="sticky-subtitle" id="dashSubtitle">Comprehensive Malaria Surveillance &mdash; Sierra Leone HMIS</div>
+                </div>
+                <button class="nav-toggle" onclick="toggleNav()">
+                    <span>Navigation</span>
+                    <span class="nav-arrow" id="navArrow">&#9660;</span>
+                </button>
             </div>
-
-            <!-- Filters bar (shown only after pipeline) -->
-            <div class="filters">
+            <!-- Filters -->
+            <div class="filters" id="stickyFilters">
                 <div class="filter-group">
                     <label class="filter-label">District</label>
                     <select class="filter-select" id="level2Filter" onchange="handleLevel2Change()">
@@ -547,11 +603,30 @@
                 </div>
             </div>
 
-            <div class="action-buttons">
+            <!-- Action buttons inside sticky bar -->
+            <div class="sticky-actions">
                 <button class="btn" onclick="showConfigScreen()" style="background:rgba(255,255,255,.2);">&#8592; New Query</button>
                 <button class="btn btn-secondary" onclick="resetFilters()">Reset Filters</button>
                 <button class="btn btn-secondary" onclick="exportData()">Export CSV</button>
             </div>
+        </div><!-- /stickyBar -->
+
+        <!-- Nav menu (outside sticky so it overlays content) -->
+        <div class="nav-menu" id="navMenu">
+            <h3>Quick Navigation</h3>
+            <div class="nav-item" onclick="scrollToSection('summary')">Summary Overview</div>
+            <div class="nav-item" onclick="scrollToSection('opd')">OPD Visits</div>
+            <div class="nav-item" onclick="scrollToSection('suspected')">Suspected Cases</div>
+            <div class="nav-item" onclick="scrollToSection('testing')">Testing</div>
+            <div class="nav-item" onclick="scrollToSection('confirmed')">Confirmed Cases</div>
+            <div class="nav-item" onclick="scrollToSection('treatment')">Treatment</div>
+            <div class="nav-item" onclick="scrollToSection('admissions')">Admissions</div>
+            <div class="nav-item" onclick="scrollToSection('deaths')">Malaria Deaths</div>
+        </div>
+
+        <!-- Scrollable content -->
+        <div id="dashScrollContent">
+        <div class="container">
 
             <div class="alert" id="statusAlert">
                 <span style="font-size:24px;">i</span>
@@ -649,9 +724,9 @@
                 <div class="section-header"><div class="section-title">Treatment</div></div>
                 <div class="section-content">
                     <div class="charts-grid">
-                        <div class="chart-card"><div class="chart-title">Treatment Timeliness</div><div class="chart-container"><canvas id="treatmentTimeChart"></canvas></div></div>
-                        <div class="chart-card"><div class="chart-title">Treatment by Location</div><div class="chart-container"><canvas id="treatmentAgeChart"></canvas></div></div>
-                        <div class="chart-card"><div class="chart-title">ACT: Facility vs Community</div><div class="chart-container"><canvas id="treatmentLocationChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Timeliness (&lt;24h vs &gt;24h)</div><div class="chart-container"><canvas id="treatmentTimeChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Location (HF vs Community)</div><div class="chart-container"><canvas id="treatmentAgeChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Breakdown (Location &times; Timeliness)</div><div class="chart-container"><canvas id="treatmentLocationChart"></canvas></div></div>
                         <div class="chart-card"><div class="chart-title">Monthly Treatment Trend</div><div class="chart-container"><canvas id="treatmentTrendChart"></canvas></div></div>
                     </div>
                 </div>
@@ -682,6 +757,7 @@
     
             </div><!-- /dashboardContent -->
         </div><!-- /container -->
+        </div><!-- /dashScrollContent -->
     </div><!-- /dashboardScreen -->
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -878,6 +954,18 @@ function updateStatus(msg, isError) {
     document.getElementById('statusMessage').textContent = msg;
     document.getElementById('statusAlert').classList.toggle('error', !!isError);
 }
+
+// Keep padding-top in sync with actual sticky bar height
+function syncStickyHeight() {
+    const bar = document.getElementById('stickyBar');
+    if (bar) {
+        const h = bar.offsetHeight;
+        document.documentElement.style.setProperty('--sticky-h', h + 'px');
+    }
+}
+window.addEventListener('resize', syncStickyHeight);
+// Call after dashboard becomes visible
+const _origShowDash = function(){};
 
 // ── Nav ──────────────────────────────────────────────────────
 function toggleNav() {
@@ -1134,6 +1222,7 @@ async function runPipeline() {
         await sleep(400);
         document.getElementById('pipelineScreen').style.display  = 'none';
         document.getElementById('dashboardScreen').style.display = 'block';
+        setTimeout(syncStickyHeight, 50);
 
     } catch (err) {
         console.error(err);
@@ -1749,12 +1838,13 @@ function onMonthChange() {
                 options: pieOpts()
             });
 
-            let facTreat = 0, comTreat = 0;
-            filteredData.forEach(r => { facTreat += (r.actUnder24 || 0) + (r.actOver24 || 0); comTreat += (r.actComUnder24 || 0) + (r.actComOver24 || 0); });
             destroyChart('treatmentLocationChart');
             charts.treatmentLocationChart = new Chart(document.getElementById('treatmentLocationChart'), {
                 type: 'bar',
-                data: { labels: ['Health Facility', 'Community'], datasets: [{ data: [facTreat, comTreat], backgroundColor: ['#2c6693', '#4a90c4'] }] },
+                data: {
+                    labels: ['HF < 24h', 'HF > 24h', 'Community < 24h', 'Community > 24h'],
+                    datasets: [{ data: [hfU24, hfO24, comU24, comO24], backgroundColor: ['#2c6693', '#4a90c4', '#4caf50', '#ff9800'] }]
+                },
                 options: barOpts()
             });
 
