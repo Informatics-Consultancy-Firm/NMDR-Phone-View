@@ -1439,6 +1439,14 @@ function buildDashboardHtml() {
         container.insertBefore(banner, container.firstChild);
     }
 
+    // Ensure Chart.js CDN script is the FIRST script in the clone body
+    // so it starts loading before anything else executes
+    const cloneBody = clone.querySelector('body');
+    const existingChartScript = clone.querySelector('script[src*="chart.js"]');
+    if (existingChartScript && cloneBody && cloneBody.firstChild !== existingChartScript) {
+        cloneBody.insertBefore(existingChartScript, cloneBody.firstChild);
+    }
+
     // ── Step 6: Remove any previous bootstrap, inject new one ──────────
     // The bootstrap runs after Chart.js loads (it is placed at end of <body>).
     // It restores all state globals then calls the full renderDashboard() —
@@ -1458,32 +1466,44 @@ function buildDashboardHtml() {
 (function(){
     var S = ${JSON.stringify(STATE)};
 
-    // Restore all state globals
-    rawData        = S.rawData;
-    filteredData   = S.rawData.slice();
-    _ouHierarchy   = S.ouHierarchy;
-    _phuIds        = Object.keys(S.ouHierarchy);
-    _cfgStart      = S.start;
-    _cfgEnd        = S.end;
-    window._typeCounts    = S.typeCounts;
-    window._totalAssessed = S.totalAssessed;
+    function init() {
+        // Restore all state globals
+        rawData        = S.rawData;
+        filteredData   = S.rawData.slice();
+        _ouHierarchy   = S.ouHierarchy;
+        _phuIds        = Object.keys(S.ouHierarchy);
+        _cfgStart      = S.start;
+        _cfgEnd        = S.end;
+        window._typeCounts    = S.typeCounts;
+        window._totalAssessed = S.totalAssessed;
 
-    // Show dashboard, hide other screens
-    document.getElementById('configScreen').style.display    = 'none';
-    document.getElementById('pipelineScreen').style.display  = 'none';
-    document.getElementById('dashboardScreen').style.display = 'block';
+        // Show dashboard, hide other screens
+        var cs = document.getElementById('configScreen');
+        var ps = document.getElementById('pipelineScreen');
+        var ds = document.getElementById('dashboardScreen');
+        if (cs) cs.style.display = 'none';
+        if (ps) ps.style.display = 'none';
+        if (ds) ds.style.display = 'block';
 
-    // Populate all filter dropdowns
-    populateGeoFilters();
-    populateTimeFilters();
+        // Populate all filter dropdowns
+        populateGeoFilters();
+        populateTimeFilters();
 
-    // Full render — draws all Chart.js charts onto the canvas elements,
-    // populates summary cards, facility type bar. Identical to live pipeline.
-    renderDashboard();
+        // Full render — Chart.js is guaranteed loaded at this point
+        renderDashboard();
 
-    // Sync sticky bar height so nav menu positions correctly
-    syncStickyHeight();
-    setTimeout(syncStickyHeight, 200);
+        // Sync sticky bar height so nav menu positions correctly
+        syncStickyHeight();
+        setTimeout(syncStickyHeight, 200);
+    }
+
+    // Wait for Chart.js CDN to finish loading before rendering
+    if (typeof Chart !== 'undefined') {
+        // Chart.js already loaded (cached)
+        init();
+    } else {
+        window.addEventListener('load', init);
+    }
 })();`;
 
     const bodyEl   = clone.querySelector('body');
