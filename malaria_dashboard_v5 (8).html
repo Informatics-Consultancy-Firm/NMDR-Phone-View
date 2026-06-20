@@ -1,0 +1,1930 @@
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malaria Analytics Dashboard - Sierra Leone HMIS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #2c6693 0%, #1f4a6a 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1600px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px;
+            background: linear-gradient(135deg, #2c6693, #1f4a6a);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ffffff, #4a90c4, #ffffff);
+        }
+        .title { font-size: 42px; font-weight: 900; color: #ffffff; margin-bottom: 12px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .subtitle { color: #ffffff; font-size: 20px; font-weight: 700; }
+        
+        .nav-toggle {
+            position: fixed; top: 20px; right: 20px;
+            background: #2c6693; color: white; border: none;
+            padding: 12px 20px; border-radius: 8px; font-size: 16px; font-weight: 800;
+            cursor: pointer; z-index: 1001;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .nav-toggle:hover { background: #1f4a6a; }
+        .nav-arrow { font-size: 20px; font-weight: bold; transition: transform 0.3s ease; }
+        .nav-arrow.collapsed { transform: rotate(180deg); }
+        .nav-menu {
+            position: fixed; top: 70px; right: 20px;
+            background: #ffffff; border: 3px solid #2c6693;
+            border-radius: 12px; padding: 20px; max-width: 300px;
+            max-height: 80vh; overflow-y: auto; z-index: 1000;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3); display: none;
+        }
+        .nav-menu.active { display: block; }
+        .nav-menu h3 { color: #2c6693; font-size: 18px; font-weight: 800; margin-bottom: 15px; }
+        .nav-item {
+            padding: 12px 15px; margin-bottom: 8px;
+            background: #f8f9fa; border: 2px solid #e3f2fd;
+            border-radius: 8px; cursor: pointer;
+            transition: all 0.3s ease; font-weight: 600; color: #2c6693;
+        }
+        .nav-item:hover { background: #e3f2fd; border-color: #2c6693; transform: translateX(-5px); }
+        
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+        }
+        .filter-group { display: flex; flex-direction: column; gap: 8px; }
+        .filter-label { color: #2c6693; font-size: 12px; font-weight: 800; text-transform: uppercase; }
+        .filter-select {
+            background: #ffffff; border: 2px solid #2c6693;
+            border-radius: 8px; padding: 10px 14px;
+            color: #2c6693; font-size: 14px; font-weight: 700;
+            cursor: pointer;
+        }
+        /* Multi-select checkbox dropdown */
+        .multi-select-wrapper { position: relative; }
+        .multi-select-btn {
+            background: #ffffff; border: 2px solid #2c6693;
+            border-radius: 8px; padding: 10px 14px;
+            color: #2c6693; font-size: 14px; font-weight: 700;
+            cursor: pointer; width: 100%; text-align: left;
+            display: flex; justify-content: space-between; align-items: center;
+            white-space: nowrap; overflow: hidden;
+        }
+        .multi-select-btn .arrow { font-size: 10px; flex-shrink: 0; margin-left: 6px; }
+        .multi-select-dropdown {
+            position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 500;
+            background: #ffffff; border: 2px solid #2c6693; border-radius: 8px;
+            max-height: 220px; overflow-y: auto;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); display: none;
+        }
+        .multi-select-dropdown.open { display: block; }
+        .multi-select-option {
+            padding: 9px 14px; display: flex; align-items: center; gap: 10px;
+            cursor: pointer; font-size: 13px; font-weight: 600; color: #333;
+            transition: background 0.15s;
+        }
+        .multi-select-option:hover { background: #e3f2fd; }
+        .multi-select-option input[type="checkbox"] { accent-color: #2c6693; width: 15px; height: 15px; cursor: pointer; }
+        .multi-select-option.all-opt { border-bottom: 1px solid #e3f2fd; font-weight: 800; color: #2c6693; }
+        .action-buttons { display: flex; gap: 12px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
+        .btn {
+            background: #2c6693; color: white; border: none;
+            padding: 14px 28px; border-radius: 10px;
+            font-size: 14px; font-weight: 800; cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn:hover { background: #1f4a6a; transform: translateY(-2px); }
+        .btn-secondary { background: transparent; border: 1px solid rgba(255, 255, 255, 0.5); color: #ffffff; }
+        .alert {
+            padding: 18px 24px; border-radius: 12px; margin-bottom: 25px;
+            display: flex; align-items: center; gap: 15px; font-weight: 700;
+            background: #ffffff; border: 2px solid #2c6693; color: #2c6693;
+        }
+        .alert.error { border-color: #d32f2f; color: #d32f2f; }
+        .loading { text-align: center; padding: 60px 20px; color: #ffffff; }
+        .loading-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .loading-phase { font-size: 14px; color: rgba(255,255,255,0.75); margin-bottom: 28px; min-height: 20px; transition: opacity 0.2s; }
+        .progress-wrap {
+            max-width: 480px; margin: 0 auto 16px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 999px; height: 12px; overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, #ffffff, #4a90c4);
+            border-radius: 999px;
+            transition: width 0.25s ease;
+            box-shadow: 0 0 10px rgba(255,255,255,0.4);
+        }
+        .progress-pct {
+            font-size: 32px; font-weight: 900; letter-spacing: -1px;
+            margin-top: 10px; font-variant-numeric: tabular-nums;
+        }
+        .progress-detail { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 6px; min-height: 16px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .section { margin-bottom: 30px; scroll-margin-top: 20px; }
+        .section-header {
+            background: linear-gradient(135deg, #2c6693, #1f4a6a);
+            color: white; padding: 20px 30px;
+            border-radius: 12px 12px 0 0;
+        }
+        .section-title { font-size: 24px; font-weight: 900; text-transform: uppercase; }
+        .section-content {
+            background: #ffffff; border: 3px solid #2c6693;
+            border-top: none; border-radius: 0 0 12px 12px;
+            padding: 30px;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .summary-card {
+            background: #ffffff;
+            border: 3px solid #2c6693;
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .summary-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #2c6693, #4a90c4, #2c6693);
+        }
+        .summary-card:hover { transform: translateY(-6px); }
+        .summary-label { color: #2c6693; font-size: 13px; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; }
+        .summary-value { font-size: 42px; font-weight: 900; color: #2c6693; line-height: 1; margin-bottom: 8px; }
+        .summary-subtitle { font-size: 12px; color: #666; font-weight: 600; }
+        .summary-value.red { color: #d32f2f; }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+        }
+        .chart-card {
+            background: #f8f9fa;
+            border: 2px solid #e3f2fd;
+            border-radius: 12px;
+            padding: 25px;
+        }
+        .chart-title {
+            font-size: 16px; font-weight: 800; color: #2c6693;
+            margin-bottom: 20px; padding-bottom: 12px;
+            border-bottom: 3px solid #2c6693;
+            text-transform: uppercase;
+        }
+        .chart-container { position: relative; height: 350px; }
+        .chart-container.tall { height: auto; min-height: 400px; }
+        
+        /* ── Config screen layout ── */
+        .cfg-wrap {
+            max-width: 740px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* How It Works panel */
+        .cfg-how {
+            background: rgba(255,255,255,.07);
+            border: 1px solid rgba(255,255,255,.18);
+            border-radius: 16px;
+            padding: 24px 28px;
+        }
+        .cfg-how-title {
+            font-size: 11px; font-weight: 800; color: rgba(255,255,255,.5);
+            text-transform: uppercase; letter-spacing: 1.4px; margin-bottom: 18px;
+        }
+        .cfg-steps { display: flex; flex-direction: column; gap: 14px; }
+        .cfg-step  { display: flex; gap: 14px; align-items: flex-start; }
+        .cfg-step-num {
+            min-width: 30px; height: 30px; border-radius: 50%;
+            background: #2c6693; color: #fff;
+            font-size: 13px; font-weight: 800;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .cfg-step-head {
+            font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 3px;
+        }
+        .cfg-step-desc {
+            font-size: 12px; color: rgba(255,255,255,.58); line-height: 1.55;
+        }
+
+        /* Period selector card */
+        .cfg-form {
+            background: rgba(255,255,255,.97);
+            border-radius: 16px;
+            padding: 30px 28px;
+            box-shadow: 0 8px 32px rgba(0,0,0,.25);
+        }
+        .cfg-form-title {
+            font-size: 14px; font-weight: 800; color: #2c6693;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            text-align: center; margin-bottom: 6px;
+        }
+        .cfg-form-sub {
+            font-size: 12px; color: #6c7a89;
+            text-align: center; margin-bottom: 22px;
+        }
+        .cfg-months {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .cfg-input {
+            width: 100%; font-size: 15px; font-weight: 700;
+            color: #2c6693; padding: 12px 14px;
+        }
+        .cfg-run-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #2c6693, #1f4a6a);
+            color: #fff; border: none; padding: 16px;
+            border-radius: 10px; font-size: 16px; font-weight: 800;
+            cursor: pointer; letter-spacing: .5px;
+            box-shadow: 0 4px 14px rgba(44,102,147,.4);
+            transition: transform .2s;
+        }
+        .cfg-run-btn:hover  { transform: translateY(-2px); }
+        .cfg-run-btn:active { transform: translateY(0); }
+        .cfg-credit {
+            text-align: center; margin-top: 14px;
+            font-size: 11px; color: #8899aa;
+        }
+
+        /* ── Tablet/Laptop: side-by-side ── */
+        @media (min-width: 640px) {
+            .cfg-wrap {
+                max-width: 900px;
+                flex-direction: row;
+                align-items: flex-start;
+            }
+            .cfg-how  { flex: 1.1; }
+            .cfg-form { flex: 0.9; }
+        }
+
+        /* ── Phone: single column ── */
+        @media (max-width: 639px) {
+            .cfg-wrap   { padding: 0 4px; flex-direction: column; max-width: 100%; }
+            .cfg-how    { padding: 18px 16px; }
+            .cfg-form   { padding: 22px 16px; }
+            .cfg-months { grid-template-columns: 1fr; gap: 12px; }
+            .cfg-input  { font-size: 16px; }
+            .cfg-run-btn { font-size: 15px; padding: 14px; }
+            .title    { font-size: 26px !important; }
+            .subtitle { font-size: 14px !important; }
+        }
+
+        /* ── Dashboard responsive ── */
+        @media (max-width: 768px) {
+            .charts-grid  { grid-template-columns: 1fr; }
+            .summary-grid { grid-template-columns: 1fr; }
+            .filters      { grid-template-columns: 1fr; }
+        }
+
+        /* Pipeline step list */
+        #stepList { display: flex; flex-direction: column; gap: 8px; }
+        .step-item {
+            display: grid;
+            grid-template-columns: 72px 1fr;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            border: 1px solid rgba(255,255,255,.08);
+            transition: background .2s;
+        }
+        .step-item.pending { background: rgba(255,255,255,.04); }
+        .step-item.running { background: rgba(74,144,196,.2); border-color: rgba(74,144,196,.5); }
+        .step-item.done    { background: rgba(76,175,80,.12);  border-color: rgba(76,175,80,.4); }
+        .step-item.error   { background: rgba(244,67,54,.15);  border-color: rgba(244,67,54,.5); }
+        .step-num {
+            font-size: 10px; font-weight: 800; text-transform: uppercase;
+            letter-spacing: .8px; color: rgba(255,255,255,.45);
+            padding-top: 2px;
+        }
+        .step-item.running .step-num { color: #7dd3f0; }
+        .step-item.done    .step-num { color: #81c784; }
+        .step-item.error   .step-num { color: #ef9a9a; }
+        .step-label {
+            font-weight: 700; color: rgba(255,255,255,.55);
+            line-height: 1.4;
+        }
+        .step-item.running .step-label { color: #e0f0ff; }
+        .step-item.done    .step-label { color: #c8f0c8; }
+        .step-item.error   .step-label { color: #ffd0d0; }
+        .step-status {
+            grid-column: 2; font-size: 11px; font-weight: 600;
+            color: rgba(255,255,255,.4); margin-top: 3px;
+            line-height: 1.4;
+        }
+        .step-item.running .step-status { color: #7dd3f0; }
+        .step-item.done    .step-status { color: #81c784; }
+        .step-item.error   .step-status { color: #ef9a9a; }
+
+        /* ── Sticky dashboard header ── */
+        #stickyBar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 900;
+            background: linear-gradient(135deg, #2c6693 0%, #1f4a6a 100%);
+            box-shadow: 0 3px 16px rgba(0,0,0,.35);
+        }
+        #stickyTitle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px 6px;
+            gap: 12px;
+        }
+        .sticky-title-text {
+            font-size: 20px; font-weight: 900; color: #fff;
+            letter-spacing: .5px; line-height: 1.2;
+        }
+        .sticky-subtitle {
+            font-size: 12px; color: rgba(255,255,255,.7);
+            font-weight: 600; margin-top: 2px;
+        }
+        #stickyFilters {
+            border-radius: 0 !important;
+            border: none !important;
+            border-top: 1px solid rgba(255,255,255,.15) !important;
+            background: rgba(255,255,255,.96) !important;
+            padding: 10px 16px !important;
+            margin: 0 !important;
+        }
+        .sticky-actions {
+            display: flex; gap: 10px; justify-content: center;
+            padding: 8px 16px 10px;
+            background: rgba(0,0,0,.15);
+            flex-wrap: wrap;
+        }
+        .sticky-actions .btn {
+            padding: 7px 16px; font-size: 12px;
+        }
+        /* Push scrollable content below sticky bar */
+        #dashScrollContent {
+            padding-top: var(--sticky-h, 160px);
+        }
+        /* Nav toggle now inside sticky — remove old fixed positioning */
+        #stickyTitle .nav-toggle {
+            position: static !important;
+            top: auto !important; right: auto !important;
+            padding: 8px 14px; font-size: 13px;
+            flex-shrink: 0;
+        }
+        /* Nav menu anchors below sticky bar */
+        #navMenu {
+            top: var(--sticky-h, 160px) !important;
+            right: 20px !important;
+        }
+
+        @media (max-width: 639px) {
+            .sticky-title-text { font-size: 15px; }
+            .sticky-subtitle   { font-size: 11px; }
+            #stickyTitle       { padding: 8px 12px 5px; }
+            #stickyFilters     { padding: 8px 10px !important; }
+            .sticky-actions    { padding: 6px 10px 8px; gap: 6px; }
+            .sticky-actions .btn { padding: 6px 10px; font-size: 11px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ═══ SCREEN 1: CONFIG ═══ -->
+    <div id="configScreen">
+        <div class="container">
+            <div class="header">
+                <h1 class="title">Malaria Analytics Dashboard</h1>
+                <p class="subtitle">Comprehensive Malaria Surveillance &mdash; Sierra Leone HMIS</p>
+            </div>
+
+            <div class="cfg-wrap">
+
+                <!-- How It Works -->
+                <div class="cfg-how">
+                    <div class="cfg-how-title">How It Works</div>
+                    <div class="cfg-steps">
+
+                        <div class="cfg-step">
+                            <div class="cfg-step-num">1</div>
+                            <div class="cfg-step-body">
+                                <div class="cfg-step-head">Fetch Facility Registry</div>
+                                <div class="cfg-step-desc">Loads all Level-5 health facilities from DHIS2 with district &amp; chiefdom hierarchy. Classifies each as Hospital, Clinic, CHC, CHP or MCHP — all other types excluded.</div>
+                            </div>
+                        </div>
+
+                        <div class="cfg-step">
+                            <div class="cfg-step-num">2</div>
+                            <div class="cfg-step-body">
+                                <div class="cfg-step-head">Build Query Plan</div>
+                                <div class="cfg-step-desc">Packages 48 malaria indicator de.coc pairs and the selected periods into optimised batches for the DHIS2 analytics API — typically just 2–4 API calls total.</div>
+                            </div>
+                        </div>
+
+                        <div class="cfg-step">
+                            <div class="cfg-step-num">3</div>
+                            <div class="cfg-step-body">
+                                <div class="cfg-step-head">Fetch &amp; Clean Analytics</div>
+                                <div class="cfg-step-desc">Pulls pre-aggregated data from DHIS2. Applies Sierra Leone reporting rules: microscopy excluded for CHP &amp; MCHP; admissions excluded for CHC, CHP &amp; MCHP.</div>
+                            </div>
+                        </div>
+
+                        <div class="cfg-step">
+                            <div class="cfg-step-num">4</div>
+                            <div class="cfg-step-body">
+                                <div class="cfg-step-head">Derive Indicators</div>
+                                <div class="cfg-step-desc">Computes total suspected, total tested (RDT + microscopy), confirmed cases, ACT treatments, admissions, deaths and cascade rates per facility per month.</div>
+                            </div>
+                        </div>
+
+                        <div class="cfg-step">
+                            <div class="cfg-step-num">5</div>
+                            <div class="cfg-step-body">
+                                <div class="cfg-step-head">Render Dashboard</div>
+                                <div class="cfg-step-desc">Builds interactive charts, summary cards and district/facility filters. All charts show count with percentage on hover.</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Select Period -->
+                <div class="cfg-form">
+                    <div class="cfg-form-title">Select Period</div>
+                    <div class="cfg-form-sub">Choose the date range then click Run Pipeline to fetch data from DHIS2.</div>
+                    <div class="cfg-months">
+                        <div>
+                            <label class="filter-label" style="display:block;margin-bottom:8px;">Start Month</label>
+                            <input type="month" class="filter-select cfg-input" id="cfgStart">
+                        </div>
+                        <div>
+                            <label class="filter-label" style="display:block;margin-bottom:8px;">End Month</label>
+                            <input type="month" class="filter-select cfg-input" id="cfgEnd">
+                        </div>
+                    </div>
+                    <div id="cfgError" style="display:none;background:#fde8e0;border:1.5px solid #e05c2b;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:700;color:#7a2800;margin-bottom:16px;"></div>
+                    <button class="cfg-run-btn" onclick="runPipeline()">&#9654; Run Pipeline</button>
+                    <div class="cfg-credit">Developed by Informatics Consultancy Firm – Sierra Leone (ICF-SL) &nbsp;·&nbsp; NMCP Sierra Leone</div>
+                </div>
+
+            </div><!-- /cfg-wrap -->
+        </div>
+    </div>
+
+    <!-- ═══ SCREEN 2: PIPELINE PROGRESS ═══ -->
+    <div id="pipelineScreen" style="display:none;">
+        <div class="container">
+            <div class="header">
+                <h1 class="title">Malaria Analytics Dashboard</h1>
+                <p class="subtitle">Fetching data from DHIS2&hellip;</p>
+            </div>
+
+            <div id="loadingIndicator" class="loading">
+                <div class="loading-title">Running Pipeline</div>
+                <div class="loading-phase" id="loadingPhase">Starting&hellip;</div>
+                <div class="progress-wrap">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-pct" id="progressPct">0%</div>
+                <div class="progress-detail" id="progressDetail"></div>
+                <div style="margin-top:28px;max-width:660px;margin-left:auto;margin-right:auto;">
+                    <div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:12px;text-align:left;">Data Pre-processing Steps</div>
+                    <div id="stepList"></div>
+                </div>
+                <p style="margin-top:12px;font-size:11px;color:rgba(255,255,255,.25);text-align:center;" id="debugMsg"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ SCREEN 3: FULL DASHBOARD ═══ -->
+    <div id="dashboardScreen" style="display:none;">
+
+        <!-- ── Sticky header bar ── -->
+        <div id="stickyBar">
+            <!-- Title row -->
+            <div id="stickyTitle">
+                <div>
+                    <div class="sticky-title-text">Malaria Analytics Dashboard</div>
+                    <div class="sticky-subtitle" id="dashSubtitle">Comprehensive Malaria Surveillance &mdash; Sierra Leone HMIS</div>
+                </div>
+                <button class="nav-toggle" onclick="toggleNav()">
+                    <span>Navigation</span>
+                    <span class="nav-arrow" id="navArrow">&#9660;</span>
+                </button>
+            </div>
+            <!-- Filters -->
+            <div class="filters" id="stickyFilters">
+                <div class="filter-group">
+                    <label class="filter-label">District</label>
+                    <select class="filter-select" id="level2Filter" onchange="handleLevel2Change()">
+                        <option value="all">All Districts</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Chiefdom</label>
+                    <select class="filter-select" id="level4Filter" onchange="handleLevel4Change()">
+                        <option value="all">All Chiefdoms</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Facility</label>
+                    <select class="filter-select" id="level5Filter" onchange="applyFilters()">
+                        <option value="all">All Facilities</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">HF Type</label>
+                    <select class="filter-select" id="hfTypeFilter" onchange="applyFilters()">
+                        <option value="all">All Types</option>
+                        <option value="Hospital">Hospital</option>
+                        <option value="Clinic">Clinic</option>
+                        <option value="CHC">CHC</option>
+                        <option value="CHP">CHP</option>
+                        <option value="MCHP">MCHP</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Year</label>
+                    <div class="multi-select-wrapper" id="yearWrapper">
+                        <button class="multi-select-btn" onclick="toggleMultiDropdown('year')" type="button">
+                            <span id="yearBtnLabel">All Years</span><span class="arrow">&#9660;</span>
+                        </button>
+                        <div class="multi-select-dropdown" id="yearDropdown">
+                            <div class="multi-select-option all-opt">
+                                <input type="checkbox" id="yearAll" checked onchange="toggleAllYear(this)">
+                                <label for="yearAll" style="cursor:pointer;">All Years</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Month</label>
+                    <div class="multi-select-wrapper" id="monthWrapper">
+                        <button class="multi-select-btn" onclick="toggleMultiDropdown('month')" type="button">
+                            <span id="monthBtnLabel">All Months</span><span class="arrow">&#9660;</span>
+                        </button>
+                        <div class="multi-select-dropdown" id="monthDropdown">
+                            <div class="multi-select-option all-opt">
+                                <input type="checkbox" id="monthAll" checked onchange="toggleAllMonth(this)">
+                                <label for="monthAll" style="cursor:pointer;">All Months</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action buttons inside sticky bar -->
+            <div class="sticky-actions">
+                <button class="btn" onclick="showConfigScreen()" style="background:rgba(255,255,255,.2);">&#8592; New Query</button>
+                <button class="btn btn-secondary" onclick="resetFilters()">Reset Filters</button>
+                <button class="btn btn-secondary" onclick="exportData()">Export CSV</button>
+            </div>
+        </div><!-- /stickyBar -->
+
+        <!-- Nav menu (outside sticky so it overlays content) -->
+        <div class="nav-menu" id="navMenu">
+            <h3>Quick Navigation</h3>
+            <div class="nav-item" onclick="scrollToSection('summary')">Summary Overview</div>
+            <div class="nav-item" onclick="scrollToSection('opd')">OPD Visits</div>
+            <div class="nav-item" onclick="scrollToSection('suspected')">Suspected Cases</div>
+            <div class="nav-item" onclick="scrollToSection('testing')">Testing</div>
+            <div class="nav-item" onclick="scrollToSection('confirmed')">Confirmed Cases</div>
+            <div class="nav-item" onclick="scrollToSection('treatment')">Treatment</div>
+            <div class="nav-item" onclick="scrollToSection('admissions')">Admissions</div>
+            <div class="nav-item" onclick="scrollToSection('deaths')">Malaria Deaths</div>
+        </div>
+
+        <!-- Scrollable content -->
+        <div id="dashScrollContent">
+        <div class="container">
+
+            <div class="alert" id="statusAlert">
+                <span style="font-size:24px;">i</span>
+                <div>
+                    <strong>Status:</strong> <span id="statusMessage">Ready</span><br>
+                    <small>Developed by <strong>Informatics Consultancy Firm – Sierra Leone (ICF-SL)</strong> &nbsp;|&nbsp; Last updated: <span id="lastUpdate">—</span></small>
+                </div>
+            </div>
+
+            <!-- Facility type breakdown bar -->
+            <div id="facTypeBar" style="display:none;background:#fff;border:2px solid #2c6693;border-radius:12px;margin-bottom:22px;overflow:hidden;">
+                <div style="background:linear-gradient(135deg,#2c6693,#1f4a6a);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+                    <div>
+                        <div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:5px;">Total Assessed Facilities</div>
+                        <div id="facTypeTotalBadge" style="font-size:40px;font-weight:900;color:#fff;line-height:1;letter-spacing:-1px;">—</div>
+                        <div id="facTypeTotalSub" style="font-size:12px;color:rgba(255,255,255,.55);margin-top:4px;">Hospital · Clinic · CHC · CHP · MCHP</div>
+                    </div>
+                    <div id="facTypeStackBar" style="flex:1;min-width:200px;max-width:500px;"></div>
+                </div>
+                <div id="facTypePills" style="display:flex;flex-wrap:wrap;gap:0;border-top:2px solid #e3f2fd;"></div>
+            </div>
+
+            <div id="dashboardContent">
+            <div class="section" id="summary">
+                <div class="section-header"><div class="section-title">Summary Overview</div></div>
+                <div class="section-content">
+                    <div class="summary-grid">
+                        <div class="summary-card"><div class="summary-label">Total OPD Visits</div><div class="summary-value" id="totalOPD">0</div><div class="summary-subtitle">New & follow-up curative</div></div>
+                        <div class="summary-card"><div class="summary-label">Suspected Cases</div><div class="summary-value" id="totalSuspected">0</div><div class="summary-subtitle">Fever cases suspected</div></div>
+                        <div class="summary-card"><div class="summary-label">Total Tests</div><div class="summary-value" id="totalTests">0</div><div class="summary-subtitle">RDT + Microscopy</div></div>
+                        <div class="summary-card"><div class="summary-label">Confirmed Cases</div><div class="summary-value" id="totalConfirmed">0</div><div class="summary-subtitle">Test positive</div></div>
+                        <div class="summary-card"><div class="summary-label">Treated with ACT</div><div class="summary-value" id="totalACT">0</div><div class="summary-subtitle">All ACT treatments given</div></div>
+                        <div class="summary-card"><div class="summary-label">Confirmed & Treated</div><div class="summary-value" id="totalConfirmedTreated">0</div><div class="summary-subtitle">Test positive + received ACT</div></div>
+                        <div class="summary-card"><div class="summary-label">Presumptive Treatment</div><div class="summary-value" id="totalPresumptive">0</div><div class="summary-subtitle">Treated without testing</div></div>
+                        <div class="summary-card"><div class="summary-label">Admissions</div><div class="summary-value" id="totalAdmissions">0</div><div class="summary-subtitle">Inpatient malaria</div></div>
+                        <div class="summary-card"><div class="summary-label">Malaria Deaths</div><div class="summary-value red" id="totalDeaths">0</div><div class="summary-subtitle">Malaria-related deaths</div></div>
+                        <div class="summary-card"><div class="summary-label">Test Positivity Rate</div><div class="summary-value" id="positivityRate" style="font-size: 36px;">0%</div><div class="summary-subtitle">Confirmed / Tested</div></div>
+                        <div class="summary-card"><div class="summary-label">Treatment Rate</div><div class="summary-value" id="treatmentRate" style="font-size: 36px;">0%</div><div class="summary-subtitle">Confirmed &amp; Treated / Treated</div></div>
+                        <div class="summary-card"><div class="summary-label">Confirmed Treatment Rate</div><div class="summary-value" id="confirmedTreatmentRate" style="font-size: 36px;">0%</div><div class="summary-subtitle">Confirmed &amp; Treated / Confirmed</div></div>
+                        <div class="summary-card"><div class="summary-label">Presumptive Treatment Rate</div><div class="summary-value" id="presumptiveTreatmentRate" style="font-size: 36px;">0%</div><div class="summary-subtitle">Treated without confirmation / All treated</div></div>
+                        <div class="summary-card"><div class="summary-label">Case Fatality Rate</div><div class="summary-value red" id="cfrRate" style="font-size: 36px;">0%</div><div class="summary-subtitle">Deaths / Admissions</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" id="opd">
+                <div class="section-header"><div class="section-title">OPD Visits</div></div>
+                <div class="section-content">
+                    <div class="charts-grid">
+                        <div class="chart-card"><div class="chart-title">OPD by Age Group</div><div class="chart-container"><canvas id="opdAgeChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Monthly OPD Trend</div><div class="chart-container"><canvas id="opdTrendChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">OPD Comparison</div><div class="chart-container"><canvas id="opdCompChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">OPD by District</div><div class="chart-container tall"><canvas id="opdRegionChart"></canvas></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" id="suspected">
+                <div class="section-header"><div class="section-title">Suspected Cases</div></div>
+                <div class="section-content">
+                    <div class="charts-grid">
+                        <div class="chart-card"><div class="chart-title">Suspected by Location</div><div class="chart-container"><canvas id="suspectedLocationChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Suspected by Age</div><div class="chart-container"><canvas id="suspectedAgeChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Monthly Suspected Trend</div><div class="chart-container"><canvas id="suspectedTrendChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Suspected by District</div><div class="chart-container tall"><canvas id="suspectedRegionChart"></canvas></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" id="testing">
+                <div class="section-header"><div class="section-title">Testing</div></div>
+                <div class="section-content">
+                    <div class="charts-grid">
+                        <div class="chart-card"><div class="chart-title">Test Methods</div><div class="chart-container"><canvas id="testMethodChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Tests by Location</div><div class="chart-container"><canvas id="testLocationChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Test Results</div><div class="chart-container"><canvas id="testResultsChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Monthly Testing Trend</div><div class="chart-container"><canvas id="testTrendChart"></canvas></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" id="confirmed">
+                <div class="section-header"><div class="section-title">Confirmed Cases</div></div>
+                <div class="section-content">
+                    <div class="charts-grid">
+                        <div class="chart-card"><div class="chart-title">Confirmed by Age</div><div class="chart-container"><canvas id="confirmedAgeChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Facility vs Community</div><div class="chart-container"><canvas id="confirmedLocationChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Monthly Confirmed Trend</div><div class="chart-container"><canvas id="confirmedTrendChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Confirmed by District</div><div class="chart-container tall"><canvas id="confirmedRegionChart"></canvas></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" id="treatment">
+                <div class="section-header"><div class="section-title">Treatment</div></div>
+                <div class="section-content">
+                    <div class="charts-grid">
+                        <div class="chart-card"><div class="chart-title">Timeliness (&lt;24h vs &gt;24h)</div><div class="chart-container"><canvas id="treatmentTimeChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Location (HF vs Community)</div><div class="chart-container"><canvas id="treatmentAgeChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Breakdown (Location &times; Timeliness)</div><div class="chart-container"><canvas id="treatmentLocationChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Monthly Treatment Trend</div><div class="chart-container"><canvas id="treatmentTrendChart"></canvas></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" id="admissions">
+                <div class="section-header"><div class="section-title">Admissions</div></div>
+                <div class="section-content">
+                    <div class="charts-grid">
+                        <div class="chart-card"><div class="chart-title">Admissions by Age</div><div class="chart-container"><canvas id="admissionsAgeChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Monthly Admissions Trend</div><div class="chart-container"><canvas id="admissionsTrendChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Admissions by District</div><div class="chart-container tall"><canvas id="admissionsRegionChart"></canvas></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" id="deaths">
+                <div class="section-header"><div class="section-title">Malaria Deaths</div></div>
+                <div class="section-content">
+                    <div class="charts-grid">
+                        <div class="chart-card"><div class="chart-title">Deaths by Age</div><div class="chart-container"><canvas id="deathsAgeChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Deaths by Gender (15+)</div><div class="chart-container"><canvas id="deathsGenderChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Monthly Deaths Trend</div><div class="chart-container"><canvas id="deathsTrendChart"></canvas></div></div>
+                        <div class="chart-card"><div class="chart-title">Deaths by District</div><div class="chart-container tall"><canvas id="deathsRegionChart"></canvas></div></div>
+                    </div>
+                </div>
+            </div>
+    
+            </div><!-- /dashboardContent -->
+        </div><!-- /container -->
+        </div><!-- /dashScrollContent -->
+    </div><!-- /dashboardScreen -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+// ═══════════════════════════════════════════════════════════════
+//  NMCP Malaria Analytics Dashboard  v5
+//  GAS Proxy → sl.dhis2.org/hmis23
+//  Fetch pattern: /api/analytics.json  (LEVEL-5, all periods, all DEs in ~2 batches)
+//  — replaces dataValueSets loop; ~10-50× fewer HTTP calls
+// ═══════════════════════════════════════════════════════════════
+
+const PROXY    = 'https://script.google.com/macros/s/AKfycbyRXc68PYSmDSCYPakAS8Gc9R00kRjmsMYoDujPYMItyquXfwMAJUtRqXLiDlNWbSfDQQ/exec';
+const BASE_URL = 'https://sl.dhis2.org/hmis23';
+const AUTH     = 'Basic ' + btoa('musa-sillahkanu:Navigator/2024!');
+
+const LEVEL_DIST  = 2;
+const LEVEL_CHIEF = 4;
+const LEVEL_PHU   = 5;
+
+// ── de.coc → slot field mapping ──────────────────────────────
+// Each entry: { dxStr, totalField, splitField?, excludeTypes? }
+// dxStr        = "DE_UID.COC_UID"  (what we send in dx=)
+// totalField   = field to accumulate the value into
+// splitField   = optional extra field (age/gender disaggregation)
+// excludeTypes = facility types whose values must be IGNORED even if DHIS2 returns them
+//
+// Sierra Leone reporting rules:
+//   Microscopy (pos & neg) : NOT reported by CHP, MCHP
+//   Admissions             : NOT reported by CHC, CHP, MCHP
+const EXCL_MICRO = ['CHP','MCHP'];
+const EXCL_ADM   = ['CHC','CHP','MCHP'];
+
+const DX_MAP = [
+    // OPD
+    { dxStr:'jkVioQxQcnk.HXqTYVuY7MO', totalField:'opd',                splitField:'opdUnder5'        },
+    { dxStr:'jkVioQxQcnk.YmxEkqHdy64', totalField:'opd',                splitField:'opdOver5'         },
+    // Suspected HF
+    { dxStr:'FJafyE1kzs4.m5T8uBNB8aN', totalField:'suspectedHF',        splitField:'suspectedHF_U5'   },
+    { dxStr:'FJafyE1kzs4.j7j6iaknOFn', totalField:'suspectedHF',        splitField:'suspectedHF_5_14' },
+    { dxStr:'FJafyE1kzs4.zK1aiw8zFac', totalField:'suspectedHF',        splitField:'suspectedHF_15plus'},
+    // Suspected Community
+    { dxStr:'wfaQBIVQxWo.NtjMVmRfvHH', totalField:'suspectedCommunity', splitField:'suspectedCom_U5'   },
+    { dxStr:'wfaQBIVQxWo.qDXW7WMLT99', totalField:'suspectedCommunity', splitField:'suspectedCom_5_14' },
+    { dxStr:'wfaQBIVQxWo.mdjRPpvLKdu', totalField:'suspectedCommunity', splitField:'suspectedCom_15plus'},
+    // RDT Positive HF
+    { dxStr:'p6zQLDFjSfd.m5T8uBNB8aN', totalField:'rdtPosHF',           splitField:'rdtPosHF_U5'      },
+    { dxStr:'p6zQLDFjSfd.j7j6iaknOFn', totalField:'rdtPosHF',           splitField:'rdtPosHF_5_14'    },
+    { dxStr:'p6zQLDFjSfd.zK1aiw8zFac', totalField:'rdtPosHF',           splitField:'rdtPosHF_15plus'  },
+    // RDT Negative HF
+    { dxStr:'mXS2g1AiPsS.m5T8uBNB8aN', totalField:'rdtNegHF' },
+    { dxStr:'mXS2g1AiPsS.j7j6iaknOFn', totalField:'rdtNegHF' },
+    { dxStr:'mXS2g1AiPsS.zK1aiw8zFac', totalField:'rdtNegHF' },
+    // RDT Positive Community
+    { dxStr:'T7xH8GwWpEM.NtjMVmRfvHH', totalField:'rdtPosCom',          splitField:'rdtPosCom_U5'     },
+    { dxStr:'T7xH8GwWpEM.qDXW7WMLT99', totalField:'rdtPosCom',          splitField:'rdtPosCom_5_14'   },
+    { dxStr:'T7xH8GwWpEM.mdjRPpvLKdu', totalField:'rdtPosCom',          splitField:'rdtPosCom_15plus' },
+    // RDT Negative Community
+    { dxStr:'YWvx4zYdp92.NtjMVmRfvHH', totalField:'rdtNegCom' },
+    { dxStr:'YWvx4zYdp92.qDXW7WMLT99', totalField:'rdtNegCom' },
+    { dxStr:'YWvx4zYdp92.mdjRPpvLKdu', totalField:'rdtNegCom' },
+    // Microscopy Positive  — CHP & MCHP excluded
+    { dxStr:'Sz13vbo2Qwh.m5T8uBNB8aN', totalField:'microPos', splitField:'microPos_U5',     excludeTypes: EXCL_MICRO },
+    { dxStr:'Sz13vbo2Qwh.j7j6iaknOFn', totalField:'microPos', splitField:'microPos_5_14',   excludeTypes: EXCL_MICRO },
+    { dxStr:'Sz13vbo2Qwh.zK1aiw8zFac', totalField:'microPos', splitField:'microPos_15plus', excludeTypes: EXCL_MICRO },
+    // Microscopy Negative  — CHP & MCHP excluded
+    { dxStr:'Rijj3Fp9ksg.m5T8uBNB8aN', totalField:'microNeg', excludeTypes: EXCL_MICRO },
+    { dxStr:'Rijj3Fp9ksg.j7j6iaknOFn', totalField:'microNeg', excludeTypes: EXCL_MICRO },
+    { dxStr:'Rijj3Fp9ksg.zK1aiw8zFac', totalField:'microNeg', excludeTypes: EXCL_MICRO },
+    // ACT HF
+    { dxStr:'wU8EdHifSLa.m5T8uBNB8aN', totalField:'actUnder24' },
+    { dxStr:'wU8EdHifSLa.j7j6iaknOFn', totalField:'actUnder24' },
+    { dxStr:'wU8EdHifSLa.zK1aiw8zFac', totalField:'actUnder24' },
+    { dxStr:'XKTCuR0W3YN.m5T8uBNB8aN', totalField:'actOver24' },
+    { dxStr:'XKTCuR0W3YN.j7j6iaknOFn', totalField:'actOver24' },
+    { dxStr:'XKTCuR0W3YN.zK1aiw8zFac', totalField:'actOver24' },
+    // ACT Community
+    { dxStr:'h3zJa6hAgib.NtjMVmRfvHH', totalField:'actComUnder24' },
+    { dxStr:'h3zJa6hAgib.qDXW7WMLT99', totalField:'actComUnder24' },
+    { dxStr:'h3zJa6hAgib.mdjRPpvLKdu', totalField:'actComUnder24' },
+    { dxStr:'Imkks0HAl7E.NtjMVmRfvHH', totalField:'actComOver24' },
+    { dxStr:'Imkks0HAl7E.qDXW7WMLT99', totalField:'actComOver24' },
+    { dxStr:'Imkks0HAl7E.mdjRPpvLKdu', totalField:'actComOver24' },
+    // Admissions  — CHC, CHP & MCHP excluded
+    { dxStr:'C1DCcLAtafH.HllvX50cXC0', totalField:'admUnder5', excludeTypes: EXCL_ADM },
+    { dxStr:'IcUrc8pkuwR.HllvX50cXC0', totalField:'adm5_14',   excludeTypes: EXCL_ADM },
+    { dxStr:'SdQVZnWzmtH.HllvX50cXC0', totalField:'admOver15', excludeTypes: EXCL_ADM },
+    // Deaths Children
+    { dxStr:'r3HwIQFuQgM.A8dMUfhg6UE', totalField:'deathChild', splitField:'deathChild_1_59m'  },
+    { dxStr:'r3HwIQFuQgM.cuvi0oNThtK', totalField:'deathChild', splitField:'deathChild_5_9y'   },
+    { dxStr:'r3HwIQFuQgM.TkMu3ASPYIt', totalField:'deathChild', splitField:'deathChild_10_14y' },
+    // Deaths Adults
+    { dxStr:'KMoztqwsZl8.sGC3uyNcgGJ', totalField:'deathAdult', splitField:'deathAdult_Female' },
+    { dxStr:'KMoztqwsZl8.fJndZMaUVat', totalField:'deathAdult', splitField:'deathAdult_Male'   },
+];
+
+// Build reverse lookup:  dxStr → { totalField, splitField, excludeTypes }
+const DX_LOOKUP = {};
+DX_MAP.forEach(d => { DX_LOOKUP[d.dxStr] = d; });
+
+// All unique dx strings for the analytics query
+const ALL_DX = [...new Set(DX_MAP.map(d => d.dxStr))];
+
+// ── State ──
+let rawData      = [];
+let filteredData = [];
+let charts       = {};
+let _ouHierarchy = {};
+let _phuIds      = [];
+let _running     = false;
+
+// ── Core fetch via GAS proxy ──────────────────────────────────
+async function dhis2(path) {
+    const url  = BASE_URL + path;
+    const pUrl = PROXY + '?url=' + encodeURIComponent(url) + '&Authorization=' + encodeURIComponent(AUTH);
+    const r = await fetch(pUrl);
+    if (!r.ok) throw new Error('HTTP ' + r.status + ' — ' + path.slice(0, 80));
+    return r.json();
+}
+
+function genPeriods(s, e) {
+    const out = [];
+    let [y, m] = s.split('-').map(Number);
+    const [ey, em] = e.split('-').map(Number);
+    while (y < ey || (y === ey && m <= em)) {
+        out.push(`${y}${String(m).padStart(2,'0')}`);
+        if (++m > 12) { m = 1; y++; }
+    }
+    return out;
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function formatNumber(n) { return Math.round(n || 0).toLocaleString(); }
+function calcPct(num, den) { return den > 0 ? ((num / den) * 100).toFixed(1) : '0'; }
+
+function getHFType(name) {
+    const u = (name || '').toUpperCase();
+    const parts = u.trim().split(/\s+/);
+    const suffix = parts[parts.length - 1] || '';
+    if (suffix === 'HOSPITAL') return 'Hospital';
+    if (suffix === 'MCHP')     return 'MCHP';
+    if (suffix === 'CHC')      return 'CHC';
+    if (suffix === 'CHP')      return 'CHP';
+    const clinicSuffixes = ['CLINIC','CLINNIC','CLINNC','CLIMIC','CLINC','CLINIK','CLENIC','CLINCC','CLIN'];
+    if (clinicSuffixes.includes(suffix)) return 'Clinic';
+    if (u.includes('HOSPITAL')) return 'Hospital';
+    if (u.includes('MCHP'))     return 'MCHP';
+    if (u.includes('CHC'))      return 'CHC';
+    if (u.includes('CHP'))      return 'CHP';
+    if (clinicSuffixes.some(c => u.includes(c))) return 'Clinic';
+    return 'Other';
+}
+
+// ── Progress UI ──────────────────────────────────────────────
+const stepEls = {};
+
+function setProgress(pct, phase, detail) {
+    const p = Math.min(100, Math.round(pct));
+    document.getElementById('progressBar').style.width = p + '%';
+    document.getElementById('progressPct').textContent = p + '%';
+    if (phase  !== undefined) document.getElementById('loadingPhase').textContent   = phase;
+    if (detail !== undefined) document.getElementById('progressDetail').textContent = detail;
+}
+
+let _stepCounter = 0;
+function addStep(id, label) {
+    const sl = document.getElementById('stepList');
+    if (!sl) return;
+    _stepCounter++;
+    const d = document.createElement('div');
+    d.id        = 'st_' + id;
+    d.className = 'step-item pending';
+    d.innerHTML =
+        '<span class="step-num">Step ' + _stepCounter + '</span>'
+      + '<span class="step-label">' + label + '</span>'
+      + '<span class="step-status"></span>';
+    sl.appendChild(d);
+    stepEls[id] = d;
+}
+
+function setStep(id, status, msg) {
+    const el = stepEls[id]; if (!el) return;
+    el.className = 'step-item ' + status;
+    const icons = { running:'⏳', done:'✅', error:'❌' };
+    const statusEl = el.querySelector('.step-status');
+    if (statusEl) statusEl.textContent = msg ? (icons[status] || '') + ' ' + msg : (icons[status] || '');
+}
+
+function debugMsg(msg) {
+    const el = document.getElementById('debugMsg');
+    if (el) el.textContent = msg;
+}
+
+function updateStatus(msg, isError) {
+    document.getElementById('statusMessage').textContent = msg;
+    document.getElementById('statusAlert').classList.toggle('error', !!isError);
+}
+
+// Keep padding-top in sync with actual sticky bar height
+function syncStickyHeight() {
+    const bar = document.getElementById('stickyBar');
+    if (bar) {
+        const h = bar.offsetHeight;
+        document.documentElement.style.setProperty('--sticky-h', h + 'px');
+    }
+}
+window.addEventListener('resize', syncStickyHeight);
+// Call after dashboard becomes visible
+const _origShowDash = function(){};
+
+// ── Nav ──────────────────────────────────────────────────────
+function toggleNav() {
+    document.getElementById('navMenu').classList.toggle('active');
+    document.getElementById('navArrow').classList.toggle('collapsed');
+}
+function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+    document.getElementById('navMenu').classList.remove('active');
+    document.getElementById('navArrow').classList.remove('collapsed');
+}
+
+// ── Slot helpers ─────────────────────────────────────────────
+let _accMap = {};
+
+function emptySlot(ouId, period) {
+    const ou = _ouHierarchy[ouId] || {};
+    return {
+        ou: ouId, period,
+        year: period.slice(0, 4), month: period.slice(4, 6),
+        level2: ou.districtName || '', level3: '',
+        level4: ou.chiefdomName || '', level5: ou.name || ouId,
+        hfType: ou.hfType || 'Other',
+        opd:0, opdUnder5:0, opdOver5:0,
+        suspectedHF:0, suspectedCommunity:0,
+        suspectedHF_U5:0, suspectedHF_5_14:0, suspectedHF_15plus:0,
+        suspectedCom_U5:0, suspectedCom_5_14:0, suspectedCom_15plus:0,
+        rdtPosHF:0, rdtNegHF:0, rdtPosCom:0, rdtNegCom:0,
+        rdtPosHF_U5:0, rdtPosHF_5_14:0, rdtPosHF_15plus:0,
+        rdtPosCom_U5:0, rdtPosCom_5_14:0, rdtPosCom_15plus:0,
+        microPos:0, microNeg:0,
+        microPos_U5:0, microPos_5_14:0, microPos_15plus:0,
+        actUnder24:0, actOver24:0, actComUnder24:0, actComOver24:0,
+        admUnder5:0, adm5_14:0, admOver15:0,
+        deathChild:0, deathAdult:0,
+        deathChild_1_59m:0, deathChild_5_9y:0, deathChild_10_14y:0,
+        deathAdult_Female:0, deathAdult_Male:0,
+    };
+}
+
+function getSlot(ouId, period) {
+    const k = ouId + '|' + period;
+    if (!_accMap[k]) _accMap[k] = emptySlot(ouId, period);
+    return _accMap[k];
+}
+
+function showConfigScreen() {
+    document.getElementById('configScreen').style.display    = 'block';
+    document.getElementById('pipelineScreen').style.display  = 'none';
+    document.getElementById('dashboardScreen').style.display = 'none';
+}
+
+// ── Main pipeline ─────────────────────────────────────────────
+async function runPipeline() {
+    if (_running) return;
+    const start = (document.getElementById('cfgStart') || {}).value;
+    const end   = (document.getElementById('cfgEnd')   || {}).value;
+
+    const errEl = document.getElementById('cfgError');
+    if (!start || !end) {
+        if (errEl) { errEl.textContent = 'Please select both a Start Month and End Month.'; errEl.style.display = 'block'; }
+        return;
+    }
+    if (start > end) {
+        if (errEl) { errEl.textContent = 'Start Month must be on or before End Month.'; errEl.style.display = 'block'; }
+        return;
+    }
+    if (errEl) errEl.style.display = 'none';
+
+    document.getElementById('configScreen').style.display    = 'none';
+    document.getElementById('pipelineScreen').style.display  = 'block';
+    document.getElementById('dashboardScreen').style.display = 'none';
+
+    _running     = true;
+    rawData      = [];
+    filteredData = [];
+    _accMap      = {};
+    _ouHierarchy = {};
+    _phuIds      = [];
+
+    document.getElementById('stepList').innerHTML = '';
+    Object.keys(stepEls).forEach(k => delete stepEls[k]);
+    _stepCounter = 0;
+    setProgress(0, 'Starting…', '');
+
+    try {
+        // ── Step 1: Fetch Level-5 org unit hierarchy ──────────
+        addStep('s_ou', 'Fetch facility registry — load all Level-5 health facilities with district and chiefdom hierarchy, classify into Hospital / Clinic / CHC / CHP / MCHP, exclude all other types');
+        setStep('s_ou', 'running');
+        setProgress(3, 'Step 1 — Org units…', 'Querying DHIS2');
+
+        const ouResp = await dhis2(
+            '/api/organisationUnits.json?level=' + LEVEL_PHU +
+            '&fields=id,displayName,ancestors[id,displayName,level]&paging=false&pageSize=50000'
+        );
+
+        const ASSESSED_TYPES = ['Hospital', 'Clinic', 'CHC', 'CHP', 'MCHP'];
+        let skipped = 0;
+
+        (ouResp.organisationUnits || []).forEach(ou => {
+            const hfType = getHFType(ou.displayName);
+            if (!ASSESSED_TYPES.includes(hfType)) { skipped++; return; }
+            const anc   = (ou.ancestors || []).sort((a, b) => a.level - b.level);
+            const dist  = anc.find(a => a.level === LEVEL_DIST);
+            const chief = anc.find(a => a.level === LEVEL_CHIEF);
+            _ouHierarchy[ou.id] = {
+                id:           ou.id,
+                name:         ou.displayName,
+                hfType,
+                districtName: dist  ? dist.displayName  : '',
+                chiefdomName: chief ? chief.displayName : '',
+            };
+        });
+
+        _phuIds = Object.keys(_ouHierarchy);
+
+        // Count by type for display
+        const typeCounts = { Hospital:0, Clinic:0, CHC:0, CHP:0, MCHP:0 };
+        Object.values(_ouHierarchy).forEach(o => { if (typeCounts[o.hfType] !== undefined) typeCounts[o.hfType]++; });
+        const typeBreakdown = ASSESSED_TYPES.map(t => t + ': ' + typeCounts[t]).join(' · ');
+        window._typeCounts   = typeCounts;
+        window._totalAssessed = _phuIds.length;
+
+        setStep('s_ou', 'done',
+            _phuIds.length + ' assessed facilities (' + skipped + ' other types excluded) · ' + typeBreakdown
+        );
+        setProgress(15, 'Step 1 done', '');
+
+        // Populate geographic dropdowns immediately
+        populateGeoFilters();
+        await sleep(40);
+
+        // ── Step 2: Build dx param & period list ──────────────
+        addStep('s_plan', 'Build query plan — split all 48 indicator de.coc pairs and selected periods into optimised batches for the DHIS2 analytics API');
+        setStep('s_plan', 'running');
+
+        const periods   = genPeriods(start, end);
+        // Batch dx strings to keep URL length manageable (≤40 per call)
+        const DX_BATCH  = 40;
+        const dxBatches = [];
+        for (let i = 0; i < ALL_DX.length; i += DX_BATCH)
+            dxBatches.push(ALL_DX.slice(i, i + DX_BATCH));
+
+        // Batch periods to keep URL length manageable (≤24 per call)
+        const PE_BATCH  = 24;
+        const pBatches  = [];
+        for (let i = 0; i < periods.length; i += PE_BATCH)
+            pBatches.push(periods.slice(i, i + PE_BATCH));
+
+        const totalCalls = dxBatches.length * pBatches.length;
+        setStep('s_plan', 'done',
+            ALL_DX.length + ' dx strings · ' + periods.length + ' periods → ' +
+            dxBatches.length + ' dx batch(es) × ' + pBatches.length + ' period batch(es) = ' +
+            totalCalls + ' API call(s)'
+        );
+        setProgress(20, 'Step 2 done', '');
+        await sleep(40);
+
+        // ── Step 3: Fetch analytics ───────────────────────────
+        addStep('s_fetch', 'Fetch analytics — query DHIS2 pre-aggregated data; apply reporting rules: microscopy zeroed for CHP/MCHP, admissions zeroed for CHC/CHP/MCHP');
+        setStep('s_fetch', 'running');
+
+        let callsDone = 0;
+        let totalRows = 0;
+
+        for (let di = 0; di < dxBatches.length; di++) {
+            const dxParam = dxBatches[di].join(';');
+
+            for (let pi = 0; pi < pBatches.length; pi++) {
+                const peParam = pBatches[pi].join(';');
+                callsDone++;
+
+                setProgress(
+                    20 + Math.round((callsDone / totalCalls) * 65),
+                    'Step 3 — Analytics batch ' + callsDone + '/' + totalCalls,
+                    'dx batch ' + (di+1) + '/' + dxBatches.length +
+                    ' · periods ' + pBatches[pi][0] + '→' + pBatches[pi][pBatches[pi].length-1]
+                );
+
+                const resp = await dhis2(
+                    '/api/analytics.json' +
+                    '?dimension=dx:'   + dxParam +
+                    '&dimension=pe:'   + peParam +
+                    '&dimension=ou:LEVEL-' + LEVEL_PHU +
+                    '&displayProperty=NAME&paging=false&ignoreLimit=true'
+                );
+
+                (resp.rows || []).forEach(row => {
+                    // row = [dxStr, period, ouId, value]
+                    const [dxStr, period, ouId, rawVal] = row;
+                    const val = parseFloat(rawVal) || 0;
+                    if (!val || !_ouHierarchy[ouId]) return;
+
+                    const mapping = DX_LOOKUP[dxStr];
+                    if (!mapping) return;
+
+                    // ── Facility-type exclusion rules ──
+                    // Skip microscopy for CHP/MCHP; skip admissions for CHC/CHP/MCHP
+                    const ouType = _ouHierarchy[ouId].hfType;
+                    if (mapping.excludeTypes && mapping.excludeTypes.includes(ouType)) return;
+
+                    const slot = getSlot(ouId, period);
+                    slot[mapping.totalField] = (slot[mapping.totalField] || 0) + val;
+                    if (mapping.splitField)
+                        slot[mapping.splitField] = (slot[mapping.splitField] || 0) + val;
+                    totalRows++;
+                });
+
+                await sleep(50);
+            }
+        }
+
+        setStep('s_fetch', 'done',
+            totalCalls + ' analytics call(s) · ' + totalRows.toLocaleString() + ' data points processed · Microscopy excluded for CHP/MCHP · Admissions excluded for CHC/CHP/MCHP');
+        setProgress(86, 'Step 3 done', '');
+
+        // ── Step 4: Derive computed fields ────────────────────
+        addStep('s_derive', 'Derive indicators — compute total suspected, total tested (RDT + microscopy), confirmed cases, ACT treatment, admissions, deaths, and cascade rates per facility-month');
+        setStep('s_derive', 'running');
+        setProgress(90, 'Step 4 — Deriving indicators…', '');
+
+        rawData = Object.values(_accMap).map(r => {
+            r.suspected            = (r.suspectedHF       || 0) + (r.suspectedCommunity || 0);
+            r.rdtTests             = (r.rdtPosHF  || 0) + (r.rdtNegHF  || 0) + (r.rdtPosCom || 0) + (r.rdtNegCom || 0);
+            r.microTests           = (r.microPos  || 0) + (r.microNeg  || 0);
+            r.totalTests           = r.rdtTests + r.microTests;
+            r.confirmed            = (r.rdtPosHF  || 0) + (r.rdtPosCom || 0) + (r.microPos  || 0);
+            r.actTreatment         = (r.actUnder24 || 0) + (r.actOver24 || 0) + (r.actComUnder24 || 0) + (r.actComOver24 || 0);
+            r.confirmedAndTreated  = Math.min(r.confirmed, r.actTreatment);
+            r.presumptiveTreatment = Math.max(0, r.actTreatment - r.confirmed);
+            r.admissions           = (r.admUnder5 || 0) + (r.adm5_14   || 0) + (r.admOver15  || 0);
+            r.deaths               = (r.deathChild || 0) + (r.deathAdult || 0);
+            return r;
+        });
+
+        setStep('s_derive', 'done', rawData.length.toLocaleString() + ' facility-month records');
+        setProgress(95, 'Step 4 done', '');
+
+        // ── Step 5: Render ────────────────────────────────────
+        addStep('s_render', 'Render dashboard — populate district/chiefdom/facility filters, build charts and summary cards from processed data');
+        setStep('s_render', 'running');
+        setProgress(97, 'Step 5 — Rendering…', '');
+
+        populateTimeFilters();
+        applyFilters();
+
+        setStep('s_render', 'done', 'Dashboard ready');
+        setProgress(100, 'Done!', rawData.length.toLocaleString() + ' records · ' + start + ' → ' + end);
+        document.getElementById('lastUpdate').textContent   = new Date().toLocaleString();
+        document.getElementById('dashSubtitle').textContent = start + ' → ' + end + ' · ' + rawData.length.toLocaleString() + ' facility-month records';
+        updateStatus('Loaded ' + rawData.length.toLocaleString() + ' records · ' + start + ' → ' + end);
+
+        await sleep(400);
+        document.getElementById('pipelineScreen').style.display  = 'none';
+        document.getElementById('dashboardScreen').style.display = 'block';
+        setTimeout(syncStickyHeight, 50);
+
+    } catch (err) {
+        console.error(err);
+        updateStatus('Pipeline error: ' + err.message, true);
+        debugMsg('Error: ' + err.message);
+        setProgress(0, 'Error — ' + err.message, '');
+        const sl = document.getElementById('stepList');
+        if (sl) {
+            const e = document.createElement('div');
+            e.style.cssText = 'margin-top:20px;text-align:center;';
+            e.innerHTML = '<button onclick="showConfigScreen()" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);padding:10px 24px;border-radius:8px;font-size:13px;cursor:pointer;">&#8592; Back to Config</button>';
+            sl.appendChild(e);
+        }
+    } finally {
+        _running = false;
+    }
+}
+
+// ── Populate geographic filters ──
+function populateGeoFilters() {
+    const distSet = {};
+    _phuIds.forEach(id => {
+        const ou = _ouHierarchy[id];
+        if (ou && ou.districtName) distSet[ou.districtName] = true;
+    });
+    const l2 = document.getElementById('level2Filter');
+    l2.innerHTML = '<option value="all">All Districts</option>';
+    Object.keys(distSet).sort().forEach(d => {
+        const o = document.createElement('option');
+        o.value = d; o.textContent = d; l2.appendChild(o);
+    });
+}
+
+function handleLevel2Change() {
+    const dist   = document.getElementById('level2Filter').value;
+    const l4 = document.getElementById('level4Filter');
+    const l5 = document.getElementById('level5Filter');
+    l4.innerHTML = '<option value="all">All Chiefdoms</option>';
+    l5.innerHTML = '<option value="all">All Facilities</option>';
+    if (dist !== 'all') {
+        const chiefs = new Set();
+        _phuIds.forEach(id => {
+            const ou = _ouHierarchy[id];
+            if (ou && ou.districtName === dist && ou.chiefdomName) chiefs.add(ou.chiefdomName);
+        });
+        [...chiefs].sort().forEach(c => {
+            const o = document.createElement('option');
+            o.value = c; o.textContent = c; l4.appendChild(o);
+        });
+    }
+    applyFilters();
+}
+
+function handleLevel4Change() {
+    const chief = document.getElementById('level4Filter').value;
+    const l5 = document.getElementById('level5Filter');
+    l5.innerHTML = '<option value="all">All Facilities</option>';
+    if (chief !== 'all') {
+        // value = OU ID (unique), display = name (may have duplicates across chiefdoms)
+        _phuIds
+            .filter(id => _ouHierarchy[id] && _ouHierarchy[id].chiefdomName === chief)
+            .sort((a, b) => (_ouHierarchy[a].name || '').localeCompare(_ouHierarchy[b].name || ''))
+            .forEach(id => {
+                const o = document.createElement('option');
+                o.value = id;                          // ← UID, not name
+                o.textContent = _ouHierarchy[id].name;
+                l5.appendChild(o);
+            });
+    }
+    applyFilters();
+}
+
+// ── Populate year/month filters from loaded data ──
+function populateTimeFilters() {
+    const years  = [...new Set(rawData.map(r => r.year))].sort();
+    const months = [...new Set(rawData.map(r => r.month))].sort();
+    const mNames = ['January','February','March','April','May','June',
+                    'July','August','September','October','November','December'];
+
+    const yDD = document.getElementById('yearDropdown');
+    yDD.querySelectorAll('.multi-select-option:not(.all-opt)').forEach(d => d.remove());
+    years.forEach(y => {
+        const d = document.createElement('div');
+        d.className = 'multi-select-option';
+        d.innerHTML = `<input type="checkbox" id="year_${y}" value="${y}" onchange="onYearChange()">
+                       <label for="year_${y}" style="cursor:pointer;">${y}</label>`;
+        yDD.appendChild(d);
+    });
+
+    const mDD = document.getElementById('monthDropdown');
+    mDD.querySelectorAll('.multi-select-option:not(.all-opt)').forEach(d => d.remove());
+    months.forEach(m => {
+        const d = document.createElement('div');
+        d.className = 'multi-select-option';
+        d.innerHTML = `<input type="checkbox" id="month_${m}" value="${m}" onchange="onMonthChange()">
+                       <label for="month_${m}" style="cursor:pointer;">${mNames[parseInt(m)-1]}</label>`;
+        mDD.appendChild(d);
+    });
+
+    // Reset All checked
+    document.getElementById('yearAll').checked  = true;
+    document.getElementById('monthAll').checked = true;
+    document.getElementById('yearBtnLabel').textContent  = 'All Years';
+    document.getElementById('monthBtnLabel').textContent = 'All Months';
+}
+
+// ── Apply filters ──
+function applyFilters() {
+    const l2     = document.getElementById('level2Filter').value;
+    const l4     = document.getElementById('level4Filter').value;
+    const l5     = document.getElementById('level5Filter').value;
+    const hfType = document.getElementById('hfTypeFilter').value;
+
+    const yChecks  = [...document.querySelectorAll('#yearDropdown  input[type="checkbox"]:not(#yearAll):checked')].map(c => c.value);
+    const allYears = document.getElementById('yearAll').checked  || yChecks.length  === 0;
+    const mChecks  = [...document.querySelectorAll('#monthDropdown input[type="checkbox"]:not(#monthAll):checked')].map(c => c.value);
+    const allMonths= document.getElementById('monthAll').checked || mChecks.length  === 0;
+
+    filteredData = rawData.filter(r => {
+        if (l2     !== 'all' && r.level2 !== l2)     return false;
+        if (l4     !== 'all' && r.level4 !== l4)     return false;
+        if (l5     !== 'all' && r.ou     !== l5)     return false;   // compare UID not name
+        if (hfType !== 'all' && r.hfType !== hfType) return false;
+        if (!allYears  && !yChecks.includes(r.year))  return false;
+        if (!allMonths && !mChecks.includes(r.month)) return false;
+        return true;
+    });
+
+    if (rawData.length) renderDashboard();
+}
+
+function resetFilters() {
+    document.getElementById('level2Filter').value = 'all';
+    document.getElementById('level4Filter').innerHTML = '<option value="all">All Chiefdoms</option>';
+    document.getElementById('level5Filter').innerHTML = '<option value="all">All Facilities</option>';
+    document.getElementById('hfTypeFilter').value = 'all';
+    document.getElementById('yearAll').checked  = true;
+    document.getElementById('monthAll').checked = true;
+    document.querySelectorAll('#yearDropdown  input[type="checkbox"]:not(#yearAll)').forEach(c => c.checked = false);
+    document.querySelectorAll('#monthDropdown input[type="checkbox"]:not(#monthAll)').forEach(c => c.checked = false);
+    document.getElementById('yearBtnLabel').textContent  = 'All Years';
+    document.getElementById('monthBtnLabel').textContent = 'All Months';
+    filteredData = [...rawData];
+    renderDashboard();
+}
+
+function exportData() {
+    if (!filteredData.length) { alert('No data to export'); return; }
+    const cols = ['level2','level4','level5','hfType','year','month',
+                  'opd','suspected','totalTests','confirmed','actTreatment',
+                  'confirmedAndTreated','presumptiveTreatment','admissions','deaths'];
+    const csv = [cols.join(','),
+        ...filteredData.map(r => cols.map(c => r[c] ?? '').join(','))
+    ].join('\n');
+    const a = document.createElement('a');
+    a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+    a.download = 'malaria_data_' + new Date().toISOString().slice(0,10) + '.csv';
+    a.click();
+}
+
+// ── Multi-select helpers ──
+function toggleMultiDropdown(which) {
+    document.getElementById(which + 'Dropdown').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+    ['year','month'].forEach(w => {
+        const wrapper = document.getElementById(w + 'Wrapper');
+        if (wrapper && !wrapper.contains(e.target))
+            document.getElementById(w + 'Dropdown').classList.remove('open');
+    });
+});
+function updateMultiLabel(which, allLabel) {
+    const checks = [...document.querySelectorAll(`#${which}Dropdown input[type="checkbox"]:not(#${which}All):checked`)];
+    const btn    = document.getElementById(which + 'BtnLabel');
+    const allCb  = document.getElementById(which + 'All');
+    if (allCb.checked || checks.length === 0) btn.textContent = allLabel;
+    else if (checks.length === 1) btn.textContent = checks[0].parentElement.querySelector('label').textContent;
+    else btn.textContent = checks.length + ' selected';
+}
+function toggleAllYear(cb) {
+    if (cb.checked) document.querySelectorAll('#yearDropdown input:not(#yearAll)').forEach(c => c.checked = false);
+    updateMultiLabel('year','All Years'); applyFilters();
+}
+function toggleAllMonth(cb) {
+    if (cb.checked) document.querySelectorAll('#monthDropdown input:not(#monthAll)').forEach(c => c.checked = false);
+    updateMultiLabel('month','All Months'); applyFilters();
+}
+function onYearChange() {
+    const any = [...document.querySelectorAll('#yearDropdown input:not(#yearAll):checked')].length > 0;
+    document.getElementById('yearAll').checked = !any;
+    updateMultiLabel('year','All Years'); applyFilters();
+}
+function onMonthChange() {
+    const any = [...document.querySelectorAll('#monthDropdown input:not(#monthAll):checked')].length > 0;
+    document.getElementById('monthAll').checked = !any;
+    updateMultiLabel('month','All Months'); applyFilters();
+}
+
+
+function getTotals(data) {
+    const t = { opd:0, suspected:0, totalTests:0, confirmed:0, actTreatment:0,
+                confirmedAndTreated:0, presumptiveTreatment:0, admissions:0, deaths:0 };
+    data.forEach(r => {
+        t.opd               += r.opd               || 0;
+        t.suspected         += r.suspected         || 0;
+        t.totalTests        += r.totalTests        || 0;
+        t.confirmed         += r.confirmed         || 0;
+        t.actTreatment      += r.actTreatment      || 0;
+        t.confirmedAndTreated   += r.confirmedAndTreated   || 0;
+        t.presumptiveTreatment  += r.presumptiveTreatment  || 0;
+        t.admissions        += r.admissions        || 0;
+        t.deaths            += r.deaths            || 0;
+    });
+    return t;
+}
+
+function destroyChart(id) {
+    if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+}
+
+function exportData() {
+    if (!filteredData.length) { alert('No data to export'); return; }
+    const headers = ['level2','level4','level5','hfType','year','month',
+                     'opd','suspected','totalTests','confirmed','actTreatment',
+                     'confirmedAndTreated','presumptiveTreatment','admissions','deaths'];
+    const csv = [headers.join(',')];
+    filteredData.forEach(r => { csv.push(headers.map(h => r[h] ?? '').join(',')); });
+    const a = document.createElement('a');
+    a.href     = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv.join('\n'));
+    a.download = `malaria_data_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+}
+
+// ── Multi-select helpers ──────────────────────────────────────
+function toggleMultiDropdown(which) {
+    document.getElementById(which + 'Dropdown').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+    ['year','month'].forEach(w => {
+        const wrapper = document.getElementById(w + 'Wrapper');
+        if (wrapper && !wrapper.contains(e.target)) {
+            document.getElementById(w + 'Dropdown').classList.remove('open');
+        }
+    });
+});
+function updateMultiLabel(which, allLabel) {
+    const checks = [...document.querySelectorAll(`#${which}Dropdown input[type="checkbox"]:not(#${which}All):checked`)];
+    const allCb  = document.getElementById(which + 'All');
+    const btn    = document.getElementById(which + 'BtnLabel');
+    if (allCb.checked || checks.length === 0) btn.textContent = allLabel;
+    else if (checks.length === 1) btn.textContent = checks[0].parentElement.querySelector('label').textContent;
+    else btn.textContent = checks.length + ' selected';
+}
+function toggleAllYear(cb) {
+    if (cb.checked) document.querySelectorAll('#yearDropdown input[type="checkbox"]:not(#yearAll)').forEach(c => c.checked = false);
+    updateMultiLabel('year','All Years'); applyFilters();
+}
+function toggleAllMonth(cb) {
+    if (cb.checked) document.querySelectorAll('#monthDropdown input[type="checkbox"]:not(#monthAll)').forEach(c => c.checked = false);
+    updateMultiLabel('month','All Months'); applyFilters();
+}
+function onYearChange() {
+    const any = [...document.querySelectorAll('#yearDropdown input[type="checkbox"]:not(#yearAll):checked')].length > 0;
+    document.getElementById('yearAll').checked = !any;
+    updateMultiLabel('year','All Years'); applyFilters();
+}
+function onMonthChange() {
+    const any = [...document.querySelectorAll('#monthDropdown input[type="checkbox"]:not(#monthAll):checked')].length > 0;
+    document.getElementById('monthAll').checked = !any;
+    updateMultiLabel('month','All Months'); applyFilters();
+}
+
+
+        // ── Shared tooltip/plugin factories ─────────────────────
+
+        // Pie tooltip: "Label: 1,234 (56.7%)"
+        function pieOpts(colors) {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 14 } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                const val   = ctx.parsed;
+                                const pct   = total > 0 ? ((val / total) * 100).toFixed(1) : '0.0';
+                                return ' ' + ctx.label + ': ' + val.toLocaleString() + ' (' + pct + '%)';
+                            }
+                        }
+                    }
+                }
+            };
+        }
+
+        // Bar tooltip: "Count (X%)" where X% = share of dataset total
+        function barOpts(extraOpts) {
+            const base = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                const vals  = ctx.dataset.data;
+                                const total = vals.reduce((a, b) => a + (b || 0), 0);
+                                const val   = ctx.parsed.y !== undefined ? ctx.parsed.y : ctx.parsed.x;
+                                const pct   = total > 0 ? ((val / total) * 100).toFixed(1) : '0.0';
+                                return ' ' + val.toLocaleString() + ' (' + pct + '%)';
+                            }
+                        }
+                    }
+                }
+            };
+            return Object.assign({}, base, extraOpts || {});
+        }
+
+        // Line tooltip: plain count
+        function lineOpts(extraOpts) {
+            const base = {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true } },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                return ' ' + ctx.dataset.label + ': ' + (ctx.parsed.y || 0).toLocaleString();
+                            }
+                        }
+                    }
+                }
+            };
+            return Object.assign({}, base, extraOpts || {});
+        }
+
+        // Pill colours per facility type
+        const TYPE_COLORS = {
+            Hospital: { bg:'#1e3a5f', text:'#fff' },
+            Clinic:   { bg:'#17a2b8', text:'#fff' },
+            CHC:      { bg:'#6f42c1', text:'#fff' },
+            CHP:      { bg:'#28a745', text:'#fff' },
+            MCHP:     { bg:'#b8700a', text:'#fff' },
+        };
+
+        function renderFacTypeBar() {
+            const tc    = window._typeCounts   || {};
+            const total = window._totalAssessed || 0;
+            const bar   = document.getElementById('facTypeBar');
+            if (!bar) return;
+            bar.style.display = 'block';
+
+            document.getElementById('facTypeTotalBadge').textContent = total.toLocaleString();
+
+            const TYPES = ['Hospital','Clinic','CHC','CHP','MCHP'];
+
+            // Stacked proportion bar
+            const stackEl = document.getElementById('facTypeStackBar');
+            stackEl.innerHTML = '';
+            const wrap = document.createElement('div');
+            wrap.style.cssText = 'width:100%;';
+            const labelRow = document.createElement('div');
+            labelRow.style.cssText = 'display:flex;justify-content:space-between;margin-bottom:5px;';
+            labelRow.innerHTML = '<span style="font-size:10px;color:rgba(255,255,255,.5);font-weight:700;text-transform:uppercase;letter-spacing:.8px;">Proportion by type</span>'
+                               + '<span style="font-size:10px;color:rgba(255,255,255,.5);font-weight:700;">' + total.toLocaleString() + ' total</span>';
+            wrap.appendChild(labelRow);
+            const track = document.createElement('div');
+            track.style.cssText = 'display:flex;height:14px;border-radius:8px;overflow:hidden;width:100%;';
+            TYPES.forEach(t => {
+                const n   = tc[t] || 0;
+                const pct = total > 0 ? (n / total * 100) : 0;
+                if (!pct) return;
+                const seg = document.createElement('div');
+                seg.style.cssText = 'width:' + pct + '%;background:' + TYPE_COLORS[t].bg + ';';
+                seg.title = t + ': ' + n + ' (' + pct.toFixed(1) + '%)';
+                track.appendChild(seg);
+            });
+            wrap.appendChild(track);
+            stackEl.appendChild(wrap);
+
+            // Per-type card pills
+            const pillsEl = document.getElementById('facTypePills');
+            pillsEl.innerHTML = '';
+            TYPES.forEach((t, i) => {
+                const n   = tc[t] || 0;
+                const pct = total > 0 ? ((n / total) * 100).toFixed(1) : '0.0';
+                const c   = TYPE_COLORS[t];
+                const card = document.createElement('div');
+                card.style.cssText = 'flex:1;min-width:120px;padding:14px 18px;border-right:' + (i < TYPES.length-1 ? '1px solid #e3f2fd' : 'none') + ';';
+                card.innerHTML =
+                    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">'
+                  +   '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + c.bg + ';flex-shrink:0;"></span>'
+                  +   '<span style="font-size:11px;font-weight:800;color:#2c6693;text-transform:uppercase;letter-spacing:.6px;">' + t + '</span>'
+                  + '</div>'
+                  + '<div style="font-size:26px;font-weight:900;color:#1f4a6a;line-height:1;margin-bottom:3px;">' + n.toLocaleString() + '</div>'
+                  + '<div style="font-size:12px;font-weight:700;color:#2c6693;">' + pct + '% of total</div>';
+                pillsEl.appendChild(card);
+            });
+        }
+
+        function renderDashboard() {
+            document.getElementById('loadingIndicator').style.display = 'none';
+            document.getElementById('dashboardContent').style.display = 'block';
+            renderFacTypeBar();
+
+            const totals = getTotals(filteredData);
+            document.getElementById('totalOPD').innerHTML              = formatNumber(totals.opd);
+            document.getElementById('totalSuspected').innerHTML        = formatNumber(totals.suspected);
+            document.getElementById('totalTests').innerHTML            = formatNumber(totals.totalTests);
+            document.getElementById('totalConfirmed').innerHTML        = formatNumber(totals.confirmed);
+            document.getElementById('totalACT').innerHTML              = formatNumber(totals.actTreatment);
+            document.getElementById('totalConfirmedTreated').innerHTML = formatNumber(totals.confirmedAndTreated);
+            document.getElementById('totalPresumptive').innerHTML      = formatNumber(totals.presumptiveTreatment);
+            document.getElementById('totalAdmissions').innerHTML       = formatNumber(totals.admissions);
+            document.getElementById('totalDeaths').innerHTML           = formatNumber(totals.deaths);
+            document.getElementById('positivityRate').innerHTML        = calcPct(totals.confirmed, totals.totalTests) + '%';
+            document.getElementById('treatmentRate').innerHTML         = calcPct(totals.confirmedAndTreated, totals.actTreatment) + '%';
+            document.getElementById('confirmedTreatmentRate').innerHTML= calcPct(totals.confirmedAndTreated, totals.confirmed) + '%';
+            document.getElementById('presumptiveTreatmentRate').innerHTML = calcPct(totals.presumptiveTreatment, totals.actTreatment) + '%';
+            document.getElementById('cfrRate').innerHTML               = calcPct(totals.deaths, totals.admissions) + '%';
+
+            // Monthly aggregation
+            const monthly = {};
+            filteredData.forEach(r => {
+                const key = `${r.year}-${r.month}`;
+                if (!monthly[key]) monthly[key] = { opd:0, suspected:0, tests:0, confirmed:0, treatment:0, admissions:0, deaths:0 };
+                monthly[key].opd        += r.opd           || 0;
+                monthly[key].suspected  += r.suspected     || 0;
+                monthly[key].tests      += r.totalTests    || 0;
+                monthly[key].confirmed  += r.confirmed     || 0;
+                monthly[key].treatment  += r.actTreatment  || 0;
+                monthly[key].admissions += r.admissions    || 0;
+                monthly[key].deaths     += r.deaths        || 0;
+            });
+            const labels = Object.keys(monthly).sort();
+
+            // ── OPD ──────────────────────────────────────────────
+            let opdU5 = 0, opdO5 = 0;
+            filteredData.forEach(r => { opdU5 += r.opdUnder5 || 0; opdO5 += r.opdOver5 || 0; });
+
+            destroyChart('opdAgeChart');
+            charts.opdAgeChart = new Chart(document.getElementById('opdAgeChart'), {
+                type: 'pie',
+                data: { labels: ['Under 5', '5+ years'], datasets: [{ data: [opdU5, opdO5], backgroundColor: ['#2c6693', '#4a90c4'] }] },
+                options: pieOpts()
+            });
+
+            destroyChart('opdTrendChart');
+            charts.opdTrendChart = new Chart(document.getElementById('opdTrendChart'), {
+                type: 'line',
+                data: { labels, datasets: [{ label: 'OPD Visits', data: labels.map(l => monthly[l].opd), borderColor: '#2c6693', tension: 0.4, fill: true, borderWidth: 3 }] },
+                options: lineOpts()
+            });
+
+            destroyChart('opdCompChart');
+            charts.opdCompChart = new Chart(document.getElementById('opdCompChart'), {
+                type: 'bar',
+                data: { labels: ['Under 5', '5+ years'], datasets: [{ data: [opdU5, opdO5], backgroundColor: ['#2c6693', '#4a90c4'] }] },
+                options: barOpts()
+            });
+
+            const byDistrict = {};
+            filteredData.forEach(r => { if (r.level2) byDistrict[r.level2] = (byDistrict[r.level2] || 0) + (r.opd || 0); });
+            const districtSorted = Object.entries(byDistrict).sort((a, b) => b[1] - a[1]);
+            document.getElementById('opdRegionChart').parentElement.style.height = Math.max(350, districtSorted.length * 30) + 'px';
+            destroyChart('opdRegionChart');
+            charts.opdRegionChart = new Chart(document.getElementById('opdRegionChart'), {
+                type: 'bar',
+                data: { labels: districtSorted.map(d => d[0]), datasets: [{ data: districtSorted.map(d => d[1]), backgroundColor: '#2c6693' }] },
+                options: barOpts({ indexAxis: 'y' })
+            });
+
+            // ── Suspected ────────────────────────────────────────
+            let facSusp = 0, comSusp = 0;
+            filteredData.forEach(r => { facSusp += r.suspectedHF || 0; comSusp += r.suspectedCommunity || 0; });
+            destroyChart('suspectedLocationChart');
+            charts.suspectedLocationChart = new Chart(document.getElementById('suspectedLocationChart'), {
+                type: 'pie',
+                data: { labels: ['Health Facility', 'Community'], datasets: [{ data: [facSusp, comSusp], backgroundColor: ['#2c6693', '#4a90c4'] }] },
+                options: pieOpts()
+            });
+
+            let suspU5 = 0, susp5_14 = 0, susp15p = 0;
+            filteredData.forEach(r => {
+                suspU5   += (r.suspectedHF_U5    || 0) + (r.suspectedCom_U5    || 0);
+                susp5_14 += (r.suspectedHF_5_14  || 0) + (r.suspectedCom_5_14  || 0);
+                susp15p  += (r.suspectedHF_15plus || 0) + (r.suspectedCom_15plus|| 0);
+            });
+            destroyChart('suspectedAgeChart');
+            charts.suspectedAgeChart = new Chart(document.getElementById('suspectedAgeChart'), {
+                type: 'bar',
+                data: { labels: ['Under 5', '5-14 years', '15+ years'], datasets: [{ data: [suspU5, susp5_14, susp15p], backgroundColor: ['#fbbf24', '#f59e0b', '#d97706'] }] },
+                options: barOpts()
+            });
+
+            destroyChart('suspectedTrendChart');
+            charts.suspectedTrendChart = new Chart(document.getElementById('suspectedTrendChart'), {
+                type: 'line',
+                data: { labels, datasets: [{ label: 'Suspected Cases', data: labels.map(l => monthly[l].suspected), borderColor: '#fbbf24', tension: 0.4, fill: true, borderWidth: 3 }] },
+                options: lineOpts()
+            });
+
+            const suspByDistrict = {};
+            filteredData.forEach(r => { if (r.level2) suspByDistrict[r.level2] = (suspByDistrict[r.level2] || 0) + (r.suspected || 0); });
+            const suspDS = Object.entries(suspByDistrict).sort((a, b) => b[1] - a[1]);
+            document.getElementById('suspectedRegionChart').parentElement.style.height = Math.max(350, suspDS.length * 30) + 'px';
+            destroyChart('suspectedRegionChart');
+            charts.suspectedRegionChart = new Chart(document.getElementById('suspectedRegionChart'), {
+                type: 'bar',
+                data: { labels: suspDS.map(d => d[0]), datasets: [{ data: suspDS.map(d => d[1]), backgroundColor: '#fbbf24' }] },
+                options: barOpts({ indexAxis: 'y' })
+            });
+
+            // ── Testing ───────────────────────────────────────────
+            let rdtTests = 0, microTests = 0;
+            filteredData.forEach(r => { rdtTests += r.rdtTests || 0; microTests += r.microTests || 0; });
+            destroyChart('testMethodChart');
+            charts.testMethodChart = new Chart(document.getElementById('testMethodChart'), {
+                type: 'pie',
+                data: { labels: ['RDT Tests', 'Microscopy'], datasets: [{ data: [rdtTests, microTests], backgroundColor: ['#2c6693', '#4a90c4'] }] },
+                options: pieOpts()
+            });
+
+            let facTests = 0, comTests = 0;
+            filteredData.forEach(r => {
+                facTests += (r.rdtPosHF || 0) + (r.rdtNegHF || 0) + (r.microPos || 0) + (r.microNeg || 0);
+                comTests += (r.rdtPosCom || 0) + (r.rdtNegCom || 0);
+            });
+            destroyChart('testLocationChart');
+            charts.testLocationChart = new Chart(document.getElementById('testLocationChart'), {
+                type: 'bar',
+                data: { labels: ['Health Facility', 'Community'], datasets: [{ data: [facTests, comTests], backgroundColor: ['#2c6693', '#4a90c4'] }] },
+                options: barOpts()
+            });
+
+            let posTests = 0, negTests = 0;
+            filteredData.forEach(r => { posTests += r.confirmed || 0; negTests += (r.totalTests || 0) - (r.confirmed || 0); });
+            destroyChart('testResultsChart');
+            charts.testResultsChart = new Chart(document.getElementById('testResultsChart'), {
+                type: 'pie',
+                data: { labels: ['Positive', 'Negative'], datasets: [{ data: [posTests, negTests], backgroundColor: ['#d32f2f', '#4caf50'] }] },
+                options: pieOpts()
+            });
+
+            destroyChart('testTrendChart');
+            charts.testTrendChart = new Chart(document.getElementById('testTrendChart'), {
+                type: 'line',
+                data: { labels, datasets: [{ label: 'Total Tests', data: labels.map(l => monthly[l].tests), borderColor: '#2c6693', tension: 0.4, fill: true, borderWidth: 3 }] },
+                options: lineOpts()
+            });
+
+            // ── Confirmed ─────────────────────────────────────────
+            let confU5 = 0, conf5_14 = 0, conf15p = 0;
+            filteredData.forEach(r => {
+                confU5   += (r.rdtPosHF_U5    || 0) + (r.rdtPosCom_U5    || 0) + (r.microPos_U5    || 0);
+                conf5_14 += (r.rdtPosHF_5_14  || 0) + (r.rdtPosCom_5_14  || 0) + (r.microPos_5_14  || 0);
+                conf15p  += (r.rdtPosHF_15plus || 0) + (r.rdtPosCom_15plus|| 0) + (r.microPos_15plus|| 0);
+            });
+            destroyChart('confirmedAgeChart');
+            charts.confirmedAgeChart = new Chart(document.getElementById('confirmedAgeChart'), {
+                type: 'pie',
+                data: { labels: ['Under 5', '5-14 years', '15+ years'], datasets: [{ data: [confU5, conf5_14, conf15p], backgroundColor: ['#2c6693', '#4a90c4', '#87b5d9'] }] },
+                options: pieOpts()
+            });
+
+            let facConf = 0, comConf = 0;
+            filteredData.forEach(r => { facConf += (r.rdtPosHF || 0) + (r.microPos || 0); comConf += r.rdtPosCom || 0; });
+            destroyChart('confirmedLocationChart');
+            charts.confirmedLocationChart = new Chart(document.getElementById('confirmedLocationChart'), {
+                type: 'bar',
+                data: { labels: ['Health Facility', 'Community'], datasets: [{ data: [facConf, comConf], backgroundColor: ['#2c6693', '#4a90c4'] }] },
+                options: barOpts()
+            });
+
+            destroyChart('confirmedTrendChart');
+            charts.confirmedTrendChart = new Chart(document.getElementById('confirmedTrendChart'), {
+                type: 'line',
+                data: { labels, datasets: [{ label: 'Confirmed Cases', data: labels.map(l => monthly[l].confirmed), borderColor: '#d32f2f', tension: 0.4, fill: true, borderWidth: 3 }] },
+                options: lineOpts()
+            });
+
+            const confByDistrict = {};
+            filteredData.forEach(r => { if (r.level2) confByDistrict[r.level2] = (confByDistrict[r.level2] || 0) + (r.confirmed || 0); });
+            const confDS = Object.entries(confByDistrict).sort((a, b) => b[1] - a[1]);
+            document.getElementById('confirmedRegionChart').parentElement.style.height = Math.max(350, confDS.length * 30) + 'px';
+            destroyChart('confirmedRegionChart');
+            charts.confirmedRegionChart = new Chart(document.getElementById('confirmedRegionChart'), {
+                type: 'bar',
+                data: { labels: confDS.map(d => d[0]), datasets: [{ data: confDS.map(d => d[1]), backgroundColor: '#d32f2f' }] },
+                options: barOpts({ indexAxis: 'y' })
+            });
+
+            // ── Treatment ─────────────────────────────────────────
+            let under24 = 0, over24 = 0;
+            filteredData.forEach(r => { under24 += (r.actUnder24 || 0) + (r.actComUnder24 || 0); over24 += (r.actOver24 || 0) + (r.actComOver24 || 0); });
+            destroyChart('treatmentTimeChart');
+            charts.treatmentTimeChart = new Chart(document.getElementById('treatmentTimeChart'), {
+                type: 'pie',
+                data: { labels: ['Within 24hrs', 'After 24hrs'], datasets: [{ data: [under24, over24], backgroundColor: ['#4caf50', '#ff9800'] }] },
+                options: pieOpts()
+            });
+
+            const hfU24  = filteredData.reduce((s, r) => s + (r.actUnder24    || 0), 0);
+            const hfO24  = filteredData.reduce((s, r) => s + (r.actOver24     || 0), 0);
+            const comU24 = filteredData.reduce((s, r) => s + (r.actComUnder24 || 0), 0);
+            const comO24 = filteredData.reduce((s, r) => s + (r.actComOver24  || 0), 0);
+            destroyChart('treatmentAgeChart');
+            charts.treatmentAgeChart = new Chart(document.getElementById('treatmentAgeChart'), {
+                type: 'pie',
+                data: { labels: ['Health Facility', 'Community'], datasets: [{ data: [hfU24 + hfO24, comU24 + comO24], backgroundColor: ['#2c6693', '#4a90c4'] }] },
+                options: pieOpts()
+            });
+
+            destroyChart('treatmentLocationChart');
+            charts.treatmentLocationChart = new Chart(document.getElementById('treatmentLocationChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['HF < 24h', 'HF > 24h', 'Community < 24h', 'Community > 24h'],
+                    datasets: [{ data: [hfU24, hfO24, comU24, comO24], backgroundColor: ['#2c6693', '#4a90c4', '#4caf50', '#ff9800'] }]
+                },
+                options: barOpts()
+            });
+
+            destroyChart('treatmentTrendChart');
+            charts.treatmentTrendChart = new Chart(document.getElementById('treatmentTrendChart'), {
+                type: 'line',
+                data: { labels, datasets: [{ label: 'ACT Treatments', data: labels.map(l => monthly[l].treatment), borderColor: '#4caf50', tension: 0.4, fill: true, borderWidth: 3 }] },
+                options: lineOpts()
+            });
+
+            // ── Admissions ────────────────────────────────────────
+            let u5Adm = 0, age5_14Adm = 0, ov15Adm = 0;
+            filteredData.forEach(r => { u5Adm += r.admUnder5 || 0; age5_14Adm += r.adm5_14 || 0; ov15Adm += r.admOver15 || 0; });
+            destroyChart('admissionsAgeChart');
+            charts.admissionsAgeChart = new Chart(document.getElementById('admissionsAgeChart'), {
+                type: 'pie',
+                data: { labels: ['Under 5', '5-14 Years', '15+ Years'], datasets: [{ data: [u5Adm, age5_14Adm, ov15Adm], backgroundColor: ['#2c6693', '#4a90c4', '#87b5d9'] }] },
+                options: pieOpts()
+            });
+
+            destroyChart('admissionsTrendChart');
+            charts.admissionsTrendChart = new Chart(document.getElementById('admissionsTrendChart'), {
+                type: 'line',
+                data: { labels, datasets: [{ label: 'Admissions', data: labels.map(l => monthly[l].admissions), borderColor: '#2c6693', tension: 0.4, fill: true, borderWidth: 3 }] },
+                options: lineOpts()
+            });
+
+            const admByDistrict = {};
+            filteredData.forEach(r => { if (r.level2) admByDistrict[r.level2] = (admByDistrict[r.level2] || 0) + (r.admissions || 0); });
+            const admDS = Object.entries(admByDistrict).sort((a, b) => b[1] - a[1]);
+            document.getElementById('admissionsRegionChart').parentElement.style.height = Math.max(350, admDS.length * 30) + 'px';
+            destroyChart('admissionsRegionChart');
+            charts.admissionsRegionChart = new Chart(document.getElementById('admissionsRegionChart'), {
+                type: 'bar',
+                data: { labels: admDS.map(d => d[0]), datasets: [{ data: admDS.map(d => d[1]), backgroundColor: '#2c6693' }] },
+                options: barOpts({ indexAxis: 'y' })
+            });
+
+            // ── Deaths ────────────────────────────────────────────
+            let death1_59m = 0, death5_9y = 0, death10_14y = 0, deathAdult = 0;
+            filteredData.forEach(r => {
+                death1_59m  += r.deathChild_1_59m  || 0;
+                death5_9y   += r.deathChild_5_9y   || 0;
+                death10_14y += r.deathChild_10_14y || 0;
+                deathAdult  += r.deathAdult         || 0;
+            });
+            destroyChart('deathsAgeChart');
+            charts.deathsAgeChart = new Chart(document.getElementById('deathsAgeChart'), {
+                type: 'bar',
+                data: { labels: ['1-59 months', '5-9 years', '10-14 years', '15+ years'], datasets: [{ data: [death1_59m, death5_9y, death10_14y, deathAdult], backgroundColor: ['#d32f2f', '#e57373', '#ef9a9a', '#c62828'] }] },
+                options: barOpts()
+            });
+
+            let deathFemale = 0, deathMale = 0;
+            filteredData.forEach(r => { deathFemale += r.deathAdult_Female || 0; deathMale += r.deathAdult_Male || 0; });
+            destroyChart('deathsGenderChart');
+            charts.deathsGenderChart = new Chart(document.getElementById('deathsGenderChart'), {
+                type: 'pie',
+                data: { labels: ['Female', 'Male'], datasets: [{ data: [deathFemale, deathMale], backgroundColor: ['#ec4899', '#3b82f6'] }] },
+                options: pieOpts()
+            });
+
+            destroyChart('deathsTrendChart');
+            charts.deathsTrendChart = new Chart(document.getElementById('deathsTrendChart'), {
+                type: 'line',
+                data: { labels, datasets: [{ label: 'Deaths', data: labels.map(l => monthly[l].deaths), borderColor: '#d32f2f', tension: 0.4, fill: true, borderWidth: 3 }] },
+                options: lineOpts()
+            });
+
+            const deathByDistrict = {};
+            filteredData.forEach(r => { if (r.level2) deathByDistrict[r.level2] = (deathByDistrict[r.level2] || 0) + (r.deaths || 0); });
+            const deathDS = Object.entries(deathByDistrict).sort((a, b) => b[1] - a[1]);
+            document.getElementById('deathsRegionChart').parentElement.style.height = Math.max(350, deathDS.length * 30) + 'px';
+            destroyChart('deathsRegionChart');
+            charts.deathsRegionChart = new Chart(document.getElementById('deathsRegionChart'), {
+                type: 'bar',
+                data: { labels: deathDS.map(d => d[0]), datasets: [{ data: deathDS.map(d => d[1]), backgroundColor: '#d32f2f' }] },
+                options: barOpts({ indexAxis: 'y' })
+            });
+        }
+    </script>
+</body>
+</html>
