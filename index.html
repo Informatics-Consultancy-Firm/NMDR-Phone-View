@@ -374,9 +374,9 @@
                     </div>
                 </div>
 
-                <!-- 1.0.2 Malaria EPI -->
+                <!-- 1.0.2 Malaria Epi -->
                 <button class="nav-child nav-l1-toggle" id="malariaEpiToggle" onclick="toggleNestedGroup('malariaEpiChildren','malariaEpiChevron','malariaEpiToggle',event)">
-                    <span>1.0.2 Malaria EPI</span>
+                    <span>1.0.2 Malaria Epi</span>
                     <svg id="malariaEpiChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <div id="malariaEpiChildren" style="overflow:hidden;max-height:0;transition:max-height .3s ease;">
@@ -386,7 +386,7 @@
                     </button>
                     <div id="hmisChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;">
                         <button class="nav-child nav-l3" data-tab="hmis-extraction">1.0.2.1.1 Data Extraction</button>
-                        <button class="nav-child nav-l3" data-tab="hmis-epi-dashboard">1.0.2.1.2 Malaria EPI Dashboard</button>
+                        <button class="nav-child nav-l3" data-tab="hmis-epi-dashboard">1.0.2.1.2 Malaria Epi Dashboard</button>
                     </div>
                     <button class="nav-child nav-l2-toggle" id="eidsrToggle" onclick="toggleNestedGroup('eidsrChildren','eidsrChevron','eidsrToggle',event)">
                         <span>1.0.2.2 eIDSR (Weekly)</span>
@@ -619,13 +619,11 @@
     <div id="me-comp-u5"      class="tab-content"><div id="me-comp-u5-wrap"      class="me-detail-wrap"></div></div>
     <div id="me-comp-allages" class="tab-content"><div id="me-comp-allages-wrap" class="me-detail-wrap"></div></div>
 
-    <!-- 1.0.2 MALARIA EPI — HMIS (Monthly) -->
+    <!-- 1.0.2 Malaria Epi — HMIS (Monthly) -->
     <div id="hmis-extraction" class="tab-content">
         <div class="iframe-pane"><iframe id="frame-hmis-extraction" src="" data-src="hmis_extraction.html" loading="lazy" allow="fullscreen"></iframe></div>
     </div>
-    <div id="hmis-epi-dashboard" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-hmis-epi-dashboard" src="" data-src="mal_epi.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
+    <div id="hmis-epi-dashboard" class="tab-content"><div id="hmis-epi-dashboard-wrap" class="me-detail-wrap"></div></div>
     <!-- 1.0.2.2 eIDSR (Weekly) sub-tabs -->
     <div id="eidsr-extraction" class="tab-content">
         <div class="iframe-pane"><iframe id="frame-eidsr-extraction" src="" data-src="eidsr_extraction.html" loading="lazy" allow="fullscreen"></iframe></div>
@@ -777,7 +775,7 @@
         <div style="display:flex;gap:0;background:var(--white);border-radius:10px 10px 0 0;border:2px solid var(--border);border-bottom:none;overflow:hidden;margin-bottom:0;">
             <button id="adminTabAuto" onclick="switchAdminTab('auto')"
                 style="flex:1;padding:14px 20px;background:#004080;color:#fff;border:none;font-family:'Roboto',sans-serif;font-size:14px;font-weight:700;letter-spacing:.5px;cursor:pointer;border-right:2px solid rgba(255,255,255,0.2);transition:all .2s;">
-                &#9881; EPI AUTOMATION
+                &#9881; Epi AUTOMATION
             </button>
             <button id="adminTabDqa" onclick="switchAdminTab('dqa')"
                 style="flex:1;padding:14px 20px;background:rgba(0,0,0,0.04);color:#666;border:none;font-family:'Roboto',sans-serif;font-size:14px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .2s;">
@@ -995,7 +993,7 @@ function loadMeDqa() {
 ════════════════════════════════════════════ */
 var pageLabelMap = {
     'welcome':'Welcome','me-dqa':'M&E · DQA',
-    'me-summary-epi':'Detailed · Malaria EPI (Summary)',
+    'me-summary-epi':'Detailed · Malaria Epi (Summary)',
     'me-summary-int':'Detailed · Intervention (Summary)',
     'me-summary-stock':'Detailed · Stock (Summary)',
     'med-suspected':'Key Data · Fever Suspected Malaria',
@@ -1014,7 +1012,7 @@ var pageLabelMap = {
     'me-comp-u5':'Comparative · Under 5',
     'me-comp-allages':'Comparative · All Ages',
     'hmis-extraction':'HMIS · Data Extraction',
-    'hmis-epi-dashboard':'HMIS · EPI Dashboard',
+    'hmis-epi-dashboard':'HMIS · Epi Dashboard',
     'eidsr-extraction':'eIDSR · Data Extraction',
     'eidsr-dashboard':'eIDSR · Dashboard',
     'tes-data':'TES · Data',
@@ -1181,7 +1179,9 @@ var MED_DRIVE_KEYS = {
     // Summary Dashboard
     'me-summary-epi':   'malaria_epi.html',
     'me-summary-int':   'intervention.html',
-    'me-summary-stock': 'stock.html'
+    'me-summary-stock': 'stock.html',
+    // Malaria Epi Dashboard (HMIS) — reads from Drive
+    'hmis-epi-dashboard': 'malaria_dashboard.html'
 };
 
 var _medDriveCache   = null;
@@ -1342,7 +1342,7 @@ async function dvPushToDashboard(){
     const tprYears=(typeof da_tprState!=='undefined'&&da_tprState.config)?da_tprState.config.years||[]:[];
     tprYears.forEach(yr=>{const cv=document.getElementById('da_tprCanvas_'+yr);if(cv&&cv.width>0)files['tpr_'+yr+'.png']=cv.toDataURL('image/png');});
     if(!Object.keys(files).length){dvStatus('&#9888; No charts ready. Run a pipeline first.','#856404');return;}
-    const rsTitle=document.getElementById('da_rsChartTitle')?.value||'NMCP Malaria EPI Reporting Status';
+    const rsTitle=document.getElementById('da_rsChartTitle')?.value||'NMCP Malaria Epi Reporting Status';
     const rsPeriod=(typeof da_rsState!=='undefined'&&da_rsState.config)?da_rsState.config.start+' → '+da_rsState.config.end:'';
     const tprPeriod=(typeof da_tprState!=='undefined'&&da_tprState.config)?da_tprState.config.start+' → '+da_tprState.config.end:'';
     const period=[rsPeriod,tprPeriod].filter(Boolean).join(' | ');
