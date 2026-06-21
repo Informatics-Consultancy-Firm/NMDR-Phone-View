@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NMCP Tested Malaria Cases — Age Disaggregation · ICF-SL</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --blue:#2c6793;--blue-dk:#1f4a6a;--blue-lt:#e8f0f7;
+  --white:#ffffff;--bg:#f0f5f9;--border:#d0dde8;--muted:#6c7a89;
+  --gold:#ffc107;--green:#28a745;--teal:#17a2b8;--red:#dc3545;
+  --age0:#1EB53A;--age1:#FFFFFF;--age2:#0072C6;
+}
+html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans-serif;background:var(--bg);}
+
+.page-header{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-dk) 100%);color:#fff;padding:22px 32px;box-shadow:0 2px 12px rgba(0,0,0,.18);}
+.header-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.logo-box{background:#fff;border-radius:8px;padding:6px 10px;display:flex;align-items:center;justify-content:center;}
+.logo-box img{width:80px;height:auto;border-radius:4px;}
+.header-text h1{font-size:20px;font-weight:700;letter-spacing:.5px;margin-bottom:2px;}
+.header-text p{font-size:12px;opacity:.85;}
+
+.page-body{max-width:1400px;margin:0 auto;padding:24px 28px;}
+
+.card{background:var(--white);border-radius:12px;border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:22px;overflow:hidden;}
+.card-head{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border);}
+.card-head h2{font-size:15px;font-weight:700;color:var(--blue-dk);letter-spacing:.3px;}
+.card-body{padding:20px;}
+
+.cfg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:16px;}
+.form-group label{display:block;font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;}
+.form-control{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;color:#222;background:#fff;transition:border-color .2s;}
+.form-control:focus{outline:none;border-color:var(--blue);}
+
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.4px;transition:all .2s;text-transform:uppercase;}
+.btn-primary{background:var(--blue);color:#fff;} .btn-primary:hover{background:var(--blue-dk);}
+.btn-gold{background:var(--gold);color:#000;} .btn-gold:hover{background:#e0a800;}
+.btn-green{background:var(--green);color:#fff;} .btn-green:hover{background:#1e7e34;}
+.btn-teal{background:var(--teal);color:#fff;} .btn-teal:hover{background:#138496;}
+.btn-outline{background:#fff;color:var(--blue);border:1.5px solid var(--blue);} .btn-outline:hover{background:var(--blue-lt);}
+.btn-sm{padding:6px 12px;font-size:11px;}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+
+/* ── CONFIG SCREEN (Dashboard-style) ── */
+#configScreen { padding: 20px 0; }
+.cfg-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.cfg-how {
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 16px;
+  padding: 24px 28px;
+  background: var(--blue-lt);
+  border-color: var(--border);
+}
+.cfg-how-title {
+  font-size: 11px; font-weight: 800; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 1.4px; margin-bottom: 18px;
+}
+.cfg-steps { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.cfg-step  { display: flex; gap: 14px; align-items: flex-start; }
+.cfg-step-num {
+  min-width: 30px; height: 30px; border-radius: 50%;
+  background: var(--blue); color: #fff;
+  font-size: 13px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.cfg-step-head { font-size: 13px; font-weight: 800; color: var(--blue-dk); margin-bottom: 3px; }
+.cfg-step-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
+
+.cfg-form {
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px 28px;
+  box-shadow: 0 4px 20px rgba(44,103,147,.12);
+  border: 1px solid var(--border);
+}
+.cfg-form-title {
+  font-size: 14px; font-weight: 800; color: var(--blue);
+  letter-spacing: 1.5px; text-transform: uppercase;
+  text-align: center; margin-bottom: 6px;
+}
+.cfg-form-sub { font-size: 12px; color: var(--muted); text-align: center; margin-bottom: 22px; }
+.cfg-months { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.cfg-input { width: 100%; font-size: 15px; font-weight: 700; color: var(--blue-dk); padding: 12px 14px; }
+.cfg-run-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--blue), var(--blue-dk));
+  color: #fff; border: none; padding: 16px;
+  border-radius: 10px; font-size: 16px; font-weight: 800;
+  cursor: pointer; letter-spacing: .5px;
+  box-shadow: 0 4px 14px rgba(44,102,147,.3);
+  transition: transform .2s;
+}
+.cfg-run-btn:hover  { transform: translateY(-2px); }
+.cfg-run-btn:active { transform: translateY(0); }
+.cfg-credit { text-align: center; margin-top: 14px; font-size: 11px; color: var(--muted); }
+
+.age-legend{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:8px 14px;background:var(--blue-lt);border-radius:8px;border:1.5px solid var(--border);margin-top:16px;}
+.age-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;}
+.age-swatch{width:20px;height:14px;border-radius:3px;border:1px solid rgba(0,0,0,.15);}
+
+@media (min-width: 640px) {
+  .cfg-wrap { flex-direction: row; align-items: flex-start; }
+  .cfg-how  { flex: 1.6; }
+  .cfg-form { flex: 0.8; }
+}
+@media (max-width: 639px) {
+  .cfg-wrap { padding: 0 4px; flex-direction: column; max-width: 100%; }
+  .cfg-steps { grid-template-columns: 1fr; }
+  .cfg-months { grid-template-columns: 1fr; gap: 12px; }
+}
+
+/* ── PROGRESS ── */
+.progress-panel{border:2px solid var(--blue);border-radius:8px;overflow:hidden;margin-bottom:16px;}
+.progress-head{background:var(--blue);color:#fff;padding:10px 16px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.progress-body{padding:14px;background:#0d1117;}
+.pbar-wrap{height:8px;background:#1a1a2e;border-radius:4px;overflow:hidden;margin:10px 0;}
+.pbar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));border-radius:4px;transition:width .35s;}
+.step-list{display:flex;flex-direction:column;gap:5px;max-height:220px;overflow-y:auto;}
+.step-item{display:flex;align-items:flex-start;gap:9px;padding:6px 10px;border-radius:5px;font-size:11px;font-family:'Courier New',monospace;}
+.step-item.pending{background:#1a1a2e;color:#555;}
+.step-item.running{background:#1a2e4a;color:var(--teal);animation:pulse 1.4s ease-in-out infinite;}
+.step-item.done{background:#0a2e0a;color:var(--green);}
+.step-item.error{background:#2e0a0a;color:var(--red);}
+.step-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:2px;}
+.step-item.pending .step-dot{background:#555;}
+.step-item.running .step-dot{background:var(--teal);}
+.step-item.done .step-dot{background:var(--green);}
+.step-item.error .step-dot{background:var(--red);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+
+.stats-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;}
+.stat-pill{background:var(--blue-lt);border:1.5px solid var(--blue);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;color:var(--blue);}
+.stat-pill.ok{background:#d4edda;border-color:var(--green);color:#155724;}
+.stat-pill.warn{background:#fff3cd;border-color:var(--gold);color:#856404;}
+.stat-pill.age0{background:rgba(30,181,58,.12);border-color:var(--age0);color:#0a4a1a;}
+.stat-pill.age1{background:#e8f8f5;border-color:#2ecc71;color:#1a6644;}
+.stat-pill.age2{background:rgba(0,114,198,.12);border-color:var(--age2);color:#00306e;}
+
+.tab-nav{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
+.tab-btn{padding:10px 20px;background:transparent;border:none;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;font-family:inherit;}
+.tab-btn:hover{color:var(--blue);background:var(--blue-lt);}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);background:var(--blue-lt);}
+.tab-pane{display:none;} .tab-pane.active{display:block;}
+
+.collap{border:2px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:14px;}
+.collap-head{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;cursor:pointer;background:var(--blue-lt);border-bottom:1px solid var(--border);user-select:none;}
+.collap-head:hover{background:#dfe9f3;}
+.collap-head h3{font-size:13px;font-weight:700;color:var(--blue-dk);}
+.collap-chev{transition:transform .25s;color:var(--blue);font-size:16px;font-weight:700;}
+.collap-body{padding:16px;background:#fff;}
+.collap-body.hidden{display:none;}
+
+.canvas-wrap{position:relative;width:100%;padding-top:100%;background:#ffffff;border-radius:6px;overflow:hidden;}
+.canvas-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;}
+.map-panel{border:2px solid var(--border);border-radius:8px;overflow:hidden;}
+.map-panel-head{padding:8px 12px;font-size:11px;font-weight:700;text-align:center;letter-spacing:.5px;color:#fff;}
+.maps-3col{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;}
+@media(max-width:860px){.maps-3col{grid-template-columns:1fr;}}
+
+.legend-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:var(--blue-lt);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:12px;}
+.legend-title{font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-right:4px;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#2c4b62;}
+.legend-sw{width:18px;height:13px;border-radius:2px;border:1px solid #aaa;flex-shrink:0;}
+
+#rsTooltip{position:fixed;background:rgba(10,20,40,.93);color:#fff;border-radius:7px;padding:9px 13px;font-size:12px;pointer-events:none;z-index:99999;display:none;max-width:260px;line-height:1.6;box-shadow:0 4px 14px rgba(0,0,0,.3);font-family:'Segoe UI',Arial,sans-serif;}
+#rsTooltip strong{color:var(--gold);font-size:13px;display:block;margin-bottom:3px;}
+
+#mapPaletteGrid{display:flex;flex-wrap:wrap;gap:6px;}
+
+.alert{padding:11px 16px;border-radius:6px;margin-bottom:12px;font-size:13px;border:1.5px solid;}
+.alert-info{background:var(--blue-lt);border-color:var(--blue);color:var(--blue-dk);}
+.alert-warn{background:#fff3cd;border-color:var(--gold);color:#856404;}
+.alert-err{background:#f8d7da;border-color:var(--red);color:#721c24;}
+
+.data-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);}
+.data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-table thead{background:var(--blue-lt);border-bottom:2px solid var(--border);}
+.data-table th{padding:10px 12px;text-align:left;font-weight:700;color:var(--blue);white-space:nowrap;}
+.data-table td{padding:9px 12px;border-bottom:1px solid var(--border);color:#2c4b62;}
+.data-table tbody tr:last-child td{border-bottom:none;}
+.data-table tbody tr:hover{background:var(--blue-lt);}
+
+.month-map-card{background:#fff;border-radius:8px;border:1.5px solid var(--border);overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.07);}
+.month-map-card.blank{background:#f5f7fa;border-style:dashed;border-color:#c8d5e0;}
+.month-map-card .mmhead{padding:6px 10px;font-size:11px;font-weight:700;letter-spacing:.5px;text-align:center;text-transform:uppercase;}
+.month-map-card .mmhead.active{background:var(--blue);color:#fff;font-weight:800;}
+.month-map-card .mmhead.blank-head{background:#e4ecf4;color:#8899aa;}
+.month-map-card .mm-canvas-wrap{position:relative;width:100%;padding-top:100%;background:#ffffff;}
+.month-map-card .mm-canvas-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;}
+.month-map-card .mm-blank-body{padding:20px 10px;text-align:center;color:#aabbc9;font-size:12px;}
+.month-map-card .mm-legend{padding:5px 8px;background:#f8fbff;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:3px 8px;align-items:center;}
+.mm-leg-item{display:flex;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#3a5068;white-space:nowrap;}
+.mm-leg-sw{width:12px;height:9px;border-radius:1px;border:1px solid rgba(0,0,0,.15);flex-shrink:0;}
+@media(max-width:900px){#monthlyMapsGrid{grid-template-columns:repeat(3,1fr)!important;}}
+@media(max-width:600px){#monthlyMapsGrid{grid-template-columns:repeat(2,1fr)!important;}}
+
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted);border:2px dashed var(--border);border-radius:8px;}
+
+.trk-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--blue-lt);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;}
+.trk-search{flex:1;min-width:180px;max-width:300px;}
+.trk-district{border:1.5px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden;background:#fff;}
+.trk-dist-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#e8f0f8;color:#1a2e3d;cursor:pointer;user-select:none;gap:10px;border-bottom:2px solid var(--blue);}
+.trk-dist-head:hover{background:var(--blue-dk);}
+.trk-dist-name{font-size:13px;font-weight:700;letter-spacing:.3px;}
+.trk-dist-pills{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.trk-dist-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(44,103,147,.12);color:#1a2e3d;white-space:nowrap;border:1px solid rgba(44,103,147,.2);}
+.trk-dist-chev{font-size:14px;transition:transform .2s;flex-shrink:0;}
+.trk-dist-body{display:none;padding:10px 12px;background:#f8fbff;}
+.trk-dist-body.open{display:block;}
+.trk-chiefdom{border:1px solid var(--border);border-radius:6px;margin-bottom:6px;overflow:hidden;background:#fff;}
+.trk-chief-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:#e8f0f7;cursor:pointer;user-select:none;gap:8px;}
+.trk-chief-head:hover{background:#d5e3f0;}
+.trk-chief-name{font-size:12px;font-weight:700;color:var(--blue-dk);}
+.trk-chief-pills{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
+.trk-chief-pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:9px;white-space:nowrap;background:var(--blue-lt);color:var(--blue);border:1px solid var(--border);}
+.trk-chief-chev{font-size:12px;transition:transform .2s;color:var(--blue);flex-shrink:0;}
+.trk-chief-body{display:none;padding:8px 12px;background:#fff;}
+.trk-chief-body.open{display:block;}
+.trk-fac-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:5px;}
+.trk-fac{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:5px;font-size:11px;font-weight:600;border:1px solid var(--border);background:#f8fbff;}
+.trk-fac-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--blue-dk);}
+.trk-fac-ages{display:flex;gap:4px;margin-left:auto;}
+.trk-age-badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px;white-space:nowrap;}
+.trk-age-badge.a0{background:#fde8e0;color:#7a2800;border:1px solid #e8a07a;}
+.trk-age-badge.a1{background:#ddeeff;color:#0d4080;border:1px solid #7ab4e8;}
+.trk-age-badge.a2{background:#d6f0de;color:#1a5e2a;border:1px solid #7ac49a;}
+.trk-empty{text-align:center;color:var(--muted);padding:20px;font-size:12px;}
+.trk-period-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:14px;flex-wrap:wrap;overflow-x:auto;}
+.trk-period-btn{padding:7px 16px;background:transparent;border:none;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;font-family:inherit;white-space:nowrap;}
+.trk-period-btn:hover{color:var(--blue);background:var(--blue-lt);}
+.trk-period-btn.active{color:var(--blue);border-bottom-color:var(--blue);background:var(--blue-lt);}
+
+.page-footer{background:var(--blue-dk);color:rgba(255,255,255,.8);text-align:center;padding:14px;font-size:11px;margin-top:28px;}
+
+@media (max-width: 480px) {
+  .page-header { padding: 14px 16px; }
+  .header-text h1 { font-size: 15px; }
+  .page-body { padding: 12px 10px; }
+  .card-body { padding: 14px 12px; }
+  .btn { padding: 8px 12px; font-size: 11px; }
+  .tab-btn { padding: 8px 12px; font-size: 12px; }
+  .maps-3col { grid-template-columns: 1fr !important; }
+  .trk-fac-grid { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 768px) {
+  .page-body { padding: 16px 14px; }
+  .maps-3col { grid-template-columns: 1fr !important; }
+  .cfg-grid { grid-template-columns: 1fr 1fr; }
+  .tab-nav { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+  .tab-btn { white-space: nowrap; flex-shrink: 0; }
+  #monthlyMapsGrid { grid-template-columns: repeat(3,1fr) !important; }
+  .trk-fac-grid { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 1024px) {
+  .maps-3col { grid-template-columns: 1fr 1fr !important; }
+}
+@media (pointer: coarse) {
+  .btn { min-height: 40px; }
+  .tab-btn { min-height: 40px; }
+  .form-control { min-height: 40px; font-size: 16px; }
+  select.form-control { font-size: 16px; }
+}
+canvas { max-width: 100%; display: block; }
+</style>
+</head>
+<body>
+
+<div id="rsTooltip"></div>
+
+<!-- ═══ HEADER ═══ -->
+<div class="page-header">
+  <div class="header-row">
+    <div class="logo-box">
+      <img src="https://github.com/mohamedsillahkanu/gdp-dashboard-2/raw/6c7463b0d5c3be150aafae695a4bcbbd8aeb1499/ICF-SL.jpg" alt="ICF-SL">
+    </div>
+    <div class="header-text">
+      <h1>Tested Malaria Cases — Age Disaggregation Tool</h1>
+      <p>National Malaria Control Programme · Sierra Leone · ICF-SL</p>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;">
+      <span id="headerPill" style="background:rgba(255,255,255,.15);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.5px;">Ready</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BODY ═══ -->
+<div class="page-body">
+
+  <!-- ══════════════════════════════════════════════════
+       SCREEN 1 — CONFIG  (Dashboard-style two-panel)
+  ══════════════════════════════════════════════════ -->
+  <div id="configScreen">
+    <div id="cfgAlertBox" style="margin-bottom:12px;"></div>
+    <div class="cfg-wrap">
+
+      <!-- ── How It Works ── -->
+      <div class="cfg-how">
+        <div class="cfg-how-title">How It Works</div>
+        <div class="cfg-steps">
+
+          <div class="cfg-step">
+            <div class="cfg-step-num">1</div>
+            <div>
+              <div class="cfg-step-head">Fetch Facility Registry</div>
+              <div class="cfg-step-desc">Loads all Level-5 org units from DHIS2 with district and chiefdom hierarchy. Each facility is classified by name suffix into one of 5 assessed types. All other types are excluded.</div>
+              <table style="width:100%;border-collapse:collapse;margin-top:7px;font-size:10px;">
+                <thead><tr style="background:rgba(44,103,147,.12);">
+                  <th style="padding:4px 7px;text-align:left;color:var(--blue);font-weight:800;letter-spacing:.4px;">Type</th>
+                  <th style="padding:4px 7px;text-align:left;color:var(--blue);font-weight:800;letter-spacing:.4px;">Level</th>
+                </tr></thead>
+                <tbody>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;color:#1e3a5f;">Hospital</td><td style="padding:3px 7px;color:var(--muted);">Level 5</td></tr>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;color:#17a2b8;">Clinic</td><td style="padding:3px 7px;color:var(--muted);">Level 5</td></tr>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;color:#6f42c1;">CHC</td><td style="padding:3px 7px;color:var(--muted);">Level 5</td></tr>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;color:#28a745;">CHP</td><td style="padding:3px 7px;color:var(--muted);">Level 5</td></tr>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;color:#b8700a;">MCHP</td><td style="padding:3px 7px;color:var(--muted);">Level 5</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="cfg-step">
+            <div class="cfg-step-num">2</div>
+            <div>
+              <div class="cfg-step-head">Data Elements and Datasets</div>
+              <div class="cfg-step-desc">Four data elements are queried — RDT and Microscopy for facility, RDT for community. Each has 3 category option combos (COCs) representing the 3 age groups. Microscopy is excluded for CHP and MCHP.</div>
+              <table style="width:100%;border-collapse:collapse;margin-top:7px;font-size:10px;">
+                <thead><tr style="background:rgba(44,103,147,.12);">
+                  <th style="padding:4px 7px;text-align:left;color:var(--blue);font-weight:800;">Source</th>
+                  <th style="padding:4px 7px;text-align:left;color:var(--blue);font-weight:800;">Dataset</th>
+                  <th style="padding:4px 7px;text-align:left;color:var(--blue);font-weight:800;">DE UID</th>
+                </tr></thead>
+                <tbody>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;">Facility RDT Pos</td><td style="padding:3px 7px;color:var(--muted);">HF01 Outpatient Morbidity</td><td style="padding:3px 7px;font-family:monospace;color:#1f4a6a;font-size:9px;">p6zQLDFjSfd</td></tr><tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;">Facility RDT Neg</td><td style="padding:3px 7px;color:var(--muted);">HF01 Outpatient Morbidity</td><td style="padding:3px 7px;font-family:monospace;color:#1f4a6a;font-size:9px;">mXS2g1AiPsS</td></tr><tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;">Facility Micro Pos</td><td style="padding:3px 7px;color:var(--muted);">HF01 (excl. CHP/MCHP)</td><td style="padding:3px 7px;font-family:monospace;color:#1f4a6a;font-size:9px;">Sz13vbo2Qwh</td></tr><tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;">Facility Micro Neg</td><td style="padding:3px 7px;color:var(--muted);">HF01 (excl. CHP/MCHP)</td><td style="padding:3px 7px;font-family:monospace;color:#1f4a6a;font-size:9px;">Rijj3Fp9ksg</td></tr>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;">Community RDT Pos</td><td style="padding:3px 7px;color:var(--muted);">HF04 Community Based Services</td><td style="padding:3px 7px;font-family:monospace;color:#1f4a6a;font-size:9px;">T7xH8GwWpEM</td></tr><tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;">Community RDT Neg</td><td style="padding:3px 7px;color:var(--muted);">HF04 Community Based Services</td><td style="padding:3px 7px;font-family:monospace;color:#1f4a6a;font-size:9px;">YWvx4zYdp92</td></tr>
+                </tbody>
+              </table>
+              <table style="width:100%;border-collapse:collapse;margin-top:5px;font-size:10px;">
+                <thead><tr style="background:rgba(44,103,147,.08);">
+                  <th style="padding:4px 7px;text-align:left;color:var(--blue);font-weight:800;">Age Group</th>
+                  <th style="padding:4px 7px;text-align:left;color:var(--blue);font-weight:800;">Facility COC</th>
+                  <th style="padding:4px 7px;text-align:left;color:var(--blue);font-weight:800;">Community COC</th>
+                </tr></thead>
+                <tbody>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;color:var(--age0);">0 to 59 months</td><td style="padding:3px 7px;font-family:monospace;font-size:9px;color:var(--muted);">m5T8uBNB8aN</td><td style="padding:3px 7px;font-family:monospace;font-size:9px;color:var(--muted);">NtjMVmRfvHH</td></tr>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;color:var(--age1);">5 to 14 years</td><td style="padding:3px 7px;font-family:monospace;font-size:9px;color:var(--muted);">j7j6iaknOFn</td><td style="padding:3px 7px;font-family:monospace;font-size:9px;color:var(--muted);">qDXW7WMLT99</td></tr>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;color:var(--age2);">15 years and above</td><td style="padding:3px 7px;font-family:monospace;font-size:9px;color:var(--muted);">zK1aiw8zFac</td><td style="padding:3px 7px;font-family:monospace;font-size:9px;color:var(--muted);">mdjRPpvLKdu</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="cfg-step">
+            <div class="cfg-step-num">3</div>
+            <div>
+              <div class="cfg-step-head">Analytics Query</div>
+              <div class="cfg-step-desc">All 12 de.coc pairs are sent (4 DEs × 3 age COCs each) in a single <code>dx</code> dimension with periods batched at 24 and <code>ou:LEVEL-5</code> covering all facilities in one request. Level-6 CHW and ETR records are automatically rolled up to their Level-5 MCHP parent.</div>
+              <table style="width:100%;border-collapse:collapse;margin-top:7px;font-size:10px;">
+                <thead><tr style="background:rgba(44,103,147,.12);">
+                  <th style="padding:4px 7px;text-align:left;color:var(--blue);font-weight:800;">Parameter</th>
+                  <th style="padding:4px 7px;text-align:left;color:var(--blue);font-weight:800;">Value</th>
+                </tr></thead>
+                <tbody>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;">Endpoint</td><td style="padding:3px 7px;font-family:monospace;font-size:9px;color:var(--muted);">/api/analytics.json</td></tr>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;">dimension dx</td><td style="padding:3px 7px;color:var(--muted);">6 de.coc pairs (facility + community)</td></tr>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;">dimension pe</td><td style="padding:3px 7px;color:var(--muted);">Selected months (batched at 24)</td></tr>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;">dimension ou</td><td style="padding:3px 7px;font-family:monospace;font-size:9px;color:var(--muted);">LEVEL-5</td></tr>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;">API calls</td><td style="padding:3px 7px;color:var(--muted);">Typically 1 to 2 per run</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="cfg-step">
+            <div class="cfg-step-num">4</div>
+            <div>
+              <div class="cfg-step-head">Proportion Computation</div>
+              <div class="cfg-step-desc">For each facility and month, age proportions are derived from the raw counts. The same computation applies at chiefdom, district and national levels for both facility and community sources.</div>
+              <table style="width:100%;border-collapse:collapse;margin-top:7px;font-size:10px;">
+                <thead><tr style="background:rgba(44,103,147,.12);">
+                  <th style="padding:4px 7px;text-align:left;color:var(--blue);font-weight:800;">Indicator</th>
+                  <th style="padding:4px 7px;text-align:left;color:var(--blue);font-weight:800;">Source</th>
+                  <th style="padding:4px 7px;text-align:left;color:var(--blue);font-weight:800;">Formula</th>
+                </tr></thead>
+                <tbody>
+                  <tr style="border-top:1px solid var(--border);background:rgba(30,181,58,.08);"><td style="padding:3px 7px;font-weight:700;color:var(--age0);">% 0 to 59 months</td><td style="padding:3px 7px;color:var(--muted);">Facility</td><td style="padding:3px 7px;font-family:monospace;font-size:9px;color:var(--muted);">facAge0 / (facAge0+facAge1+facAge2) × 100</td></tr>
+                  <tr style="border-top:1px solid var(--border);background:rgba(30,181,58,.08);"><td style="padding:3px 7px;font-weight:700;color:var(--age0);"></td><td style="padding:3px 7px;color:var(--muted);">Community</td><td style="padding:3px 7px;font-family:monospace;font-size:9px;color:var(--muted);">comAge0 / (comAge0+comAge1+comAge2) × 100</td></tr>
+                  <tr style="border-top:1px solid var(--border);background:rgba(200,200,200,.08);"><td style="padding:3px 7px;font-weight:700;color:var(--age1);">% 5 to 14 years</td><td style="padding:3px 7px;color:var(--muted);">Facility</td><td style="padding:3px 7px;font-family:monospace;font-size:9px;color:var(--muted);">facAge1 / (facAge0+facAge1+facAge2) × 100</td></tr>
+                  <tr style="border-top:1px solid var(--border);background:rgba(200,200,200,.08);"><td style="padding:3px 7px;font-weight:700;color:var(--age1);"></td><td style="padding:3px 7px;color:var(--muted);">Community</td><td style="padding:3px 7px;font-family:monospace;font-size:9px;color:var(--muted);">comAge1 / (comAge0+comAge1+comAge2) × 100</td></tr>
+                  <tr style="border-top:1px solid var(--border);background:rgba(0,114,198,.08);"><td style="padding:3px 7px;font-weight:700;color:var(--age2);">% 15 years and above</td><td style="padding:3px 7px;color:var(--muted);">Facility</td><td style="padding:3px 7px;font-family:monospace;font-size:9px;color:var(--muted);">facAge2 / (facAge0+facAge1+facAge2) × 100</td></tr>
+                  <tr style="border-top:1px solid var(--border);background:rgba(0,114,198,.08);"><td style="padding:3px 7px;font-weight:700;color:var(--age2);"></td><td style="padding:3px 7px;color:var(--muted);">Community</td><td style="padding:3px 7px;font-family:monospace;font-size:9px;color:var(--muted);">comAge2 / (comAge0+comAge1+comAge2) × 100</td></tr>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;">Facility share</td><td style="padding:3px 7px;color:var(--muted);">Combined</td><td style="padding:3px 7px;font-family:monospace;font-size:9px;color:var(--muted);">facTotal / (facTotal + commTotal) × 100</td></tr>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:3px 7px;font-weight:700;">Community share</td><td style="padding:3px 7px;color:var(--muted);">Combined</td><td style="padding:3px 7px;font-family:monospace;font-size:9px;color:var(--muted);">commTotal / (facTotal + commTotal) × 100</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="cfg-step">
+            <div class="cfg-step-num">5</div>
+            <div>
+              <div class="cfg-step-head">Outputs</div>
+              <div class="cfg-step-desc">Builds 7 proportion charts, geographic monthly and annual maps across Hospital, Clinic, CHC, CHP and MCHP, a facility tracker, summary table and downloadable Excel. Microscopy is zeroed for CHP and MCHP.</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Age legend -->
+        <div class="age-legend">
+          <span style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-right:4px;">Age Groups</span>
+          <div class="age-legend-item"><div class="age-swatch" style="background:var(--age0);"></div>0 to 59 months</div>
+          <div class="age-legend-item"><div class="age-swatch" style="background:var(--age1);"></div>5 to 14 years</div>
+          <div class="age-legend-item"><div class="age-swatch" style="background:var(--age2);"></div>15 years and above</div>
+        </div>
+      </div><!-- /cfg-how -->
+
+      <!-- ── Select Period ── -->
+      <div class="cfg-form">
+        <div class="cfg-form-title">Select Period</div>
+        <div class="cfg-form-sub">Choose the date range then click Run Pipeline to fetch data from DHIS2.</div>
+
+        <div class="cfg-months">
+          <div>
+            <label class="form-group" style="display:block;margin-bottom:8px;">
+              <span style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.6px;">Start Month</span>
+            </label>
+            <input type="month" class="form-control cfg-input" id="cfgStart">
+          </div>
+          <div>
+            <label class="form-group" style="display:block;margin-bottom:8px;">
+              <span style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.6px;">End Month</span>
+            </label>
+            <input type="month" class="form-control cfg-input" id="cfgEnd">
+          </div>
+        </div>
+
+        <div id="cfgError" style="display:none;background:#fde8e0;border:1.5px solid #e05c2b;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:700;color:#7a2800;margin-bottom:16px;"></div>
+
+        <button class="cfg-run-btn" onclick="sa_startPipeline()">&#9654; Run Pipeline</button>
+
+        <div class="cfg-credit">Developed by Informatics Consultancy Firm – Sierra Leone (ICF-SL)</div>
+      </div><!-- /cfg-form -->
+
+    </div><!-- /cfg-wrap -->
+  </div><!-- /configScreen -->
+
+  <!-- ══════════════════════════════════════════════════
+       SCREEN 2 — PIPELINE PROGRESS
+  ══════════════════════════════════════════════════ -->
+  <div id="pipelineScreen" style="display:none;">
+    <div class="card">
+      <div class="card-head">
+        <h2>Pipeline Progress</h2>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <span id="pctLabel" style="font-size:13px;font-weight:700;color:var(--blue);">0%</span>
+          <button class="btn btn-outline btn-sm" onclick="showConfigScreen()">&#8592; Back</button>
+        </div>
+      </div>
+      <div class="card-body" style="background:#0d1117;padding:14px;">
+        <div class="pbar-wrap"><div class="pbar-fill" id="pbarFill" style="width:0%"></div></div>
+        <div class="step-list" id="stepList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       SCREEN 3 — RESULTS
+  ══════════════════════════════════════════════════ -->
+  <div id="resultsSection" style="display:none;">
+
+    <!-- Stats -->
+    <div class="card">
+      <div class="card-head">
+        <h2>Summary Statistics</h2>
+        <button class="btn btn-outline btn-sm" onclick="showConfigScreen()">&#8592; New Query</button>
+      </div>
+      <div class="card-body">
+        <div class="stats-row" id="statsRow"></div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="card">
+      <div class="card-head" style="padding-bottom:0;border-bottom:none;">
+        <h2>Results</h2>
+      </div>
+      <div class="card-body" style="padding-top:12px;">
+        <div class="tab-nav">
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 16px 0;background:var(--blue-lt);border-bottom:1px solid var(--border);flex-wrap:wrap;"><span style="font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.6px;">Test Type:</span><select class="form-control" id="testTypeFilterCharts" style="width:auto;min-width:180px;font-size:12px;padding:5px 10px;" onchange="onTestTypeChangeCharts()"><option value="combined">RDT + Microscopy (Combined)</option><option value="rdt">RDT</option><option value="microscopy">Microscopy</option></select></div><button class="tab-btn active" data-tab="charts">Facility</button>
+          <button class="tab-btn" data-tab="comm">Community</button>
+          <button class="tab-btn" data-tab="combined">Combined</button>
+          <button class="tab-btn" data-tab="geomaps">Geographic Maps</button>
+          <button class="tab-btn" data-tab="tracking">Facility Tracking</button>
+          <button class="tab-btn" data-tab="summary">Summary Table</button>
+          <button class="tab-btn" data-tab="downloads">Downloads</button>
+        </div>
+
+        <!-- TAB: FACILITY CHARTS -->
+        <div id="tab-charts" class="tab-pane active">
+          <div class="collap">
+            <div class="collap-head" onclick="toggleCollap(this)">
+              <h3>Chart Options</h3><span class="collap-chev">▼</span>
+            </div>
+            <div class="collap-body">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:12px;">
+                <div class="form-group"><label>Width (px)</label><input type="number" class="form-control" id="chW" value="1200" min="600" max="4000" step="50"></div>
+                <div class="form-group"><label>Height (px)</label><input type="number" class="form-control" id="chH" value="520" min="300" max="2000" step="50"></div>
+                <div class="form-group"><label>Aggregation Level</label><select class="form-control" id="chAggLevel"><option value="national">National (Monthly Trend)</option><option value="district">District (Annual Summary)</option><option value="chiefdom">Chiefdom (Annual Summary)</option></select></div>
+                <div class="form-group"><label>Chart Type</label><select class="form-control" id="chType"><option value="stacked_pct">Stacked 100% Bar (Proportion)</option><option value="grouped_pct">Grouped Bar (% Share)</option><option value="stacked_abs">Stacked Bar (Absolute Counts)</option></select></div>
+              </div>
+              <div class="btn-row"><button class="btn btn-primary btn-sm" onclick="sa_redrawCharts()">↺ Redraw</button></div>
+            </div>
+          </div>
+          <div class="collap">
+            <div class="collap-head" onclick="toggleCollap(this)" style="background:#e7f3ff;border-color:var(--blue);">
+              <h3 style="color:var(--blue);">Chart 1 — National Monthly Age Proportions (Stacked 100%)</h3>
+              <span class="collap-chev" style="color:var(--blue);">▼</span>
+            </div>
+            <div class="collap-body" style="overflow-x:auto;text-align:center;padding:14px;">
+              <div id="ch1Title" style="font-size:15px;font-weight:700;color:var(--blue);margin-bottom:4px;"></div>
+              <div id="ch1Sub" style="font-size:11px;color:var(--muted);margin-bottom:10px;"></div>
+              <canvas id="chCanvas1" style="max-width:100%;border-radius:6px;border:2px solid var(--blue);display:block;margin:0 auto;"></canvas>
+              <div class="btn-row" style="justify-content:center;margin-top:10px;">
+                <button class="btn btn-green btn-sm" onclick="sa_downloadChart('chCanvas1','national_monthly_pct')">↓ Download Chart 1 (PNG)</button>
+              </div>
+            </div>
+          </div>
+          <div class="collap">
+            <div class="collap-head" onclick="toggleCollap(this)" style="background:#d4edda;border-color:var(--green);">
+              <h3 style="color:#155724;">Chart 2 — District-Level Age Proportions (Annual Summary)</h3>
+              <span class="collap-chev" style="color:#155724;">▼</span>
+            </div>
+            <div class="collap-body" style="overflow-x:auto;text-align:center;padding:14px;">
+              <div id="ch2Title" style="font-size:15px;font-weight:700;color:var(--green);margin-bottom:4px;"></div>
+              <div id="ch2Sub" style="font-size:11px;color:var(--muted);margin-bottom:10px;"></div>
+              <canvas id="chCanvas2" style="max-width:100%;border-radius:6px;border:2px solid var(--green);display:block;margin:0 auto;"></canvas>
+              <div class="btn-row" style="justify-content:center;margin-top:10px;">
+                <button class="btn btn-green btn-sm" onclick="sa_downloadChart('chCanvas2','district_age_pct')">↓ Download Chart 2 (PNG)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: COMMUNITY -->
+        <div id="tab-comm" class="tab-pane">
+          <div class="collap"><div class="collap-head" onclick="toggleCollap(this)" style="background:#e8f5e9;border-color:var(--green);"><h3 style="color:#155724;">Chart 3 — Community Monthly Age Proportions (Stacked 100%)</h3><span class="collap-chev" style="color:#155724;">▼</span></div><div class="collap-body" style="overflow-x:auto;text-align:center;padding:14px;"><div id="ch3Title" style="font-size:15px;font-weight:700;color:#155724;margin-bottom:4px;"></div><div id="ch3Sub" style="font-size:11px;color:var(--muted);margin-bottom:10px;"></div><canvas id="chCanvas3" style="max-width:100%;border-radius:6px;border:2px solid var(--green);display:block;margin:0 auto;"></canvas><div class="btn-row" style="justify-content:center;margin-top:10px;"><button class="btn btn-green btn-sm" onclick="sa_downloadChart('chCanvas3','comm_monthly')">↓ Chart 3 (PNG)</button></div></div></div>
+          <div class="collap"><div class="collap-head" onclick="toggleCollap(this)" style="background:#e8f5e9;border-color:var(--green);"><h3 style="color:#155724;">Chart 4 — Community District-Level Age Proportions</h3><span class="collap-chev" style="color:#155724;">▼</span></div><div class="collap-body" style="overflow-x:auto;text-align:center;padding:14px;"><div id="ch4Title" style="font-size:15px;font-weight:700;color:#155724;margin-bottom:4px;"></div><div id="ch4Sub" style="font-size:11px;color:var(--muted);margin-bottom:10px;"></div><canvas id="chCanvas4" style="max-width:100%;border-radius:6px;border:2px solid var(--green);display:block;margin:0 auto;"></canvas><div class="btn-row" style="justify-content:center;margin-top:10px;"><button class="btn btn-green btn-sm" onclick="sa_downloadChart('chCanvas4','comm_district')">↓ Chart 4 (PNG)</button></div></div></div>
+        </div>
+
+        <!-- TAB: COMBINED -->
+        <div id="tab-combined" class="tab-pane">
+          <div class="alert alert-info" style="margin-bottom:14px;"><strong>Combined — Facility + Community indicators</strong><br><b>C5.</b> Age share of combined total: (0 to 59m fac+comm)/(total fac+comm) × 100<br><b>C6.</b> Source share per age group: (0 to 59m fac)/(0 to 59m fac+comm) × 100; comm = inverse<br><b>C7.</b> Source share of total: (fac total)/(fac+comm total)×100; comm = inverse</div>
+          <div class="collap"><div class="collap-head" onclick="toggleCollap(this)" style="background:#e8eaf6;border-color:#5c6bc0;"><h3 style="color:#283593;">Chart 5 — Combined Age Distribution Monthly (Fac+Comm)</h3><span class="collap-chev" style="color:#283593;">▼</span></div><div class="collap-body" style="overflow-x:auto;text-align:center;padding:14px;"><div id="ch5Title" style="font-size:15px;font-weight:700;color:#283593;margin-bottom:4px;"></div><div id="ch5Sub" style="font-size:11px;color:var(--muted);margin-bottom:10px;"></div><canvas id="chCanvas5" style="max-width:100%;border-radius:6px;border:2px solid #5c6bc0;display:block;margin:0 auto;"></canvas><div class="btn-row" style="justify-content:center;margin-top:10px;"><button class="btn btn-outline btn-sm" style="color:#283593;border-color:#5c6bc0;" onclick="sa_downloadChart('chCanvas5','combined_age')">↓ Chart 5 (PNG)</button></div></div></div>
+          <div class="collap"><div class="collap-head" onclick="toggleCollap(this)" style="background:#fce4ec;border-color:#e91e63;"><h3 style="color:#880e4f;">Chart 6 — Fac vs Comm Share by Age Group (Monthly)</h3><span class="collap-chev" style="color:#880e4f;">▼</span></div><div class="collap-body" style="overflow-x:auto;text-align:center;padding:14px;"><div id="ch6Title" style="font-size:15px;font-weight:700;color:#880e4f;margin-bottom:4px;"></div><div id="ch6Sub" style="font-size:11px;color:var(--muted);margin-bottom:10px;"></div><canvas id="chCanvas6" style="max-width:100%;border-radius:6px;border:2px solid #e91e63;display:block;margin:0 auto;"></canvas><div class="btn-row" style="justify-content:center;margin-top:10px;"><button class="btn btn-outline btn-sm" style="color:#880e4f;border-color:#e91e63;" onclick="sa_downloadChart('chCanvas6','fac_comm_age_share')">↓ Chart 6 (PNG)</button></div></div></div>
+          <div class="collap"><div class="collap-head" onclick="toggleCollap(this)" style="background:#fff8e1;border-color:var(--gold);"><h3 style="color:#5d4037;">Chart 7 — Fac vs Comm Share of Total Tested Cases (Monthly)</h3><span class="collap-chev" style="color:#5d4037;">▼</span></div><div class="collap-body" style="overflow-x:auto;text-align:center;padding:14px;"><div id="ch7Title" style="font-size:15px;font-weight:700;color:#5d4037;margin-bottom:4px;"></div><div id="ch7Sub" style="font-size:11px;color:var(--muted);margin-bottom:10px;"></div><canvas id="chCanvas7" style="max-width:100%;border-radius:6px;border:2px solid var(--gold);display:block;margin:0 auto;"></canvas><div class="btn-row" style="justify-content:center;margin-top:10px;"><button class="btn btn-outline btn-sm" style="color:#5d4037;border-color:var(--gold);" onclick="sa_downloadChart('chCanvas7','source_share_total')">↓ Chart 7 (PNG)</button></div></div></div>
+        </div>
+
+        <!-- TAB: GEO MAPS -->
+        <div id="tab-geomaps" class="tab-pane">
+          <div style="background:var(--blue-lt);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px;">
+              <div class="form-group" style="margin:0;"><label>Map Level</label><select class="form-control" id="geoLevel" style="width:auto;min-width:120px;"><option value="national">National</option><option value="district">District</option><option value="chiefdom" selected>Chiefdom</option></select></div>
+              <div class="form-group" style="margin:0;"><label>Year (Annual Summary)</label><select class="form-control" id="geoYear" style="width:auto;min-width:90px;"></select></div>
+              <div class="form-group" style="margin:0;"><label>Test Type</label><select class="form-control" id="testTypeFilter" style="width:auto;min-width:180px;" onchange="onTestTypeChange()"><option value="combined">RDT + Microscopy (Combined)</option><option value="rdt">RDT</option><option value="microscopy">Microscopy</option></select></div><div class="form-group" style="margin:0;"><label>Category</label><select class="form-control" id="geoSource" style="width:auto;min-width:160px;" onchange="sa_renderGeoMaps()"><option value="facility">Facility</option><option value="community">Community</option><option value="combined">Overall (Facility + Community)</option></select></div>
+              <div class="form-group" style="margin:0;"><label>Age Group to Map</label><select class="form-control" id="geoAgeGroup" style="width:auto;min-width:140px;" onchange="sa_renderGeoMaps()"><option value="age0">0 to 59m (%)</option><option value="age1">5 to 14y (%)</option><option value="age2">15y and above (%)</option></select></div>
+              <button class="btn btn-teal btn-sm" onclick="sa_renderGeoMaps()" style="margin-top:18px;">↺ Redraw All Maps</button>
+              <span id="geoStatus" style="font-size:11px;color:var(--blue);font-weight:600;margin-top:18px;"></span>
+            </div>
+            <div style="border-top:1px solid var(--border);padding-top:10px;">
+              <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px;">Colour Palette</div>
+              <div id="mapPaletteGrid"></div>
+            </div>
+          </div>
+          <div style="background:var(--blue);color:#fff;padding:10px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <span id="monthlyGridLabel">Monthly Maps</span>
+            <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4);" onclick="sa_downloadMonthlyGrid()">↓ Download Monthly Grid (PNG)</button>
+          </div>
+          <div id="monthlyMapsGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px;background:#f8fbff;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;margin-bottom:20px;"></div>
+          <div style="background:var(--blue-dk);color:#fff;padding:10px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <span>Annual Summary Maps</span>
+            <button class="btn btn-gold btn-sm" onclick="sa_geoDownloadSubplot()">↓ Download Annual Subplot (PNG)</button>
+          </div>
+          <div style="padding:14px;background:#f8fbff;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;margin-bottom:16px;">
+            <div class="maps-3col">
+              <div class="map-panel"><div class="map-panel-head" id="mapHeadNational" style="background:var(--blue);">NATIONAL</div><div class="canvas-wrap"><canvas id="geoNational"></canvas></div></div>
+              <div class="map-panel"><div class="map-panel-head" id="mapHeadDistrict" style="background:var(--teal);">DISTRICT</div><div class="canvas-wrap"><canvas id="geoDistrict"></canvas></div></div>
+              <div class="map-panel"><div class="map-panel-head" id="mapHeadChiefdom" style="background:var(--green);">CHIEFDOM — HOVER FOR VALUES</div><div class="canvas-wrap" style="cursor:crosshair;"><canvas id="geoChiefdom"></canvas></div></div>
+            </div>
+            <div id="annualLegendBar" class="legend-bar" style="margin-top:8px;"></div>
+            <div class="btn-row" style="margin-top:8px;">
+              <button class="btn btn-primary btn-sm" onclick="sa_geoDownload('geoNational','national')">↓ National PNG</button>
+              <button class="btn btn-teal btn-sm" onclick="sa_geoDownload('geoDistrict','district')">↓ District PNG</button>
+              <button class="btn btn-green btn-sm" onclick="sa_geoDownload('geoChiefdom','chiefdom')">↓ Chiefdom PNG</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: FACILITY TRACKING -->
+        <div id="tab-tracking" class="tab-pane">
+          <div class="trk-toolbar">
+            <div class="form-group" style="margin:0;"><label>Year</label><select class="form-control" id="trkYear" style="width:auto;min-width:90px;" onchange="trk_render()"></select></div>
+            <input type="text" class="form-control trk-search" id="trkSearch" placeholder="Search facility, chiefdom, district…" oninput="trk_render()">
+            <div style="display:flex;gap:6px;align-items:center;margin-top:18px;"><label style="font-size:11px;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:4px;cursor:pointer;">Show only facilities with data<input type="checkbox" id="trkOnlyData" onchange="trk_render()"></label></div>
+            <button class="btn btn-primary btn-sm" onclick="trk_expandAll(true)" style="margin-top:18px;">⊞ Expand All</button>
+            <button class="btn btn-outline btn-sm" onclick="trk_expandAll(false)" style="margin-top:18px;">⊟ Collapse All</button>
+          </div>
+          <div class="trk-period-tabs" id="trkMonthTabs"></div>
+          <div id="trkTree"></div>
+        </div>
+
+        <!-- TAB: SUMMARY TABLE -->
+        <div id="tab-summary" class="tab-pane">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+            <input type="text" class="form-control" id="tblSearch" placeholder="Search district, chiefdom, period…" style="max-width:300px;" oninput="sa_filterTable()">
+            <select class="form-control" id="tblGroup" style="width:auto;" onchange="sa_buildTable()">
+              <optgroup label="Facility"><option value="national_monthly">Facility National × Month</option><option value="district_monthly">Facility District × Month</option><option value="district_yearly">Facility District × Year</option><option value="chiefdom_monthly">Facility Chiefdom × Month</option><option value="chiefdom_yearly">Facility Chiefdom × Year</option></optgroup>
+              <optgroup label="Community"><option value="com_national_monthly">Comm National × Month</option><option value="com_district_monthly">Comm District × Month</option><option value="com_district_yearly">Comm District × Year</option></optgroup>
+              <optgroup label="Combined"><option value="cmb_national_monthly">Combined National × Month</option><option value="cmb_district_monthly">Combined District × Month</option><option value="cmb_district_yearly">Combined District × Year</option></optgroup>
+            </select>
+            <button class="btn btn-outline btn-sm" onclick="sa_exportTableExcel()">↓ Export Table (Excel)</button>
+          </div>
+          <div id="tblCount" style="font-size:11px;color:var(--muted);margin-bottom:8px;"></div>
+          <div class="data-table-wrap"><table class="data-table" id="summaryTable"><thead id="tblHead"></thead><tbody id="tblBody"></tbody></table></div>
+        </div>
+
+        <!-- TAB: DOWNLOADS -->
+        <div id="tab-downloads" class="tab-pane">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
+            <div style="border:2px solid var(--blue);border-radius:10px;overflow:hidden;"><div style="background:var(--blue);color:#fff;padding:10px 16px;font-size:13px;font-weight:700;">Age Proportion Charts</div><div style="padding:16px;display:flex;flex-direction:column;gap:8px;"><button class="btn btn-outline" onclick="sa_downloadChart('chCanvas1','national_monthly_pct')">↓ Chart 1 — National Monthly (PNG)</button><button class="btn btn-outline" onclick="sa_downloadChart('chCanvas2','district_age_pct')">↓ Chart 2 — District Summary (PNG)</button></div></div>
+            <div style="border:2px solid var(--teal);border-radius:10px;overflow:hidden;"><div style="background:var(--teal);color:#fff;padding:10px 16px;font-size:13px;font-weight:700;">Geographic Maps</div><div style="padding:16px;display:flex;flex-direction:column;gap:8px;"><button class="btn btn-outline" onclick="sa_geoDownload('geoNational','national')">↓ National Map (PNG)</button><button class="btn btn-outline" onclick="sa_geoDownload('geoDistrict','district')">↓ District Map (PNG)</button><button class="btn btn-outline" onclick="sa_geoDownload('geoChiefdom','chiefdom')">↓ Chiefdom Map (PNG)</button><button class="btn btn-gold" onclick="sa_geoDownloadSubplot()">↓ All 3 Maps Subplot (PNG)</button><button class="btn btn-outline" onclick="sa_downloadMonthlyGrid()">↓ Monthly Grid (PNG)</button></div></div>
+            <div style="border:2px solid var(--green);border-radius:10px;overflow:hidden;"><div style="background:var(--green);color:#fff;padding:10px 16px;font-size:13px;font-weight:700;">Data Exports</div><div style="padding:16px;display:flex;flex-direction:column;gap:8px;"><button class="btn btn-outline" onclick="sa_exportExcel()">↓ Full Report (Excel — all sheets)</button><button class="btn btn-outline" onclick="sa_exportTableExcel()">↓ Current Table View (Excel)</button><button class="btn btn-outline" onclick="sa_exportCSV()">↓ Facility-Month Raw (CSV)</button></div></div>
+            <div style="border:2px solid #276DC3;border-radius:10px;overflow:hidden;"><div style="background:#276DC3;color:#fff;padding:10px 16px;font-size:13px;font-weight:700;">Reproducible Code</div><div style="padding:16px;display:flex;flex-direction:column;gap:8px;"><button class="btn btn-outline" style="color:#276DC3;border-color:#276DC3;" onclick="sa_downloadR()">↓ Download R Script</button><button class="btn btn-outline" style="color:#3776AB;border-color:#3776AB;" onclick="sa_downloadPy()">↓ Download Python Script</button></div></div>
+            <div style="border:2px solid #004080;border-radius:10px;overflow:hidden;"><div style="background:linear-gradient(135deg,#004080 0%,#1a6bb5 100%);color:#fff;padding:10px 16px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;"><span style="font-size:18px;">💾</span> Download This Tool</div><div style="padding:16px;display:flex;flex-direction:column;gap:8px;"><p style="font-size:12px;color:#3a5068;margin-bottom:4px;line-height:1.5;">Save a complete standalone copy of this tool with all interactive outputs, maps, charts, and data.</p><button class="btn btn-primary" onclick="sa_downloadToolHTML()" style="font-size:13px;padding:11px 18px;justify-content:center;">&#11015; Download nmcp_suspected_age_disagg_v2.html</button></div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div><!-- /resultsSection -->
+
+</div><!-- /page-body -->
+
+<div class="page-footer">
+  National Malaria Control Programme (NMCP) — Ministry of Health, Sierra Leone &nbsp;|&nbsp;
+  Technical Partner: Informatics Consultancy Firm – Sierra Leone (ICF-SL) &nbsp;|&nbsp;
+  mdrsl.chaiprod.com
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  CONSTANTS
+// ═══════════════════════════════════════════════════════════════════
+const PROXY    = 'https://script.google.com/macros/s/AKfycbyRXc68PYSmDSCYPakAS8Gc9R00kRjmsMYoDujPYMItyquXfwMAJUtRqXLiDlNWbSfDQQ/exec';
+const BASE_URL = 'https://sl.dhis2.org/hmis23';
+const AUTH     = 'Basic ' + btoa('musa-sillahkanu:Navigator/2024!');
+const LEVEL_PHU = 5, LEVEL_DIST = 2, LEVEL_CHIEF = 4;
+
+// ── Analytics dx strings (DE.COC) ──────────────────────────────────
+// Facility suspected malaria by age (HF01 Outpatient morbidity)
+// ── DX_MAP for Tested Malaria ────────────────────────────────────────────
+// Facility: RDT Pos + RDT Neg + Microscopy Pos + Microscopy Neg (excl CHP/MCHP)
+// Community: RDT Pos + RDT Neg (HTR)
+// totalField: accumulates tested total per source
+// splitField: accumulates age-disaggregated sub-total
+const EXCL_MICRO = ['CHP','MCHP'];
+const DX_MAP_SUSP = [
+  // Facility RDT Positive — accumulates into both rdtHF and testedHF (combined)
+  { dxStr:'p6zQLDFjSfd.m5T8uBNB8aN', totalField:'testedHF', rdtField:'rdtHF', splitField:'testedHF_U5',     rdtSplit:'rdtHF_U5'     },
+  { dxStr:'p6zQLDFjSfd.j7j6iaknOFn', totalField:'testedHF', rdtField:'rdtHF', splitField:'testedHF_5_14',   rdtSplit:'rdtHF_5_14'   },
+  { dxStr:'p6zQLDFjSfd.zK1aiw8zFac', totalField:'testedHF', rdtField:'rdtHF', splitField:'testedHF_15plus', rdtSplit:'rdtHF_15plus' },
+  // Facility RDT Negative
+  { dxStr:'mXS2g1AiPsS.m5T8uBNB8aN', totalField:'testedHF', rdtField:'rdtHF', splitField:'testedHF_U5',     rdtSplit:'rdtHF_U5'     },
+  { dxStr:'mXS2g1AiPsS.j7j6iaknOFn', totalField:'testedHF', rdtField:'rdtHF', splitField:'testedHF_5_14',   rdtSplit:'rdtHF_5_14'   },
+  { dxStr:'mXS2g1AiPsS.zK1aiw8zFac', totalField:'testedHF', rdtField:'rdtHF', splitField:'testedHF_15plus', rdtSplit:'rdtHF_15plus' },
+  // Facility Microscopy Positive (excluded for CHP/MCHP)
+  { dxStr:'Sz13vbo2Qwh.m5T8uBNB8aN', totalField:'testedHF', microField:'microHF', splitField:'testedHF_U5',     microSplit:'microHF_U5',     excludeTypes:EXCL_MICRO },
+  { dxStr:'Sz13vbo2Qwh.j7j6iaknOFn', totalField:'testedHF', microField:'microHF', splitField:'testedHF_5_14',   microSplit:'microHF_5_14',   excludeTypes:EXCL_MICRO },
+  { dxStr:'Sz13vbo2Qwh.zK1aiw8zFac', totalField:'testedHF', microField:'microHF', splitField:'testedHF_15plus', microSplit:'microHF_15plus', excludeTypes:EXCL_MICRO },
+  // Facility Microscopy Negative (excluded for CHP/MCHP)
+  { dxStr:'Rijj3Fp9ksg.m5T8uBNB8aN', totalField:'testedHF', microField:'microHF', splitField:'testedHF_U5',     microSplit:'microHF_U5',     excludeTypes:EXCL_MICRO },
+  { dxStr:'Rijj3Fp9ksg.j7j6iaknOFn', totalField:'testedHF', microField:'microHF', splitField:'testedHF_5_14',   microSplit:'microHF_5_14',   excludeTypes:EXCL_MICRO },
+  { dxStr:'Rijj3Fp9ksg.zK1aiw8zFac', totalField:'testedHF', microField:'microHF', splitField:'testedHF_15plus', microSplit:'microHF_15plus', excludeTypes:EXCL_MICRO },
+  // Community RDT Positive (HTR)
+  { dxStr:'T7xH8GwWpEM.NtjMVmRfvHH', totalField:'testedCommunity', rdtField:'rdtCommunity', splitField:'testedCom_U5',     rdtSplit:'rdtCom_U5'     },
+  { dxStr:'T7xH8GwWpEM.qDXW7WMLT99', totalField:'testedCommunity', rdtField:'rdtCommunity', splitField:'testedCom_5_14',   rdtSplit:'rdtCom_5_14'   },
+  { dxStr:'T7xH8GwWpEM.mdjRPpvLKdu', totalField:'testedCommunity', rdtField:'rdtCommunity', splitField:'testedCom_15plus', rdtSplit:'rdtCom_15plus' },
+  // Community RDT Negative (HTR)
+  { dxStr:'YWvx4zYdp92.NtjMVmRfvHH', totalField:'testedCommunity', rdtField:'rdtCommunity', splitField:'testedCom_U5',     rdtSplit:'rdtCom_U5'     },
+  { dxStr:'YWvx4zYdp92.qDXW7WMLT99', totalField:'testedCommunity', rdtField:'rdtCommunity', splitField:'testedCom_5_14',   rdtSplit:'rdtCom_5_14'   },
+  { dxStr:'YWvx4zYdp92.mdjRPpvLKdu', totalField:'testedCommunity', rdtField:'rdtCommunity', splitField:'testedCom_15plus', rdtSplit:'rdtCom_15plus' },
+];
+const DX_LOOKUP_SUSP = {};
+DX_MAP_SUSP.forEach(d => { DX_LOOKUP_SUSP[d.dxStr] = d; });
+const ALL_DX_SUSP = DX_MAP_SUSP.map(d => d.dxStr);
+
+const CHIEFDOM_GEOJSON = 'https://raw.githubusercontent.com/mohamedsillahkanu/tpr/8b16cd164aa5116242b9e8e29ea777cf79a1b211/Chiefdom_shp.geojson';
+const DISTRICT_GEOJSON = 'https://raw.githubusercontent.com/mohamedsillahkanu/tpr/d202a234dfd9b30de6216b5da59b2a1ee14283b5/District_Shapefiles.geojson';
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const AGE_LABELS  = { age0: '0 to 59m', age1: '5 to 14y', age2: '15y and above' };
+const AGE_COLORS  = { age0: '#1EB53A', age1: '#FFFFFF', age2: '#0072C6' };
+
+// ═══════════════════════════════════════════════════════════════════
+//  MAP PALETTES
+// ═══════════════════════════════════════════════════════════════════
+const MAP_PALETTES = {
+  blues:    { name:'Blues',         colors:['#c6dbef','#9ecae1','#6baed6','#2171b5','#084594'] },
+  rdylgn:   { name:'Red → Green',   colors:['#d73027','#fc8d59','#ffffbf','#91cf60','#1a9850'] },
+  rdylbu:   { name:'Red → Blue',    colors:['#d73027','#fc8d59','#ffffbf','#91bfdb','#4575b4'] },
+  ylgnbu:   { name:'Yellow → Blue', colors:['#ffffcc','#a1dab4','#41b6c4','#2c7fb8','#253494'] },
+  oranges:  { name:'Oranges',       colors:['#feedde','#fdbe85','#fd8d3c','#e6550d','#a63603'] },
+  purples:  { name:'Purples',       colors:['#efedf5','#bcbddc','#9e9ac8','#756bb1','#54278f'] },
+  greens:   { name:'Greens',        colors:['#edf8e9','#bae4b3','#74c476','#31a354','#006d2c'] },
+  spectral: { name:'Spectral',      colors:['#d53e4f','#fc8d59','#fee08b','#99d594','#3288bd'] },
+};
+let selectedMapPalette = 'rdylgn';
+
+function getBreaks() {
+  const pal = MAP_PALETTES[selectedMapPalette] || MAP_PALETTES.blues;
+  return [
+    { max:20,  label:'0–20%',   color:pal.colors[0] },
+    { max:40,  label:'20–40%',  color:pal.colors[1] },
+    { max:60,  label:'40–60%',  color:pal.colors[2] },
+    { max:80,  label:'60–80%',  color:pal.colors[3] },
+    { max:100, label:'80–100%', color:pal.colors[4] },
+  ];
+}
+Object.defineProperty(window, 'GEO_BREAKS', { get: () => getBreaks() });
+function getMapBg() { return '#ffffff'; }
+function geoColor(rate) {
+  if (rate === null || rate === undefined || isNaN(rate)) return '#cccccc';
+  for (const b of getBreaks()) { if (rate <= b.max) return b.color; }
+  return getBreaks()[4].color;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════════
+let ST = {
+  config: null,
+  ouHierarchy: {},   // ouId → { id, name, districtName, chiefdomName }
+  // Accumulated data keyed by ouId|period
+  // facAcc[ouId][period] = { age0, age1, age2 }
+  // comAcc[ouId][period] = { age0, age1, age2 }
+  facAcc: {},
+  comAcc: {},
+  facData: [],
+  commData: [],
+  geoCache: { chiefdomGeo:null, districtGeo:null, bbox:null },
+  geoRates: { district:{}, chiefdom:{} },
+};
+
+// ═══════════════════════════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════════════════════════
+async function dhis2(path, retries = 3) {
+  const url  = BASE_URL + path;
+  const pUrl = PROXY + '?url=' + encodeURIComponent(url) + '&Authorization=' + encodeURIComponent(AUTH);
+  let lastErr;
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const r = await fetch(pUrl);
+      if (!r.ok) throw new Error('HTTP ' + r.status + ': ' + path.slice(0, 60));
+      return await r.json();
+    } catch (e) {
+      lastErr = e;
+      if (attempt < retries) {
+        // Exponential backoff: 1s, 2s, 4s
+        await sleep(1000 * Math.pow(2, attempt - 1));
+      }
+    }
+  }
+  throw new Error('Failed after ' + retries + ' attempts — ' + (lastErr?.message || 'network error'));
+}
+
+function genPeriods(s, e) {
+  const out = [];
+  let [y,m] = s.split('-').map(Number);
+  const [ey,em] = e.split('-').map(Number);
+  while (y < ey || (y===ey && m<=em)) {
+    out.push(`${y}${String(m).padStart(2,'0')}`); m++; if(m>12){m=1;y++;}
+  }
+  return out;
+}
+function sleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
+
+// Classify facility type from name — exact copy from Malaria Dashboard
+function getHFType(name) {
+  const u = (name||'').toUpperCase();
+  const parts = u.trim().split(/\s+/);
+  const suffix = parts[parts.length-1]||'';
+  if (suffix==='HOSPITAL') return 'Hospital';
+  if (suffix==='MCHP')     return 'MCHP';
+  if (suffix==='CHC')      return 'CHC';
+  if (suffix==='CHP')      return 'CHP';
+  const clinicSuffixes=['CLINIC','CLINNIC','CLINNC','CLIMIC','CLINC','CLINIK','CLENIC','CLINCC','CLIN'];
+  if (clinicSuffixes.includes(suffix)) return 'Clinic';
+  if (u.includes('HOSPITAL')) return 'Hospital';
+  if (u.includes('MCHP'))     return 'MCHP';
+  if (u.includes('CHC'))      return 'CHC';
+  if (u.includes('CHP'))      return 'CHP';
+  if (clinicSuffixes.some(c=>u.includes(c))) return 'Clinic';
+  return 'Other';
+}
+function normName(n) {
+  return (n||'').toLowerCase()
+    .replace(/\bchiefdom\b/g,'').replace(/\bdistrict\b/g,'').replace(/\bprovince\b/g,'')
+    .replace(/\barea\b/g,'').replace(/\burban\b/g,'urban').replace(/\brural\b/g,'rural')
+    .replace(/[-_]/g,' ').replace(/\s+/g,' ').trim();
+}
+function triggerDL(content, fname) {
+  const a = document.createElement('a');
+  a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+  a.download = fname; a.click();
+}
+function setPill(txt, bg) {
+  const el = document.getElementById('headerPill');
+  el.textContent = txt;
+  el.style.background = bg || 'rgba(255,255,255,.15)';
+}
+
+// ── Progress ──
+const stepEls = {};
+function setProgress(p) {
+  document.getElementById('pbarFill').style.width = p + '%';
+  document.getElementById('pctLabel').textContent = Math.round(p) + '%';
+}
+let _stepCounter = 0;
+function addStep(id, txt) {
+  _stepCounter++;
+  const d = document.createElement('div');
+  d.className = 'step-item pending'; d.id = 'st_'+id;
+  d.innerHTML = `<div class="step-dot"></div><span>Step ${_stepCounter} — ${txt}</span>`;
+  document.getElementById('stepList').appendChild(d);
+  stepEls[id] = d;
+}
+function setStep(id, status, msg) {
+  const el = stepEls[id]; if (!el) return;
+  el.className = 'step-item ' + status;
+  const pre = {running:'',done:'✓ ',error:'✗ '}[status]||'';
+  const span = el.querySelector('span');
+  const base = span.textContent.replace(/^[»✓✗] /,'');
+  span.textContent = pre + (msg || base);
+}
+
+// ── Screen navigation ──
+function showConfigScreen() {
+  document.getElementById('configScreen').style.display    = 'block';
+  document.getElementById('pipelineScreen').style.display  = 'none';
+  document.getElementById('resultsSection').style.display  = 'none';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  PIPELINE  — analytics.json  (fast: 2–4 API calls total)
+// ═══════════════════════════════════════════════════════════════════
+async function sa_startPipeline() {
+  const start = document.getElementById('cfgStart').value;
+  const end   = document.getElementById('cfgEnd').value;
+
+  const errEl = document.getElementById('cfgError');
+  if (!start || !end) {
+    errEl.textContent = 'Please select both a Start Month and End Month.';
+    errEl.style.display = 'block'; return;
+  }
+  if (start > end) {
+    errEl.textContent = 'Start Month must be on or before End Month.';
+    errEl.style.display = 'block'; return;
+  }
+  errEl.style.display = 'none';
+
+  document.getElementById('configScreen').style.display    = 'none';
+  document.getElementById('pipelineScreen').style.display  = 'block';
+  document.getElementById('resultsSection').style.display  = 'none';
+  document.getElementById('stepList').innerHTML = '';
+  Object.keys(stepEls).forEach(k => delete stepEls[k]);
+  _stepCounter = 0;
+  setProgress(2);
+  setPill('Running…','rgba(255,193,7,.5)');
+
+  ST.config    = { start, end, periods: genPeriods(start, end) };
+  ST.ouHierarchy = {};
+  ST.facData   = [];
+  ST.commData  = [];
+  ST.geoRates  = { district:{}, chiefdom:{} };
+
+  // Dashboard-mirrored step labels
+  addStep('s_ou',    'Fetch facility registry — all Level-5 OUs with hierarchy · classify Hospital / Clinic / CHC / CHP / MCHP');
+  addStep('s_plan',  'Build query plan — 6 de.coc pairs · period batches of 24 · analytics.json · LEVEL-5');
+  addStep('s_fetch', 'Fetch analytics — DHIS2 pre-aggregated data · same endpoint as Malaria Dashboard');
+  addStep('s_derive','Derive flat rows — facility-month and community-month records with age proportions');
+  addStep('s_geo',   'Load GeoJSON · compute geographic age-proportion rates');
+  addStep('s_render','Render charts, maps, facility tracker, summary table');
+
+  try {
+    // ══════════════════════════════════════════════════════════════
+    //  STEP 1 — Org units
+    //  Exact dashboard pattern:
+    //    level=LEVEL_PHU, fields=id+displayName+ancestors
+    //    getHFType() name-based classification (same function)
+    //    _ouHierarchy[id] = { id, name, hfType, districtName, chiefdomName }
+    // ══════════════════════════════════════════════════════════════
+    setStep('s_ou','running');
+    setProgress(3);
+
+    const ouResp = await dhis2(
+      '/api/organisationUnits.json?level=' + LEVEL_PHU +
+      '&fields=id,displayName,level,ancestors[id,displayName,level]&paging=false&pageSize=50000'
+    );
+
+    const ASSESSED_TYPES = ['Hospital','Clinic','CHC','CHP','MCHP'];
+    // Level-6 CHW/ETR → their Level-5 parent (for community rollup)
+    const childToL5 = {};
+    let skipped = 0;
+
+    (ouResp.organisationUnits||[]).forEach(ou => {
+      const anc   = (ou.ancestors||[]).sort((a,b)=>a.level-b.level);
+      const dist  = anc.find(a=>a.level===LEVEL_DIST);
+      const chief = anc.find(a=>a.level===LEVEL_CHIEF);
+      const l5Anc = anc.find(a=>a.level===LEVEL_PHU);
+
+      if (ou.level === LEVEL_PHU) {
+        const hfType = getHFType(ou.displayName);
+        if (!ASSESSED_TYPES.includes(hfType)) { skipped++; return; }
+        ST.ouHierarchy[ou.id] = {
+          id:ou.id, name:ou.displayName, hfType,
+          districtName: dist  ? dist.displayName  : '',
+          chiefdomName: chief ? chief.displayName : '',
+        };
+      } else if (ou.level > LEVEL_PHU && l5Anc) {
+        // Level-6 CHW/ETR — map to Level-5 parent for community rollup
+        childToL5[ou.id] = l5Anc.id;
+      }
+    });
+
+    ST.config.childToL5 = childToL5;
+
+    const phuIds  = Object.keys(ST.ouHierarchy);
+    const typeCounts = { Hospital:0, Clinic:0, CHC:0, CHP:0, MCHP:0 };
+    Object.values(ST.ouHierarchy).forEach(o => { if (typeCounts[o.hfType] !== undefined) typeCounts[o.hfType]++; });
+    window._typeCounts    = typeCounts;
+    window._totalAssessed = phuIds.length;
+
+    setStep('s_ou','done',
+      phuIds.length + ' assessed facilities (' + skipped + ' other types excluded) · ' +
+      ASSESSED_TYPES.map(t=>t+': '+typeCounts[t]).join(' · ') + ' · ' +
+      Object.keys(childToL5).length + ' Level-6 CHW/ETR mapped'
+    );
+    setProgress(15);
+    await sleep(40);
+
+    // ══════════════════════════════════════════════════════════════
+    //  STEP 2 — Query plan
+    //  Exact dashboard pattern:
+    //    DX batches of 40 · period batches of 24
+    //    (we only have 6 DX so one DX batch)
+    // ══════════════════════════════════════════════════════════════
+    setStep('s_plan','running');
+
+    const periods   = ST.config.periods;
+    const DX_BATCH  = 40;
+    const dxBatches = [];
+    for (let i = 0; i < ALL_DX_SUSP.length; i += DX_BATCH)
+      dxBatches.push(ALL_DX_SUSP.slice(i, i + DX_BATCH));
+
+    const PE_BATCH  = 24;
+    const pBatches  = [];
+    for (let i = 0; i < periods.length; i += PE_BATCH)
+      pBatches.push(periods.slice(i, i + PE_BATCH));
+
+    const totalCalls = dxBatches.length * pBatches.length;
+    setStep('s_plan','done',
+      ALL_DX_SUSP.length + ' dx strings · ' + periods.length + ' periods → ' +
+      dxBatches.length + ' dx batch(es) × ' + pBatches.length + ' period batch(es) = ' +
+      totalCalls + ' API call(s)'
+    );
+    setProgress(20);
+    await sleep(40);
+
+    // ══════════════════════════════════════════════════════════════
+    //  STEP 3 — Fetch analytics
+    //  Exact dashboard pattern:
+    //    /api/analytics.json
+    //    ?dimension=dx:...  &dimension=pe:...  &dimension=ou:LEVEL-5
+    //    &displayProperty=NAME&paging=false&ignoreLimit=true
+    //    Accumulate into _accMap slots via getSlot(ouId, period)
+    // ══════════════════════════════════════════════════════════════
+    setStep('s_fetch','running');
+
+    // Slot accumulator — same structure as dashboard
+    const _accMap = {};
+    function emptySlot(ouId, period) {
+      const ou = ST.ouHierarchy[ouId] || {};
+      return {
+        ou:ouId, period,
+        year:period.slice(0,4), month:period.slice(4,6),
+        level2: ou.districtName || '',
+        level4: ou.chiefdomName || '',
+        level5: ou.name || ouId,
+        hfType: ou.hfType || 'Other',
+        testedHF:0, testedHF_U5:0, testedHF_5_14:0, testedHF_15plus:0,
+        rdtHF:0,    rdtHF_U5:0,    rdtHF_5_14:0,    rdtHF_15plus:0,
+        microHF:0,  microHF_U5:0,  microHF_5_14:0,  microHF_15plus:0,
+        testedCommunity:0, testedCom_U5:0, testedCom_5_14:0, testedCom_15plus:0,
+        rdtCommunity:0,    rdtCom_U5:0,    rdtCom_5_14:0,    rdtCom_15plus:0,
+      };
+    }
+    function getSlot(ouId, period) {
+      const k = ouId + '|' + period;
+      if (!_accMap[k]) _accMap[k] = emptySlot(ouId, period);
+      return _accMap[k];
+    }
+
+    let callsDone = 0, totalRows = 0;
+
+    for (let di = 0; di < dxBatches.length; di++) {
+      const dxParam = dxBatches[di].join(';');
+      for (let pi = 0; pi < pBatches.length; pi++) {
+        const peParam = pBatches[pi].join(';');
+        callsDone++;
+        setProgress(
+          20 + Math.round((callsDone / totalCalls) * 65),
+          'Analytics batch ' + callsDone + '/' + totalCalls,
+          'dx batch ' + (di+1) + '/' + dxBatches.length +
+          ' · periods ' + pBatches[pi][0] + '→' + pBatches[pi][pBatches[pi].length-1]
+        );
+        setStep('s_fetch','running',
+          'Batch ' + callsDone + '/' + totalCalls +
+          ' · ' + pBatches[pi][0] + '→' + pBatches[pi][pBatches[pi].length-1]
+        );
+
+        // ── Exact same query as malaria dashboard ──
+        const resp = await dhis2(
+          '/api/analytics.json' +
+          '?dimension=dx:'   + dxParam +
+          '&dimension=pe:'   + peParam +
+          '&dimension=ou:LEVEL-' + LEVEL_PHU +
+          '&displayProperty=NAME&paging=false&ignoreLimit=true'
+        );
+
+        (resp.rows || []).forEach(row => {
+          // row = [dxStr, period, ouId, value] — same as dashboard
+          const [dxStr, period, ouId, rawVal] = row;
+          const val = parseFloat(rawVal) || 0;
+          if (!val) return;
+
+          const mapping = DX_LOOKUP_SUSP[dxStr];
+          if (!mapping) return;
+
+          // Community rows: roll up Level-6 CHW/ETR to their Level-5 parent
+          // (same pattern as dashboard uses for excludeTypes)
+          const effectiveId = ST.config.childToL5[ouId] || ouId;
+
+          // Accept the row — if OU not in hierarchy, add it on-the-fly
+          // (same as dashboard: !_ouHierarchy[ouId] check is permissive)
+          if (!ST.ouHierarchy[effectiveId]) {
+            ST.ouHierarchy[effectiveId] = {
+              id:effectiveId, name:effectiveId,
+              hfType:'Other', districtName:'', chiefdomName:'',
+            };
+          }
+
+          const ouType = ST.ouHierarchy[effectiveId]?.hfType || 'Other';
+          if (mapping.excludeTypes && mapping.excludeTypes.includes(ouType)) return;
+          const slot = getSlot(effectiveId, period);
+          // Combined total
+          slot[mapping.totalField] = (slot[mapping.totalField] || 0) + val;
+          if (mapping.splitField)
+            slot[mapping.splitField] = (slot[mapping.splitField] || 0) + val;
+          // RDT-only subtotal
+          if (mapping.rdtField) {
+            slot[mapping.rdtField] = (slot[mapping.rdtField] || 0) + val;
+            if (mapping.rdtSplit) slot[mapping.rdtSplit] = (slot[mapping.rdtSplit] || 0) + val;
+          }
+          // Microscopy-only subtotal
+          if (mapping.microField) {
+            slot[mapping.microField] = (slot[mapping.microField] || 0) + val;
+            if (mapping.microSplit) slot[mapping.microSplit] = (slot[mapping.microSplit] || 0) + val;
+          }
+          totalRows++;
+        });
+
+        await sleep(50);
+      }
+    }
+
+    setStep('s_fetch','done',
+      totalCalls + ' analytics call(s) · ' + totalRows.toLocaleString() +
+      ' data points · ' + Object.keys(_accMap).length.toLocaleString() + ' ou-period slots'
+    );
+    setProgress(86);
+
+    // ══════════════════════════════════════════════════════════════
+    //  STEP 4 — Derive flat rows
+    //  Convert _accMap slots into facData + commData arrays
+    //  Each row: ouId, districtName, chiefdomName, date, age0/1/2, total, pct
+    // ══════════════════════════════════════════════════════════════
+    setStep('s_derive','running');
+    setProgress(90);
+
+    ST.facData  = [];
+    ST.commData = [];
+
+    Object.values(_accMap).forEach(slot => {
+      const fac  = slot.testedHF;
+      const comm = slot.testedCommunity;
+      const base = {
+        ouId:         slot.ou,
+        districtName: slot.level2,
+        chiefdomName: slot.level4,
+        date:         slot.year + '-' + slot.month,
+        hfType:       slot.hfType,
+      };
+
+      if (fac > 0 || slot.testedHF_U5 > 0 || slot.testedHF_5_14 > 0 || slot.testedHF_15plus > 0) {
+        const total = fac;
+        const d = total > 0 ? total : null;
+        ST.facData.push({
+          ...base,
+          age0:slot.testedHF_U5, age1:slot.testedHF_5_14, age2:slot.testedHF_15plus,
+          total,
+          pct0: d?(slot.suspectedHF_U5/d*100):null,
+          pct1: d?(slot.suspectedHF_5_14/d*100):null,
+          pct2: d?(slot.suspectedHF_15plus/d*100):null,
+        });
+      } else if (Object.values(ST.ouHierarchy).some(o=>o.id===slot.ou)) {
+        // Include zero rows for OUs in hierarchy (consistent with dashboard)
+        ST.facData.push({ ...base, age0:0, age1:0, age2:0, total:0, pct0:null, pct1:null, pct2:null });
+      }
+
+      if (comm > 0 || slot.testedCom_U5 > 0 || slot.testedCom_5_14 > 0 || slot.testedCom_15plus > 0) {
+        const total = comm;
+        const d = total > 0 ? total : null;
+        ST.commData.push({
+          ...base,
+          age0:slot.testedCom_U5, age1:slot.testedCom_5_14, age2:slot.testedCom_15plus,
+          total,
+          pct0: d?(slot.suspectedCom_U5/d*100):null,
+          pct1: d?(slot.suspectedCom_5_14/d*100):null,
+          pct2: d?(slot.suspectedCom_15plus/d*100):null,
+        });
+      }
+    });
+
+    window.__lastAccMap = _accMap;
+    sa_buildAggregates();
+
+    setStep('s_derive','done',
+      ST.facData.length.toLocaleString() + ' facility rows · ' +
+      ST.commData.length.toLocaleString() + ' community rows · ' +
+      'Fac total: ' + ST.facData.reduce((s,r)=>s+r.total,0).toLocaleString() + ' suspected'
+    );
+    setProgress(93);
+
+    // ══════════════════════════════════════════════════════════════
+    //  STEP 5 — GeoJSON
+    // ══════════════════════════════════════════════════════════════
+    setStep('s_geo','running');
+    if (!ST.geoCache.chiefdomGeo) {
+      const [cg, dg] = await Promise.all([
+        fetch(CHIEFDOM_GEOJSON).then(r=>r.json()),
+        fetch(DISTRICT_GEOJSON).then(r=>r.json()).catch(()=>null),
+      ]);
+      ST.geoCache.chiefdomGeo = cg;
+      ST.geoCache.districtGeo = dg;
+      let mnX=Infinity,mnY=Infinity,mxX=-Infinity,mxY=-Infinity;
+      (cg.features||[]).forEach(f=>{
+        walkCoords(f.geometry, c=>{
+          if(c[0]<mnX)mnX=c[0]; if(c[0]>mxX)mxX=c[0];
+          if(c[1]<mnY)mnY=c[1]; if(c[1]>mxY)mxY=c[1];
+        });
+      });
+      ST.geoCache.bbox = {mnX,mnY,mxX,mxY};
+    }
+    const defaultYear = periods.slice(-1)[0].slice(0,4);
+    sa_computeGeoRates(defaultYear);
+    populateYearDropdown();
+    setStep('s_geo','done',
+      (ST.geoCache.chiefdomGeo.features||[]).length + ' chiefdom features · rates for ' + defaultYear
+    );
+    setProgress(96);
+
+    // ══════════════════════════════════════════════════════════════
+    //  STEP 6 — Render
+    // ══════════════════════════════════════════════════════════════
+    setStep('s_render','running');
+    document.getElementById('pipelineScreen').style.display = 'none';
+    document.getElementById('resultsSection').style.display = 'block';
+    await sleep(80);
+
+    let errs = [];
+    try { sa_drawCharts();    } catch(e){ errs.push('Charts: '+e.message); }
+    try { sa_renderGeoMaps(); } catch(e){ errs.push('Geo: '+e.message); }
+    try { sa_buildTable();    } catch(e){ errs.push('Table: '+e.message); }
+    try { trk_init();         } catch(e){ errs.push('Tracking: '+e.message); }
+
+    if (errs.length) setStep('s_render','error', errs.join(' | '));
+    else             setStep('s_render','done','All outputs ready');
+    setProgress(100);
+
+    // Stats bar
+    const totFac  = ST.facData.reduce((s,r)=>s+r.total,0);
+    const totA0f  = ST.facData.reduce((s,r)=>s+r.age0,0);
+    const totA1f  = ST.facData.reduce((s,r)=>s+r.age1,0);
+    const totA2f  = ST.facData.reduce((s,r)=>s+r.age2,0);
+    const totComm = ST.commData.reduce((s,r)=>s+r.total,0);
+    const totA0c  = ST.commData.reduce((s,r)=>s+r.age0,0);
+    const totA1c  = ST.commData.reduce((s,r)=>s+r.age1,0);
+    const totA2c  = ST.commData.reduce((s,r)=>s+r.age2,0);
+    const allTot  = totFac + totComm;
+    const fp = (n,d) => d>0?(n/d*100).toFixed(1)+'%':'—';
+    document.getElementById('statsRow').innerHTML = [
+      `<div class="stat-pill">Facility: ${totFac.toLocaleString()}</div>`,
+      `<div class="stat-pill age0">Fac 0 to 59m tested: ${totA0f.toLocaleString()} (${fp(totA0f,totFac)})</div>`,
+      `<div class="stat-pill age1">Fac 5 to 14y tested: ${totA1f.toLocaleString()} (${fp(totA1f,totFac)})</div>`,
+      `<div class="stat-pill age2">Fac 15y+ tested: ${totA2f.toLocaleString()} (${fp(totA2f,totFac)})</div>`,
+      `<div class="stat-pill" style="background:#e8f5e9;border-color:var(--green);color:#155724;">Community: ${totComm.toLocaleString()}</div>`,
+      `<div class="stat-pill" style="background:#fde8e0;border-color:#e05c2b;color:#7a2800;">Comm 0 to 59m tested: ${totA0c.toLocaleString()} (${fp(totA0c,totComm)})</div>`,
+      `<div class="stat-pill" style="background:#ddeeff;border-color:#2171b5;color:#0d4080;">Comm 5 to 14y tested: ${totA1c.toLocaleString()} (${fp(totA1c,totComm)})</div>`,
+      `<div class="stat-pill" style="background:#d6f0de;border-color:#31a354;color:#1a5e2a;">Comm 15y+ tested: ${totA2c.toLocaleString()} (${fp(totA2c,totComm)})</div>`,
+      `<div class="stat-pill ok">Combined: ${allTot.toLocaleString()} · Fac share: ${fp(totFac,allTot)}</div>`,
+      `<div class="stat-pill">${periods.length} months · ${start} → ${end}</div>`,
+    ].join('');
+
+    setPill('Done ✓','rgba(40,167,69,.55)');
+
+  } catch(err) {
+    console.error(err);
+    document.getElementById('pipelineScreen').style.display = 'block';
+    document.getElementById('resultsSection').style.display = 'none';
+    Object.keys(stepEls).forEach(k => {
+      if (stepEls[k]?.classList.contains('running')) stepEls[k].className = 'step-item error';
+    });
+    const sl = document.getElementById('stepList');
+    const e  = document.createElement('div');
+    e.style.cssText = 'margin-top:14px;padding:14px;background:#2e0a0a;border-radius:6px;color:#ef9a9a;font-size:12px;line-height:1.6;';
+    const msg = err.message || 'Unknown error';
+    const isNetwork = msg.toLowerCase().includes('failed to fetch') || msg.toLowerCase().includes('network');
+    e.innerHTML =
+      '<strong style="font-size:13px;">✗ Pipeline error</strong><br>' +
+      msg + '<br><br>' +
+      (isNetwork
+        ? '<span style="color:#ffcc80;">This looks like a network issue. Check your internet connection or wait a moment and retry — the GAS proxy sometimes needs a moment to warm up.</span><br><br>'
+        : '') +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">' +
+      '<button onclick="sa_startPipeline()" style="background:#1f4a6a;color:#fff;border:none;padding:8px 18px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:700;">↺ Retry</button>' +
+      '<button onclick="showConfigScreen()" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);padding:8px 18px;border-radius:6px;font-size:12px;cursor:pointer;">← Back to Config</button>' +
+      '</div>';
+    sl.appendChild(e);
+    setPill('Error', 'rgba(220,53,69,.5)');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  AGGREGATES
+// ═══════════════════════════════════════════════════════════════════
+let AGG = {};
+
+function sa_buildAggregates() {
+  // Re-derive facData and commData based on current test type filter
+  // This allows RDT/Microscopy/Combined switching without re-fetching
+  const TF = getTestedFields();
+  const _accMapRef = window.__lastAccMap || {};
+
+  if (Object.keys(_accMapRef).length > 0) {
+    ST.facData  = [];
+    ST.commData = [];
+    const periods = ST.config?.periods || [];
+
+    Object.values(_accMapRef).forEach(slot => {
+      const base = {
+        ouId: slot.ou, districtName: slot.level2, chiefdomName: slot.level4,
+        date: slot.year + '-' + slot.month, hfType: slot.hfType,
+      };
+
+      // Facility row
+      const fTotal = TF.facTotal ? (slot[TF.facTotal] || 0) : 0;
+      const fU5    = TF.facU5    ? (slot[TF.facU5]    || 0) : 0;
+      const f514   = TF.fac514   ? (slot[TF.fac514]   || 0) : 0;
+      const f15p   = TF.fac15p   ? (slot[TF.fac15p]   || 0) : 0;
+      if (fTotal > 0 || fU5 > 0 || f514 > 0 || f15p > 0) {
+        const d = fTotal > 0 ? fTotal : null;
+        ST.facData.push({ ...base, age0:fU5, age1:f514, age2:f15p, total:fTotal,
+          pct0:d?(fU5/d*100):null, pct1:d?(f514/d*100):null, pct2:d?(f15p/d*100):null });
+      } else if (ST.ouHierarchy[slot.ou]) {
+        ST.facData.push({ ...base, age0:0, age1:0, age2:0, total:0, pct0:null, pct1:null, pct2:null });
+      }
+
+      // Community row (only if test type supports community)
+      if (TF.comTotal) {
+        const cTotal = slot[TF.comTotal] || 0;
+        const cU5    = TF.comU5  ? (slot[TF.comU5]  || 0) : 0;
+        const c514   = TF.com514 ? (slot[TF.com514] || 0) : 0;
+        const c15p   = TF.com15p ? (slot[TF.com15p] || 0) : 0;
+        if (cTotal > 0 || cU5 > 0 || c514 > 0 || c15p > 0) {
+          const d = cTotal > 0 ? cTotal : null;
+          ST.commData.push({ ...base, age0:cU5, age1:c514, age2:c15p, total:cTotal,
+            pct0:d?(cU5/d*100):null, pct1:d?(c514/d*100):null, pct2:d?(c15p/d*100):null });
+        }
+      }
+    });
+  }
+
+
+  AGG = {
+    natMonthly:{}, distMonthly:{}, distYearly:{}, chiefMonthly:{}, chiefYearly:{},
+    com_natMonthly:{}, com_distMonthly:{}, com_distYearly:{}, com_chiefMonthly:{}, com_chiefYearly:{},
+  };
+
+  ST.facData.forEach(row => {
+    const yr=row.date.slice(0,4), mo=row.date.slice(5,7), d=row.districtName, c=row.chiefdomName;
+    const acc = (obj, key, extra={}) => {
+      if (!obj[key]) obj[key] = {age0:0,age1:0,age2:0,total:0,...extra};
+      obj[key].age0+=row.age0; obj[key].age1+=row.age1; obj[key].age2+=row.age2; obj[key].total+=row.total;
+    };
+    acc(AGG.natMonthly,  row.date,          {date:row.date,year:yr,month:mo});
+    acc(AGG.distMonthly, `${d}|${row.date}`,{district:d,date:row.date,year:yr,month:mo});
+    acc(AGG.distYearly,  `${d}|${yr}`,      {district:d,year:yr});
+    acc(AGG.chiefMonthly,`${c}|${row.date}`,{district:d,chiefdom:c,date:row.date,year:yr,month:mo});
+    acc(AGG.chiefYearly, `${c}|${yr}`,      {district:d,chiefdom:c,year:yr});
+  });
+
+  ST.commData.forEach(row => {
+    const yr=row.date.slice(0,4), mo=row.date.slice(5,7), d=row.districtName, c=row.chiefdomName;
+    const acc = (obj, key, extra={}) => {
+      if (!obj[key]) obj[key] = {age0:0,age1:0,age2:0,total:0,...extra};
+      obj[key].age0+=row.age0; obj[key].age1+=row.age1; obj[key].age2+=row.age2; obj[key].total+=row.total;
+    };
+    acc(AGG.com_natMonthly,  row.date,          {date:row.date,year:yr,month:mo});
+    acc(AGG.com_distMonthly, `${d}|${row.date}`,{district:d,date:row.date,year:yr,month:mo});
+    acc(AGG.com_distYearly,  `${d}|${yr}`,      {district:d,year:yr});
+    acc(AGG.com_chiefMonthly,`${c}|${row.date}`,{district:d,chiefdom:c,date:row.date,year:yr,month:mo});
+    acc(AGG.com_chiefYearly, `${c}|${yr}`,      {district:d,chiefdom:c,year:yr});
+  });
+
+  const addPct = obj => Object.values(obj).forEach(r => {
+    const d = r.total>0?r.total:null;
+    r.pct0 = d?+(r.age0/d*100).toFixed(1):null;
+    r.pct1 = d?+(r.age1/d*100).toFixed(1):null;
+    r.pct2 = d?+(r.age2/d*100).toFixed(1):null;
+  });
+  Object.values(AGG).forEach(addPct);
+
+  // Combined aggregates
+  const fmtP = (n,d) => d>0 ? +(n/d*100).toFixed(1) : null;
+  function makeCmb(F, C) {
+    const c0=F.age0+C.age0, c1=F.age1+C.age1, c2=F.age2+C.age2, ct=F.total+C.total;
+    return {
+      fac_age0:F.age0,fac_age1:F.age1,fac_age2:F.age2,fac_total:F.total,
+      com_age0:C.age0,com_age1:C.age1,com_age2:C.age2,com_total:C.total,
+      age0:c0,age1:c1,age2:c2,total:ct,
+      date:F.date||C.date, year:F.year||C.year, month:F.month||C.month,
+      district:F.district||C.district||'', chiefdom:F.chiefdom||C.chiefdom||'',
+      pct0:fmtP(c0,ct), pct1:fmtP(c1,ct), pct2:fmtP(c2,ct),
+      fac_pct0:fmtP(F.age0,F.total), fac_pct1:fmtP(F.age1,F.total), fac_pct2:fmtP(F.age2,F.total),
+      com_pct0:fmtP(C.age0,C.total), com_pct1:fmtP(C.age1,C.total), com_pct2:fmtP(C.age2,C.total),
+      fac_share_age0:fmtP(F.age0,c0), fac_share_age1:fmtP(F.age1,c1), fac_share_age2:fmtP(F.age2,c2),
+      com_share_age0:fmtP(C.age0,c0), com_share_age1:fmtP(C.age1,c1), com_share_age2:fmtP(C.age2,c2),
+      fac_share_total:fmtP(F.total,ct), com_share_total:fmtP(C.total,ct),
+    };
+  }
+  const EMPTY = {age0:0,age1:0,age2:0,total:0,date:'',year:'',month:'',district:'',chiefdom:''};
+  const keys_nat  = new Set([...Object.keys(AGG.natMonthly), ...Object.keys(AGG.com_natMonthly)]);
+  const keys_distM= new Set([...Object.keys(AGG.distMonthly),...Object.keys(AGG.com_distMonthly)]);
+  const keys_distY= new Set([...Object.keys(AGG.distYearly), ...Object.keys(AGG.com_distYearly)]);
+  AGG.cmbNatMonthly  = {}; keys_nat.forEach(k=>{  AGG.cmbNatMonthly[k]  = makeCmb(AGG.natMonthly[k]||EMPTY,   AGG.com_natMonthly[k]||EMPTY);  });
+  AGG.cmbDistMonthly = {}; keys_distM.forEach(k=>{ AGG.cmbDistMonthly[k] = makeCmb(AGG.distMonthly[k]||EMPTY,  AGG.com_distMonthly[k]||EMPTY); });
+  AGG.cmbDistYearly  = {}; keys_distY.forEach(k=>{ AGG.cmbDistYearly[k]  = makeCmb(AGG.distYearly[k]||EMPTY,   AGG.com_distYearly[k]||EMPTY);  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  CHARTS — identical to v1 (all rendering logic preserved)
+// ═══════════════════════════════════════════════════════════════════
+function sa_redrawCharts() { sa_drawCharts(); }
+function sa_drawCharts() {
+  sa_drawNationalMonthly('chCanvas1');
+  sa_drawDistrictSummary('chCanvas2');
+  sa_drawNationalMonthly('chCanvas3', true);
+  sa_drawDistrictSummary('chCanvas4', true);
+  sa_drawCombinedAge('chCanvas5');
+  sa_drawSourceByAge('chCanvas6');
+  sa_drawSourceTotal('chCanvas7');
+}
+function sa_downloadChart(canvasId, suffix) {
+  const canvas = document.getElementById(canvasId); if(!canvas) return;
+  const a = document.createElement('a');
+  a.download = `NMCP_TestedAge_${suffix}.png`;
+  a.href = canvas.toDataURL('image/png'); a.click();
+}
+function getChartDims() {
+  return { W: parseInt(document.getElementById('chW').value)||1200, H: parseInt(document.getElementById('chH').value)||520 };
+}
+function wrapText(ctx, text, x, y, maxW, lh) {
+  const words=text.split(' '); let line='',cy=y;
+  words.forEach(w=>{const test=line+(line?' ':'')+w;if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,x,cy);line=w;cy+=lh;}else line=test;});
+  if(line) ctx.fillText(line,x,cy);
+}
+
+function sa_drawNationalMonthly(canvasId, isComm=false) {
+  const canvas=document.getElementById(canvasId); if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const {W,H}=getChartDims();
+  canvas.width=W; canvas.height=H; canvas.style.width='100%'; canvas.style.height='auto';
+  const rows=Object.values(isComm?AGG.com_natMonthly:AGG.natMonthly).sort((a,b)=>a.date.localeCompare(b.date));
+  const src=isComm?'Community (HTR/ETR)':'Facility';
+  const title=`NMCP Tested Malaria — ${src} — ${getTestTypeLabel()} — Age Distribution by Month · ${ST.config.start} → ${ST.config.end}`;
+  const sub=`${src} · ${rows.length} months · Stacked 100% proportions`;
+  const titleEl=document.getElementById(isComm?'ch3Title':'ch1Title'),subEl=document.getElementById(isComm?'ch3Sub':'ch1Sub');
+  if(titleEl)titleEl.textContent=title; if(subEl)subEl.textContent=sub;
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,H);
+  const TITLE_H=52,LEG_H=34,XLAB_H=52,BOT=XLAB_H+10,LEFT=64,RIGHT=20;
+  const bTop=TITLE_H+LEG_H,bBot=H-BOT,bH=bBot-bTop,bW=W-LEFT-RIGHT;
+  if(!rows.length){ctx.fillStyle='#888';ctx.font='14px Arial';ctx.textAlign='center';ctx.fillText('No data available',W/2,H/2);return;}
+  ctx.fillStyle='#004080';ctx.font='bold 14px Oswald,Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='top';
+  wrapText(ctx,title,W/2,8,W-40,19);
+  const lItems=[{label:'0 to 59 months',color:AGE_COLORS.age0},{label:'5 to 14 years',color:AGE_COLORS.age1},{label:'15 years and above',color:AGE_COLORS.age2}];
+  const legY=TITLE_H+6; let lx=W/2-lItems.length*140/2;
+  lItems.forEach(item=>{ctx.fillStyle=item.color;ctx.fillRect(lx,legY+2,16,12);ctx.strokeStyle='rgba(0,0,0,.2)';ctx.lineWidth=.5;ctx.strokeRect(lx,legY+2,16,12);ctx.fillStyle='#111';ctx.font='bold 10px Oswald,Arial,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(item.label,lx+20,legY+8);lx+=140;});
+  for(let pct=0;pct<=100;pct+=20){const y=bTop+bH*(1-pct/100);ctx.fillStyle='#555';ctx.font='10px Oswald,Arial,sans-serif';ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillText(pct+'%',LEFT-6,y);ctx.strokeStyle='#e0e0e0';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(LEFT,y);ctx.lineTo(LEFT+bW,y);ctx.stroke();}
+  const n=rows.length,barW=Math.max(2,bW/n-2),gap=(bW-barW*n)/(n+1);
+  rows.forEach((row,i)=>{
+    const d=row.total>0?row.total:null,p0=d?row.age0/d:0,p1=d?row.age1/d:0,p2=d?row.age2/d:0;
+    const x=LEFT+gap+i*(barW+gap);
+    const segInfo=[]; let cumY=bTop+bH;
+    [[p0,AGE_COLORS.age0],[p1,AGE_COLORS.age1],[p2,AGE_COLORS.age2]].forEach(([pct,col])=>{const segH=bH*pct;ctx.fillStyle=col;ctx.fillRect(x,cumY-segH,barW,segH);ctx.strokeStyle='rgba(0,0,0,.5)';ctx.lineWidth=.6;ctx.strokeRect(x,cumY-segH,barW,segH);segInfo.push({cy:cumY-segH/2,h:segH,pct});cumY-=segH;});
+    if(!d){ctx.fillStyle='#ccc';ctx.fillRect(x,bTop,barW,bH);}
+    const lfsz=Math.min(14,Math.max(10,barW*.45));ctx.font=`bold ${lfsz}px Oswald,Arial,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+    segInfo.forEach(({cy,h,pct})=>{if(h<14||pct<.04)return;const txt=(pct*100).toFixed(1)+'%';ctx.fillStyle='#111';ctx.fillText(txt,x+barW/2,cy);});
+    ctx.fillStyle='#333';ctx.font='9px Oswald,Arial,sans-serif';ctx.textAlign='right';ctx.textBaseline='middle';ctx.save();ctx.translate(x+barW/2,bBot+6);ctx.rotate(-Math.PI/2);ctx.fillText(row.date,0,0);ctx.restore();
+  });
+  ctx.strokeStyle='#000';ctx.lineWidth=1.5;ctx.strokeRect(LEFT,bTop,bW,bH);
+  ctx.fillStyle='#004080';ctx.font='bold 11px Oswald,Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText('Time Period',LEFT+bW/2,H-2);
+  ctx.save();ctx.translate(14,bTop+bH/2);ctx.rotate(-Math.PI/2);ctx.fillText('% Share of Tested Cases',0,0);ctx.restore();
+}
+
+function sa_drawDistrictSummary(canvasId, isComm=false) {
+  const canvas=document.getElementById(canvasId); if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const {W,H}=getChartDims();
+  canvas.width=W; canvas.height=H; canvas.style.width='100%'; canvas.style.height='auto';
+  const srcAgg=isComm?AGG.com_distYearly:AGG.distYearly;
+  const src2=isComm?'Community (HTR/ETR)':'Facility';
+  const distMap={};
+  Object.values(srcAgg).forEach(row=>{if(!distMap[row.district])distMap[row.district]={district:row.district,age0:0,age1:0,age2:0,total:0};distMap[row.district].age0+=row.age0;distMap[row.district].age1+=row.age1;distMap[row.district].age2+=row.age2;distMap[row.district].total+=row.total;});
+  const rows=Object.values(distMap).filter(r=>r.total>0).sort((a,b)=>b.total-a.total);
+  const title=`Tested Malaria — ${src2} — ${getTestTypeLabel()} — Age by District · ${ST.config.start} → ${ST.config.end}`;
+  const sub=`${src2} · ${rows.length} districts · Stacked 100%`;
+  const titleEl=document.getElementById(isComm?'ch4Title':'ch2Title'),subEl=document.getElementById(isComm?'ch4Sub':'ch2Sub');
+  if(titleEl)titleEl.textContent=title; if(subEl)subEl.textContent=sub;
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,H);
+  const TITLE_H=52,LEG_H=34,XLAB_H=80,BOT=XLAB_H+10,LEFT=64,RIGHT=20;
+  const bTop=TITLE_H+LEG_H,bBot=H-BOT,bH=bBot-bTop,bW=W-LEFT-RIGHT;
+  if(!rows.length){ctx.fillStyle='#888';ctx.font='14px Arial';ctx.textAlign='center';ctx.fillText('No data available',W/2,H/2);return;}
+  ctx.fillStyle='#28a745';ctx.font='bold 14px Oswald,Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='top';
+  wrapText(ctx,title,W/2,8,W-40,19);
+  const lItems=[{label:'0 to 59 months',color:AGE_COLORS.age0},{label:'5 to 14 years',color:AGE_COLORS.age1},{label:'15 years and above',color:AGE_COLORS.age2}];
+  const legY=TITLE_H+6; let lx=W/2-lItems.length*140/2;
+  lItems.forEach(item=>{ctx.fillStyle=item.color;ctx.fillRect(lx,legY+2,16,12);ctx.strokeStyle='rgba(0,0,0,.2)';ctx.lineWidth=.5;ctx.strokeRect(lx,legY+2,16,12);ctx.fillStyle='#111';ctx.font='bold 10px Oswald,Arial,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(item.label,lx+20,legY+8);lx+=140;});
+  for(let pct=0;pct<=100;pct+=20){const y=bTop+bH*(1-pct/100);ctx.fillStyle='#555';ctx.font='10px Oswald,Arial,sans-serif';ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillText(pct+'%',LEFT-6,y);ctx.strokeStyle='#e0e0e0';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(LEFT,y);ctx.lineTo(LEFT+bW,y);ctx.stroke();}
+  const n=rows.length,barW=Math.max(3,bW/n-3),gap=(bW-barW*n)/(n+1);
+  rows.forEach((row,i)=>{
+    const d=row.total>0?row.total:null,p0=d?row.age0/d:0,p1=d?row.age1/d:0,p2=d?row.age2/d:0;
+    const x=LEFT+gap+i*(barW+gap); let cumY=bTop+bH;
+    [[p0,AGE_COLORS.age0],[p1,AGE_COLORS.age1],[p2,AGE_COLORS.age2]].forEach(([pct,col])=>{const segH=bH*pct;ctx.fillStyle=col;ctx.fillRect(x,cumY-segH,barW,segH);cumY-=segH;});
+    const label=row.district.split(' ').map(w=>w.charAt(0)+w.slice(1).toLowerCase()).join(' ');
+    ctx.fillStyle='#333';ctx.font='10px Oswald,Arial,sans-serif';ctx.textAlign='right';ctx.textBaseline='middle';ctx.save();ctx.translate(x+barW/2,bBot+6);ctx.rotate(-Math.PI/3);ctx.fillText(label,0,0);ctx.restore();
+    if(barW>24){let cy=bTop+bH;[[p0,AGE_COLORS.age0],[p1,AGE_COLORS.age1],[p2,AGE_COLORS.age2]].forEach(([pct,col])=>{const segH=bH*pct;if(segH>14&&pct>0.04){const fsz=Math.min(14,Math.max(10,barW*.22));ctx.font=`bold ${fsz}px Oswald,Arial,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#111';ctx.fillText((pct*100).toFixed(0)+'%',x+barW/2,cy-segH/2);}cy-=segH;});}
+  });
+  ctx.strokeStyle='#000';ctx.lineWidth=1.5;ctx.strokeRect(LEFT,bTop,bW,bH);
+  ctx.fillStyle='#28a745';ctx.font='bold 11px Oswald,Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText('District',LEFT+bW/2,H-2);
+  ctx.save();ctx.translate(14,bTop+bH/2);ctx.rotate(-Math.PI/2);ctx.fillText('% Share of Tested Cases',0,0);ctx.restore();
+}
+
+function sa_drawCombinedAge(canvasId){
+  const canvas=document.getElementById(canvasId);if(!canvas)return;
+  const {W,H}=getChartDims();canvas.width=W;canvas.height=H;canvas.style.width='100%';canvas.style.height='auto';
+  const ctx=canvas.getContext('2d');
+  const rows=Object.values(AGG.cmbNatMonthly||{}).sort((a,b)=>a.date.localeCompare(b.date));
+  const title=`NMCP Tested Malaria — Combined (Fac+Comm) Age Distribution by Month · ${ST.config.start} → ${ST.config.end}`;
+  const sub=`Combined facility + community · ${rows.length} months · Stacked 100%`;
+  const el1=document.getElementById('ch5Title'),el2=document.getElementById('ch5Sub');
+  if(el1)el1.textContent=title;if(el2)el2.textContent=sub;
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+  const TITLE_H=52,LEG_H=34,XLAB_H=52,BOT=XLAB_H+10,LEFT=64,RIGHT=20;
+  const bTop=TITLE_H+LEG_H,bBot=H-BOT,bH=bBot-bTop,bW=W-LEFT-RIGHT;
+  ctx.fillStyle='#283593';ctx.font='bold 14px Oswald,Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='top';
+  wrapText(ctx,title,W/2,8,W-40,19);
+  const lItems=[{label:'0 to 59 months (Fac+Comm)',color:AGE_COLORS.age0},{label:'5 to 14y',color:AGE_COLORS.age1},{label:'15y and above',color:AGE_COLORS.age2}];
+  const legY=TITLE_H+6;let lx=W/2-lItems.length*140/2;
+  lItems.forEach(it=>{ctx.fillStyle=it.color;ctx.fillRect(lx,legY+2,16,12);ctx.strokeStyle='rgba(0,0,0,.2)';ctx.lineWidth=.5;ctx.strokeRect(lx,legY+2,16,12);ctx.fillStyle='#111';ctx.font='bold 10px Oswald,Arial,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(it.label,lx+20,legY+8);lx+=140;});
+  for(let pct=0;pct<=100;pct+=20){const y=bTop+bH*(1-pct/100);ctx.fillStyle='#555';ctx.font='10px Oswald,Arial,sans-serif';ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillText(pct+'%',LEFT-6,y);ctx.strokeStyle='#e0e0e0';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(LEFT,y);ctx.lineTo(LEFT+bW,y);ctx.stroke();}
+  if(!rows.length){ctx.fillStyle='#888';ctx.font='14px Arial';ctx.textAlign='center';ctx.fillText('No data',W/2,H/2);return;}
+  const n=rows.length,barW=Math.max(2,bW/n-2),gap=(bW-barW*n)/(n+1);
+  rows.forEach((row,i)=>{
+    const d=row.total>0?row.total:null,p0=d?row.age0/d:0,p1=d?row.age1/d:0,p2=d?row.age2/d:0;
+    const x=LEFT+gap+i*(barW+gap);
+    const segInfo=[];let cumY=bTop+bH;
+    [[p0,AGE_COLORS.age0],[p1,AGE_COLORS.age1],[p2,AGE_COLORS.age2]].forEach(([pct,col])=>{const segH=bH*pct;ctx.fillStyle=col;ctx.fillRect(x,cumY-segH,barW,segH);ctx.strokeStyle='rgba(0,0,0,.5)';ctx.lineWidth=.6;ctx.strokeRect(x,cumY-segH,barW,segH);segInfo.push({cy:cumY-segH/2,h:segH,pct});cumY-=segH;});
+    if(!d){ctx.fillStyle='#ccc';ctx.fillRect(x,bTop,barW,bH);}
+    const lfsz=Math.min(14,Math.max(10,barW*.45));ctx.font=`bold ${lfsz}px Oswald,Arial,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+    segInfo.forEach(({cy,h,pct})=>{if(h<14||pct<.04)return;const txt=(pct*100).toFixed(1)+'%';ctx.fillStyle='#111';ctx.fillText(txt,x+barW/2,cy);});
+    ctx.fillStyle='#333';ctx.font='9px Oswald,Arial,sans-serif';ctx.textAlign='right';ctx.textBaseline='middle';ctx.save();ctx.translate(x+barW/2,bBot+6);ctx.rotate(-Math.PI/2);ctx.fillText(row.date,0,0);ctx.restore();
+  });
+  ctx.strokeStyle='#000';ctx.lineWidth=1.5;ctx.strokeRect(LEFT,bTop,bW,bH);
+  ctx.fillStyle='#283593';ctx.font='bold 11px Oswald,Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText('Time Period',LEFT+bW/2,H-2);
+}
+
+function sa_drawSourceByAge(canvasId){
+  const canvas=document.getElementById(canvasId);if(!canvas)return;
+  const {W,H}=getChartDims();canvas.width=W;canvas.height=H;canvas.style.width='100%';canvas.style.height='auto';
+  const ctx=canvas.getContext('2d');
+  const rows=Object.values(AGG.cmbNatMonthly||{}).sort((a,b)=>a.date.localeCompare(b.date));
+  const title=`Facility vs Community Share by Age Group (Monthly) · ${ST.config.start} → ${ST.config.end}`;
+  const sub='Each month: 3 grouped bars (age groups). Each bar = Facility % (bottom) + Community % (top), stacked to 100%.';
+  const el1=document.getElementById('ch6Title'),el2=document.getElementById('ch6Sub');
+  if(el1)el1.textContent=title;if(el2)el2.textContent=sub;
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+  const TITLE_H=52,LEG_H=48,XLAB_H=52,BOT=XLAB_H+10,LEFT=64,RIGHT=20;
+  const bTop=TITLE_H+LEG_H,bBot=H-BOT,bH=bBot-bTop,bW=W-LEFT-RIGHT;
+  const COLS={fac0:'#0f7a24',com0:'#9aeaaa',fac1:'#cccccc',com1:'#f0f0f0',fac2:'#004a8c',com2:'#80b9e3'};
+  ctx.fillStyle='#880e4f';ctx.font='bold 14px Oswald,Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='top';
+  wrapText(ctx,title,W/2,8,W-40,19);
+  const legItems=[{label:'Fac 0 to 59 months',col:COLS.fac0},{label:'Fac 5 to 14 years',col:COLS.fac1},{label:'Fac 15 years and above',col:COLS.fac2},{label:'Comm 0 to 59 months',col:COLS.com0},{label:'Comm 5 to 14 years',col:COLS.com1},{label:'Comm 15 years and above',col:COLS.com2}];
+  const legItemW=110;let lx=W/2-legItems.length*legItemW/2;
+  legItems.forEach(it=>{ctx.fillStyle=it.col;ctx.fillRect(lx,TITLE_H+8,16,13);ctx.strokeStyle='rgba(0,0,0,.25)';ctx.lineWidth=.5;ctx.strokeRect(lx,TITLE_H+8,16,13);ctx.fillStyle='#111';ctx.font='bold 10px Oswald,Arial,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(it.label,lx+20,TITLE_H+15);lx+=legItemW;});
+  for(let pct=0;pct<=100;pct+=20){const y=bTop+bH*(1-pct/100);ctx.fillStyle='#555';ctx.font='10px Oswald,Arial,sans-serif';ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillText(pct+'%',LEFT-6,y);ctx.strokeStyle='#e8e8e8';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(LEFT,y);ctx.lineTo(LEFT+bW,y);ctx.stroke();}
+  if(!rows.length){ctx.fillStyle='#888';ctx.font='14px Arial';ctx.textAlign='center';ctx.fillText('No data available',W/2,H/2);return;}
+  const n=rows.length,grpW=bW/n,barGap=Math.max(1,grpW*.04),barW=Math.max(4,(grpW-barGap*4)/3);
+  rows.forEach((row,i)=>{
+    const grpCX=LEFT+i*grpW+grpW/2,totalGrpW=barW*3+barGap*2,grpLeft=grpCX-totalGrpW/2;
+    [0,1,2].forEach(ai=>{
+      const fVal=[row.fac_age0,row.fac_age1,row.fac_age2][ai]||0,cVal=[row.com_age0,row.com_age1,row.com_age2][ai]||0;
+      const tot=fVal+cVal;if(!tot)return;
+      const facP=fVal/tot,comP=cVal/tot;
+      const x=grpLeft+ai*(barW+barGap);
+      const facCol=[COLS.fac0,COLS.fac1,COLS.fac2][ai],comCol=[COLS.com0,COLS.com1,COLS.com2][ai];
+      let cumY=bTop+bH;
+      const facH=bH*facP;ctx.fillStyle=facCol;ctx.fillRect(x,cumY-facH,barW,facH);
+      if(facH>=14&&facP>=.04){const fsz=Math.min(14,Math.max(10,barW*.34));ctx.font=`bold ${fsz}px Oswald,Arial,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#111';ctx.fillText((facP*100).toFixed(1)+'%',x+barW/2,cumY-facH/2);}
+      cumY-=facH;
+      const comH=bH*comP;ctx.fillStyle=comCol;ctx.fillRect(x,cumY-comH,barW,comH);
+      if(comH>=14&&comP>=.04){const fsz=Math.min(12,Math.max(8,barW*.3));ctx.font=`bold ${fsz}px Oswald,Arial,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#111';ctx.fillText((comP*100).toFixed(1)+'%',x+barW/2,cumY-comH/2);}
+      ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,cumY);ctx.lineTo(x+barW,cumY);ctx.stroke();
+    });
+    const AGE_NAMES=['0 to 59m','5 to 14y','15y and above'];
+    [0,1,2].forEach(ai=>{const x=grpLeft+ai*(barW+barGap);ctx.fillStyle='#444';ctx.font=`bold ${Math.min(9,Math.max(7,barW*.18))}px Oswald,Arial,sans-serif`;ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText(AGE_NAMES[ai],x+barW/2,bBot+2);});
+    ctx.fillStyle='#333';ctx.font='9px Oswald,Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText(row.date,grpCX,bBot+14);
+  });
+  ctx.strokeStyle='#000';ctx.lineWidth=1.5;ctx.strokeRect(LEFT,bTop,bW,bH);
+  ctx.fillStyle='#880e4f';ctx.font='bold 11px Oswald,Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText('Month',LEFT+bW/2,H-2);
+}
+
+function sa_drawSourceTotal(canvasId){
+  const canvas=document.getElementById(canvasId);if(!canvas)return;
+  const {W,H}=getChartDims();canvas.width=W;canvas.height=H;canvas.style.width='100%';canvas.style.height='auto';
+  const ctx=canvas.getContext('2d');
+  const rows=Object.values(AGG.cmbNatMonthly||{}).sort((a,b)=>a.date.localeCompare(b.date));
+  const title=`Facility vs Community Share of Total Tested Cases (Monthly) · ${ST.config.start} → ${ST.config.end}`;
+  const sub='Each bar = one month; facility tested (dark blue) vs community tested (light blue)';
+  const el1=document.getElementById('ch7Title'),el2=document.getElementById('ch7Sub');
+  if(el1)el1.textContent=title;if(el2)el2.textContent=sub;
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+  const TITLE_H=52,LEG_H=34,XLAB_H=52,BOT=XLAB_H+10,LEFT=64,RIGHT=20;
+  const bTop=TITLE_H+LEG_H,bBot=H-BOT,bH=bBot-bTop,bW=W-LEFT-RIGHT;
+  ctx.fillStyle='#5d4037';ctx.font='bold 14px Oswald,Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='top';wrapText(ctx,title,W/2,8,W-40,19);
+  const lItems2=[{label:'Facility',col:'#1f4a6a'},{label:'Community (HTR/ETR)',col:'#81b9e8'}];
+  let lx3=W/2-lItems2.length*150/2;
+  lItems2.forEach(it=>{ctx.fillStyle=it.col;ctx.fillRect(lx3,TITLE_H+6,16,12);ctx.strokeStyle='rgba(0,0,0,.2)';ctx.lineWidth=.5;ctx.strokeRect(lx3,TITLE_H+6,16,12);ctx.fillStyle='#111';ctx.font='bold 10px Oswald,Arial,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(it.label,lx3+20,TITLE_H+12);lx3+=150;});
+  for(let pct=0;pct<=100;pct+=20){const y=bTop+bH*(1-pct/100);ctx.fillStyle='#555';ctx.font='10px Oswald,Arial,sans-serif';ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillText(pct+'%',LEFT-6,y);ctx.strokeStyle='#e0e0e0';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(LEFT,y);ctx.lineTo(LEFT+bW,y);ctx.stroke();}
+  if(!rows.length){ctx.fillStyle='#888';ctx.font='14px Arial';ctx.textAlign='center';ctx.fillText('No data',W/2,H/2);return;}
+  const n=rows.length,barW=Math.max(2,bW/n-2),gap=(bW-barW*n)/(n+1);
+  rows.forEach((row,i)=>{
+    const tot=row.total;if(!tot)return;
+    const facP=row.fac_total/tot,comP=row.com_total/tot;
+    const x=LEFT+gap+i*(barW+gap);
+    const segInfo2=[];let cumY=bTop+bH;
+    [[facP,'#1f4a6a'],[comP,'#81b9e8']].forEach(([pct,col])=>{const segH=bH*pct;ctx.fillStyle=col;ctx.fillRect(x,cumY-segH,barW,segH);segInfo2.push({cy:cumY-segH/2,h:segH,pct});cumY-=segH;});
+    const lfsz7=Math.min(14,Math.max(10,barW*.45));ctx.font=`bold ${lfsz7}px Oswald,Arial,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+    segInfo2.forEach(({cy,h,pct})=>{if(h<14||pct<.04)return;const txt=(pct*100).toFixed(1)+'%';ctx.fillStyle='#111';ctx.fillText(txt,x+barW/2,cy);});
+    ctx.fillStyle='#333';ctx.font='9px Oswald,Arial,sans-serif';ctx.textAlign='right';ctx.textBaseline='middle';ctx.save();ctx.translate(x+barW/2,bBot+6);ctx.rotate(-Math.PI/2);ctx.fillText(row.date,0,0);ctx.restore();
+  });
+  ctx.strokeStyle='#000';ctx.lineWidth=1.5;ctx.strokeRect(LEFT,bTop,bW,bH);
+  ctx.fillStyle='#5d4037';ctx.font='bold 11px Oswald,Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText('Time Period',LEFT+bW/2,H-2);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  GEOGRAPHIC MAPS — identical to v1
+// ═══════════════════════════════════════════════════════════════════
+function sa_computeGeoRates(year) {
+  const ageKey=document.getElementById('geoAgeGroup')?.value||'age0';
+  const {distMonthly:_dM,chiefMonthly:_cM}=getSourceAGG();
+  const distM={},chiefM={};
+  Object.values(_dM||{}).forEach(row=>{if(!row||row.year!==year)return;const d=row.district||'';if(!d)return;if(!distM[d])distM[d]={a0:0,a1:0,a2:0,tot:0};distM[d].a0+=row.age0||0;distM[d].a1+=row.age1||0;distM[d].a2+=row.age2||0;distM[d].tot+=row.total||0;});
+  Object.values(_cM||{}).forEach(row=>{if(!row||row.year!==year)return;const ch=row.chiefdom||'';if(!ch)return;if(!chiefM[ch])chiefM[ch]={a0:0,a1:0,a2:0,tot:0};chiefM[ch].a0+=row.age0||0;chiefM[ch].a1+=row.age1||0;chiefM[ch].a2+=row.age2||0;chiefM[ch].tot+=row.total||0;});
+  const pctFn=(m,key)=>{const out={};Object.entries(m).forEach(([k,v])=>{const num=key==='age0'?v.a0:key==='age1'?v.a1:v.a2;const rate=v.tot>0?(num/v.tot*100):null;out[k]=rate;out[normName(k)]=rate;});return out;};
+  ST.geoRates.district=pctFn(distM,ageKey);
+  ST.geoRates.chiefdom=pctFn(chiefM,ageKey);
+}
+function lookupRate(shpName,rateMap){if(rateMap[shpName]!==undefined)return rateMap[shpName];return rateMap[normName(shpName)]??null;}
+function makeTf(canvas){const{mnX,mnY,mxX,mxY}=ST.geoCache.bbox;const W=canvas.width||640,H=canvas.height||640,P=W*.04;const legH=Math.round(W*.045);const mapH=H-legH;const rangeX=(mxX-mnX)||1,rangeY=(mxY-mnY)||1;const sc=Math.min((W-P*2)/rangeX,(mapH-P*2)/rangeY);const ox=P+(W-P*2-rangeX*sc)/2,oy=P+(mapH-P*2-rangeY*sc)/2;return c=>[ox+(c[0]-mnX)*sc,mapH-(oy+(c[1]-mnY)*sc)];}
+function sizeCanvas(canvas){let el=canvas.parentElement,w=0;while(el&&w<10){w=el.offsetWidth;el=el.parentElement;}w=w||560;canvas.width=canvas.height=w*2;}
+function walkCoords(geom,cb){if(!geom)return;if(geom.type==='Polygon')geom.coordinates[0].forEach(cb);if(geom.type==='MultiPolygon')geom.coordinates.forEach(p=>p[0].forEach(cb));}
+function drawPoly(ctx,geom,tf){const go=cs=>{ctx.beginPath();cs.forEach(ring=>ring.forEach((c,i)=>{const[x,y]=tf(c);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}));ctx.closePath();ctx.fill();ctx.stroke();};if(geom.type==='Polygon')go(geom.coordinates);if(geom.type==='MultiPolygon')geom.coordinates.forEach(p=>go(p));}
+function centroid(geom){const pts=[];walkCoords(geom,c=>pts.push(c));if(!pts.length)return null;return[pts.reduce((s,p)=>s+p[0],0)/pts.length,pts.reduce((s,p)=>s+p[1],0)/pts.length];}
+function geoLabel(ctx,txt,x,y,sz){ctx.font=`bold ${sz||10}px Oswald,Arial,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#1a2e3d';ctx.fillText(txt,x,y);}
+function drawNationalSolid(ctx,W,H,tf,fillColor){const geo=ST.geoCache.chiefdomGeo;if(!geo)return;const buildPath=()=>{ctx.beginPath();(geo.features||[]).forEach(f=>{const add=coords=>coords.forEach(ring=>{ring.forEach((c,i)=>{const[x,y]=tf(c);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});ctx.closePath();});if(f.geometry.type==='Polygon')add(f.geometry.coordinates);if(f.geometry.type==='MultiPolygon')f.geometry.coordinates.forEach(p=>add(p));});};const bw=Math.max(3,Math.round(W*.007));buildPath();ctx.strokeStyle='#1a2e3d';ctx.lineWidth=bw*2;ctx.lineJoin='round';ctx.stroke();ctx.save();buildPath();ctx.clip();ctx.fillStyle=fillColor;ctx.fillRect(0,0,W,H);ctx.restore();}
+function getGeoSource(){return document.getElementById('geoSource')?.value||'facility';}
+
+// Sync both test type dropdowns and redraw everything
+function onTestTypeChange() {
+  const v = document.getElementById('testTypeFilter')?.value || 'combined';
+  const charts = document.getElementById('testTypeFilterCharts');
+  if (charts) charts.value = v;
+  sa_buildAggregates();
+  sa_drawCharts();
+  sa_renderGeoMaps();
+}
+function onTestTypeChangeCharts() {
+  const v = document.getElementById('testTypeFilterCharts')?.value || 'combined';
+  const maps = document.getElementById('testTypeFilter');
+  if (maps) maps.value = v;
+  sa_buildAggregates();
+  const activeTab = document.querySelector('.tab-btn.active')?.dataset?.tab || 'charts';
+  if (activeTab === 'charts')   { sa_drawNationalMonthly('chCanvas1'); sa_drawDistrictSummary('chCanvas2'); }
+  if (activeTab === 'comm')     { sa_drawNationalMonthly('chCanvas3', true); sa_drawDistrictSummary('chCanvas4', true); }
+  if (activeTab === 'combined') { sa_drawCombinedAge('chCanvas5'); sa_drawSourceByAge('chCanvas6'); sa_drawSourceTotal('chCanvas7'); }
+}
+function getTestType(){return document.getElementById('testTypeFilter')?.value||'combined';}
+function getTestTypeLabel(){return {rdt:'RDT',microscopy:'Microscopy',combined:'RDT + Microscopy'}[getTestType()]||'RDT + Microscopy';}
+
+// Returns the correct facData/commData fields based on selected test type
+function getTestedFields() {
+  const t = getTestType();
+  if (t === 'rdt') return {
+    facTotal:'rdtHF', facU5:'rdtHF_U5', fac514:'rdtHF_5_14', fac15p:'rdtHF_15plus',
+    comTotal:'rdtCommunity', comU5:'rdtCom_U5', com514:'rdtCom_5_14', com15p:'rdtCom_15plus',
+  };
+  if (t === 'microscopy') return {
+    facTotal:'microHF', facU5:'microHF_U5', fac514:'microHF_5_14', fac15p:'microHF_15plus',
+    comTotal:null, comU5:null, com514:null, com15p:null, // community has no microscopy
+  };
+  // combined (default)
+  return {
+    facTotal:'testedHF', facU5:'testedHF_U5', fac514:'testedHF_5_14', fac15p:'testedHF_15plus',
+    comTotal:'testedCommunity', comU5:'testedCom_U5', com514:'testedCom_5_14', com15p:'testedCom_15plus',
+  };
+}
+function getSourceLabel(){return{facility:'Facility',community:'Community',combined:'Overall (Fac+Comm)'}[getGeoSource()]||'Facility';}
+function getAgeLabel(){const k=document.getElementById('geoAgeGroup')?.value||'age0';return{age0:'0 to 59m %',age1:'5 to 14y %',age2:'15y and above %'}[k]||'';}
+function getSourceAGG(){const src=getGeoSource();if(src==='community')return{distMonthly:AGG.com_distMonthly||{},chiefMonthly:AGG.com_chiefMonthly||{}};if(src==='combined')return{distMonthly:AGG.cmbDistMonthly||{},chiefMonthly:AGG.chiefMonthly||{}};return{distMonthly:AGG.distMonthly||{},chiefMonthly:AGG.chiefMonthly||{}};}
+function sa_drawNationalMap(){const canvas=document.getElementById('geoNational');if(!canvas)return;sizeCanvas(canvas);const ctx=canvas.getContext('2d'),tf=makeTf(canvas);const W=canvas.width,H=canvas.height;const ageKey=document.getElementById('geoAgeGroup')?.value||'age0';const year=document.getElementById('geoYear')?.value||'';let totA=0,totAll=0;const{distMonthly:_anDM}=getSourceAGG();Object.values(_anDM||{}).forEach(row=>{if(!row||row.year!==year)return;const a=ageKey==='age0'?row.age0:ageKey==='age1'?row.age1:row.age2;totA+=a;totAll+=(row.total||0);});const natRate=totAll>0?(totA/totAll*100):null;const natColor=geoColor(natRate);ctx.fillStyle=getMapBg();ctx.fillRect(0,0,W,H);drawNationalSolid(ctx,W,H,tf,natColor);const rStr=natRate!==null?Math.round(natRate)+'%':'—';const cat=natRate!==null?(getBreaks().find(b=>natRate<=b.max)?.label||'80–100%'):'No data';const fsz=Math.round(W*.065),fsz2=Math.round(W*.034);ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`bold ${fsz}px Oswald,Arial,sans-serif`;ctx.fillStyle='#1a2e3d';ctx.fillText(rStr,W/2,H/2);ctx.font=`bold ${fsz2}px Oswald,Arial,sans-serif`;ctx.fillText(cat,W/2,H/2+fsz*.82);ctx.font=`bold ${Math.round(W*.022)}px Oswald,Arial,sans-serif`;ctx.textBaseline='bottom';ctx.fillText(`Sierra Leone — ${getSourceLabel()} — ${getAgeLabel()}`,W/2,H-8);const _legItemsN=[...getBreaks(),{color:'#cccccc',label:'No data'}];const _liWN=Math.floor(W/_legItemsN.length),_liHN=Math.round(W*.04),_liYN=H-_liHN-2;_legItemsN.forEach((b,i)=>{ctx.fillStyle=b.color;ctx.fillRect(i*_liWN,_liYN,_liWN,_liHN);ctx.strokeStyle='rgba(0,0,0,.3)';ctx.lineWidth=.5;ctx.strokeRect(i*_liWN,_liYN,_liWN,_liHN);const fszN=Math.max(7,Math.round(_liWN*.13));ctx.fillStyle='#111';ctx.font=`bold ${fszN}px Oswald,Arial,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(b.label,i*_liWN+_liWN/2,_liYN+_liHN/2);});canvas._hitsData=[{name:`Sierra Leone — ${getAgeLabel()}`,rate:natRate,rings:(()=>{const rings=[];(ST.geoCache.chiefdomGeo.features||[]).forEach(f=>{const collect=cs=>cs.forEach(ring=>rings.push(ring.map(tf)));if(f.geometry.type==='Polygon')collect(f.geometry.coordinates);if(f.geometry.type==='MultiPolygon')f.geometry.coordinates.forEach(p=>collect(p));});return rings;})()}];attachMapHover(canvas);}
+function sa_drawDistrictMap(){const canvas=document.getElementById('geoDistrict');if(!canvas)return;sizeCanvas(canvas);const ctx=canvas.getContext('2d'),tf=makeTf(canvas);const W=canvas.width,H=canvas.height;ctx.fillStyle=getMapBg();ctx.fillRect(0,0,W,H);if(!ST.geoCache.districtGeo){ctx.fillStyle='#6c7a89';ctx.font='13px Arial';ctx.textAlign='center';ctx.fillText('District GeoJSON unavailable',W/2,H/2);return;}const lsz=Math.max(8,Math.round(W*.022));(ST.geoCache.districtGeo.features||[]).forEach(f=>{const shpName=(f.properties['FIRST_DNAM']||'').trim();const rate=lookupRate(shpName,ST.geoRates.district);ctx.fillStyle=geoColor(rate);ctx.strokeStyle='transparent';ctx.lineWidth=0;const fillOnly=cs=>{ctx.beginPath();cs.forEach(ring=>ring.forEach((c,i)=>{const[x,y]=tf(c);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}));ctx.closePath();ctx.fill();};if(f.geometry.type==='Polygon')fillOnly(f.geometry.coordinates);if(f.geometry.type==='MultiPolygon')f.geometry.coordinates.forEach(p=>fillOnly(p));});(ST.geoCache.districtGeo.features||[]).forEach(f=>{ctx.fillStyle='transparent';ctx.strokeStyle='#000';ctx.lineWidth=3;drawPoly(ctx,f.geometry,tf);});(ST.geoCache.districtGeo.features||[]).forEach(f=>{const shpName=(f.properties['FIRST_DNAM']||'').trim();const rate=lookupRate(shpName,ST.geoRates.district);const cen=centroid(f.geometry);if(!cen)return;const[cx,cy]=tf(cen);const label=shpName.split(' ').map(w=>w.charAt(0)+w.slice(1).toLowerCase()).join(' ');const rStr=rate!==null?Math.round(rate)+'%':'—';geoLabel(ctx,label,cx,cy-lsz*.85,lsz);geoLabel(ctx,rStr,cx,cy+lsz*.85,lsz);});const _legItems=[...getBreaks(),{color:'#cccccc',label:'No data'}];const _liW=Math.floor(W/_legItems.length),_liH=Math.round(W*.04),_liY=H-_liH-2;_legItems.forEach((b,i)=>{ctx.fillStyle=b.color;ctx.fillRect(i*_liW,_liY,_liW,_liH);ctx.strokeStyle='rgba(0,0,0,.3)';ctx.lineWidth=.5;ctx.strokeRect(i*_liW,_liY,_liW,_liH);const fsz2=Math.max(7,Math.round(_liW*.13));ctx.fillStyle='#111';ctx.font=`bold ${fsz2}px Oswald,Arial,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(b.label,i*_liW+_liW/2,_liY+_liH/2);});canvas._hitsData=buildHits(ST.geoCache.districtGeo,'FIRST_DNAM',ST.geoRates.district,tf,null);canvas._hoverAttached=false;attachMapHover(canvas);}
+function sa_drawChiefdomMap(){const canvas=document.getElementById('geoChiefdom');if(!canvas)return;sizeCanvas(canvas);const ctx=canvas.getContext('2d'),tf=makeTf(canvas);const W=canvas.width,H=canvas.height;ctx.fillStyle=getMapBg();ctx.fillRect(0,0,W,H);(ST.geoCache.chiefdomGeo.features||[]).forEach(f=>{const shpName=(f.properties['adm3']||'').trim();const rate=lookupRate(shpName,ST.geoRates.chiefdom);ctx.fillStyle=geoColor(rate);ctx.strokeStyle='rgba(0,0,0,.5)';ctx.lineWidth=.6;drawPoly(ctx,f.geometry,tf);});if(ST.geoCache.districtGeo)(ST.geoCache.districtGeo.features||[]).forEach(f=>{ctx.fillStyle='transparent';ctx.strokeStyle='#000';ctx.lineWidth=2;drawPoly(ctx,f.geometry,tf);});const _legItemsC=[...getBreaks(),{color:'#cccccc',label:'No data'}];const _liWC=Math.floor(W/_legItemsC.length),_liHC=Math.round(W*.04),_liYC=H-_liHC-2;_legItemsC.forEach((b,i)=>{ctx.fillStyle=b.color;ctx.fillRect(i*_liWC,_liYC,_liWC,_liHC);ctx.strokeStyle='rgba(0,0,0,.3)';ctx.lineWidth=.5;ctx.strokeRect(i*_liWC,_liYC,_liWC,_liHC);const fszC=Math.max(7,Math.round(_liWC*.13));ctx.fillStyle='#111';ctx.font=`bold ${fszC}px Oswald,Arial,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(b.label,i*_liWC+_liWC/2,_liYC+_liHC/2);});canvas._hitsData=buildHits(ST.geoCache.chiefdomGeo,'adm3',ST.geoRates.chiefdom,tf,null);canvas._hoverAttached=false;attachMapHover(canvas);}
+function buildHits(geo,nameProp,rateMap,tf,periodTag){const hits=[];(geo.features||[]).forEach(f=>{const shpName=(f.properties[nameProp]||'').trim();let rate=rateMap[shpName];if(rate===undefined)rate=rateMap[normName(shpName)];if(rate===undefined)rate=null;const rings=[];const collect=cs=>cs.forEach(ring=>rings.push(ring.map(tf)));if(f.geometry.type==='Polygon')collect(f.geometry.coordinates);if(f.geometry.type==='MultiPolygon')f.geometry.coordinates.forEach(p=>collect(p));hits.push({name:shpName,rate,rings,period:periodTag||null});});return hits;}
+function pointInRing(px,py,ring){let inside=false;for(let i=0,j=ring.length-1;i<ring.length;j=i++){const[xi,yi]=ring[i],[xj,yj]=ring[j];if(((yi>py)!==(yj>py))&&px<(xj-xi)*(py-yi)/(yj-yi)+xi)inside=!inside;}return inside;}
+function attachMapHover(canvas){if(!canvas)return;if(canvas._mmoveHandler)canvas.removeEventListener('mousemove',canvas._mmoveHandler);if(canvas._mleaveHandler)canvas.removeEventListener('mouseleave',canvas._mleaveHandler);canvas.style.cursor='crosshair';canvas._hoverAttached=true;canvas._mmoveHandler=evt=>{const tip=document.getElementById('rsTooltip');const hits=canvas._hitsData;if(!hits?.length){tip.style.display='none';return;}const rect=canvas.getBoundingClientRect();const sx=canvas.width/rect.width,sy=canvas.height/rect.height;const mx=(evt.clientX-rect.left)*sx,my=(evt.clientY-rect.top)*sy;let hit=null;for(const h of hits){for(const ring of h.rings){if(pointInRing(mx,my,ring)){hit=h;break;}}if(hit)break;}if(hit){const rStr=hit.rate!==null?Math.round(hit.rate)+'%':'No data';let cat='No data';if(hit.rate!==null){for(const b of getBreaks()){if(hit.rate<=b.max){cat=b.label;break;}}}const ageLabel=getAgeLabel();const colorBox=hit.rate!==null?`<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${geoColor(hit.rate)};border:1px solid rgba(255,255,255,.4);margin-right:4px;vertical-align:middle;"></span>`:'';tip.style.display='block';tip.style.left=(evt.clientX+16)+'px';tip.style.top=(evt.clientY-12)+'px';tip.innerHTML=`<strong>${hit.name}</strong><br>${ageLabel}: ${colorBox}<b>${rStr}</b><br><span style="opacity:.8;">Category: ${cat}</span>`;}else{tip.style.display='none';}};canvas._mleaveHandler=()=>{document.getElementById('rsTooltip').style.display='none';};canvas.addEventListener('mousemove',canvas._mmoveHandler);canvas.addEventListener('mouseleave',canvas._mleaveHandler);}
+function populateYearDropdown(){const sel=document.getElementById('geoYear');if(!sel)return;const years=[...new Set((ST.config?.periods||[]).map(p=>p.slice(0,4)))].sort();sel.innerHTML=years.map(y=>`<option value="${y}"${y===years[years.length-1]?' selected':''}>${y}</option>`).join('');}
+function sa_updateAnnualLegendBar(){const el=document.getElementById('annualLegendBar');if(!el)return;const ageLabel=getAgeLabel();el.innerHTML=`<span class="legend-title">${ageLabel} share</span>`+getBreaks().map(b=>`<div class="legend-item"><div class="legend-sw" style="background:${b.color};"></div>${b.label}</div>`).join('')+`<div class="legend-item"><div class="legend-sw" style="background:#cccccc;"></div>No data</div>`;}
+function sa_buildMapPaletteGrid(){const grid=document.getElementById('mapPaletteGrid');if(!grid)return;grid.innerHTML=Object.entries(MAP_PALETTES).map(([key,pal])=>{const swatches=pal.colors.map(c=>`<div style="width:16px;height:13px;background:${c};border-radius:1px;border:1px solid rgba(0,0,0,.1);flex-shrink:0;"></div>`).join('');const sel=key===selectedMapPalette;return `<div onclick="sa_selectMapPalette('${key}')" style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:7px;border:2px solid ${sel?'var(--blue)':'var(--border)'};background:${sel?'var(--blue-lt)':'#f8f9fa'};cursor:pointer;font-size:11px;font-weight:700;color:var(--blue);transition:all .2s;white-space:nowrap;"><div style="display:flex;gap:2px;">${swatches}</div>${pal.name}</div>`;}).join('');}
+function sa_selectMapPalette(key){selectedMapPalette=key;sa_buildMapPaletteGrid();sa_updateAnnualLegendBar();}
+function sa_renderGeoMaps(){const year=document.getElementById('geoYear')?.value||(ST.config?.periods||[]).slice(-1)[0]?.slice(0,4)||'2026';const statusEl=document.getElementById('geoStatus');if(!ST.geoCache.bbox){if(statusEl)statusEl.textContent='⚠ GeoJSON not loaded.';return;}sa_computeGeoRates(year);sa_buildMapPaletteGrid();sa_updateAnnualLegendBar();if(statusEl)statusEl.textContent='Drawing…';sa_buildMonthlyGrid();const _sl=getSourceLabel(),_al=getAgeLabel();const _hN=document.getElementById('mapHeadNational');if(_hN)_hN.textContent=`NATIONAL — ${_sl} — ${_al}`;const _hD=document.getElementById('mapHeadDistrict');if(_hD)_hD.textContent=`DISTRICT — ${_sl} — ${_al}`;const _hC=document.getElementById('mapHeadChiefdom');if(_hC)_hC.textContent=`CHIEFDOM — ${_sl} — ${_al}`;sa_drawNationalMap();sa_drawDistrictMap();sa_drawChiefdomMap();if(statusEl)statusEl.textContent=`✓ ${year} · ${getSourceLabel()} · ${getAgeLabel()} · Maps ready`;}
+function sa_buildMonthlyGrid(){const grid=document.getElementById('monthlyMapsGrid');if(!grid)return;const _gl=document.getElementById('monthlyGridLabel');if(_gl)_gl.textContent=`${getSourceLabel()} Monthly Maps — ${getAgeLabel()} · January to December`;const level=document.getElementById('geoLevel')?.value||'chiefdom';const year=document.getElementById('geoYear')?.value||(ST.config?.periods||[]).slice(-1)[0]?.slice(0,4)||'2026';const ageKey=document.getElementById('geoAgeGroup')?.value||'age0';const activePeriods=new Set((ST.config?.periods||[]).map(p=>p));grid.innerHTML='';for(let mo=1;mo<=12;mo++){const mStr=String(mo).padStart(2,'0'),period=`${year}${mStr}`;const hasData=activePeriods.has(period);const card=document.createElement('div');if(!hasData){card.className='month-map-card blank';card.innerHTML=`<div class="mmhead blank-head">${MONTH_NAMES[mo-1]} ${year}</div><div class="mm-blank-body"><div>No data for this period</div></div>`;}else{card.className='month-map-card';const canvasId=`mmCanvas_${period}`;card.innerHTML=`<div class="mmhead active">${MONTH_NAMES[mo-1]} ${year}</div><div class="mm-canvas-wrap"><canvas id="${canvasId}"></canvas></div><div class="mm-legend" id="mmLeg_${period}"></div><div style="padding:4px 8px 6px;text-align:center;"><button onclick="sa_downloadSingleMonthMap('${canvasId}','${period}')" style="font-size:10px;font-weight:700;padding:3px 10px;background:#2c6793;color:#fff;border:none;border-radius:4px;cursor:pointer;width:100%;">↓ PNG</button></div>`;}grid.appendChild(card);if(hasData)setTimeout(()=>sa_drawMonthMap(`mmCanvas_${period}`,period,level,ageKey),0);};}
+
+function sa_drawMonthMapNational(canvas,period,ageKey){let el=canvas.parentElement,w=0;while(el&&w<10){w=el.offsetWidth;el=el.parentElement;}w=Math.max(w||200,120);canvas.width=canvas.height=w*2;const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height,tf=makeTf(canvas);const dateStr=`${period.slice(0,4)}-${period.slice(4,6)}`;let natA=0,natT=0;const{distMonthly:_natDM}=getSourceAGG();Object.values(_natDM||{}).forEach(row=>{if(!row||row.date!==dateStr)return;const a=ageKey==='age0'?row.age0:ageKey==='age1'?row.age1:row.age2;natA+=a;natT+=(row.total||0);});const natRate=natT>0?(natA/natT*100):null;const natRateStr=natT>0?((natA/natT*100).toFixed(1)+'%'):'—';const fillColor=geoColor(natRate);ctx.fillStyle=getMapBg();ctx.fillRect(0,0,W,H);drawNationalSolid(ctx,W,H,tf,fillColor);const breaks=getBreaks();const cat=natRate!==null?(breaks.find(b=>natRate<=b.max)?.label||'80–100%'):'No data';const fsz=Math.round(W*.12),fsz2=Math.round(W*.055);ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`bold ${fsz}px Oswald,Arial,sans-serif`;ctx.fillStyle='#0d1f2d';ctx.fillText(natRateStr,W/2,H/2);ctx.font=`bold ${fsz2}px Oswald,Arial,sans-serif`;ctx.fillStyle='#0d1f2d';ctx.fillText(cat,W/2,H/2+fsz*.78);const legEl=document.getElementById(`mmLeg_${period}`);if(legEl)legEl.innerHTML=`<div class="mm-leg-item"><div class="mm-leg-sw" style="background:${fillColor};border:1px solid rgba(0,0,0,.2);"></div><span style="color:#1f4a6a;font-weight:700;">National: ${natRateStr} — ${cat}</span></div>`;const rings=[];(ST.geoCache.chiefdomGeo.features||[]).forEach(f=>{const collect=cs=>cs.forEach(ring=>rings.push(ring.map(tf)));if(f.geometry.type==='Polygon')collect(f.geometry.coordinates);if(f.geometry.type==='MultiPolygon')f.geometry.coordinates.forEach(p=>collect(p));});canvas._hitsData=[{name:'Sierra Leone — National',rate:natRate,rings,period}];attachMapHover(canvas);}
+function sa_drawMonthMap(canvasId,period,level,ageKey){const canvas=document.getElementById(canvasId);if(!canvas||!ST.geoCache.bbox)return;if(level==='national'){sa_drawMonthMapNational(canvas,period,ageKey);return;}let el=canvas.parentElement,w=0;while(el&&w<10){w=el.offsetWidth;el=el.parentElement;}w=Math.max(w||200,120);canvas.width=canvas.height=w*2;const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height,tf=makeTf(canvas);const dateStr=`${period.slice(0,4)}-${period.slice(4,6)}`;const agg={};const{distMonthly:_mmDM,chiefMonthly:_mmCM}=getSourceAGG();const srcRows=level==='district'?Object.values(_mmDM||[]):Object.values(_mmCM||[]);srcRows.forEach(row=>{if(row.date!==dateStr)return;const key=level==='district'?row.district:row.chiefdom;if(!key)return;if(!agg[key])agg[key]={a0:0,a1:0,a2:0,tot:0};agg[key].a0+=row.age0;agg[key].a1+=row.age1;agg[key].a2+=row.age2;agg[key].tot+=row.total;});const normMap={};Object.entries(agg).forEach(([k,v])=>{const num=ageKey==='age0'?v.a0:ageKey==='age1'?v.a1:v.a2;const rate=v.tot>0?(num/v.tot*100):null;normMap[k]=rate;normMap[normName(k)]=rate;});ctx.fillStyle=getMapBg();ctx.fillRect(0,0,W,H);const catCounts={};getBreaks().forEach(b=>{catCounts[b.label]=0;});catCounts['No data']=0;const geo=level==='district'?ST.geoCache.districtGeo:ST.geoCache.chiefdomGeo;if(!geo){ctx.fillStyle='#888';ctx.font='12px Arial';ctx.textAlign='center';ctx.fillText('GeoJSON unavailable',W/2,H/2);return;}const nameProp=level==='district'?'FIRST_DNAM':'adm3';(geo.features||[]).forEach(f=>{const shpName=(f.properties[nameProp]||'').trim();let rate=normMap[shpName];if(rate===undefined)rate=normMap[normName(shpName)];if(rate===undefined)rate=null;ctx.fillStyle=geoColor(rate);ctx.strokeStyle=level==='district'?'rgba(30,50,70,.7)':'rgba(0,0,0,.55)';ctx.lineWidth=level==='district'?1.2:.6;drawPoly(ctx,f.geometry,tf);if(rate===null){catCounts['No data']++;}else{const b=getBreaks().find(b=>rate<=b.max);if(b)catCounts[b.label]++;}});if(level==='chiefdom'&&ST.geoCache.districtGeo)(ST.geoCache.districtGeo.features||[]).forEach(f=>{ctx.fillStyle='transparent';ctx.strokeStyle='#1a2e3d';ctx.lineWidth=1.8;drawPoly(ctx,f.geometry,tf);});const natA=Object.values(agg).reduce((s,v)=>s+(ageKey==='age0'?v.a0:ageKey==='age1'?v.a1:v.a2),0);const natT=Object.values(agg).reduce((s,v)=>s+v.tot,0);const natRate=natT>0?(natA/natT*100):null;const natRateStr=natT>0?((natA/natT*100).toFixed(1)+'%'):'—';const legEl=document.getElementById(`mmLeg_${period}`);if(legEl){const natColor=natRate!==null?geoColor(natRate):'#cccccc';const natCat=natRate!==null?(getBreaks().find(b=>natRate<=b.max)?.label||'80–100%'):'No data';const breakHtml=[...getBreaks(),{label:'No data',color:'#cccccc'}].map(b=>`<div class="mm-leg-item"><div class="mm-leg-sw" style="background:${b.color};"></div>${b.label}<span style="color:#888;font-weight:400;">(${catCounts[b.label]??0})</span></div>`).join('');const natHtml=`<div class="mm-leg-item" style="margin-left:auto;padding-left:6px;border-left:1.5px solid #c8d5e0;"><div class="mm-leg-sw" style="background:${natColor};border:1px solid rgba(0,0,0,.2);"></div><span style="color:#1f4a6a;font-weight:700;">National: ${natRateStr}</span></div>`;legEl.innerHTML=breakHtml+natHtml;}canvas._hitsData=buildHits(geo,nameProp,normMap,tf,period);canvas._hoverAttached=false;attachMapHover(canvas);}
+function sa_downloadSingleMonthMap(canvasId, period) {
+  const srcCanvas = document.getElementById(canvasId);
+  if (!srcCanvas) return;
+  const year    = period.slice(0, 4);
+  const moNum   = parseInt(period.slice(4, 6)) - 1;
+  const moName  = MONTH_NAMES[moNum] || period.slice(4, 6);
+  const ageLabel = getAgeLabel();
+  const srcLabel = getSourceLabel();
+  const TITLE_H  = 38;
+  const out = document.createElement('canvas');
+  out.width  = srcCanvas.width;
+  out.height = TITLE_H + srcCanvas.height;
+  const ctx = out.getContext('2d');
+  // Title bar
+  ctx.fillStyle = '#1f4a6a';
+  ctx.fillRect(0, 0, out.width, TITLE_H);
+  ctx.fillStyle = '#fff';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const fsz = Math.round(out.width * 0.022);
+  ctx.font = `bold ${fsz}px Oswald,Arial,sans-serif`;
+  ctx.fillText(`${moName} ${year} — ${srcLabel} — ${ageLabel}`, out.width / 2, TITLE_H / 2);
+  // Map canvas (legend already baked in)
+  ctx.drawImage(srcCanvas, 0, TITLE_H);
+  const a = document.createElement('a');
+  a.download = `TestedAge_${period}_${getGeoSource()}_${document.getElementById('geoAgeGroup')?.value||'age0'}.png`;
+  a.href = out.toDataURL('image/png');
+  a.click();
+}
+
+function sa_downloadMonthlyGrid(){
+  const year=document.getElementById('geoYear')?.value||'2026';
+  const ageLabel=getAgeLabel(), srcLabel=getSourceLabel();
+  const period=getPeriodLabel();
+  const activePeriods=new Set((ST.config?.periods||[]).map(p=>p));
+  const COLS=4,ROWS=3,CARD_W=320,CARD_H=400,PAD=20,GAP=10;
+  // Title area: 2 lines + legend row
+  const TITLE_H=56, LEG_H=48;
+  const totalW=COLS*CARD_W+(COLS-1)*GAP+PAD*2;
+  const totalH=TITLE_H+ROWS*CARD_H+(ROWS-1)*GAP+PAD+LEG_H;
+  const out=document.createElement('canvas');
+  out.width=totalW; out.height=totalH;
+  const ctx=out.getContext('2d');
+  ctx.fillStyle='#f0f5f9'; ctx.fillRect(0,0,totalW,totalH);
+  // Title (no NMCP)
+  ctx.fillStyle='#1f4a6a'; ctx.font='bold 20px Oswald,Arial,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.fillText('Tested Malaria Age Disaggregation — Monthly Maps · '+ageLabel, totalW/2, 8);
+  ctx.fillStyle='#2c6793'; ctx.font='13px Oswald,Arial,sans-serif';
+  ctx.fillText(srcLabel+' · Year: '+year+(period?' · Period: '+period:''), totalW/2, 32);
+  // Monthly cards
+  for(let mo=1;mo<=12;mo++){
+    const mStr=String(mo).padStart(2,'0'),p=`${year}${mStr}`;
+    const col=(mo-1)%COLS,row=Math.floor((mo-1)/COLS);
+    const x=PAD+col*(CARD_W+GAP), y=TITLE_H+row*(CARD_H+GAP);
+    ctx.fillStyle='#fff'; ctx.strokeStyle='#c8d5e0'; ctx.lineWidth=1;
+    roundRect(ctx,x,y,CARD_W,CARD_H,8); ctx.fill(); ctx.stroke();
+    // Card header
+    ctx.fillStyle=activePeriods.has(p)?'#2c6793':'#8899aa';
+    roundRect(ctx,x,y,CARD_W,28,8,0); ctx.fill();
+    ctx.fillStyle='#fff'; ctx.font='bold 11px Oswald,Arial,sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(MONTH_NAMES[mo-1].toUpperCase()+' '+year, x+CARD_W/2, y+14);
+    if(activePeriods.has(p)){
+      const srcC=document.getElementById(`mmCanvas_${p}`);
+      if(srcC) ctx.drawImage(srcC,x,y+28,CARD_W,CARD_H-28);
+    } else {
+      ctx.fillStyle='#8899aa'; ctx.font='11px Oswald,Arial,sans-serif';
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('No data for this period', x+CARD_W/2, y+CARD_H/2+10);
+    }
+  }
+  // Legend below cards
+  const legY=TITLE_H+ROWS*CARD_H+(ROWS-1)*GAP+8;
+  const items=[...getBreaks(),{color:'#cccccc',label:'No data'}];
+  const iW=(totalW-PAD*2)/items.length;
+  // Legend title
+  ctx.fillStyle='#1f4a6a'; ctx.font='bold 12px Oswald,Arial,sans-serif';
+  ctx.textAlign='left'; ctx.textBaseline='top';
+  ctx.fillText(ageLabel+' share:', PAD, legY+2);
+  // Legend swatches
+  items.forEach((b,i)=>{
+    const lx=PAD+i*iW;
+    ctx.fillStyle=b.color; ctx.fillRect(lx+4,legY+18,iW-8,16);
+    ctx.strokeStyle='#aaa'; ctx.lineWidth=0.7; ctx.strokeRect(lx+4,legY+18,iW-8,16);
+    ctx.fillStyle='#1a2e3d'; ctx.font=`bold ${Math.round(iW*.13)}px Oswald,Arial,sans-serif`;
+    ctx.textAlign='center'; ctx.textBaseline='top';
+    ctx.fillText(b.label, lx+iW/2, legY+36);
+  });
+  // Credit
+  const a=document.createElement('a');
+  a.download=`TestedAge_MonthlyMaps_${year}.png`;
+  a.href=out.toDataURL('image/png'); a.click();
+}
+function roundRect(ctx,x,y,w,h,tlbr,brbr){const r=tlbr,r2=(brbr!==undefined)?brbr:r;ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r2);ctx.quadraticCurveTo(x+w,y+h,x+w-r2,y+h);ctx.lineTo(x+r2,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r2);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
+
+function getPeriodLabel() {
+  const s = ST.config?.start || '';
+  const e = ST.config?.end   || '';
+  if (!s) return '';
+  return s === e ? s : s + ' → ' + e;
+}
+function sa_geoDownload(canvasId,suffix){
+  const srcCanvas=document.getElementById(canvasId);if(!srcCanvas)return;
+  const year=document.getElementById('geoYear')?.value||'';
+  const ageKey=document.getElementById('geoAgeGroup')?.value||'age0';
+  const ageLabel=getAgeLabel(), srcLabel=getSourceLabel();
+  const period=getPeriodLabel();
+  const TITLE_H=42, PAD=0;
+  const cW=srcCanvas.width, cH=srcCanvas.height;
+  const out=document.createElement('canvas');
+  out.width=cW; out.height=TITLE_H+cH;
+  const ctx=out.getContext('2d');
+  // Title bar
+  ctx.fillStyle='#1f4a6a'; ctx.fillRect(0,0,cW,TITLE_H);
+  const titleFsz=Math.round(cW*0.024);
+  ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.font=`bold ${titleFsz}px Oswald,Arial,sans-serif`;
+  ctx.fillText(`Tested Malaria — ${ageLabel} — ${srcLabel} — ${suffix.charAt(0).toUpperCase()+suffix.slice(1)} · ${year}`, cW/2, TITLE_H/2);
+  if(period){
+    ctx.font=`${Math.round(titleFsz*.75)}px Oswald,Arial,sans-serif`;
+    ctx.fillStyle='rgba(255,255,255,.75)';
+    ctx.fillText(`Period: ${period}`, cW/2, TITLE_H*0.78);
+  }
+  // Map (already has legend baked in)
+  ctx.drawImage(srcCanvas, 0, TITLE_H);
+  const a=document.createElement('a');
+  a.download=`TestedAge_Map_${suffix}_${ageKey}_${year}.png`;
+  a.href=out.toDataURL('image/png'); a.click();
+}
+function sa_geoDownloadSubplot(){
+  const ids=['geoNational','geoDistrict','geoChiefdom'];
+  const ageLabel=getAgeLabel(), srcLabel=getSourceLabel();
+  const year=document.getElementById('geoYear')?.value||'';
+  const period=getPeriodLabel();
+  const mapTitles=[
+    'National — '+ageLabel,
+    'District — '+ageLabel,
+    'Chiefdom — '+ageLabel,
+  ];
+  const srcs=ids.map(id=>document.getElementById(id));
+  // Reduce map width — use 420px per map instead of full canvas width
+  const cW=srcs[0]?.width||600, cH=srcs[0]?.height||600;
+  const PAD=22,TITLE_H=64,LABEL_H=32,GAP=12,LEG_H=56;
+  const totalW=ids.length*cW+(ids.length-1)*GAP+PAD*2;
+  const totalH=TITLE_H+LABEL_H+cH+LEG_H+PAD;
+  const out=document.createElement('canvas');
+  out.width=totalW; out.height=totalH;
+  const ctx=out.getContext('2d');
+  ctx.fillStyle='#f0f5f9'; ctx.fillRect(0,0,totalW,totalH);
+  // Main title (no NMCP)
+  ctx.fillStyle='#1f4a6a';
+  ctx.font=`bold ${Math.round(totalW*.018)}px Oswald,Arial,sans-serif`;
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.fillText('Tested Malaria Age Disaggregation — '+ageLabel+' Geographic Maps', totalW/2, 8);
+  ctx.fillStyle='#2c6793';
+  ctx.font=`${Math.round(totalW*.013)}px Oswald,Arial,sans-serif`;
+  ctx.fillText(srcLabel+' · Year: '+year+(period?' · Period: '+period:''), totalW/2, 8+Math.round(totalW*.018)*1.3);
+  const headColors=['#2c6793','#17a2b8','#28a745'];
+  srcs.forEach((src,i)=>{
+    const x=PAD+i*(cW+GAP);
+    // Header bar
+    ctx.fillStyle=headColors[i]; ctx.fillRect(x,TITLE_H,cW,LABEL_H);
+    ctx.fillStyle='#fff';
+    ctx.font=`bold ${Math.round(cW*.042)}px Oswald,Arial,sans-serif`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(mapTitles[i], x+cW/2, TITLE_H+LABEL_H/2);
+    // Map
+    if(src) ctx.drawImage(src, x, TITLE_H+LABEL_H, cW, cH);
+    // Border
+    ctx.strokeStyle=headColors[i]; ctx.lineWidth=2;
+    ctx.strokeRect(x, TITLE_H, cW, LABEL_H+cH);
+  });
+  // Legend
+  const legY=TITLE_H+LABEL_H+cH+8;
+  const items=[...getBreaks(),{color:'#cccccc',label:'No data'}];
+  const iW=(totalW-PAD*2)/items.length;
+  items.forEach((b,i)=>{
+    const lx=PAD+i*iW;
+    ctx.fillStyle=b.color; ctx.fillRect(lx+5,legY+5,iW-10,18);
+    ctx.strokeStyle='#aaa'; ctx.lineWidth=0.7; ctx.strokeRect(lx+5,legY+5,iW-10,18);
+    ctx.fillStyle='#1a2e3d';
+    ctx.font=`bold ${Math.round(iW*.14)}px Oswald,Arial,sans-serif`;
+    ctx.textAlign='center'; ctx.textBaseline='top';
+    ctx.fillText(b.label, lx+iW/2, legY+26);
+  });
+  // Credit
+  const a=document.createElement('a');
+  a.download=`TestedAge_Maps_Subplot_${year}.png`;
+  a.href=out.toDataURL('image/png'); a.click();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  SUMMARY TABLE
+// ═══════════════════════════════════════════════════════════════════
+let tblRows=[],tblHeaders=[];
+function sa_buildTable(){
+  const grp=document.getElementById('tblGroup').value;
+  let src;
+  if(grp==='national_monthly'){src=Object.values(AGG.natMonthly);tblHeaders=['Date','Year','Month','0 to 59m','5 to 14y','15y and above','Total','% 0 to 59m','% 5 to 14y','% 15y and above'];}
+  else if(grp==='district_monthly'){src=Object.values(AGG.distMonthly);tblHeaders=['District','Date','Year','Month','0 to 59m','5 to 14y','15y and above','Total','% 0 to 59m','% 5 to 14y','% 15y and above'];}
+  else if(grp==='district_yearly'){src=Object.values(AGG.distYearly);tblHeaders=['District','Year','0 to 59m','5 to 14y','15y and above','Total','% 0 to 59m','% 5 to 14y','% 15y and above'];}
+  else if(grp==='chiefdom_monthly'){src=Object.values(AGG.chiefMonthly);tblHeaders=['District','Chiefdom','Date','Year','Month','0 to 59m','5 to 14y','15y and above','Total','% 0 to 59m','% 5 to 14y','% 15y and above'];}
+  else if(grp==='com_national_monthly'){src=Object.values(AGG.com_natMonthly);tblHeaders=['Date','Year','Month','Comm 0 to 59m','Comm 5 to 14y','Comm 15y and above','Comm Total','% 0 to 59m','% 5 to 14y','% 15y and above'];}
+  else if(grp==='com_district_monthly'){src=Object.values(AGG.com_distMonthly);tblHeaders=['District','Date','Year','Month','Comm 0 to 59m','Comm 5 to 14y','Comm 15y and above','Comm Total','% 0 to 59m','% 5 to 14y','% 15y and above'];}
+  else if(grp==='com_district_yearly'){src=Object.values(AGG.com_distYearly);tblHeaders=['District','Year','Comm 0 to 59m','Comm 5 to 14y','Comm 15y and above','Comm Total','% 0 to 59m','% 5 to 14y','% 15y and above'];}
+  else if(grp==='cmb_national_monthly'){src=Object.values(AGG.cmbNatMonthly||{});tblHeaders=['Date','Year','Fac 0 to 59m','Fac 5 to 14y','Fac 15y and above','Fac Total','Comm 0 to 59m','Comm 5 to 14y','Comm 15y and above','Comm Total','Comb 0 to 59m %','Comb 5 to 14y %','Comb 15y and above %','Fac share%','Comm share%'];}
+  else if(grp==='cmb_district_monthly'){src=Object.values(AGG.cmbDistMonthly||{});tblHeaders=['District','Date','Year','Fac 0 to 59m','Fac 5 to 14y','Fac 15y and above','Fac Total','Comm 0 to 59m','Comm 5 to 14y','Comm 15y and above','Comm Total','Comb 0 to 59m %','Comb 5 to 14y %','Comb 15y and above %','Fac share%','Comm share%'];}
+  else if(grp==='cmb_district_yearly'){src=Object.values(AGG.cmbDistYearly||{});tblHeaders=['District','Year','Fac 0 to 59m','Fac 5 to 14y','Fac 15y and above','Fac Total','Comm 0 to 59m','Comm 5 to 14y','Comm 15y and above','Comm Total','Comb 0 to 59m %','Comb 5 to 14y %','Comb 15y and above %','Fac share%','Comm share%'];}
+  else{src=Object.values(AGG.chiefYearly);tblHeaders=['District','Chiefdom','Year','0 to 59m','5 to 14y','15y and above','Total','% 0 to 59m','% 5 to 14y','% 15y and above'];}
+  tblRows=src.map(r=>{
+    if(grp==='national_monthly') return[r.date,r.year,r.month,r.age0,r.age1,r.age2,r.total,r.pct0,r.pct1,r.pct2];
+    if(grp==='district_monthly') return[r.district,r.date,r.year,r.month,r.age0,r.age1,r.age2,r.total,r.pct0,r.pct1,r.pct2];
+    if(grp==='district_yearly')  return[r.district,r.year,r.age0,r.age1,r.age2,r.total,r.pct0,r.pct1,r.pct2];
+    if(grp==='chiefdom_monthly') return[r.district,r.chiefdom,r.date,r.year,r.month,r.age0,r.age1,r.age2,r.total,r.pct0,r.pct1,r.pct2];
+    if(grp.startsWith('com_national')) return[r.date,r.year,r.month,r.age0,r.age1,r.age2,r.total,r.pct0,r.pct1,r.pct2];
+    if(grp.startsWith('com_district_m')) return[r.district,r.date,r.year,r.month,r.age0,r.age1,r.age2,r.total,r.pct0,r.pct1,r.pct2];
+    if(grp.startsWith('com_district_y')) return[r.district,r.year,r.age0,r.age1,r.age2,r.total,r.pct0,r.pct1,r.pct2];
+    if(grp==='cmb_national_monthly') return[r.date,r.year,r.fac_age0,r.fac_age1,r.fac_age2,r.fac_total,r.com_age0,r.com_age1,r.com_age2,r.com_total,r.pct0,r.pct1,r.pct2,r.fac_share_total,r.com_share_total];
+    if(grp==='cmb_district_monthly')return[r.district,r.date,r.year,r.fac_age0,r.fac_age1,r.fac_age2,r.fac_total,r.com_age0,r.com_age1,r.com_age2,r.com_total,r.pct0,r.pct1,r.pct2,r.fac_share_total,r.com_share_total];
+    if(grp==='cmb_district_yearly') return[r.district,r.year,r.fac_age0,r.fac_age1,r.fac_age2,r.fac_total,r.com_age0,r.com_age1,r.com_age2,r.com_total,r.pct0,r.pct1,r.pct2,r.fac_share_total,r.com_share_total];
+    return[r.district,r.chiefdom,r.year,r.age0,r.age1,r.age2,r.total,r.pct0,r.pct1,r.pct2];
+  });
+  document.getElementById('tblHead').innerHTML=`<tr>${tblHeaders.map(h=>`<th>${h}</th>`).join('')}</tr>`;
+  sa_filterTable();
+}
+function sa_filterTable(){const q=(document.getElementById('tblSearch').value||'').toLowerCase();const filtered=q?tblRows.filter(r=>r.some(c=>(c+'').toLowerCase().includes(q))):tblRows;document.getElementById('tblCount').textContent=`${filtered.length.toLocaleString()} of ${tblRows.length.toLocaleString()} records`;document.getElementById('tblBody').innerHTML=filtered.slice(0,2000).map(r=>`<tr>${r.map(c=>`<td>${c??''}</td>`).join('')}</tr>`).join('');}
+function sa_exportTableExcel(){const grp=document.getElementById('tblGroup').value;const ws=XLSX.utils.aoa_to_sheet([tblHeaders,...tblRows]);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,grp.replace('_',' ').slice(0,31));XLSX.writeFile(wb,`NMCP_TestedAge_${grp}.xlsx`);}
+function sa_exportExcel(){const wb=XLSX.utils.book_new();const addSheet=(data,name,cols)=>{const rows=data.map(r=>cols.reduce((o,c)=>({...o,[c]:r[c]??''}),{}));if(!rows.length)return;XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),name);};addSheet(Object.values(AGG.natMonthly),'National Monthly',['date','year','month','age0','age1','age2','total','pct0','pct1','pct2']);addSheet(Object.values(AGG.distMonthly),'District Monthly',['district','date','year','month','age0','age1','age2','total','pct0','pct1','pct2']);addSheet(Object.values(AGG.distYearly),'District Yearly',['district','year','age0','age1','age2','total','pct0','pct1','pct2']);addSheet(Object.values(AGG.chiefMonthly),'Chiefdom Monthly',['district','chiefdom','date','year','month','age0','age1','age2','total','pct0','pct1','pct2']);addSheet(Object.values(AGG.chiefYearly),'Chiefdom Yearly',['district','chiefdom','year','age0','age1','age2','total','pct0','pct1','pct2']);addSheet(ST.facData,'Facility Month',['ouId','districtName','chiefdomName','date','age0','age1','age2','total','pct0','pct1','pct2']);XLSX.writeFile(wb,`NMCP_TestedAge_${ST.config.start}_${ST.config.end}.xlsx`);}
+function sa_exportCSV(){const header='ou_uid,district,chiefdom,date,age0_59m,age5_14y,age15plus,total_susp,pct_0_59m,pct_5_14y,pct_15plus';const csv=header+'\n'+ST.facData.map(r=>`${r.ouId},${r.districtName},${r.chiefdomName},${r.date},${r.age0},${r.age1},${r.age2},${r.total},${r.pct0??''},${r.pct1??''},${r.pct2??''}`).join('\n');const a=document.createElement('a');a.download=`NMCP_TestedAge_FacilityMonth_${ST.config.start}_${ST.config.end}.csv`;a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.click();}
+
+// ═══════════════════════════════════════════════════════════════════
+//  CODE DOWNLOADS
+// ═══════════════════════════════════════════════════════════════════
+function sa_downloadR(){const s=ST.config?.start||'2020-01',e=ST.config?.end||'2024-12';triggerDL(`# Tested Malaria Age Disaggregation — R Script\n# Period: ${s} → ${e}\n# ICF-SL\n# Uses analytics.json endpoint (fast)\n\nlibrary(httr); library(jsonlite); library(dplyr); library(ggplot2); library(openxlsx)\n\nBASE_URL <- "https://sl.dhis2.org/hmis23"\nUSERNAME <- "your_username"; PASSWORD <- "your_password"\nSTART_YM <- "${s}"; END_YM <- "${e}"\n\n# Analytics dx strings\ndxParam <- paste(c(\n  "FJafyE1kzs4.m5T8uBNB8aN",  # Facility 0-59m\n  "FJafyE1kzs4.j7j6iaknOFn",  # Facility 5-14y\n  "FJafyE1kzs4.zK1aiw8zFac",  # Facility 15+y\n  "wfaQBIVQxWo.NtjMVmRfvHH",  # Community 0-59m\n  "wfaQBIVQxWo.qDXW7WMLT99",  # Community 5-14y\n  "wfaQBIVQxWo.mdjRPpvLKdu"   # Community 15+y\n), collapse=";")\n\nauth <- authenticate(USERNAME, PASSWORD)\ndhis2 <- function(path) fromJSON(content(GET(paste0(BASE_URL,path),auth),"text",encoding="UTF-8"),flatten=TRUE)\n\ncat("Script ready. Fill in USERNAME/PASSWORD and run.\\n")\n`,`NMCP_TestedAge_${s}_${e}.R`);}
+function sa_downloadPy(){const s=ST.config?.start||'2020-01',e=ST.config?.end||'2024-12';triggerDL(`# Tested Malaria Age Disaggregation — Python Script\n# Period: ${s} → ${e} · ICF-SL\n# Uses analytics.json endpoint (fast)\n\nimport requests, pandas as pd\nfrom requests.auth import HTTPBasicAuth\n\nBASE_URL = "https://sl.dhis2.org/hmis23"\nauth = HTTPBasicAuth("your_username", "your_password")\n\n# 12 de.coc pairs — facility RDT+Microscopy + community RDT tested malaria by age\nDX_STRINGS = [\n  "FJafyE1kzs4.m5T8uBNB8aN",  # Facility 0-59m\n  "FJafyE1kzs4.j7j6iaknOFn",  # Facility 5-14y\n  "FJafyE1kzs4.zK1aiw8zFac",  # Facility 15+y\n  "wfaQBIVQxWo.NtjMVmRfvHH",  # Community 0-59m\n  "wfaQBIVQxWo.qDXW7WMLT99",  # Community 5-14y\n  "wfaQBIVQxWo.mdjRPpvLKdu",  # Community 15+y\n]\n\nprint("Script ready. Fill in USERNAME/PASSWORD and run.")\n`,`NMCP_TestedAge_${s}_${e}.py`);}
+
+// ═══════════════════════════════════════════════════════════════════
+//  FACILITY TRACKING
+// ═══════════════════════════════════════════════════════════════════
+let TRK={year:null,month:null};
+function trk_init(){const years=[...new Set((ST.config?.periods||[]).map(p=>p.slice(0,4)))].sort();const ySel=document.getElementById('trkYear');if(!ySel)return;ySel.innerHTML=years.map(y=>`<option value="${y}">${y}</option>`).join('');ySel.value=years[years.length-1];TRK.year=years[years.length-1];TRK.month=null;trk_buildMonthTabs();trk_render();}
+function trk_buildMonthTabs(){const tabsEl=document.getElementById('trkMonthTabs');if(!tabsEl)return;const year=document.getElementById('trkYear')?.value||TRK.year;const activePeriods=new Set((ST.config?.periods||[]).filter(p=>p.slice(0,4)===year));tabsEl.innerHTML='';const allBtn=document.createElement('button');allBtn.className='trk-period-btn'+(TRK.month===null?' active':'');allBtn.textContent='Full Year';allBtn.onclick=()=>{TRK.month=null;trk_setActiveMonthTab(allBtn);trk_render();};tabsEl.appendChild(allBtn);MONTH_NAMES.forEach((name,idx)=>{const mStr=String(idx+1).padStart(2,'0'),period=`${year}${mStr}`;const hasData=activePeriods.has(period);const btn=document.createElement('button');btn.className='trk-period-btn'+(TRK.month===mStr?' active':'');btn.textContent=name.slice(0,3);btn.style.opacity=hasData?'1':'0.4';btn.style.cursor=hasData?'pointer':'default';if(hasData)btn.onclick=()=>{TRK.month=mStr;trk_setActiveMonthTab(btn);trk_render();};tabsEl.appendChild(btn);});}
+function trk_setActiveMonthTab(activeBtn){document.querySelectorAll('.trk-period-btn').forEach(b=>b.classList.remove('active'));activeBtn.classList.add('active');}
+function trk_render(){const year=document.getElementById('trkYear')?.value||TRK.year;TRK.year=year;trk_buildMonthTabs();const month=TRK.month;const q=(document.getElementById('trkSearch')?.value||'').toLowerCase().trim();const onlyData=document.getElementById('trkOnlyData')?.checked;const tree=document.getElementById('trkTree');if(!tree)return;const facMap={};ST.facData.forEach(row=>{if(row.date.slice(0,4)!==year)return;if(month&&row.date.slice(5,7)!==month)return;if(!facMap[row.ouId])facMap[row.ouId]={ouId:row.ouId,districtName:row.districtName,chiefdomName:row.chiefdomName,name:ST.ouHierarchy[row.ouId]?.name||row.ouId,age0:0,age1:0,age2:0,total:0};facMap[row.ouId].age0+=row.age0;facMap[row.ouId].age1+=row.age1;facMap[row.ouId].age2+=row.age2;facMap[row.ouId].total+=row.total;});const tree_data={};Object.values(facMap).forEach(fac=>{if(onlyData&&fac.total===0)return;const d=fac.districtName||'Unknown District',c=fac.chiefdomName||'Unknown Chiefdom';if(q&&![fac.name,d,c].join(' ').toLowerCase().includes(q))return;if(!tree_data[d])tree_data[d]={};if(!tree_data[d][c])tree_data[d][c]=[];tree_data[d][c].push(fac);});Object.values(tree_data).forEach(chiefs=>{Object.values(chiefs).forEach(facs=>{facs.sort((a,b)=>b.total-a.total||a.name.localeCompare(b.name));});});const distNames=Object.keys(tree_data).sort();if(!distNames.length){tree.innerHTML=`<div class="trk-empty">No facilities match your search.</div>`;return;}tree.innerHTML='';distNames.forEach(dist=>{const chiefs=tree_data[dist];const chiefNames=Object.keys(chiefs).sort();let dA0=0,dA1=0,dA2=0,dTot=0;chiefNames.forEach(c=>{chiefs[c].forEach(f=>{dA0+=f.age0;dA1+=f.age1;dA2+=f.age2;dTot+=f.total;});});const dp0=dTot>0?(dA0/dTot*100).toFixed(1):null,dp1=dTot>0?(dA1/dTot*100).toFixed(1):null,dp2=dTot>0?(dA2/dTot*100).toFixed(1):null;const distEl=document.createElement('div');distEl.className='trk-district';const distHead=document.createElement('div');distHead.className='trk-dist-head';distHead.innerHTML=`<span class="trk-dist-name">${dist}</span><div class="trk-dist-pills"><span class="trk-dist-pill">${chiefNames.length} chiefdoms</span><span class="trk-dist-pill">${dTot.toLocaleString()} total susp.</span><span class="trk-dist-pill" style="background:#fde8e0;color:#7a2800;">0 to 59m: ${dp0??'—'}%</span><span class="trk-dist-pill" style="background:#ddeeff;color:#0d3060;">5 to 14y: ${dp1??'—'}%</span><span class="trk-dist-pill" style="background:#d6f0de;color:#1a5e2a;">15y and above: ${dp2??'—'}%</span></div><span class="trk-dist-chev">▶</span>`;const distBody=document.createElement('div');distBody.className='trk-dist-body';distHead.onclick=()=>{const open=distBody.classList.toggle('open');distHead.querySelector('.trk-dist-chev').textContent=open?'▼':'▶';};chiefNames.forEach(chief=>{const facs=chiefs[chief];let cA0=0,cA1=0,cA2=0,cTot=0;facs.forEach(f=>{cA0+=f.age0;cA1+=f.age1;cA2+=f.age2;cTot+=f.total;});const cp0=cTot>0?(cA0/cTot*100).toFixed(1):null,cp1=cTot>0?(cA1/cTot*100).toFixed(1):null,cp2=cTot>0?(cA2/cTot*100).toFixed(1):null;const chiefEl=document.createElement('div');chiefEl.className='trk-chiefdom';const chiefHead=document.createElement('div');chiefHead.className='trk-chief-head';chiefHead.innerHTML=`<span class="trk-chief-name">${chief}</span><div class="trk-chief-pills"><span class="trk-chief-pill">${facs.length} facilities</span><span class="trk-chief-pill">${cTot.toLocaleString()} suspected</span><span class="trk-chief-pill" style="background:#fde8e0;color:#7a2800;border-color:#e8a07a;">0 to 59m: ${cp0??'—'}%</span><span class="trk-chief-pill" style="background:#ddeeff;color:#0d4080;border-color:#7ab4e8;">5 to 14y: ${cp1??'—'}%</span><span class="trk-chief-pill" style="background:#d6f0de;color:#1a5e2a;border-color:#7ac49a;">15y and above: ${cp2??'—'}%</span></div><span class="trk-chief-chev">▶</span>`;const chiefBody=document.createElement('div');chiefBody.className='trk-chief-body';chiefHead.onclick=()=>{const open=chiefBody.classList.toggle('open');chiefHead.querySelector('.trk-chief-chev').textContent=open?'▼':'▶';};const grid=document.createElement('div');grid.className='trk-fac-grid';facs.forEach(f=>{const p0=f.total>0?(f.age0/f.total*100).toFixed(1):null,p1=f.total>0?(f.age1/f.total*100).toFixed(1):null,p2=f.total>0?(f.age2/f.total*100).toFixed(1):null;const facEl=document.createElement('div');facEl.className='trk-fac';facEl.innerHTML=`<span class="trk-fac-name" title="${f.name}">${f.name}</span><div class="trk-fac-ages"><span class="trk-age-badge a0">0 to 59m: ${p0??'—'}%</span><span class="trk-age-badge a1">5 to 14y: ${p1??'—'}%</span><span class="trk-age-badge a2">15y and above: ${p2??'—'}%</span></div>`;grid.appendChild(facEl);});if(!grid.children.length)grid.innerHTML=`<div class="trk-empty" style="padding:8px;">No facilities match current filters.</div>`;chiefBody.appendChild(grid);chiefEl.appendChild(chiefHead);chiefEl.appendChild(chiefBody);distBody.appendChild(chiefEl);});distEl.appendChild(distHead);distEl.appendChild(distBody);tree.appendChild(distEl);});}
+function trk_expandAll(open){document.querySelectorAll('.trk-dist-body').forEach(b=>{b.classList.toggle('open',open);const chev=b.previousElementSibling?.querySelector('.trk-dist-chev');if(chev)chev.textContent=open?'▼':'▶';});document.querySelectorAll('.trk-chief-body').forEach(b=>{b.classList.toggle('open',open);const chev=b.previousElementSibling?.querySelector('.trk-chief-chev');if(chev)chev.textContent=open?'▼':'▶';});}
+
+// ═══════════════════════════════════════════════════════════════════
+//  DOWNLOAD TOOL AS SELF-CONTAINED HTML
+// ═══════════════════════════════════════════════════════════════════
+function sa_downloadToolHTML(){
+  const html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download='nmcp_suspected_age_disagg_v2.html';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  UI HELPERS
+// ═══════════════════════════════════════════════════════════════════
+function toggleCollap(head){const body=head.nextElementSibling;const chev=head.querySelector('.collap-chev');body.classList.toggle('hidden');if(chev)chev.textContent=body.classList.contains('hidden')?'▶':'▼';}
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const tab=btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+tab).classList.add('active');
+    // Hide Community tab when Microscopy selected (no community microscopy data)
+    const testType = getTestType();
+    const commTab = document.querySelector('[data-tab="comm"]');
+    if (commTab) commTab.style.display = testType === 'microscopy' ? 'none' : '';
+    if(tab==='geomaps') setTimeout(()=>sa_renderGeoMaps(),200);
+    if(tab==='tracking') setTimeout(()=>trk_render(),100);
+    if(tab==='charts')   setTimeout(()=>{ sa_drawNationalMonthly('chCanvas1'); sa_drawDistrictSummary('chCanvas2'); },120);
+    if(tab==='comm')     setTimeout(()=>{ sa_drawNationalMonthly('chCanvas3',true); sa_drawDistrictSummary('chCanvas4',true); },120);
+    if(tab==='combined') setTimeout(()=>{ sa_drawCombinedAge('chCanvas5'); sa_drawSourceByAge('chCanvas6'); sa_drawSourceTotal('chCanvas7'); },120);
+  });
+});
+
+// Init palette grid on load
+sa_buildMapPaletteGrid();
+sa_updateAnnualLegendBar();
+</script>
+</body>
+</html>
