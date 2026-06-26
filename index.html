@@ -142,16 +142,13 @@
         .nav-child { width: 100%; background: transparent; border: none; color: rgba(255,255,255,0.6); padding: 12px 16px 12px 24px; text-align: left; font-family: inherit; font-size: 12px; font-weight: 400; cursor: pointer; transition: all 0.15s; border-left: 3px solid transparent; display: block; }
         .nav-child:hover { color: rgba(255,255,255,0.95); background: rgba(255,255,255,0.08); border-left-color: rgba(255,193,7,0.5); }
         .nav-child.active { color: #fff !important; background: rgba(255,193,7,0.18) !important; border-left: 3px solid var(--gold) !important; font-weight: 700 !important; }
-        /* Nav level helpers — generous vertical padding at every depth */
         .nav-l1-toggle { display:flex !important; align-items:center; justify-content:space-between; font-weight:600 !important; color:rgba(255,255,255,0.85) !important; padding: 13px 14px 13px 24px !important; font-size:12.5px !important; }
         .nav-l2        { padding: 11px 14px 11px 36px !important; font-size:12px !important; }
         .nav-l2-toggle { display:flex !important; align-items:center; justify-content:space-between; font-weight:600 !important; color:rgba(255,255,255,0.8) !important; padding: 11px 14px 11px 36px !important; font-size:12px !important; width:100%; background:transparent; border:none; cursor:pointer; font-family:inherit; border-left:3px solid transparent; }
         .nav-l3        { padding: 10px 14px 10px 50px !important; font-size:11.5px !important; }
         .nav-l3-toggle { display:flex !important; align-items:center; justify-content:space-between; font-weight:600 !important; color:rgba(255,255,255,0.75) !important; padding: 10px 14px 10px 50px !important; font-size:11.5px !important; width:100%; background:transparent; border:none; cursor:pointer; font-family:inherit; border-left:3px solid transparent; }
         .nav-l4        { padding: 9px 14px 9px 64px !important; font-size:11px !important; }
-        /* Active state for nav-item (top level) */
         .nav-item.active { background: rgba(255,193,7,0.18) !important; color: white !important; border-left-color: var(--gold) !important; font-weight: 700 !important; }
-        /* Active highlight also on toggle parents */
         .nav-l1-toggle.active, .nav-l2-toggle.active, .nav-l3-toggle.active {
             color: #fff !important; background: rgba(255,193,7,0.12) !important;
             border-left: 3px solid rgba(255,193,7,0.6) !important; font-weight:700 !important;
@@ -233,6 +230,25 @@
         .disclaimer-banner { background: linear-gradient(135deg, #2c6793 0%, #1f4a6a 100%); border-radius: 10px; padding: 18px 22px; margin-bottom: 16px; border-left: 5px solid var(--gold); box-shadow: 0 3px 12px rgba(0,0,0,0.12); }
         .disclaimer-banner p { font-size: 13px; font-weight: 500; color: #ffffff; line-height: 1.6; margin: 0; }
 
+        /* NMDR INFO DIAGRAM */
+        .nmdr-info-block { background: var(--white); border-radius: 12px; border: 2px solid var(--border); overflow: hidden; margin-bottom: 18px; box-shadow: 0 3px 10px rgba(0,0,0,0.06); }
+        .nmdr-info-header { background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dk) 100%); padding: 12px 20px; display: flex; align-items: center; gap: 12px; }
+        .nmdr-info-header span { font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.4px; }
+        .nmdr-info-header .tag { background: var(--gold); color: var(--blue-dk); font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 20px; letter-spacing: 1px; text-transform: uppercase; }
+        .nmdr-info-body { padding: 20px; display: flex; align-items: center; gap: 24px; }
+        .nmdr-moh-logo { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .nmdr-moh-logo img { width: 90px; height: auto; }
+        .nmdr-moh-label { font-size: 10px; font-weight: 700; color: var(--blue); letter-spacing: 0.5px; text-align: center; text-transform: uppercase; line-height: 1.4; max-width: 90px; }
+        .nmdr-divider { width: 2px; height: 80px; background: var(--border); flex-shrink: 0; border-radius: 2px; }
+        .nmdr-diagram-wrap { flex: 1; min-width: 0; }
+        .nmdr-diagram-wrap img { width: 100%; height: auto; border-radius: 8px; display: block; }
+        @media (max-width: 600px) {
+            .nmdr-info-body { flex-direction: column; align-items: stretch; }
+            .nmdr-moh-logo { flex-direction: row; gap: 14px; }
+            .nmdr-moh-logo img { width: 60px; }
+            .nmdr-divider { width: 100%; height: 2px; }
+        }
+
         /* IFRAME PANE */
         .iframe-pane { width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.1); border: 2px solid var(--border); background: var(--white); }
         .iframe-pane iframe { width: 100%; min-height: 85vh; border: none; display: block; }
@@ -260,8 +276,8 @@
 <div id="roleModal" class="role-modal">
     <div class="role-card">
         <div class="role-logo-row">
-            <div class="role-logo-box">
-                <img src="https://github.com/mohamedsillahkanu/gdp-dashboard-2/raw/6c7463b0d5c3be150aafae695a4bcbbd8aeb1499/ICF-SL.jpg" alt="ICF-SL">
+            <div class="role-logo-box" style="background:transparent; padding:0;">
+                <img src="mohlogo.png" alt="Ministry of Health Sierra Leone" style="width:90px;height:auto;border-radius:50%;">
             </div>
         </div>
         <h1>Welcome to NMDR</h1>
@@ -329,72 +345,72 @@
             </button>
             <div class="nav-group-children" id="children-surveillance">
 
-                <!-- 1.0.1 Monitoring and Evaluation -->
-                <button class="nav-child nav-l1-toggle" id="meToggle" onclick="toggleNestedGroup('meChildren','meChevron','meToggle',event)">
-                    <span>1.0.1 Monitoring &amp; Evaluation</span>
-                    <svg id="meChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
-                </button>
-                <div id="meChildren" style="overflow:hidden;max-height:0;transition:max-height .3s ease;">
-                    <button class="nav-child nav-l2" data-tab="me-dqa">1.0.1.1 Data Quality Assessment</button>
-
-                    <!-- 1.0.1.2 Key Malaria Data Elements -->
-                    <button class="nav-child nav-l2-toggle" id="meDetailedToggle" onclick="toggleNestedGroup('meDetailedChildren','meDetailedChevron','meDetailedToggle',event)">
-                        <span>1.0.1.2 Key Malaria Data Elements</span>
-                        <svg id="meDetailedChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
-                    </button>
-                    <div id="meDetailedChildren" style="overflow:hidden;max-height:0;transition:max-height .5s ease;">
-                        <button class="nav-child nav-l3" data-tab="med-suspected">1.0.1.2.1 Fever Suspected Malaria</button>
-                        <button class="nav-child nav-l3" data-tab="med-tested">1.0.1.2.2 Tested</button>
-                        <button class="nav-child nav-l3" data-tab="med-confirmed">1.0.1.2.3 Confirmed Malaria Case</button>
-                        <button class="nav-child nav-l3" data-tab="med-treated">1.0.1.2.4 Confirmed and Treated</button>
-                        <button class="nav-child nav-l3" data-tab="med-presumptive">1.0.1.2.5 Presumptive Treatment</button>
-                        <button class="nav-child nav-l3" data-tab="med-ptr">1.0.1.2.6 Treated</button>
-                    </div>
-
-                    <!-- 1.0.1.3 Key Malaria Indicators -->
-                    <button class="nav-child nav-l2-toggle" id="meIndicatorsToggle" onclick="toggleNestedGroup('meIndicatorsChildren','meIndicatorsChevron','meIndicatorsToggle',event)">
-                        <span>1.0.1.3 Key Malaria Indicators</span>
-                        <svg id="meIndicatorsChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
-                    </button>
-                    <div id="meIndicatorsChildren" style="overflow:hidden;max-height:0;transition:max-height .4s ease;">
-                        <button class="nav-child nav-l3" data-tab="med-reporting">1.0.1.3.1 Reporting Rate</button>
-                        <button class="nav-child nav-l3" data-tab="med-testing">1.0.1.3.2 Testing Rate</button>
-                        <button class="nav-child nav-l3" data-tab="med-tpr">1.0.1.3.3 Test Positivity Rate</button>
-                        <button class="nav-child nav-l3" data-tab="med-cfr">1.0.1.3.4 Confirmed &amp; Treatment Rate</button>
-                    </div>
-
-                    <!-- 1.0.1.4 Comparative Analysis on Key Indicators -->
-                    <button class="nav-child nav-l2-toggle" id="meCompIndToggle" onclick="toggleNestedGroup('meCompIndChildren','meCompIndChevron','meCompIndToggle',event)">
-                        <span>1.0.1.4 Comparative Analysis on Key Indicators</span>
-                        <svg id="meCompIndChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
-                    </button>
-                    <div id="meCompIndChildren" style="overflow:hidden;max-height:0;transition:max-height .4s ease;">
-                        <button class="nav-child nav-l3" data-tab="med-comp-u5">1.0.1.4.1 Under Five</button>
-                        <button class="nav-child nav-l3" data-tab="med-comp-allages">1.0.1.4.2 All Ages</button>
-                    </div>
-                </div>
-
-                <!-- 1.0.2 Malaria Epi -->
+                <!-- ══ 1.0.1 Malaria Epi (MOVED UP) ══ -->
                 <button class="nav-child nav-l1-toggle" id="malariaEpiToggle" onclick="toggleNestedGroup('malariaEpiChildren','malariaEpiChevron','malariaEpiToggle',event)">
-                    <span>1.0.2 Malaria Epi</span>
+                    <span>1.0.1 Malaria Epi</span>
                     <svg id="malariaEpiChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <div id="malariaEpiChildren" style="overflow:hidden;max-height:0;transition:max-height .3s ease;">
                     <button class="nav-child nav-l2-toggle" id="hmisToggle" onclick="toggleNestedGroup('hmisChildren','hmisChevron','hmisToggle',event)">
-                        <span>1.0.2.1 HMIS (Monthly)</span>
+                        <span>1.0.1.1 HMIS (Monthly)</span>
                         <svg id="hmisChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
                     </button>
                     <div id="hmisChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;">
-                        <button class="nav-child nav-l3" data-tab="hmis-extraction">1.0.2.1.1 Data Extraction</button>
-                        <button class="nav-child nav-l3" data-tab="hmis-epi-dashboard">1.0.2.1.2 Malaria Epi Dashboard</button>
+                        <button class="nav-child nav-l3" data-tab="hmis-extraction">1.0.1.1.1 Data Extraction</button>
+                        <button class="nav-child nav-l3" data-tab="hmis-epi-dashboard">1.0.1.1.2 Malaria Epi Dashboard</button>
                     </div>
                     <button class="nav-child nav-l2-toggle" id="eidsrToggle" onclick="toggleNestedGroup('eidsrChildren','eidsrChevron','eidsrToggle',event)">
-                        <span>1.0.2.2 eIDSR (Weekly)</span>
+                        <span>1.0.1.2 eIDSR (Weekly)</span>
                         <svg id="eidsrChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
                     </button>
                     <div id="eidsrChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;">
-                        <button class="nav-child nav-l3" data-tab="eidsr-extraction">1.0.2.2.1 Data Extraction</button>
-                        <button class="nav-child nav-l3" data-tab="eidsr-dashboard">1.0.2.2.2 Dashboard</button>
+                        <button class="nav-child nav-l3" data-tab="eidsr-extraction">1.0.1.2.1 Data Extraction</button>
+                        <button class="nav-child nav-l3" data-tab="eidsr-dashboard">1.0.1.2.2 Dashboard</button>
+                    </div>
+                </div>
+
+                <!-- ══ 1.0.2 Monitoring and Evaluation (MOVED DOWN) ══ -->
+                <button class="nav-child nav-l1-toggle" id="meToggle" onclick="toggleNestedGroup('meChildren','meChevron','meToggle',event)">
+                    <span>1.0.2 Monitoring &amp; Evaluation</span>
+                    <svg id="meChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="meChildren" style="overflow:hidden;max-height:0;transition:max-height .3s ease;">
+                    <button class="nav-child nav-l2" data-tab="me-dqa">1.0.2.1 Data Quality Assessment</button>
+
+                    <!-- 1.0.2.2 Key Malaria Data Elements -->
+                    <button class="nav-child nav-l2-toggle" id="meDetailedToggle" onclick="toggleNestedGroup('meDetailedChildren','meDetailedChevron','meDetailedToggle',event)">
+                        <span>1.0.2.2 Key Malaria Data Elements</span>
+                        <svg id="meDetailedChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div id="meDetailedChildren" style="overflow:hidden;max-height:0;transition:max-height .5s ease;">
+                        <button class="nav-child nav-l3" data-tab="med-suspected">1.0.2.2.1 Fever Suspected Malaria</button>
+                        <button class="nav-child nav-l3" data-tab="med-tested">1.0.2.2.2 Tested</button>
+                        <button class="nav-child nav-l3" data-tab="med-confirmed">1.0.2.2.3 Confirmed Malaria Case</button>
+                        <button class="nav-child nav-l3" data-tab="med-treated">1.0.2.2.4 Confirmed and Treated</button>
+                        <button class="nav-child nav-l3" data-tab="med-presumptive">1.0.2.2.5 Presumptive Treatment</button>
+                        <button class="nav-child nav-l3" data-tab="med-ptr">1.0.2.2.6 Treated</button>
+                    </div>
+
+                    <!-- 1.0.2.3 Key Malaria Indicators -->
+                    <button class="nav-child nav-l2-toggle" id="meIndicatorsToggle" onclick="toggleNestedGroup('meIndicatorsChildren','meIndicatorsChevron','meIndicatorsToggle',event)">
+                        <span>1.0.2.3 Key Malaria Indicators</span>
+                        <svg id="meIndicatorsChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div id="meIndicatorsChildren" style="overflow:hidden;max-height:0;transition:max-height .4s ease;">
+                        <button class="nav-child nav-l3" data-tab="med-reporting">1.0.2.3.1 Reporting Rate</button>
+                        <button class="nav-child nav-l3" data-tab="med-testing">1.0.2.3.2 Testing Rate</button>
+                        <button class="nav-child nav-l3" data-tab="med-tpr">1.0.2.3.3 Test Positivity Rate</button>
+                        <button class="nav-child nav-l3" data-tab="med-cfr">1.0.2.3.4 Confirmed &amp; Treatment Rate</button>
+                    </div>
+
+                    <!-- 1.0.2.4 Comparative Analysis on Key Indicators -->
+                    <button class="nav-child nav-l2-toggle" id="meCompIndToggle" onclick="toggleNestedGroup('meCompIndChildren','meCompIndChevron','meCompIndToggle',event)">
+                        <span>1.0.2.4 Comparative Analysis on Key Indicators</span>
+                        <svg id="meCompIndChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div id="meCompIndChildren" style="overflow:hidden;max-height:0;transition:max-height .4s ease;">
+                        <button class="nav-child nav-l3" data-tab="med-comp-u5">1.0.2.4.1 Under Five</button>
+                        <button class="nav-child nav-l3" data-tab="med-comp-allages">1.0.2.4.2 All Ages</button>
                     </div>
                 </div>
 
@@ -449,76 +465,136 @@
                 <svg class="nav-chevron" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="nav-group-children" id="children-interventions">
-                <button class="nav-child nav-l2" data-tab="routine-interventions">3.0.1 Routine Interventions</button>
+                <button class="nav-child nav-l2-toggle" id="routineIntToggle" onclick="toggleNestedGroup('routineIntChildren','routineIntChevron','routineIntToggle',event)">
+                    <span>3.0.1 Routine Interventions</span>
+                    <svg id="routineIntChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="routineIntChildren" style="overflow:hidden;max-height:0;transition:max-height .3s ease;">
+                    <button class="nav-child nav-l3" data-tab="int-pmc">3.0.1.1 PMC</button>
+                    <button class="nav-child nav-l3" data-tab="int-malaria-vaccine">3.0.1.2 Malaria Vaccine</button>
+                    <button class="nav-child nav-l3" data-tab="int-penta">3.0.1.3 Penta</button>
+                    <button class="nav-child nav-l3" data-tab="int-measles">3.0.1.4 Measles</button>
+                    <button class="nav-child nav-l3" data-tab="int-vitamin-a">3.0.1.5 Vitamin A</button>
+                    <button class="nav-child nav-l3" data-tab="int-iptp">3.0.1.6 IPTp</button>
+                    <button class="nav-child nav-l3" data-tab="int-anc">3.0.1.7 ANC</button>
+                </div>
                 <button class="nav-child nav-l2-toggle" id="pastIntToggle" onclick="toggleNestedGroup('pastIntChildren','pastIntChevron','pastIntToggle',event)">
-                    <span>3.0.2 Past Interventions (Campaign)</span>
+                    <span>3.0.2 Campaign Interventions</span>
                     <svg id="pastIntChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <div id="pastIntChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;">
                     <button class="nav-child nav-l3" data-tab="int-mass-itn">3.0.2.1 Mass ITN</button>
                     <button class="nav-child nav-l3" data-tab="int-sbd">3.0.2.2 SBD</button>
+                    <button class="nav-child nav-l3" data-tab="int-irs">3.0.2.3 IRS</button>
                 </div>
             </div>
         </div>
 
-        <!-- ══ 4.0 RESOURCES ══ -->
-        <div class="nav-section-label" style="margin-top:10px;">4.0 Resources</div>
+        <!-- ══ 4.0 VECTOR CONTROL ══ -->
+        <div class="nav-section-label" style="margin-top:10px;">4.0 Vector Control</div>
+        <div class="nav-group">
+            <button class="nav-group-btn" data-group="vectorcontrol">
+                <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M12 2a4 4 0 014 4v1h1a2 2 0 012 2v1a2 2 0 01-2 2h-1v1a4 4 0 01-8 0v-1H7a2 2 0 01-2-2V9a2 2 0 012-2h1V6a4 4 0 014-4z"/><line x1="8" y1="14" x2="5" y2="17"/><line x1="16" y1="14" x2="19" y2="17"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+                <span class="nav-group-label">4.0 Vector Control</span>
+                <svg class="nav-chevron" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="nav-group-children" id="children-vectorcontrol">
+                <!-- 4.0.1 Entomology -->
+                <button class="nav-child nav-l1-toggle" id="vcEntoToggle" onclick="toggleNestedGroup('vcEntoChildren','vcEntoChevron','vcEntoToggle',event)">
+                    <span>4.0.1 Entomology</span>
+                    <svg id="vcEntoChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="vcEntoChildren" style="overflow:hidden;max-height:0;transition:max-height .3s ease;">
+                    <button class="nav-child nav-l2" data-tab="ento-data">4.0.1.1 Data</button>
+                    <button class="nav-child nav-l2" data-tab="ento-report">4.0.1.2 Report</button>
+                    <button class="nav-child nav-l2" data-tab="ento-dashboard">4.0.1.3 Dashboard</button>
+                </div>
+                <!-- 4.0.2 Insecticide Resistance -->
+                <button class="nav-child nav-l1-toggle" id="vcIrToggle" onclick="toggleNestedGroup('vcIrChildren','vcIrChevron','vcIrToggle',event)">
+                    <span>4.0.2 Insecticide Resistance</span>
+                    <svg id="vcIrChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="vcIrChildren" style="overflow:hidden;max-height:0;transition:max-height .3s ease;">
+                    <button class="nav-child nav-l2" data-tab="ir-data">4.0.2.1 Data</button>
+                    <button class="nav-child nav-l2" data-tab="ir-report">4.0.2.2 Report</button>
+                    <button class="nav-child nav-l2" data-tab="ir-dashboard">4.0.2.3 Dashboard</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ 5.0 RESOURCES ══ -->
+        <div class="nav-section-label" style="margin-top:10px;">5.0 Resources</div>
         <div class="nav-group">
             <button class="nav-group-btn" data-group="resources">
                 <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-                <span class="nav-group-label">4.0 Resources</span>
+                <span class="nav-group-label">5.0 Resources</span>
                 <svg class="nav-chevron" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="nav-group-children" id="children-resources">
-                <button class="nav-child nav-l2" data-tab="user-guide">4.0.1 User Guide</button>
-                <button class="nav-child nav-l2" data-tab="bulletins">4.0.2 Monthly Bulletin</button>
-                <button class="nav-child nav-l2" data-tab="mpd">4.0.3 Malaria Programme Docs</button>
-                <button class="nav-child nav-l2" data-tab="campaign-survey">4.0.4 Campaign &amp; Survey</button>
-                <button class="nav-child nav-l2" data-tab="sbd-app">4.0.5 Data Collection Apps</button>
-                <button class="nav-child nav-l2" data-tab="analytics-training">4.0.6 Analytics Learning</button>
+                <button class="nav-child nav-l2" data-tab="user-guide">5.0.1 User Guide</button>
+                <button class="nav-child nav-l2" data-tab="bulletins">5.0.2 Monthly Bulletin</button>
+                <button class="nav-child nav-l2" data-tab="mpd">5.0.3 Malaria Programme Docs</button>
+                <button class="nav-child nav-l2" data-tab="campaign-survey">5.0.4 Survey</button>
+                <button class="nav-child nav-l2" data-tab="sbd-app">5.0.5 Data Collection Apps</button>
+                <button class="nav-child nav-l2" data-tab="analytics-training">5.0.6 Analytics Learning</button>
             </div>
         </div>
 
-        <!-- ══ 5.0 D-MAT (AUTOMATION) ══ -->
-        <div class="nav-section-label" style="margin-top:10px;">5.0 D-MAT Automation</div>
+        <!-- ══ 6.0 D-MAT (AUTOMATION) ══ -->
+        <div class="nav-section-label" style="margin-top:10px;">6.0 D-MAT Automation</div>
         <div class="nav-group">
             <button class="nav-group-btn" data-group="dmat">
                 <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                <span class="nav-group-label">5.0 D-MAT (Automation)</span>
+                <span class="nav-group-label">6.0 D-MAT (Automation)</span>
                 <svg class="nav-chevron" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="nav-group-children" id="children-dmat">
-                <button class="nav-child nav-l2" data-tab="dmat-dqa">5.0.1 Data Quality Assessment</button>
-                <button class="nav-child nav-l2" data-tab="dmat-processing">5.0.2 Data Processing</button>
-                <button class="nav-child nav-l2" data-tab="dmat-reporting">5.0.3 Reporting</button>
-                <button class="nav-child nav-l2" data-tab="dmat-suspected">5.0.4 Suspected</button>
-                <button class="nav-child nav-l2" data-tab="dmat-tested">5.0.5 Tested</button>
-                <button class="nav-child nav-l2" data-tab="dmat-confirmed">5.0.6 Confirmed Cases</button>
-                <button class="nav-child nav-l2" data-tab="dmat-treated">5.0.7 Confirmed and Treated</button>
-                <button class="nav-child nav-l2" data-tab="dmat-presumptive">5.0.8 Presumptive Treatment</button>
+                <button class="nav-child nav-l2" data-tab="dmat-dqa">6.0.1 Data Quality Assessment</button>
+                <button class="nav-child nav-l2" data-tab="dmat-processing">6.0.2 Data Processing</button>
+                <button class="nav-child nav-l2" data-tab="dmat-reporting">6.0.3 Reporting</button>
+                <button class="nav-child nav-l2" data-tab="dmat-suspected">6.0.4 Suspected</button>
+                <button class="nav-child nav-l2" data-tab="dmat-tested">6.0.5 Tested</button>
+                <button class="nav-child nav-l2" data-tab="dmat-confirmed">6.0.6 Confirmed Cases</button>
+                <button class="nav-child nav-l2" data-tab="dmat-treated">6.0.7 Confirmed and Treated</button>
+                <button class="nav-child nav-l2" data-tab="dmat-presumptive">6.0.8 Presumptive Treatment</button>
                 <button class="nav-child nav-l2-toggle" id="dmatCompToggle" onclick="toggleNestedGroup('dmatCompChildren','dmatCompChevron','dmatCompToggle',event)">
-                    <span>5.0.9 Comparative Analysis</span>
+                    <span>6.0.9 Comparative Analysis</span>
                     <svg id="dmatCompChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <div id="dmatCompChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;">
-                    <button class="nav-child nav-l3" data-tab="dmat-u5">5.0.9.1 Under 5</button>
-                    <button class="nav-child nav-l3" data-tab="dmat-allages">5.0.9.2 All Ages</button>
+                    <button class="nav-child nav-l3" data-tab="dmat-u5">6.0.9.1 Under 5</button>
+                    <button class="nav-child nav-l3" data-tab="dmat-allages">6.0.9.2 All Ages</button>
                 </div>
             </div>
         </div>
 
-        <!-- ══ 6.0 RETROSPECTIVE ANALYSIS ══ -->
-        <div class="nav-section-label" style="margin-top:10px;">6.0 Retrospective Analysis</div>
+        <!-- ══ 7.0 RETROSPECTIVE ANALYSIS ══ -->
+        <div class="nav-section-label" style="margin-top:10px;">7.0 Retrospective Analysis</div>
         <div class="nav-group">
             <button class="nav-group-btn" data-group="retro">
                 <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span class="nav-group-label">6.0 Retrospective Analysis</span>
+                <span class="nav-group-label">7.0 Retrospective Analysis</span>
                 <svg class="nav-chevron" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="nav-group-children" id="children-retro">
-                <button class="nav-child nav-l2" data-tab="snt">6.0.1 SNT 2015&#8211;2025</button>
-                <button class="nav-child nav-l2" data-tab="mpr">6.0.2 MPR 2021&#8211;2023</button>
-                <button class="nav-child nav-l2" data-tab="other-analysis">6.0.3 Other Analysis</button>
+                <button class="nav-child nav-l2" data-tab="snt">7.0.1 SNT 2015&#8211;2025</button>
+                <button class="nav-child nav-l2" data-tab="mpr">7.0.2 MPR 2021&#8211;2023</button>
+                <button class="nav-child nav-l2" data-tab="other-analysis">7.0.3 Other Analysis</button>
+            </div>
+        </div>
+
+        <!-- ══ 8.0 FINANCE ══ -->
+        <div class="nav-section-label" style="margin-top:10px;">8.0 Finance</div>
+        <div class="nav-group">
+            <button class="nav-group-btn" data-group="finance">
+                <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                <span class="nav-group-label">8.0 Finance</span>
+                <svg class="nav-chevron" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="nav-group-children" id="children-finance">
+                <button class="nav-child nav-l2" data-tab="finance-data">8.0.1 Data</button>
+                <button class="nav-child nav-l2" data-tab="finance-report">8.0.2 Report</button>
+                <button class="nav-child nav-l2" data-tab="finance-dashboard">8.0.3 Dashboard</button>
             </div>
         </div>
 
@@ -549,11 +625,87 @@
         </div>
         <div class="section-label">About the Repository</div>
         <div class="cards-grid">
-            <div class="card"><div class="card-stripe"></div><div class="card-body"><div class="card-icon-row"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div><div class="card-num">What</div><div class="card-title">What is the NMDR?</div></div></div><div class="card-divider"></div><ul class="card-list"><li>A national digital infrastructure for malaria programme data</li><li>Hosted on DHIS2 integrated with HMIS, LMIS</li><li>Developed by NMCP, ICF-SL, WHO, CHAI</li></ul></div></div>
-            <div class="card"><div class="card-stripe"></div><div class="card-body"><div class="card-icon-row"><div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div><div><div class="card-num">Why</div><div class="card-title">Why the NMDR Exists</div></div></div><div class="card-divider"></div><ul class="card-list"><li>Consolidate fragmented malaria data into one repository</li><li>Eliminate data silos between systems</li><li>Strengthen national data governance</li></ul></div></div>
-            <div class="card"><div class="card-stripe"></div><div class="card-body"><div class="card-icon-row"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div><div><div class="card-num">Focus</div><div class="card-title">Focus Areas</div></div></div><div class="card-divider"></div><ul class="card-list"><li>Case management &mdash; testing, treatment, reporting</li><li>Vector control &mdash; IRS coverage, ITN distribution</li><li>Malaria in pregnancy &mdash; IPTp, ANC attendance</li></ul></div></div>
-            <div class="card"><div class="card-stripe"></div><div class="card-body"><div class="card-icon-row"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div><div class="card-num">Benefits</div><div class="card-title">Expected Benefits</div></div></div><div class="card-divider"></div><ul class="card-list"><li>Faster evidence-based programme planning</li><li>Improved data quality through validation</li><li>Enhanced transparency and accountability</li></ul></div></div>
+            <!-- WHAT -->
+            <div class="card"><div class="card-stripe"></div><div class="card-body">
+                <div class="card-icon-row">
+                    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+                    <div><div class="card-num">What</div><div class="card-title">What is the NMDR?</div></div>
+                </div>
+                <div class="card-divider"></div>
+                <ul class="card-list">
+                    <li>A national digital infrastructure for malaria programme data</li>
+                    <li>Hosted on DHIS2 integrated with HMIS, LMIS</li>
+                    <li><strong>Developed:</strong> Informatics Consultancy Firm &mdash; Sierra Leone (ICF-SL)</li>
+                    <li><strong>Technical Support:</strong> WHO, CHAI, AHADI, AMMnet-SL</li>
+                    <li><strong>Funded:</strong> The Global Fund</li>
+                </ul>
+            </div></div>
+            <!-- WHY -->
+            <div class="card"><div class="card-stripe"></div><div class="card-body">
+                <div class="card-icon-row">
+                    <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+                    <div><div class="card-num">Why</div><div class="card-title">Why the NMDR Exists</div></div>
+                </div>
+                <div class="card-divider"></div>
+                <ul class="card-list">
+                    <li>Consolidate fragmented malaria data into one repository</li>
+                    <li>Eliminate data silos between systems</li>
+                    <li>Strengthen national data governance</li>
+                    <li>Support data analytics at national and sub-national levels</li>
+                    <li>Improve data quality for decision-making</li>
+                </ul>
+            </div></div>
+            <!-- FOCUS -->
+            <div class="card"><div class="card-stripe"></div><div class="card-body">
+                <div class="card-icon-row">
+                    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
+                    <div><div class="card-num">Focus</div><div class="card-title">Focus Areas</div></div>
+                </div>
+                <div class="card-divider"></div>
+                <ul class="card-list">
+                    <li>Malaria Surveillance</li>
+                    <li>Supply Chain Management</li>
+                    <li>Interventions</li>
+                    <li>Resources and Documentation</li>
+                    <li>Automated Pipelines</li>
+                    <li>Analytics</li>
+                </ul>
+            </div></div>
+            <!-- BENEFITS -->
+            <div class="card"><div class="card-stripe"></div><div class="card-body">
+                <div class="card-icon-row">
+                    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+                    <div><div class="card-num">Benefits</div><div class="card-title">Expected Benefits</div></div>
+                </div>
+                <div class="card-divider"></div>
+                <ul class="card-list">
+                    <li>Faster evidence-based programme planning and reporting</li>
+                    <li>Improved data quality through validation</li>
+                    <li>Enhanced transparency and accountability</li>
+                    <li>Early warning signs for stockouts and outbreaks</li>
+                </ul>
+            </div></div>
         </div>
+
+        <!-- ══ NMDR ARCHITECTURE DIAGRAM (before WHO slides) ══ -->
+        <div class="section-label" style="margin-top:4px;">NMDR Architecture &amp; Data Flow</div>
+        <div class="nmdr-info-block">
+            <div class="nmdr-info-header">
+                <span class="tag">Ministry of Health</span>
+                <span>Government of Sierra Leone &mdash; NMDR Data Infrastructure</span>
+            </div>
+            <div class="nmdr-info-body">
+                <div class="nmdr-moh-logo">
+                    <img src="mohlogo.png" alt="Ministry of Health Sierra Leone">
+                    <div class="nmdr-moh-label">Ministry of Health<br>Sierra Leone</div>
+                </div>
+                <div class="nmdr-divider"></div>
+                <div class="nmdr-diagram-wrap">
+                    <img src="nmdr_info.png" alt="NMDR DHIS2 Architecture — Malaria Module, Ento/IR Module, Repository, Transformation, Burden Reduction Dashboards">
+                </div>
+            </div>
+        </div>
+
         <div class="section-label" style="margin-top:4px">NMDR Use Cases &mdash; WHO AFRO</div>
         <div class="slides-container">
             <div class="slides-header">NMDR Use Cases &mdash; WHO AFRO Presentation</div>
@@ -575,18 +727,15 @@
             <div class="dv-progress" id="meDqaProgress" style="display:none;"><div class="dv-progress-bar" id="meDqaBar" style="width:5%;"></div></div>
             <div id="meDqaStatus" style="font-size:11px;color:var(--muted);margin-top:4px;display:none;"></div>
         </div>
-        <!-- stat pills -->
         <div id="meDqaStats" style="display:none;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
             <span id="meDqaStatFac"   style="background:#e7f3ff;border:1px solid #3b78a8;color:#1e4d70;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;"></span>
             <span id="meDqaStatScore" style="background:#fff3cd;border:1px solid #ffc107;color:#7d5a00;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;"></span>
             <span id="meDqaStatHigh"  style="background:#f8d7da;border:1px solid #dc3545;color:#721c24;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;"></span>
         </div>
-        <!-- loading / empty state -->
         <div id="meDqaEmpty" style="text-align:center;padding:60px 20px;background:var(--white);border-radius:12px;border:2px dashed var(--border);">
             <div class="dv-loader"></div>
             <p style="font-size:13px;color:var(--muted);margin-top:14px;">Loading dashboard…</p>
         </div>
-        <!-- iframe -->
         <div id="meDqaFrame" style="display:none;border-radius:12px;overflow:hidden;border:2px solid #2b5f8a;box-shadow:0 4px 16px rgba(0,0,0,0.1);">
             <div style="background:#2b5f8a;color:#fff;padding:9px 18px;font-size:12px;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
                 <span>&#128203; DQA Full Report</span>
@@ -596,12 +745,12 @@
         </div>
     </div>
 
-    <!-- M&E — SUMMARY DASHBOARD SUB-TABS (load from Drive via GAS) -->
+    <!-- M&E — SUMMARY DASHBOARD SUB-TABS -->
     <div id="me-summary-epi"   class="tab-content"><div id="me-summary-epi-wrap"   class="me-detail-wrap"></div></div>
     <div id="me-summary-int"   class="tab-content"><div id="me-summary-int-wrap"   class="me-detail-wrap"></div></div>
     <div id="me-summary-stock" class="tab-content"><div id="me-summary-stock-wrap" class="me-detail-wrap"></div></div>
 
-    <!-- M&E — DETAILED DASHBOARD SUB-TABS (load from Drive via GAS) -->
+    <!-- M&E — DETAILED DASHBOARD SUB-TABS -->
     <div id="med-suspected"   class="tab-content"><div id="med-suspected-wrap"   class="me-detail-wrap"></div></div>
     <div id="med-tested"      class="tab-content"><div id="med-tested-wrap"      class="me-detail-wrap"></div></div>
     <div id="med-confirmed"   class="tab-content"><div id="med-confirmed-wrap"   class="me-detail-wrap"></div></div>
@@ -614,17 +763,15 @@
     <div id="med-tpr"         class="tab-content"><div id="med-tpr-wrap"         class="me-detail-wrap"></div></div>
     <div id="med-cfr"         class="tab-content"><div id="med-cfr-wrap"         class="me-detail-wrap"></div></div>
     <div id="med-ptr"         class="tab-content"><div id="med-ptr-wrap"         class="me-detail-wrap"></div></div>
-
-    <!-- M&E — COMPARATIVE ANALYSIS SUB-TABS (load from Drive) -->
     <div id="me-comp-u5"      class="tab-content"><div id="me-comp-u5-wrap"      class="me-detail-wrap"></div></div>
     <div id="me-comp-allages" class="tab-content"><div id="me-comp-allages-wrap" class="me-detail-wrap"></div></div>
 
-    <!-- 1.0.2 Malaria Epi — HMIS (Monthly) -->
+    <!-- 1.0.1 Malaria Epi — HMIS (Monthly) -->
     <div id="hmis-extraction" class="tab-content">
         <div class="iframe-pane"><iframe id="frame-hmis-extraction" src="" data-src="hmis_extraction.html" loading="lazy" allow="fullscreen"></iframe></div>
     </div>
     <div id="hmis-epi-dashboard" class="tab-content"><div id="hmis-epi-dashboard-wrap" class="me-detail-wrap"></div></div>
-    <!-- 1.0.2.2 eIDSR (Weekly) sub-tabs -->
+    <!-- 1.0.1.2 eIDSR (Weekly) -->
     <div id="eidsr-extraction" class="tab-content">
         <div class="iframe-pane"><iframe id="frame-eidsr-extraction" src="" data-src="eidsr_extraction.html" loading="lazy" allow="fullscreen"></iframe></div>
     </div>
@@ -658,14 +805,55 @@
     </div>
 
     <!-- 3.0 INTERVENTIONS -->
-    <div id="routine-interventions" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-routine-interventions" src="" data-src="routine_interventions.html" loading="lazy" allow="fullscreen"></iframe></div>
+    <div id="int-pmc" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-int-pmc" src="" data-src="int_pmc.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="int-malaria-vaccine" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-int-malaria-vaccine" src="" data-src="int_malaria_vaccine.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="int-penta" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-int-penta" src="" data-src="int_penta.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="int-measles" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-int-measles" src="" data-src="int_measles.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="int-vitamin-a" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-int-vitamin-a" src="" data-src="int_vitamin_a.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="int-iptp" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-int-iptp" src="" data-src="int_iptp.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="int-anc" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-int-anc" src="" data-src="int_anc.html" loading="lazy" allow="fullscreen"></iframe></div>
     </div>
     <div id="int-mass-itn" class="tab-content">
         <div class="iframe-pane"><iframe id="frame-int-mass-itn" src="" data-src="int_mass_itn.html" loading="lazy" allow="fullscreen"></iframe></div>
     </div>
     <div id="int-sbd" class="tab-content">
         <div class="iframe-pane"><iframe id="frame-int-sbd" src="" data-src="int_sbd.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="int-irs" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-int-irs" src="" data-src="int_irs.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
+    <!-- 4.0 VECTOR CONTROL -->
+    <div id="ento-data" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-ento-data" src="" data-src="ento_data.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="ento-report" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-ento-report" src="" data-src="ento_report.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="ento-dashboard" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-ento-dashboard" src="" data-src="ento_dashboard.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="ir-data" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-ir-data" src="" data-src="ir_data.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="ir-report" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-ir-report" src="" data-src="ir_report.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="ir-dashboard" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-ir-dashboard" src="" data-src="ir_dashboard.html" loading="lazy" allow="fullscreen"></iframe></div>
     </div>
 
     <!-- USER GUIDE -->
@@ -748,10 +936,20 @@
         <div class="iframe-pane"><iframe id="frame-other-analysis" src="" data-src="other_analysis.html" loading="lazy" allow="fullscreen"></iframe></div>
     </div>
 
+    <!-- 8.0 FINANCE -->
+    <div id="finance-data" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-finance-data" src="" data-src="finance_data.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="finance-report" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-finance-report" src="" data-src="finance_report.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+    <div id="finance-dashboard" class="tab-content">
+        <div class="iframe-pane"><iframe id="frame-finance-dashboard" src="" data-src="finance_dashboard.html" loading="lazy" allow="fullscreen"></iframe></div>
+    </div>
+
     <!-- ADMIN DASHBOARD -->
     <div id="admin-dashboard" class="tab-content">
 
-        <!-- Publish to Dashboard banner -->
         <div style="background:#f8f9fa;border:3px solid #004080;border-radius:10px;overflow:hidden;margin-bottom:20px;font-family:'Roboto',sans-serif;">
             <div style="background:#004080;color:#fff;padding:12px 22px;font-size:14px;font-weight:700;letter-spacing:.5px;display:flex;align-items:center;gap:10px;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -771,7 +969,6 @@
             <div id="dvWorkflowStatus" style="display:none;padding:10px 22px;font-size:12px;font-family:'Courier New',monospace;background:#0d1117;color:#17a2b8;"></div>
         </div>
 
-        <!-- Admin sub-tabs -->
         <div style="display:flex;gap:0;background:var(--white);border-radius:10px 10px 0 0;border:2px solid var(--border);border-bottom:none;overflow:hidden;margin-bottom:0;">
             <button id="adminTabAuto" onclick="switchAdminTab('auto')"
                 style="flex:1;padding:14px 20px;background:#004080;color:#fff;border:none;font-family:'Roboto',sans-serif;font-size:14px;font-weight:700;letter-spacing:.5px;cursor:pointer;border-right:2px solid rgba(255,255,255,0.2);transition:all .2s;">
@@ -783,12 +980,10 @@
             </button>
         </div>
 
-        <!-- Pane: Automation -->
         <div id="adminPaneAuto" style="border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.1);border:2px solid var(--border);border-top:none;">
             <iframe id="autoIframe" src="automation.html" title="Admin Automation Dashboard" loading="lazy" allow="fullscreen" referrerpolicy="strict-origin-when-cross-origin" style="width:100%;min-height:85vh;border:none;display:block;"></iframe>
         </div>
 
-        <!-- Pane: DQA Tool -->
         <div id="adminPaneDqa" style="display:none;border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.1);border:2px solid #2b5f8a;border-top:3px solid #ffc107;">
             <div id="dqaEmbedStatus" style="display:none;padding:12px 20px;background:#d4edda;border-bottom:2px solid #28a745;font-family:'Roboto',sans-serif;font-size:13px;font-weight:700;color:#155724;align-items:center;gap:10px;">
                 <span>&#10004;</span>
@@ -829,7 +1024,9 @@ var ME_DETAIL_TABS = ['med-suspected','med-tested','med-confirmed','med-treated'
 
 var MALARIA_EPI_TABS = ['hmis-extraction','hmis-epi-dashboard','eidsr-extraction','eidsr-dashboard'];
 var TES_TABS         = ['tes-data','tes-report','tes-dashboard'];
-var INT_TABS         = ['routine-interventions','int-mass-itn','int-sbd'];
+var INT_TABS         = ['int-pmc','int-malaria-vaccine','int-penta','int-measles','int-vitamin-a','int-iptp','int-anc','int-mass-itn','int-sbd','int-irs'];
+var ENTO_TABS        = ['ento-data','ento-report','ento-dashboard','ir-data','ir-report','ir-dashboard'];
+var FINANCE_TABS     = ['finance-data','finance-report','finance-dashboard'];
 var SCM_TABS         = ['quant-data','quant-dashboard','supply-track-data','supply-track-dashboard'];
 
 var roleAccess = {
@@ -837,11 +1034,12 @@ var roleAccess = {
                'user-guide','bulletins','mpd','campaign-survey',
                'sbd-app','analytics-training','snt','mpr','other-analysis']
                .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS).concat(DMAT_TABS)
-               .concat(MALARIA_EPI_TABS).concat(TES_TABS).concat(SCM_TABS).concat(INT_TABS),
+               .concat(MALARIA_EPI_TABS).concat(TES_TABS).concat(SCM_TABS).concat(INT_TABS)
+               .concat(ENTO_TABS).concat(FINANCE_TABS),
     district: ['welcome','me-dqa','me-detailed',
                'user-guide','bulletins','analytics-training']
                .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS)
-               .concat(MALARIA_EPI_TABS).concat(TES_TABS).concat(INT_TABS),
+               .concat(MALARIA_EPI_TABS).concat(TES_TABS).concat(INT_TABS).concat(ENTO_TABS),
     chiefdom: ['welcome','me-dqa','me-detailed',
                'user-guide','bulletins','analytics-training']
                .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS)
@@ -855,6 +1053,7 @@ var roleAccess = {
                'admin-dashboard']
                .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS).concat(DMAT_TABS)
                .concat(MALARIA_EPI_TABS).concat(TES_TABS).concat(SCM_TABS).concat(INT_TABS)
+               .concat(ENTO_TABS).concat(FINANCE_TABS)
 };
 
 function enableTabsForRole(role) {
@@ -917,13 +1116,11 @@ document.getElementById('rolePassword').addEventListener('keypress', function(e)
 ════════════════════════════════════════════ */
 const DV_GAS = 'https://script.google.com/macros/s/AKfycbyTprTce5ft5gxSwY7jOku2GNeKMG8V-X1BrY0jB3QDPyuVWXwFPNr_CH80BRfcLcwD/exec';
 
-// Decode base64 data URL → HTML string → set as srcdoc
 function dvDecodeSrcdoc(dataUrl) {
     const b64  = dataUrl.startsWith('data:') ? dataUrl.split(',')[1] : dataUrl;
     return decodeURIComponent(escape(atob(b64)));
 }
 
-// Load DQA report into the M&E DQA tab — lazy, runs once on first click
 let meDqaLoaded = false;
 function loadMeDqa() {
     if (meDqaLoaded) return;
@@ -968,14 +1165,12 @@ function loadMeDqa() {
                 if(frameEl)  frameEl.style.display  = 'block';
                 if(ifEl)     ifEl.srcdoc             = html;
 
-                // Update hero
                 const t = titles.dqaTitle || 'DQA Report';
                 const p = titles.dqaPeriod || meta.period || '';
                 document.getElementById('meDqaTitle').textContent    = t;
                 document.getElementById('meDqaSubtitle').textContent = 'Period: ' + p + (meta.ts ? ' · Updated: ' + meta.ts : '');
                 document.getElementById('meDqaMetaPill').textContent  = p + (meta.ts ? ' · ' + meta.ts : '');
 
-                // Stat pills
                 if (titles.dqaFacilities || titles.dqaAvgScore || titles.dqaHighPriority) {
                     document.getElementById('meDqaStats').style.display = 'flex';
                     if(titles.dqaFacilities)  document.getElementById('meDqaStatFac').innerHTML   = '&#127968; '+titles.dqaFacilities;
@@ -1023,10 +1218,18 @@ var pageLabelMap = {
     'supply-track-data':'Supply Tracking · Data',
     'supply-track-dashboard':'Supply Tracking · Dashboard',
     'routine-interventions':'3.0 Interventions · Routine',
+    'int-pmc':'Routine · PMC',
+    'int-malaria-vaccine':'Routine · Malaria Vaccine',
+    'int-penta':'Routine · Penta',
+    'int-measles':'Routine · Measles',
+    'int-vitamin-a':'Routine · Vitamin A',
+    'int-iptp':'Routine · IPTp',
+    'int-anc':'Routine · ANC',
     'int-mass-itn':'3.0 Interventions · Mass ITN',
     'int-sbd':'3.0 Interventions · SBD',
+    'int-irs':'3.0 Interventions · IRS',
     'user-guide':'User Guide','bulletins':'Monthly Bulletin','mpd':'Malaria Programme Docs',
-    'campaign-survey':'Campaign & Survey','sbd-app':'Data Collection Apps',
+    'campaign-survey':'Survey','sbd-app':'Data Collection Apps',
     'analytics-training':'Analytics Learning',
     'dmat-dqa':'D-MAT · Data Quality Assessment',
     'dmat-processing':'D-MAT · Data Processing',
@@ -1040,6 +1243,15 @@ var pageLabelMap = {
     'dmat-u5':'D-MAT · Comparative · Under 5',
     'dmat-allages':'D-MAT · Comparative · All Ages',
     'snt':'SNT 2015–2025','mpr':'MPR 2021–2023','other-analysis':'Other Analysis',
+    'ento-data':'Vector Control · Entomology · Data',
+    'ento-report':'Vector Control · Entomology · Report',
+    'ento-dashboard':'Vector Control · Entomology · Dashboard',
+    'ir-data':'Vector Control · Insecticide Resistance · Data',
+    'ir-report':'Vector Control · Insecticide Resistance · Report',
+    'ir-dashboard':'Vector Control · Insecticide Resistance · Dashboard',
+    'finance-data':'Finance · Data',
+    'finance-report':'Finance · Report',
+    'finance-dashboard':'Finance · Dashboard',
     'admin-dashboard':'Admin Dashboard'
 };
 
@@ -1061,49 +1273,40 @@ function activateTab(tabId) {
     var el = document.getElementById(tabId);
     if (el) el.classList.add('active');
 
-    // Clear all active states
     document.querySelectorAll('.nav-item[data-tab], .nav-child[data-tab]').forEach(function(b){
         b.classList.remove('active');
     });
-    // Set active on the matching button
     document.querySelectorAll('[data-tab="' + tabId + '"]').forEach(function(b){
         b.classList.add('active');
     });
 
-    // Lazy-load generic iframes
     var iframe = document.getElementById('frame-' + tabId);
     if (iframe) {
         var dataSrc = iframe.getAttribute('data-src');
         if (dataSrc && !iframe.src.endsWith(dataSrc)) iframe.src = dataSrc;
     }
 
-    // Special lazy loaders
     if (tabId === 'me-dqa') loadMeDqa();
     if (MED_DRIVE_KEYS && MED_DRIVE_KEYS[tabId]) loadMedTab(tabId);
 
     updateTopbarPage(tabId);
     closeDrawer();
 
-    // Auto-expand all ancestor containers and open the nav-group
     var childBtn = document.querySelector('.nav-child[data-tab="' + tabId + '"]');
     if (childBtn) {
-        // Open top-level nav-group
         var groupChildren = childBtn.closest('.nav-group-children');
         if (groupChildren && !groupChildren.classList.contains('open')) {
             openGroup(groupChildren.id.replace('children-', ''));
         }
-        // Walk up, expanding every collapsed nested container
         var node = childBtn.parentElement;
         while (node && !node.classList.contains('nav-group-children')) {
             if (node.id) {
                 var isCollapsed = !node.style.maxHeight || node.style.maxHeight === '0px';
                 if (isCollapsed) {
                     node.style.maxHeight = '2000px';
-                    // Rotate chevron
                     var chevronId = node.id.replace('Children', 'Chevron');
                     var chevron = document.getElementById(chevronId);
                     if (chevron) chevron.style.transform = 'rotate(180deg)';
-                    // Highlight toggle button
                     var toggleId = node.id.replace('Children', 'Toggle');
                     var toggleBtn = document.getElementById(toggleId);
                     if (toggleBtn) toggleBtn.classList.add('active');
@@ -1129,7 +1332,6 @@ function openGroup(groupId) {
     if (b) b.classList.add('open');
 }
 
-/* UNIFIED NESTED GROUP TOGGLE — used by all inline expand/collapse buttons */
 function toggleNestedGroup(childrenId, chevronId, toggleId, e) {
     if (e) e.stopPropagation();
     var c  = document.getElementById(childrenId);
@@ -1142,11 +1344,9 @@ function toggleNestedGroup(childrenId, chevronId, toggleId, e) {
         if (ch) ch.style.transform = '';
         if (t)  t.classList.remove('active');
     } else {
-        // Use a large value so child expansions never clip siblings
         c.style.maxHeight = '2000px';
         if (ch) ch.style.transform = 'rotate(180deg)';
         if (t)  t.classList.add('active');
-        // Also bump all ancestor containers so they never clip this expansion
         var parent = c.parentElement;
         while (parent) {
             if (parent.id && (parent.classList.contains('nav-group-children') === false) &&
@@ -1159,9 +1359,7 @@ function toggleNestedGroup(childrenId, chevronId, toggleId, e) {
     }
 }
 
-// ── Drive file key map (Detailed Dashboard + Summary Dashboard) ───────────────
 var MED_DRIVE_KEYS = {
-    // Detailed Dashboard
     'med-suspected':    'med_suspected.html',
     'med-tested':       'med_tested.html',
     'med-confirmed':    'med_confirmed.html',
@@ -1176,11 +1374,9 @@ var MED_DRIVE_KEYS = {
     'med-ptr':          'med_ptr.html',
     'me-comp-u5':       'me_comp_u5.html',
     'me-comp-allages':  'me_comp_allages.html',
-    // Summary Dashboard
     'me-summary-epi':   'malaria_epi.html',
     'me-summary-int':   'intervention.html',
     'me-summary-stock': 'stock.html',
-    // Malaria Epi Dashboard (HMIS) — reads from Drive
     'hmis-epi-dashboard': 'malaria_dashboard.html'
 };
 
@@ -1273,7 +1469,7 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close
 /* LOGOUT */
 document.getElementById('logoutBtn').addEventListener('click', function(){
     currentUserRole = null; selectedRole = null;
-    meDqaLoaded = false; // allow reload on next login
+    meDqaLoaded = false;
     _medDriveCache = null;
     document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
     document.getElementById('welcome').classList.add('active');
@@ -1287,11 +1483,8 @@ document.getElementById('logoutBtn').addEventListener('click', function(){
     document.querySelectorAll('[data-tab]').forEach(function(btn){
         btn.style.opacity = ''; btn.style.pointerEvents = '';
     });
-    // Reset iframes
     document.querySelectorAll('iframe[data-src]').forEach(function(f){ f.src = ''; });
-    // Reset Drive-loaded wrap divs (Detailed + Summary)
     document.querySelectorAll('.me-detail-wrap').forEach(function(w){ w.innerHTML = ''; });
-    // Reset DQA tab state
     document.getElementById('meDqaEmpty').style.display = 'block';
     document.getElementById('meDqaEmpty').innerHTML = '<div class="dv-loader"></div><p style="font-size:13px;color:var(--muted);margin-top:14px;">Loading dashboard…</p>';
     document.getElementById('meDqaFrame').style.display  = 'none';
@@ -1357,7 +1550,6 @@ async function dvPushToDashboard(){
     }catch(err){dvStatus('&#10008; Network error: '+err.message,'#dc3545');dvWorkflowLog('&#10008; '+err.message);}
 }
 
-// postMessage bridge: DQA tool iframe → parent
 window.addEventListener('message', function(e) {
     if (!e.data || typeof e.data !== 'object') return;
     if (e.data.type === 'dqa_saved') {
@@ -1371,7 +1563,6 @@ window.addEventListener('message', function(e) {
         dvShowUpdateBar();
         const bar=document.getElementById('dvUpdateBar');
         if(bar) bar.scrollIntoView({behavior:'smooth',block:'nearest'});
-        // Refresh M&E DQA tab on next visit so it picks up the new report
         meDqaLoaded = false;
     }
     if (e.data.type === 'pipeline_done') dvShowUpdateBar();
