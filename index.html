@@ -776,7 +776,7 @@
         <div class="iframe-pane"><iframe id="frame-eidsr-extraction" src="" data-src="eidsr_extraction.html" loading="lazy" allow="fullscreen"></iframe></div>
     </div>
     <div id="eidsr-dashboard" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-eidsr-dashboard" src="" data-src="eidsr_dashboard.html" loading="lazy" allow="fullscreen"></iframe></div>
+    <div id="eidsr-dashboard" class="tab-content"><div id="eidsr-dashboard-wrap" class="me-detail-wrap"></div></div>
     </div>
 
     <!-- 1.0.3 TES -->
@@ -1117,8 +1117,17 @@ document.getElementById('rolePassword').addEventListener('keypress', function(e)
 const DV_GAS = 'https://script.google.com/macros/s/AKfycbyTprTce5ft5gxSwY7jOku2GNeKMG8V-X1BrY0jB3QDPyuVWXwFPNr_CH80BRfcLcwD/exec';
 
 function dvDecodeSrcdoc(dataUrl) {
-    const b64  = dataUrl.startsWith('data:') ? dataUrl.split(',')[1] : dataUrl;
-    return decodeURIComponent(escape(atob(b64)));
+    // If it's already plain HTML, return as-is
+    var str = typeof dataUrl === 'string' ? dataUrl.trim() : '';
+    if (str.startsWith('<') || str.toLowerCase().startsWith('<!doctype')) return str;
+    // Strip data URI prefix if present
+    var b64 = str.startsWith('data:') ? str.split(',')[1] : str;
+    try {
+        return decodeURIComponent(escape(atob(b64)));
+    } catch(e) {
+        // If atob fails, return raw string (might already be decoded HTML)
+        return str;
+    }
 }
 
 let meDqaLoaded = false;
@@ -1280,14 +1289,17 @@ function activateTab(tabId) {
         b.classList.add('active');
     });
 
-    var iframe = document.getElementById('frame-' + tabId);
-    if (iframe) {
-        var dataSrc = iframe.getAttribute('data-src');
-        if (dataSrc && !iframe.src.endsWith(dataSrc)) iframe.src = dataSrc;
+    if (tabId === 'me-dqa') {
+        loadMeDqa();
+    } else if (MED_DRIVE_KEYS && MED_DRIVE_KEYS[tabId]) {
+        loadMedTab(tabId);
+    } else {
+        var iframe = document.getElementById('frame-' + tabId);
+        if (iframe) {
+            var dataSrc = iframe.getAttribute('data-src');
+            if (dataSrc && !iframe.src.endsWith(dataSrc)) iframe.src = dataSrc;
+        }
     }
-
-    if (tabId === 'me-dqa') loadMeDqa();
-    if (MED_DRIVE_KEYS && MED_DRIVE_KEYS[tabId]) loadMedTab(tabId);
 
     updateTopbarPage(tabId);
     closeDrawer();
@@ -1360,32 +1372,45 @@ function toggleNestedGroup(childrenId, chevronId, toggleId, e) {
 }
 
 var MED_DRIVE_KEYS = {
-    'med-suspected':    'med_suspected.html',
-    'med-tested':       'med_tested.html',
-    'med-confirmed':    'med_confirmed.html',
-    'med-treated':      'med_treated.html',
-    'med-presumptive':  'med_presumptive.html',
-    'med-comp-u5':      'med_comp_u5.html',
-    'med-comp-allages': 'med_comp_allages.html',
-    'med-reporting':    'med_reporting.html',
-    'med-testing':      'med_testing.html',
-    'med-tpr':          'med_tpr.html',
-    'med-cfr':          'med_cfr.html',
-    'med-ptr':          'med_ptr.html',
-    'me-comp-u5':       'me_comp_u5.html',
-    'me-comp-allages':  'me_comp_allages.html',
-    'me-summary-epi':   'malaria_epi.html',
-    'me-summary-int':   'intervention.html',
-    'me-summary-stock': 'stock.html',
-    'hmis-epi-dashboard': 'malaria_dashboard.html'
+
+    // ── 1.0.1 Malaria Epi ───────────────────────────────────────
+    'hmis-epi-dashboard': 'malaria_dashboard.html',
+    'eidsr-dashboard':    'eidsr_dashboard.html',
+
+    // ── 1.0.2 M&E — DQA already handled separately via loadMeDqa
+
+    // ── 1.0.2 M&E — Key Data Elements ──────────────────────────
+    'med-suspected':      'med_suspected.html',
+    'med-tested':         'med_tested.html',
+    'med-confirmed':      'med_confirmed.html',
+    'med-treated':        'med_treated.html',
+    'med-presumptive':    'med_presumptive.html',
+    'med-ptr':            'med_ptr.html',
+
+    // ── 1.0.2 M&E — Key Indicators ─────────────────────────────
+    'med-reporting':      'med_reporting.html',
+    'med-testing':        'med_testing.html',
+    'med-tpr':            'med_tpr.html',
+    'med-cfr':            'med_cfr.html',
+
+    // ── 1.0.2 M&E — Comparative Analysis ───────────────────────
+    'med-comp-u5':        'med_comp_u5.html',
+    'med-comp-allages':   'med_comp_allages.html',
+    'me-comp-u5':         'me_comp_u5.html',
+    'me-comp-allages':    'me_comp_allages.html',
+
+    // ── 1.0.2 M&E — Summary Dashboards ─────────────────────────
+    'me-summary-epi':     'malaria_epi.html',
+    'me-summary-int':     'intervention.html',
+    'me-summary-stock':   'stock.html'
 };
 
-var _medDriveCache   = null;
-var _medDrivePending = null;
+
+
 
 function loadMedTab(tabId) {
     var wrap = document.getElementById(tabId + '-wrap');
-    if (!wrap || wrap.querySelector('iframe')) return;
+    if (!wrap) return;
     var driveKey = MED_DRIVE_KEYS[tabId];
     if (!driveKey) return;
 
@@ -1393,40 +1418,29 @@ function loadMedTab(tabId) {
         + '<div class="dv-loader"></div>'
         + '<p style="font-size:13px;color:var(--muted);margin-top:14px;">Loading dashboard…</p></div>';
 
-    function render(images) {
-        var dataUrl = images[driveKey] || '';
-        if (!dataUrl) {
-            wrap.innerHTML = '<div style="padding:60px 20px;text-align:center;color:var(--muted);">'
-                + '<p style="font-size:13px;">No data published yet for this section.<br>'
-                + 'Admin must publish this report to the Dashboard.</p></div>';
-            return;
-        }
-        try {
-            var html   = dvDecodeSrcdoc(dataUrl);
-            var iframe = document.createElement('iframe');
-            iframe.style.cssText = 'width:100%;height:85vh;border:none;display:block;border-radius:10px;';
-            iframe.srcdoc = html;
-            wrap.innerHTML = '';
-            wrap.appendChild(iframe);
-        } catch(e) {
-            wrap.innerHTML = '<p style="color:#dc3545;padding:20px;">Error rendering: ' + e.message + '</p>';
-        }
-    }
-
-    if (_medDriveCache) { render(_medDriveCache); return; }
-    if (_medDrivePending) { _medDrivePending.then(render); return; }
-
-    _medDrivePending = fetch(DV_GAS + '?action=getDashboard')
+    fetch(DV_GAS + '?action=getFileByName&filename=' + encodeURIComponent(driveKey) + '&t=' + Date.now())
         .then(function(r){ return r.json(); })
         .then(function(resp){
-            var imgs = (resp.ok && resp.images) ? resp.images : {};
-            _medDriveCache   = imgs;
-            _medDrivePending = null;
-            return imgs;
+            if (!resp.ok) {
+                wrap.innerHTML = '<div style="padding:60px 20px;text-align:center;color:var(--muted);">'
+                    + '<p style="font-size:13px;">File not found: <strong>' + driveKey + '</strong><br>'
+                    + 'Make sure the file exists in Google Drive.</p></div>';
+                return;
+            }
+            try {
+                var html   = dvDecodeSrcdoc(resp.content);
+                var iframe = document.createElement('iframe');
+                iframe.style.cssText = 'width:100%;height:85vh;border:none;display:block;border-radius:10px;';
+                iframe.srcdoc = html;
+                wrap.innerHTML = '';
+                wrap.appendChild(iframe);
+            } catch(e) {
+                wrap.innerHTML = '<p style="color:#dc3545;padding:20px;">Error rendering: ' + e.message + '</p>';
+            }
         })
-        .catch(function(){ _medDrivePending = null; return {}; });
-
-    _medDrivePending.then(render);
+        .catch(function(err){
+            wrap.innerHTML = '<p style="color:#dc3545;padding:20px;">Network error: ' + err.message + '</p>';
+        });
 }
 
 function toggleGroup(groupId) {
@@ -1470,7 +1484,6 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close
 document.getElementById('logoutBtn').addEventListener('click', function(){
     currentUserRole = null; selectedRole = null;
     meDqaLoaded = false;
-    _medDriveCache = null;
     document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
     document.getElementById('welcome').classList.add('active');
     document.querySelectorAll('.nav-item[data-tab]').forEach(function(b){
