@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NMCP Testing Data Extract · ICF-SL</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--blue:#2c6793;--blue-dk:#1f4a6a;--blue-lt:#e8f0f7;--white:#fff;--bg:#f0f5f9;--border:#d0dde8;--muted:#6c7a89;--gold:#ffc107;--green:#28a745;--teal:#17a2b8;--red:#dc3545;}
+html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);}
+.page-header{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-dk) 100%);color:#fff;padding:20px 28px;box-shadow:0 2px 12px rgba(0,0,0,.18);}
+.header-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.logo-box{background:#fff;border-radius:8px;padding:5px 9px;}
+.logo-box img{width:76px;height:auto;border-radius:4px;}
+.header-text h1{font-size:19px;font-weight:700;letter-spacing:.4px;margin-bottom:2px;}
+.header-text p{font-size:12px;opacity:.85;}
+.page-body{max-width:1100px;margin:0 auto;padding:22px 26px;}
+.card{background:var(--white);border-radius:12px;border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:20px;overflow:hidden;}
+.card-head{padding:13px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border);}
+.card-head h2{font-size:14px;font-weight:700;color:var(--blue-dk);}
+.card-body{padding:18px;}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;}
+.form-control{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;color:#222;background:#fff;transition:border-color .2s;}
+.form-control:focus{outline:none;border-color:var(--blue);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.4px;transition:all .2s;text-transform:uppercase;font-family:inherit;}
+.btn-primary{background:var(--blue);color:#fff;}.btn-primary:hover{background:var(--blue-dk);}
+.btn-gold{background:var(--gold);color:#000;}.btn-gold:hover{background:#e0a800;}
+.btn-green{background:var(--green);color:#fff;}.btn-green:hover{background:#1e7e34;}
+.btn-teal{background:var(--teal);color:#fff;}.btn-teal:hover{background:#138496;}
+.btn-outline{background:#fff;color:var(--blue);border:1.5px solid var(--blue);}.btn-outline:hover{background:var(--blue-lt);}
+.btn-sm{padding:5px 11px;font-size:11px;}
+.btn-lg{padding:14px 28px;font-size:14px;font-weight:800;}
+.run-btn{width:100%;background:linear-gradient(135deg,var(--blue),var(--blue-dk));color:#fff;border:none;padding:14px;border-radius:9px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(44,102,147,.28);transition:transform .2s;font-family:inherit;}
+.run-btn:hover{transform:translateY(-2px);}
+
+/* PROGRESS */
+.pbar-wrap{height:7px;background:#1a1a2e;border-radius:4px;overflow:hidden;margin:8px 0;}
+.pbar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));border-radius:4px;transition:width .3s;}
+.step-list{display:flex;flex-direction:column;gap:4px;max-height:260px;overflow-y:auto;}
+.step-item{display:flex;align-items:flex-start;gap:8px;padding:5px 9px;border-radius:5px;font-size:11px;font-family:'Courier New',monospace;}
+.step-item.pending{background:#1a1a2e;color:#555;}
+.step-item.running{background:#1a2e4a;color:var(--teal);animation:pulse 1.4s ease-in-out infinite;}
+.step-item.done{background:#0a2e0a;color:var(--green);}
+.step-item.error{background:#2e0a0a;color:var(--red);}
+.step-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:2px;}
+.step-item.pending .step-dot{background:#555;}
+.step-item.running .step-dot{background:var(--teal);}
+.step-item.done .step-dot{background:var(--green);}
+.step-item.error .step-dot{background:var(--red);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* RESULTS */
+.stats-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;}
+.stat-pill{background:var(--blue-lt);border:1.5px solid var(--blue);border-radius:20px;padding:4px 13px;font-size:12px;font-weight:700;color:var(--blue);}
+.stat-pill.ok{background:#d4edda;border-color:var(--green);color:#155724;}
+.stat-pill.warn{background:#fff3cd;border-color:var(--gold);color:#856404;}
+
+.dl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;}
+.dl-card{border:2px solid var(--border);border-radius:10px;overflow:hidden;}
+.dl-card-head{padding:10px 16px;font-size:13px;font-weight:700;color:#fff;}
+.dl-card-body{padding:14px;display:flex;flex-direction:column;gap:8px;}
+
+.alert{padding:10px 14px;border-radius:6px;margin-bottom:10px;font-size:13px;border:1.5px solid;}
+.alert-err{background:#f8d7da;border-color:var(--red);color:#721c24;}
+
+.data-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);max-height:400px;overflow-y:auto;}
+.data-table{width:100%;border-collapse:collapse;font-size:11px;}
+.data-table thead{background:var(--blue-lt);border-bottom:2px solid var(--border);position:sticky;top:0;}
+.data-table th{padding:8px 10px;text-align:left;font-weight:700;color:var(--blue);white-space:nowrap;}
+.data-table td{padding:6px 10px;border-bottom:1px solid var(--border);color:#2c4b62;white-space:nowrap;}
+.data-table tbody tr:hover{background:var(--blue-lt);}
+.page-footer{background:var(--blue-dk);color:rgba(255,255,255,.8);text-align:center;padding:13px;font-size:11px;margin-top:24px;}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div class="header-row">
+    <div class="logo-box"><img src="https://github.com/mohamedsillahkanu/gdp-dashboard-2/raw/6c7463b0d5c3be150aafae695a4bcbbd8aeb1499/ICF-SL.jpg" alt="ICF-SL"></div>
+    <div class="header-text">
+      <h1>Malaria Testing Data Extract</h1>
+      <p>National Malaria Control Programme · Sierra Leone · ICF-SL</p>
+    </div>
+    <div style="margin-left:auto;"><span id="headerPill" style="background:rgba(255,255,255,.15);padding:5px 13px;border-radius:20px;font-size:11px;font-weight:700;">Ready</span></div>
+  </div>
+</div>
+
+<div class="page-body">
+
+<!-- CONFIG -->
+<div id="configScreen">
+  <div class="card">
+    <div class="card-head"><h2>Configure Extract</h2></div>
+    <div class="card-body">
+      <div style="background:var(--blue-lt);border-radius:8px;padding:14px 16px;margin-bottom:18px;font-size:12px;color:var(--blue-dk);line-height:1.7;">
+        <strong>What this tool fetches:</strong><br>
+        Malaria testing data (suspected, tested, confirmed) at Level-5 facility for each month in the selected year range.<br>
+        <strong>Facility sources:</strong> Suspected <code>FJafyE1kzs4</code> · RDT Neg <code>mXS2g1AiPsS</code> · RDT Pos <code>p6zQLDFjSfd</code> · Microscopy Neg <code>Rijj3Fp9ksg</code> (excl CHP/MCHP) · Microscopy Pos <code>Sz13vbo2Qwh</code> (excl CHP/MCHP)<br>
+        <strong>Community (HTR/ETR):</strong> Suspected <code>wfaQBIVQxWo</code> · RDT Neg <code>YWvx4zYdp92</code> · RDT Pos <code>T7xH8GwWpEM</code><br>
+        <strong>Outlier correction:</strong> Upper-bound only at 99.75th percentile per facility per year. 0 stays 0, missing stays missing.
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div class="form-group" style="margin:0;">
+          <label>Start Month</label>
+          <input type="month" class="form-control" id="cfgStart" style="font-size:14px;font-weight:700;color:var(--blue-dk);padding:11px 13px;">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label>End Month</label>
+          <input type="month" class="form-control" id="cfgEnd" style="font-size:14px;font-weight:700;color:var(--blue-dk);padding:11px 13px;">
+        </div>
+      </div>
+
+      <div id="cfgError" style="display:none;" class="alert alert-err"></div>
+      <button class="run-btn" onclick="startPipeline()">&#9654; Fetch Data</button>
+    </div>
+  </div>
+</div>
+
+<!-- PIPELINE -->
+<div id="pipelineScreen" style="display:none;">
+  <div class="card">
+    <div class="card-head">
+      <h2>Fetching Data</h2>
+      <div style="display:flex;gap:9px;align-items:center;">
+        <span id="pctLabel" style="font-size:13px;font-weight:700;color:var(--blue);">0%</span>
+        <button class="btn btn-outline btn-sm" onclick="showConfig()">&#8592; Back</button>
+      </div>
+    </div>
+    <div class="card-body" style="background:#0d1117;padding:13px;">
+      <div class="pbar-wrap"><div class="pbar-fill" id="pbarFill" style="width:0%"></div></div>
+      <div class="step-list" id="stepList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="resultsSection" style="display:none;">
+  <div class="card">
+    <div class="card-head">
+      <h2>Extract Complete</h2>
+      <button class="btn btn-outline btn-sm" onclick="showConfig()">&#8592; New Extract</button>
+    </div>
+    <div class="card-body">
+      <div class="stats-row" id="statsRow"></div>
+
+      <!-- Download buttons -->
+      <div class="dl-grid" style="margin-bottom:20px;">
+        <div class="dl-card">
+          <div class="dl-card-head" style="background:var(--blue);">Facility Testing Data</div>
+          <div class="dl-card-body">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">One row per facility per month. Columns: facility, type, chiefdom, district, year, month, fac_rdt, fac_micro, fac_total_raw, fac_total_corrected, com_rdt, overall_raw, overall_corrected, outlier_flag.</div>
+            <button class="btn btn-primary" onclick="downloadCSV('facility')">↓ Facility CSV</button>
+            <button class="btn btn-outline" onclick="downloadExcel('facility')">↓ Facility Excel</button>
+          </div>
+        </div>
+        <div class="dl-card">
+          <div class="dl-card-head" style="background:#17508a;">Community Testing Data</div>
+          <div class="dl-card-body">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">One row per facility per month showing community RDT positive (HTR/ETR) confirmed cases, raw and corrected.</div>
+            <button class="btn btn-primary" onclick="downloadCSV('community')">↓ Community CSV</button>
+            <button class="btn btn-outline" onclick="downloadExcel('community')">↓ Community Excel</button>
+          </div>
+        </div>
+        <div class="dl-card">
+          <div class="dl-card-head" style="background:#1a5c3a;">Overall Combined</div>
+          <div class="dl-card-body">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Facility + Community combined. One row per facility per month with all sources and overall totals.</div>
+            <button class="btn btn-green" onclick="downloadCSV('overall')">↓ Overall CSV</button>
+            <button class="btn btn-outline" onclick="downloadExcel('overall')">↓ Overall Excel (all sheets)</button>
+          </div>
+        </div>
+        <div class="dl-card">
+          <div class="dl-card-head" style="background:#7c3d1a;">Outlier Log</div>
+          <div class="dl-card-body">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">All monthly values corrected by winsorisation: original, corrected, upper bound (99.75th pct), facility details.</div>
+            <button class="btn btn-gold" onclick="downloadCSV('outliers')">↓ Outliers CSV</button>
+            <button class="btn btn-outline" onclick="downloadExcel('outliers')">↓ Outliers Excel</button>
+          </div>
+        </div>
+        <div class="dl-card">
+          <div class="dl-card-head" style="background:#1a3a5c;">Reproducible Code</div>
+          <div class="dl-card-body">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">R and Python scripts that reproduce the exact same fetch, exclusions, and 99.75th pct winsorisation as this tool.</div>
+            <button class="btn btn-outline" onclick="downloadR()">↓ R Script (.R)</button>
+            <button class="btn btn-outline" onclick="downloadPy()">↓ Python Script (.py)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview table -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+        <span style="font-size:13px;font-weight:700;color:var(--blue-dk);">Data Preview</span>
+        <select class="form-control" id="previewType" style="width:auto;" onchange="buildPreview()">
+          <option value="overall">Overall (Facility + Community)</option>
+          <option value="facility">Facility only</option>
+          <option value="community">Community only</option>
+          <option value="outliers">Outlier log</option>
+        </select>
+        <input type="text" class="form-control" id="previewSearch" placeholder="Search…" style="max-width:200px;" oninput="buildPreview()">
+        <span id="previewCount" style="font-size:11px;color:var(--muted);"></span>
+      </div>
+      <div class="data-table-wrap">
+        <table class="data-table"><thead id="previewHead"></thead><tbody id="previewBody"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<div class="page-footer">National Malaria Control Programme (NMCP) · Ministry of Health, Sierra Leone &nbsp;|&nbsp; ICF-SL</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  CONSTANTS
+// ═══════════════════════════════════════════════════════════════
+const PROXY    = 'https://script.google.com/macros/s/AKfycbyRXc68PYSmDSCYPakAS8Gc9R00kRjmsMYoDujPYMItyquXfwMAJUtRqXLiDlNWbSfDQQ/exec';
+const BASE_URL = 'https://sl.dhis2.org/hmis23';
+const AUTH     = 'Basic ' + btoa('musa-sillahkanu:Navigator/2024!');
+const L_PHU=5, L_DIST=2, L_CHIEF=4;
+const EXCL_MICRO=['CHP','MCHP'];
+const MONTH_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+// Data elements
+// ── Testing Data Elements ──────────────────────────────────────
+const AGE_COC_IDS = ['m5T8uBNB8aN','j7j6iaknOFn','zK1aiw8zFac'];
+const COM_COC_IDS = ['NtjMVmRfvHH','qDXW7WMLT99','mdjRPpvLKdu'];
+const FAC_SUSP      = 'FJafyE1kzs4';
+const FAC_RDT_NEG   = 'mXS2g1AiPsS';
+const FAC_RDT_POS   = 'p6zQLDFjSfd';
+const FAC_MICRO_NEG = 'Rijj3Fp9ksg';
+const FAC_MICRO_POS = 'Sz13vbo2Qwh';
+const COM_SUSP      = 'wfaQBIVQxWo';
+const COM_RDT_NEG   = 'YWvx4zYdp92';
+const COM_RDT_POS   = 'T7xH8GwWpEM';
+const FAC_RDT=FAC_RDT_POS, FAC_MICRO=FAC_MICRO_POS, COM_RDT=COM_RDT_POS;
+const ALL_DX = [
+  ...AGE_COC_IDS.map(c=>({dxStr:`${FAC_SUSP}.${c}`,       field:`fac_susp_${c}`,      group:'fac_susp'})),
+  ...AGE_COC_IDS.map(c=>({dxStr:`${FAC_RDT_NEG}.${c}`,    field:`fac_rdt_neg_${c}`,   group:'fac_rdt_neg'})),
+  ...AGE_COC_IDS.map(c=>({dxStr:`${FAC_RDT_POS}.${c}`,    field:`fac_rdt_pos_${c}`,   group:'fac_rdt_pos'})),
+  ...AGE_COC_IDS.map(c=>({dxStr:`${FAC_MICRO_NEG}.${c}`,  field:`fac_micro_neg_${c}`, group:'fac_micro_neg', excl:EXCL_MICRO})),
+  ...AGE_COC_IDS.map(c=>({dxStr:`${FAC_MICRO_POS}.${c}`,  field:`fac_micro_pos_${c}`, group:'fac_micro_pos', excl:EXCL_MICRO})),
+  ...COM_COC_IDS.map(c=>({dxStr:`${COM_SUSP}.${c}`,        field:`com_susp_${c}`,      group:'com_susp'})),
+  ...COM_COC_IDS.map(c=>({dxStr:`${COM_RDT_NEG}.${c}`,     field:`com_rdt_neg_${c}`,   group:'com_rdt_neg'})),
+  ...COM_COC_IDS.map(c=>({dxStr:`${COM_RDT_POS}.${c}`,     field:`com_rdt_pos_${c}`,   group:'com_rdt_pos'})),
+];
+const DX_MAP={};ALL_DX.forEach(d=>{DX_MAP[d.dxStr]=d;});
+const DX_PARAM=[...new Set(ALL_DX.map(d=>d.dxStr))].join(';');
+let COC_NAMES = {
+  'm5T8uBNB8aN':'0-59m','j7j6iaknOFn':'5-14y','zK1aiw8zFac':'15+y',
+  'NtjMVmRfvHH':'02-59m','qDXW7WMLT99':'5-14y','mdjRPpvLKdu':'15+y',
+};
+let DE_NAMES = {
+  [FAC_SUSP]:     'Suspected (Facility)',
+  [FAC_RDT_NEG]:  'RDT Negative (Facility)',
+  [FAC_RDT_POS]:  'RDT Positive (Facility)',
+  [FAC_MICRO_NEG]:'Microscopy Negative (Facility)',
+  [FAC_MICRO_POS]:'Microscopy Positive (Facility)',
+  [COM_SUSP]:     'Suspected (Community)',
+  [COM_RDT_NEG]:  'RDT Negative (Community)',
+  [COM_RDT_POS]:  'RDT Positive (Community)',
+};
+
+// ── State ─────────────────────────────────────────────────────
+let ST={startYr:null,endYr:null,years:[],ouHierarchy:{},
+        rows:[],       // final output rows (one per facility per month)
+        outlierLog:[]};
+
+// ═══════════════════════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════════════════════
+async function dhis2(path,retries=3){
+  const url=BASE_URL+path;
+  const pUrl=PROXY+'?url='+encodeURIComponent(url)+'&Authorization='+encodeURIComponent(AUTH);
+  let lastErr;
+  for(let a=1;a<=retries;a++){
+    try{const r=await fetch(pUrl);if(!r.ok)throw new Error('HTTP '+r.status);return await r.json();}
+    catch(e){lastErr=e;if(a<retries)await sleep(1200*Math.pow(2,a-1));}
+  }
+  throw new Error('DHIS2 failed: '+(lastErr?.message||'network'));
+}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function getHFType(n){
+  const u=(n||'').toUpperCase(),pts=u.trim().split(/\s+/),suf=pts[pts.length-1]||'';
+  if(suf==='HOSPITAL')return 'Hospital';if(suf==='MCHP')return 'MCHP';
+  if(suf==='CHC')return 'CHC';if(suf==='CHP')return 'CHP';
+  const cs=['CLINIC','CLINNIC','CLINNC','CLIMIC','CLINC','CLINIK','CLENIC','CLINCC','CLIN'];
+  if(cs.includes(suf)||cs.some(c=>u.includes(c)))return 'Clinic';
+  if(u.includes('HOSPITAL'))return 'Hospital';if(u.includes('MCHP'))return 'MCHP';
+  if(u.includes('CHC'))return 'CHC';if(u.includes('CHP'))return 'CHP';
+  return 'Other';
+}
+function setPill(t,bg){const el=document.getElementById('headerPill');el.textContent=t;el.style.background=bg||'rgba(255,255,255,.15)';}
+function setProgress(p){document.getElementById('pbarFill').style.width=p+'%';document.getElementById('pctLabel').textContent=Math.round(p)+'%';}
+const stepEls={};let _sn=0;
+function addStep(id,txt){_sn++;const d=document.createElement('div');d.className='step-item pending';d.id='st_'+id;d.innerHTML=`<div class="step-dot"></div><span>Step ${_sn} — ${txt}</span>`;document.getElementById('stepList').appendChild(d);stepEls[id]=d;}
+function setStep(id,status,msg){const el=stepEls[id];if(!el)return;el.className='step-item '+status;const pre={running:'',done:'✓ ',error:'✗ '}[status]||'';const sp=el.querySelector('span');sp.textContent=pre+(msg||sp.textContent.replace(/^[✓✗] /,''));}
+
+// ═══════════════════════════════════════════════════════════════
+//  WINSORISATION (upper bound only, 99.75th pct)
+// ═══════════════════════════════════════════════════════════════
+function percentile(arr,p){
+  if(!arr.length)return 0;
+  const s=[...arr].sort((a,b)=>a-b),idx=(p/100)*(s.length-1),lo=Math.floor(idx),hi=Math.ceil(idx);
+  return lo===hi?s[lo]:s[lo]+(idx-lo)*(s[hi]-s[lo]);
+}
+function winsorizeUpper(vals){
+  // vals: array of numbers or null (null=missing)
+  // Returns corrected array. 0→0, null→null, >99.75th→capped
+  const reported=vals.filter(v=>v!==null&&v!==undefined&&v>0);
+  if(reported.length<2)return vals; // not enough data to compute percentile
+  const hi=percentile(reported,99.75);
+  return vals.map(v=>{
+    if(v===null||v===undefined)return null;
+    if(v===0)return 0;
+    return v>hi?hi:v;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PIPELINE
+// ═══════════════════════════════════════════════════════════════
+function showConfig(){
+  document.getElementById('configScreen').style.display='block';
+  document.getElementById('pipelineScreen').style.display='none';
+  document.getElementById('resultsSection').style.display='none';
+}
+
+async function startPipeline(){
+  const cfgS=document.getElementById('cfgStart').value;
+  const cfgE=document.getElementById('cfgEnd').value;
+  const errEl=document.getElementById('cfgError');
+  errEl.style.display='none';
+  if(!cfgS||!cfgE){errEl.textContent='Please select both Start Month and End Month.';errEl.style.display='block';return;}
+  if(cfgS>cfgE){errEl.textContent='Start Month must be on or before End Month.';errEl.style.display='block';return;}
+  // Derive years and period list from range
+  const startYr=parseInt(cfgS.slice(0,4)), endYr=parseInt(cfgE.slice(0,4));
+  const years=[];for(let y=startYr;y<=endYr;y++)years.push(y);
+  // Months to fetch per year (only months within the selected range)
+  function yearMonths(yr){
+    return Array.from({length:12},(_,i)=>String(i+1).padStart(2,'0'))
+      .filter(mo=>{ const p=`${yr}-${mo}`; return p>=cfgS&&p<=cfgE; });
+  }
+
+  ST.startYr=startYr;ST.endYr=endYr;ST.cfgStart=cfgS;ST.cfgEnd=cfgE;
+  ST.years=years;
+  ST.rows=[];ST.outlierLog=[];
+
+  document.getElementById('configScreen').style.display='none';
+  document.getElementById('pipelineScreen').style.display='block';
+  document.getElementById('resultsSection').style.display='none';
+  document.getElementById('stepList').innerHTML='';
+  Object.keys(stepEls).forEach(k=>delete stepEls[k]);
+  _sn=0;setProgress(2);setPill('Running…','rgba(255,193,7,.5)');
+
+  addStep('s_ou',   'Fetch Level-5 facility registry with hierarchy');
+  addStep('s_fetch',`Fetch confirmed malaria — ${cfgS} → ${cfgE} · ${years.length} year(s) · Facility + Community`);
+  addStep('s_wins', 'Winsorise outliers — upper bound 99.75th pct per facility per year');
+  addStep('s_build','Build output rows — facility, community, overall');
+
+  try{
+    // ── S1: Org Units ─────────────────────────────────────────
+    setStep('s_ou','running');setProgress(5);
+    const ouResp=await dhis2('/api/organisationUnits.json?level='+L_PHU+'&fields=id,displayName,level,ancestors[id,displayName,level]&paging=false&pageSize=50000');
+    const VALID=['Hospital','Clinic','CHC','CHP','MCHP'];
+    let skip=0;
+    const childToL5={};
+    (ouResp.organisationUnits||[]).forEach(ou=>{
+      const anc=(ou.ancestors||[]).sort((a,b)=>a.level-b.level);
+      const dist=anc.find(a=>a.level===L_DIST);
+      const chief=anc.find(a=>a.level===L_CHIEF);
+      const l5Anc=anc.find(a=>a.level===L_PHU);
+      if(ou.level===L_PHU){
+        const t=getHFType(ou.displayName);
+        if(!VALID.includes(t)){skip++;return;}
+        ST.ouHierarchy[ou.id]={id:ou.id,name:ou.displayName,hfType:t,
+          districtName:dist?dist.displayName:'',chiefdomName:chief?chief.displayName:''};
+      } else if(ou.level>L_PHU&&l5Anc){
+        // Level-6+ CHW/ETR → map to Level-5 parent (for community data rollup)
+        childToL5[ou.id]=l5Anc.id;
+      }
+    });
+    setStep('s_ou','done',`${Object.keys(ST.ouHierarchy).length} facilities · ${Object.keys(childToL5).length} sub-facility OU mappings (${skip} excluded)`);
+    setProgress(12);await sleep(30);
+
+    // Fetch DE and COC display names from DHIS2
+    try{
+      const deIds=[FAC_RDT,FAC_MICRO,COM_RDT].join(',');
+      const cocIds=[...AGE_COC_IDS,...COM_COC_IDS].join(',');
+      const [deResp,cocResp]=await Promise.all([
+        dhis2(`/api/dataElements.json?filter=id:in:[${deIds}]&fields=id,displayName&paging=false`),
+        dhis2(`/api/categoryOptionCombos.json?filter=id:in:[${cocIds}]&fields=id,displayName&paging=false`),
+      ]);
+      (deResp.dataElements||[]).forEach(d=>{DE_NAMES[d.id]=d.displayName;});
+      (cocResp.categoryOptionCombos||[]).forEach(c=>{COC_NAMES[c.id]=c.displayName;});
+    }catch(e){console.warn('Metadata fetch failed, using defaults',e);}
+    setProgress(15);await sleep(30);
+
+    // ── S2: Fetch analytics per year ──────────────────────────
+    setStep('s_fetch','running');
+    // rawSlots[ouId][yr][mo] = {fac_rdt, fac_micro, com_rdt}
+    const rawSlots={};
+    let totalRows=0;
+    for(let ci=0;ci<ST.years.length;ci++){
+      const yr=ST.years[ci];
+      const mos=yearMonths(yr);
+      if(!mos.length)continue;
+      setStep('s_fetch','running',`Year ${yr} — ${mos.length} month(s) (${ci+1}/${ST.years.length})`);
+      const pe=mos.map(mo=>`${yr}${mo}`).join(';');
+      const resp=await dhis2('/api/analytics.json?dimension=dx:'+DX_PARAM+'&dimension=pe:'+pe+'&dimension=ou:LEVEL-'+L_PHU+'&displayProperty=NAME&paging=false&ignoreLimit=true');
+      (resp.rows||[]).forEach(row=>{
+        const[dxStr,period,ouId,rawVal]=row;
+        const val=parseFloat(rawVal)||0;if(!val)return;
+        const map=DX_MAP[dxStr];if(!map)return;
+        // Map Level-6 CHW/ETR to their Level-5 MCHP parent
+        const effectiveId=childToL5[ouId]||ouId;
+        const ou=ST.ouHierarchy[effectiveId];if(!ou)return;
+        if(map.excl&&map.excl.includes(ou.hfType))return;
+        const yr2=parseInt(period.slice(0,4));
+        const mo=parseInt(period.slice(4,6))-1; // 0-indexed
+        if(!rawSlots[effectiveId])rawSlots[effectiveId]={};
+        if(!rawSlots[effectiveId][yr2])rawSlots[effectiveId][yr2]=Array.from({length:12},()=>{
+            const s={};
+            ALL_DX.forEach(d=>{s[d.field]=null;});
+            return s;
+          });
+        const slot=rawSlots[effectiveId][yr2][mo];
+        if(slot[map.field]===null)slot[map.field]=0;
+        slot[map.field]=(slot[map.field]||0)+val;
+        totalRows++;
+      });
+      setProgress(15+Math.round(ci/ST.years.length*40));
+      await sleep(30);
+    }
+    setStep('s_fetch','done',`${totalRows.toLocaleString()} data points fetched`);
+    setProgress(55);await sleep(30);
+
+    // ── S3: Winsorise per facility per year ───────────────────
+    setStep('s_wins','running');
+    let winCount=0, totalAssessed=0;
+    // upperBoundStore[ouId|yr|field] = hi (99.75th pct for that variable)
+    ST.upperBoundStore={};
+    const upperBoundStore=ST.upperBoundStore;
+    const allOuIds=Object.keys(rawSlots);
+    allOuIds.forEach(ouId=>{
+      const ou=ST.ouHierarchy[ouId];
+      ST.years.forEach(yr=>{
+        const months=rawSlots[ouId][yr];if(!months)return;
+        // Winsorise each DE×COC field independently (upper bound 99.75th pct)
+        ALL_DX.forEach(dx=>{
+          const field=dx.field;
+          const vals=months.map(m=>m[field]);
+          const w=winsorizeUpper(vals);
+          const reported=vals.filter(v=>v!==null&&v!==undefined&&v>0);
+          totalAssessed+=reported.length;
+          const hi=reported.length>=2?percentile(reported,99.75):Infinity;
+          upperBoundStore[`${ouId}|${yr}|${field}`]=Math.round(hi);
+          vals.forEach((v,i)=>{
+            if(v===null||v===0)return;
+            if(w[i]!==null&&Math.abs(v-w[i])>0.001){
+              winCount++;
+              const deName=DE_NAMES[dx.dxStr.split('.')[0]]||dx.dxStr.split('.')[0];
+              const cocName=COC_NAMES[dx.dxStr.split('.')[1]]||dx.dxStr.split('.')[1];
+              ST.outlierLog.push({
+                ouId, facility:ou?ou.name:'', hfType:ou?ou.hfType:'',
+                chiefdom:ou?ou.chiefdomName:'', district:ou?ou.districtName:'',
+                year:yr, month:i+1,
+                de_name:deName, coc_name:cocName, field,
+                original:Math.round(v), corrected:Math.round(w[i]),
+                upperBound:Math.round(hi),
+              });
+              months[i][`${field}_orig`]=v; // keep original before overwrite
+              months[i][field]=w[i];
+            }
+          });
+        });
+      });
+    });
+    setStep('s_wins','done',`${winCount} values corrected across ${[...new Set(ST.outlierLog.map(r=>r.ouId))].length} facilities`);
+    setProgress(75);await sleep(30);
+
+    // ── S4: Build output rows ─────────────────────────────────
+    setStep('s_build','running');
+    // Build lookup of corrected slots for outlier flag
+    const correctedSet=new Set(ST.outlierLog.map(r=>`${r.ouId}|${r.year}|${r.month}|${r.field}`));
+    ST.rows=[];
+    allOuIds.forEach(ouId=>{
+      const ou=ST.ouHierarchy[ouId];if(!ou)return;
+      ST.years.forEach(yr=>{
+        const months=rawSlots[ouId][yr];if(!months)return;
+        months.forEach((m,mi)=>{
+          // Gather all age-group fields
+          const row={
+            ou_id:ouId, facility:ou.name, hfType:ou.hfType,
+            chiefdom:ou.chiefdomName, district:ou.districtName,
+            year:yr, month:mi+1, month_name:MONTH_NAMES[mi],
+            period:`${yr}${String(mi+1).padStart(2,'0')}`,
+          };
+          // Add each DE×COC field with DHIS2 name as key
+          ALL_DX.forEach(dx=>{
+            const v=m[dx.field];
+            row[dx.field]=v!==null?Math.round(v):null;
+          });
+          // Computed totals per group and overall
+          const facRdtTotal  = AGE_COC_IDS.map(c=>row[`fac_rdt_${c}`]).reduce((s,v)=>s+(v||0),0);
+          const facMicroTotal= AGE_COC_IDS.map(c=>row[`fac_micro_${c}`]).reduce((s,v)=>s+(v||0),0);
+          const comRdtTotal  = COM_COC_IDS.map(c=>row[`com_rdt_${c}`]).reduce((s,v)=>s+(v||0),0);
+          const facHasAny = AGE_COC_IDS.some(c=>row[`fac_rdt_${c}`]!==null||row[`fac_micro_${c}`]!==null);
+          const comHasAny = COM_COC_IDS.some(c=>row[`com_rdt_${c}`]!==null);
+          const anyFac=facHasAny||row.fac_susp_total!==null;
+          const anyCom=comHasAny||row.com_susp_total!==null;
+          if(!anyFac&&!anyCom)return;
+          // Facility group totals
+          const grpTotal=(grp,ids)=>{const vals=ids.map(c=>row[`${grp}_${c}`]);return vals.some(v=>v!==null)?vals.reduce((s,v)=>s+(v||0),0):null;};
+          row.fac_susp_total      = grpTotal('fac_susp',     AGE_COC_IDS);
+          row.fac_rdt_neg_total   = grpTotal('fac_rdt_neg',  AGE_COC_IDS);
+          row.fac_rdt_pos_total   = grpTotal('fac_rdt_pos',  AGE_COC_IDS);
+          row.fac_micro_neg_total = grpTotal('fac_micro_neg',AGE_COC_IDS);
+          row.fac_micro_pos_total = grpTotal('fac_micro_pos',AGE_COC_IDS);
+          row.com_susp_total      = grpTotal('com_susp',     COM_COC_IDS);
+          row.com_rdt_neg_total   = grpTotal('com_rdt_neg',  COM_COC_IDS);
+          row.com_rdt_pos_total   = grpTotal('com_rdt_pos',  COM_COC_IDS);
+          // Facility tested = RDT Neg + RDT Pos + Micro Neg + Micro Pos
+          const hasFacTested=row.fac_rdt_neg_total!==null||row.fac_rdt_pos_total!==null||row.fac_micro_neg_total!==null||row.fac_micro_pos_total!==null;
+          row.fac_tested_total = hasFacTested?((row.fac_rdt_neg_total||0)+(row.fac_rdt_pos_total||0)+(row.fac_micro_neg_total||0)+(row.fac_micro_pos_total||0)):null;
+          const hasComTested=row.com_rdt_neg_total!==null||row.com_rdt_pos_total!==null;
+          row.com_tested_total = hasComTested?((row.com_rdt_neg_total||0)+(row.com_rdt_pos_total||0)):null;
+          // Outlier flag: Yes if any field in this facility-month was corrected
+          const hasOutlier=ALL_DX.some(dx=>correctedSet.has(`${ouId}|${yr}|${mi+1}|${dx.field}`));
+          row.outlier_flag = hasOutlier?'Yes':'No';
+          ST.rows.push(row);
+        });
+      });
+    });
+    setStep('s_build','done',`${ST.rows.length.toLocaleString()} rows built`);
+    setProgress(95);await sleep(30);
+
+    // Show results
+    document.getElementById('pipelineScreen').style.display='none';
+    document.getElementById('resultsSection').style.display='block';
+
+    const totalFacTested = ST.rows.reduce((s,r)=>s+(r.fac_tested_total||0),0);
+    const totalComTested = ST.rows.reduce((s,r)=>s+(r.com_tested_total||0),0);
+    const totalFacPos  = ST.rows.reduce((s,r)=>s+(r.fac_rdt_pos_total||0)+(r.fac_micro_pos_total||0),0);
+    const totalComPos  = ST.rows.reduce((s,r)=>s+(r.com_rdt_pos_total||0),0);
+    const totalOverall = totalFacTested+totalComTested;
+    const totalFac=totalFacTested, totalCom=totalComTested;
+    const facRows      = ST.rows.filter(r=>r.fac_tested_total!==null).length;
+    const comRows      = ST.rows.filter(r=>r.com_tested_total!==null).length;
+    const nOutlierFac  = [...new Set(ST.outlierLog.map(r=>r.ouId))].length;
+    // Total data points = all DE×COC non-null values
+    const outlierPct   = totalAssessed>0?(winCount/totalAssessed*100).toFixed(2):0;
+    document.getElementById('statsRow').innerHTML=[
+      `<div class="stat-pill ok">${ST.cfgStart} → ${ST.cfgEnd} · ${ST.years.length} year(s)</div>`,
+      `<div class="stat-pill">${ST.rows.length.toLocaleString()} rows · ${facRows.toLocaleString()} with facility · ${comRows.toLocaleString()} with community</div>`,
+      `<div class="stat-pill">Facility Tested: ${totalFacTested.toLocaleString()} · Confirmed: ${totalFacPos.toLocaleString()} · TPR: ${totalFacTested>0?(totalFacPos/totalFacTested*100).toFixed(1):0}%</div>`,
+      `<div class="stat-pill">Community Tested: ${totalComTested.toLocaleString()} · Confirmed: ${totalComPos.toLocaleString()} · TPR: ${totalComTested>0?(totalComPos/totalComTested*100).toFixed(1):0}%</div>`,
+      `<div class="stat-pill ok">Overall Tested: ${totalOverall.toLocaleString()}</div>`,
+      `<div class="stat-pill">${totalAssessed.toLocaleString()} non-zero data points assessed</div>`,
+      `<div class="stat-pill warn">${ST.outlierLog.length.toLocaleString()} corrections · ${nOutlierFac} facilities · ${outlierPct}% of data points</div>`,
+    ].join('');
+
+    buildPreview();
+    setProgress(100);setPill('Done ✓','rgba(40,167,69,.55)');
+
+  }catch(err){
+    console.error(err);
+    document.getElementById('pipelineScreen').style.display='block';
+    Object.keys(stepEls).forEach(k=>{if(stepEls[k]?.classList.contains('running'))stepEls[k].className='step-item error';});
+    const e=document.createElement('div');
+    e.style.cssText='margin-top:12px;padding:12px;background:#2e0a0a;border-radius:6px;color:#ef9a9a;font-size:12px;line-height:1.6;';
+    e.innerHTML=`<strong>✗ Error</strong><br>${err.message}<br><br><button onclick="startPipeline()" style="background:#1f4a6a;color:#fff;border:none;padding:7px 16px;border-radius:6px;cursor:pointer;font-weight:700;">↺ Retry</button>`;
+    document.getElementById('stepList').appendChild(e);
+    setPill('Error','rgba(220,53,69,.5)');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PREVIEW TABLE
+// ═══════════════════════════════════════════════════════════════
+// Headers built dynamically after metadata fetch
+function buildHeaders(){
+  const base=['District','Chiefdom','Facility','Type','Year','Month','Period'];
+  const dn=DE_NAMES;
+  const mkCols=(de,cocs)=>cocs.map(c=>`${dn[de]||de} - ${COC_NAMES[c]||c}`);
+  const facSuspCols   =mkCols(FAC_SUSP,     AGE_COC_IDS);
+  const facRdtNegCols =mkCols(FAC_RDT_NEG,  AGE_COC_IDS);
+  const facRdtPosCols =mkCols(FAC_RDT_POS,  AGE_COC_IDS);
+  const facMicroNegCols=mkCols(FAC_MICRO_NEG,AGE_COC_IDS);
+  const facMicroPosCols=mkCols(FAC_MICRO_POS,AGE_COC_IDS);
+  const comSuspCols   =mkCols(COM_SUSP,     COM_COC_IDS);
+  const comRdtNegCols =mkCols(COM_RDT_NEG,  COM_COC_IDS);
+  const comRdtPosCols =mkCols(COM_RDT_POS,  COM_COC_IDS);
+  const facCols=[...facSuspCols,'Fac Susp Total',...facRdtNegCols,'Fac RDT Neg Total',...facRdtPosCols,'Fac RDT Pos Total',...facMicroNegCols,'Fac Micro Neg Total',...facMicroPosCols,'Fac Micro Pos Total','Fac Tested Total','Fac TPR (%)','Outlier'];
+  const comCols=[...comSuspCols,'Com Susp Total',...comRdtNegCols,'Com RDT Neg Total',...comRdtPosCols,'Com RDT Pos Total','Com Tested Total','Com TPR (%)','Outlier'];
+  const allCols=[...facCols,...comCols.slice(0,-1),'Overall Tested','Overall Confirmed','Overall TPR (%)','Outlier'];
+  return {
+    overall:  [...base,...allCols],
+    facility: [...base,...facCols],
+    community:[...base,...comCols],
+    outliers: ['District','Chiefdom','Facility','Type','Year','Month','Data Element','Age Group','Original Value','Corrected Value','Upper Bound (99.75th pct)','Outlier'],
+  };
+}
+
+function getRows(type){
+  const base=r=>[r.district,r.chiefdom,r.facility,r.hfType,r.year,r.month_name,r.period];
+
+  // ── Outliers: long format, only corrected rows ──
+  if(type==='outliers'){
+    return ST.outlierLog.map(r=>[
+      r.district,r.chiefdom,r.facility,r.hfType,r.year,MONTH_NAMES[r.month-1],
+      r.de_name||r.field, r.coc_name||'',
+      r.original, r.corrected, r.upperBound, 'Yes'
+    ]);
+  }
+
+  // ── Wide format for facility / community / overall ──
+  // Use corrected values (already applied in-place in rawSlots)
+  // Outlier flag per row = any variable corrected for that facility-month
+  const pct=(n,d)=>d>0?+(n/d*100).toFixed(1):'';
+  const facRow=r=>[
+    ...AGE_COC_IDS.map(c=>r[`fac_susp_${c}`]??''),      r.fac_susp_total??'',
+    ...AGE_COC_IDS.map(c=>r[`fac_rdt_neg_${c}`]??''),   r.fac_rdt_neg_total??'',
+    ...AGE_COC_IDS.map(c=>r[`fac_rdt_pos_${c}`]??''),   r.fac_rdt_pos_total??'',
+    ...AGE_COC_IDS.map(c=>r[`fac_micro_neg_${c}`]??''), r.fac_micro_neg_total??'',
+    ...AGE_COC_IDS.map(c=>r[`fac_micro_pos_${c}`]??''), r.fac_micro_pos_total??'',
+    r.fac_tested_total??'',
+    pct((r.fac_rdt_pos_total||0)+(r.fac_micro_pos_total||0), r.fac_tested_total||0),
+    r.outlier_flag??''];
+  const comRow=r=>[
+    ...COM_COC_IDS.map(c=>r[`com_susp_${c}`]??''),      r.com_susp_total??'',
+    ...COM_COC_IDS.map(c=>r[`com_rdt_neg_${c}`]??''),   r.com_rdt_neg_total??'',
+    ...COM_COC_IDS.map(c=>r[`com_rdt_pos_${c}`]??''),   r.com_rdt_pos_total??'',
+    r.com_tested_total??'',
+    pct(r.com_rdt_pos_total||0, r.com_tested_total||0),
+    r.outlier_flag??''];
+
+  if(type==='facility') return ST.rows.map(r=>[...base(r),...facRow(r)]);
+  if(type==='community') return ST.rows.filter(r=>r.com_tested_total!==null).map(r=>[...base(r),...comRow(r)]);
+
+  // overall
+  return ST.rows.map(r=>{
+    const overallTested=(r.fac_tested_total||0)+(r.com_tested_total||0);
+    const overallConf=(r.fac_rdt_pos_total||0)+(r.fac_micro_pos_total||0)+(r.com_rdt_pos_total||0);
+    return [...base(r),...facRow(r).slice(0,-1),...comRow(r).slice(0,-1),
+      overallTested||'', overallConf||'', pct(overallConf,overallTested), r.outlier_flag??''];
+  });
+}
+
+function buildPreview(){
+  const type=document.getElementById('previewType').value;
+  const q=(document.getElementById('previewSearch').value||'').toLowerCase();
+  const hdrs=buildHeaders()[type];
+  let rows=getRows(type);
+  if(q)rows=rows.filter(r=>r.some(c=>(c+'').toLowerCase().includes(q)));
+  const show=rows.slice(0,500);
+  document.getElementById('previewCount').textContent=`Showing ${show.length} of ${rows.length} rows`;
+  document.getElementById('previewHead').innerHTML=`<tr>${hdrs.map(h=>`<th>${h}</th>`).join('')}</tr>`;
+  document.getElementById('previewBody').innerHTML=show.map(r=>{
+    const isOutlierRow=r[r.length-1]==='Yes';
+    const rowBg=isOutlierRow?'background:#fff0f0;':'';
+    return `<tr style="${rowBg}">${r.map((c,ci)=>{
+      // Last col = Outlier Yes/No
+      const isYes=ci===r.length-1&&c==='Yes';
+      const isNo=ci===r.length-1&&c==='No';
+      const style=isYes?'font-weight:800;color:#dc2626;background:#fee2e2;'
+        :isNo?'color:#6b7280;'
+        :'';
+      return `<td style="${style}">${c??''}</td>`;
+    }).join('')}</tr>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  DOWNLOADS
+// ═══════════════════════════════════════════════════════════════
+function triggerDL(content, fname){
+  const a=document.createElement('a');
+  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(content);
+  a.download=fname; a.click();
+}
+
+function downloadCSV(type){
+  const hdrs=buildHeaders()[type];
+  const rows=getRows(type);
+  const csv=[hdrs.join(','),...rows.map(r=>r.map(c=>`"${c??''}"`).join(','))].join('\n');
+  const a=document.createElement('a');
+  a.download=`NMCP_Confirmed_${type}_${ST.cfgStart}_${ST.cfgEnd}.csv`;
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.click();
+}
+
+function downloadExcel(type){
+  const wb=XLSX.utils.book_new();
+  if(type==='overall'){
+    // All sheets in one workbook
+    ['overall','facility','community','outliers'].forEach(t=>{
+      const hdr=buildHeaders()[t];
+      const rows=getRows(t);
+      XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([hdr,...rows]),t.charAt(0).toUpperCase()+t.slice(1));
+    });
+  } else {
+    const hdr=buildHeaders()[type];
+    const rows=getRows(type);
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([hdr,...rows]),type.charAt(0).toUpperCase()+type.slice(1));
+  }
+  XLSX.writeFile(wb,`NMCP_Confirmed_${type}_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);
+}
+
+function triggerDL(content,fname){const a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(content);a.download=fname;a.click();}
+
+function downloadR(){
+  const s=ST.cfgStart||'2021-01',e=ST.cfgEnd||'2024-12';
+  triggerDL(`# NMCP Sierra Leone — Confirmed Malaria Data Extract
+# Period: ${s} to ${e} | ICF-SL
+# Reproduces: Facility RDT + Microscopy (excl CHP/MCHP) + Community RDT
+# Outlier: upper bound only at 99.75th pct per facility per year per variable
+
+library(httr); library(jsonlite); library(dplyr)
+BASE_URL <- "https://sl.dhis2.org/hmis23"
+USERNAME <- "your_username"; PASSWORD <- "your_password"
+
+auth <- authenticate(USERNAME, PASSWORD)
+
+# 1. Org Units Level 5
+ou_resp <- GET(paste0(BASE_URL,"/api/organisationUnits.json?level=5&fields=id,displayName,level,ancestors[id,displayName,level]&paging=false&pageSize=50000"), auth)
+ou_data <- content(ou_resp,"parsed")$organisationUnits
+
+get_hf_type <- function(n){ u<-toupper(trimws(n)); s<-tail(strsplit(u,"\\s+")[[1]],1)
+  if(s=="HOSPITAL") return("Hospital"); if(s=="MCHP") return("MCHP")
+  if(s=="CHC") return("CHC"); if(s=="CHP") return("CHP")
+  if(grepl("CLINIC",s)) return("Clinic"); return("Other") }
+
+ou_df <- bind_rows(lapply(ou_data,function(ou){
+  anc<-ou$ancestors[order(sapply(ou$ancestors,function(a)a$level))]
+  dist<-Filter(function(a)a$level==2,anc); chief<-Filter(function(a)a$level==4,anc)
+  data.frame(ou_id=ou$id,facility=ou$displayName,hf_type=get_hf_type(ou$displayName),
+    district=if(length(dist))dist[[1]]$displayName else "",
+    chiefdom=if(length(chief))chief[[1]]$displayName else "",stringsAsFactors=FALSE)
+}))
+ou_df <- ou_df[ou_df$hf_type %in% c("Hospital","Clinic","CHC","CHP","MCHP"),]
+
+# 2. Data elements
+FAC_RDT<-"p6zQLDFjSfd"; FAC_MICRO<-"Sz13vbo2Qwh"; COM_RDT<-"T7xH8GwWpEM"
+AGE_COCS<-c("m5T8uBNB8aN","j7j6iaknOFn","zK1aiw8zFac")
+COM_COCS<-c("NtjMVmRfvHH","qDXW7WMLT99","mdjRPpvLKdu")
+dx_df <- rbind(
+  data.frame(dx=paste0(FAC_RDT,".",AGE_COCS),  group="fac_rdt",   excl=FALSE,stringsAsFactors=FALSE),
+  data.frame(dx=paste0(FAC_MICRO,".",AGE_COCS), group="fac_micro", excl=TRUE, stringsAsFactors=FALSE),
+  data.frame(dx=paste0(COM_RDT,".",COM_COCS),   group="com_rdt",   excl=FALSE,stringsAsFactors=FALSE))
+dx_str <- paste(dx_df$dx,collapse=";")
+
+# 3. Fetch per year
+start_yr<-as.integer(substr(s,1,4)); end_yr<-as.integer(substr(e,1,4))
+raw_list<-list()
+for(yr in start_yr:end_yr){
+  periods<-paste0(yr,sprintf("%02d",1:12),collapse=";")
+  url<-paste0(BASE_URL,"/api/analytics.json?dimension=dx:",dx_str,"&dimension=pe:",periods,"&dimension=ou:LEVEL-5&displayProperty=NAME&paging=false&ignoreLimit=true")
+  resp<-GET(url,auth); dat<-content(resp,"parsed")
+  raw_list<-c(raw_list,lapply(dat$rows,function(r)data.frame(dx=r[[1]],period=r[[2]],ou_id=r[[3]],value=as.numeric(r[[4]]),stringsAsFactors=FALSE)))
+  cat("Year",yr,"fetched\n")
+}
+raw_df<-bind_rows(raw_list); raw_df<-raw_df[raw_df$value>0,]
+raw_df<-merge(raw_df,dx_df,by="dx"); raw_df<-merge(raw_df,ou_df,by="ou_id")
+raw_df<-raw_df[!(raw_df$excl & raw_df$hf_type %in% c("CHP","MCHP")),]
+raw_df$year<-as.integer(substr(raw_df$period,1,4)); raw_df$month<-as.integer(substr(raw_df$period,5,6))
+
+# 4. Winsorise — 99.75th pct per facility per year per variable (upper bound only)
+winsorise_upper <- function(x,p=99.75){
+  reported<-x[!is.na(x)&x>0]; if(length(reported)<2) return(x)
+  hi<-quantile(reported,p/100,na.rm=TRUE); ifelse(!is.na(x)&x>hi,hi,x) }
+
+raw_df <- raw_df |>
+  group_by(ou_id,year,dx) |>
+  mutate(
+    upper_bound   = { rep<-value[!is.na(value)&value>0]; if(length(rep)>=2) round(quantile(rep,0.9975)) else NA_real_ },
+    value_orig    = value,
+    value_correct = winsorise_upper(value),
+    outlier       = ifelse(!is.na(upper_bound)&value_orig>upper_bound,"Yes","No")) |>
+  ungroup()
+
+write.csv(raw_df,paste0("NMCP_Confirmed_",s,"_",e,".csv"),row.names=FALSE)
+cat("Done. File saved.\n")
+`,`NMCP_Confirmed_${s}_${e}.R`);
+}
+
+function downloadPy(){
+  const s=ST.cfgStart||'2021-01',e=ST.cfgEnd||'2024-12';
+  triggerDL(`# NMCP Sierra Leone — Confirmed Malaria Data Extract
+# Period: ${s} to ${e} | ICF-SL
+# Reproduces: Facility RDT + Microscopy (excl CHP/MCHP) + Community RDT
+# Outlier: upper bound only at 99.75th pct per facility per year per variable
+
+import requests, pandas as pd, numpy as np
+from requests.auth import HTTPBasicAuth
+
+BASE_URL = "https://sl.dhis2.org/hmis23"
+USERNAME = "your_username"; PASSWORD = "your_password"
+auth = HTTPBasicAuth(USERNAME, PASSWORD)
+
+# 1. Org Units Level 5
+ou_data = requests.get(BASE_URL+"/api/organisationUnits.json?level=5&fields=id,displayName,level,ancestors[id,displayName,level]&paging=false&pageSize=50000",auth=auth).json()["organisationUnits"]
+def get_hf_type(n):
+    u=n.upper().strip(); s=u.split()[-1] if u.split() else ""
+    if s=="HOSPITAL": return "Hospital"
+    if s=="MCHP": return "MCHP"
+    if s=="CHC": return "CHC"
+    if s=="CHP": return "CHP"
+    if "CLINIC" in s: return "Clinic"
+    return "Other"
+rows_ou=[{"ou_id":o["id"],"facility":o["displayName"],"hf_type":get_hf_type(o["displayName"]),
+    "district":next((a["displayName"] for a in sorted(o.get("ancestors",[]),key=lambda a:a["level"]) if a["level"]==2),""),
+    "chiefdom":next((a["displayName"] for a in sorted(o.get("ancestors",[]),key=lambda a:a["level"]) if a["level"]==4),"")} for o in ou_data]
+ou_df=pd.DataFrame(rows_ou); ou_df=ou_df[ou_df["hf_type"].isin(["Hospital","Clinic","CHC","CHP","MCHP"])]
+
+# 2. Data elements
+FAC_RDT="p6zQLDFjSfd"; FAC_MICRO="Sz13vbo2Qwh"; COM_RDT="T7xH8GwWpEM"
+AGE_COCS=["m5T8uBNB8aN","j7j6iaknOFn","zK1aiw8zFac"]; COM_COCS=["NtjMVmRfvHH","qDXW7WMLT99","mdjRPpvLKdu"]
+dx_map=([{"dx":f"{FAC_RDT}.{c}","group":"fac_rdt","excl":False} for c in AGE_COCS]+
+        [{"dx":f"{FAC_MICRO}.{c}","group":"fac_micro","excl":True} for c in AGE_COCS]+
+        [{"dx":f"{COM_RDT}.{c}","group":"com_rdt","excl":False} for c in COM_COCS])
+dx_df=pd.DataFrame(dx_map); dx_str=";".join(dx_df["dx"])
+
+# 3. Fetch per year
+start_yr=int(s[:4]); end_yr=int(e[:4]); all_rows=[]
+for yr in range(start_yr,end_yr+1):
+    periods=";".join(f"{yr}{m:02d}" for m in range(1,13))
+    data=requests.get(BASE_URL+f"/api/analytics.json?dimension=dx:{dx_str}&dimension=pe:{periods}&dimension=ou:LEVEL-5&displayProperty=NAME&paging=false&ignoreLimit=true",auth=auth).json()
+    all_rows+=[{"dx":r[0],"period":r[1],"ou_id":r[2],"value":float(r[3])} for r in data.get("rows",[])]
+    print(f"Year {yr} fetched")
+raw_df=pd.DataFrame(all_rows); raw_df=raw_df[raw_df["value"]>0]
+raw_df=raw_df.merge(dx_df,on="dx").merge(ou_df,on="ou_id")
+raw_df=raw_df[~(raw_df["excl"]&raw_df["hf_type"].isin(["CHP","MCHP"]))]
+raw_df["year"]=raw_df["period"].str[:4].astype(int); raw_df["month"]=raw_df["period"].str[4:].astype(int)
+
+# 4. Winsorise — 99.75th pct upper bound only, per facility per year per variable
+def winsorise(grp):
+    rep=grp[grp>0].dropna(); return grp if len(rep)<2 else grp.clip(upper=np.percentile(rep,99.75))
+raw_df["value_orig"]=raw_df["value"]
+raw_df["value"]=raw_df.groupby(["ou_id","year","dx"])["value"].transform(winsorise)
+raw_df["upper_bound"]=raw_df.groupby(["ou_id","year","dx"])["value_orig"].transform(
+    lambda x: round(np.percentile(x[x>0].dropna(),99.75)) if (x>0).sum()>=2 else np.nan)
+raw_df["outlier"]=np.where(raw_df["value_orig"]>raw_df["upper_bound"],"Yes","No")
+
+# 5. Export
+raw_df.to_csv(f"NMCP_Confirmed_{s}_{e}.csv",index=False)
+print("Done.")
+`,`NMCP_Confirmed_${s}_${e}.py`);
+}
+
+function downloadToolHTML(){
+  const blob=new Blob(['<!DOCTYPE html>\n'+document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='nmcp_testing_data_v1.html';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
+</script>
+</body>
+</html>
