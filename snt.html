@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>SNT Code Repository | ICF-SL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* DHIS2 Theme */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --blue: #2c6793;
+            --blue-dk: #1f4a6a;
+            --blue-lt: #e8f0f7;
+            --white: #ffffff;
+            --bg: #f0f5f9;
+            --border: #d0dde8;
+            --muted: #6c7a89;
+            --code-bg: #0f172a;
+            --code-text: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Roboto', 'Segoe UI', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .snt-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 28px 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--blue);
+        }
+
+        .hero h1 {
+            font-size: 26px;
+            color: var(--blue);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .hero p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .tab-navigation {
+            display: flex;
+            gap: 4px;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 12px 28px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-button:hover {
+            color: var(--blue);
+            background: var(--blue-lt);
+        }
+
+        .tab-button.active {
+            color: var(--blue);
+            border-bottom-color: var(--blue);
+            background: var(--blue-lt);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--blue);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--blue-lt);
+            border-top: 3px solid var(--blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        .collapsible-section {
+            background: var(--white);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .section-toggle {
+            background: var(--blue-lt);
+            border: none;
+            padding: 16px 20px;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--blue-dk);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-toggle:hover {
+            background: #dfeaf3;
+        }
+
+        .section-toggle::after {
+            content: '▼';
+            font-size: 12px;
+            color: var(--blue);
+            transition: transform 0.2s;
+        }
+
+        .section-toggle.collapsed::after {
+            transform: rotate(-90deg);
+        }
+
+        .section-content {
+            background: var(--white);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            border-top: 1px solid var(--border);
+        }
+
+        .section-content.expanded {
+            max-height: 3000px;
+            padding: 20px;
+        }
+
+        .step-description {
+            background: rgba(44, 103, 147, 0.05);
+            border-left: 3px solid var(--blue);
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            color: #2c4b62;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* Code Section */
+        .code-section {
+            margin: 16px 0;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--code-bg);
+        }
+
+        .code-header {
+            background: #1e293b;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .code-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #94a3b8;
+            font-family: monospace;
+        }
+
+        .copy-btn {
+            background: #334155;
+            border: 1px solid #475569;
+            color: #cbd5e0;
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .copy-btn:hover {
+            background: #475569;
+            color: white;
+        }
+
+        .copy-btn.copied {
+            background: #2c6e5c;
+            border-color: #2c6e5c;
+        }
+
+        .code-container {
+            background: var(--code-bg);
+            padding: 0;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-content {
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--code-text);
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        /* Syntax highlighting */
+        .keyword {
+            color: #7c3aed;
+            font-weight: 600;
+        }
+
+        .function {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+
+        .string {
+            color: #10b981;
+        }
+
+        .comment {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .variable {
+            color: #f59e0b;
+        }
+
+        .number {
+            color: #ef4444;
+        }
+
+        .operator {
+            color: #8b5cf6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 32px;
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .tab-button {
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="snt-container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>📚 SNT Code Repository</h1>
+            <p>Comprehensive Python code collection for malaria surveillance data analysis. Code loads dynamically from markdown files - no duplicates!</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-button active" onclick="loadTab('combine_files', this)">Excel Combiner</button>
+            <button class="tab-button" onclick="loadTab('malaria_analysis', this)">Malaria Analysis</button>
+            <button class="tab-button" onclick="loadTab('visualization', this)">Visualization</button>
+            <button class="tab-button" onclick="loadTab('utilities', this)">Utilities</button>
+        </div>
+
+        <!-- Tab Contents -->
+        <div id="combine_files" class="tab-content active">
+            <div class="loading" id="loading-combine_files">
+                <div class="spinner"></div>
+                <p>Loading combine_files.md...</p>
+            </div>
+        </div>
+
+        <div id="malaria_analysis" class="tab-content">
+            <div class="loading" id="loading-malaria_analysis">
+                <div class="spinner"></div>
+                <p>Loading malaria_analysis.md...</p>
+            </div>
+        </div>
+
+        <div id="visualization" class="tab-content">
+            <div class="loading" id="loading-visualization">
+                <div class="spinner"></div>
+                <p>Loading visualization.md...</p>
+            </div>
+        </div>
+
+        <div id="utilities" class="tab-content">
+            <div class="loading" id="loading-utilities">
+                <div class="spinner"></div>
+                <p>Loading utilities.md...</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>SNT Code Repository | Powered by ICF-SL</p>
+            <p>✓ All code loaded from markdown files | No duplicates</p>
+        </footer>
+    </div>
+
+    <script>
+        // Cache for loaded markdown files
+        const cache = {};
+
+        // Load tab content from markdown file
+        async function loadTab(tabName, buttonElement) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            buttonElement.classList.add('active');
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+
+            // Check if already loaded
+            if (cache[tabName]) {
+                document.getElementById(tabName).innerHTML = cache[tabName];
+                return;
+            }
+
+            // Load markdown file
+            const mdFile = `${tabName}.md`;
+            try {
+                const response = await fetch(mdFile);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
+                const markdownContent = await response.text();
+                const htmlContent = parseMarkdown(markdownContent);
+                
+                cache[tabName] = htmlContent;
+                document.getElementById(tabName).innerHTML = htmlContent;
+                
+                // Hide loading spinner
+                const loadingDiv = document.getElementById(`loading-${tabName}`);
+                if (loadingDiv) loadingDiv.style.display = 'none';
+            } catch (error) {
+                console.error(`Error loading ${mdFile}:`, error);
+                document.getElementById(tabName).innerHTML = `
+                    <div style="background: #ffe6e6; border: 1px solid #d85a30; border-radius: 8px; padding: 20px; color: #b05a00;">
+                        <strong>❌ Error loading ${mdFile}</strong><br>
+                        Make sure ${mdFile} is in the same directory as this HTML file.
+                    </div>
+                `;
+            }
+        }
+
+        // Parse markdown to HTML
+        function parseMarkdown(content) {
+            const lines = content.split('\n');
+            let html = '';
+            let currentStep = null;
+            let currentDescription = [];
+            let inCodeBlock = false;
+            let codeContent = [];
+            let stepCounter = 0;
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+
+                // Headers (## Step)
+                if (line.startsWith('## ')) {
+                    if (currentStep) {
+                        html += createStepSection(currentStep, currentDescription.join('\n'), codeContent, stepCounter);
+                        stepCounter++;
+                    }
+                    currentStep = line.replace('## ', '').trim();
+                    currentDescription = [];
+                    codeContent = [];
+                    inCodeBlock = false;
+                }
+                // Code block
+                else if (line.startsWith('```')) {
+                    inCodeBlock = !inCodeBlock;
+                    if (inCodeBlock) {
+                        codeContent = [];
+                    }
+                }
+                // Inside code block
+                else if (inCodeBlock) {
+                    codeContent.push(line);
+                }
+                // Description text
+                else if (currentStep && line.trim() !== '' && !line.startsWith('#')) {
+                    currentDescription.push(line);
+                }
+            }
+
+            // Add last step
+            if (currentStep) {
+                html += createStepSection(currentStep, currentDescription.join('\n'), codeContent, stepCounter);
+            }
+
+            return html;
+        }
+
+        // Create collapsible section with code
+        function createStepSection(stepTitle, description, codeLines, stepNum) {
+            const codeId = `code-${stepNum}-${Date.now()}`;
+            const codeContent = codeLines.join('\n').trim();
+            const highlightedCode = highlightPythonCode(codeContent);
+
+            return `
+                <div class="collapsible-section">
+                    <button class="section-toggle collapsed" onclick="toggleSection(this)">
+                        📋 ${stepTitle}
+                    </button>
+                    <div class="section-content">
+                        ${description ? `<div class="step-description">${description}</div>` : ''}
+                        <div class="code-section">
+                            <div class="code-header">
+                                <div class="code-title">💻 ${stepTitle}</div>
+                                <button class="copy-btn" onclick="copyCode('${codeId}')">Copy Code</button>
+                            </div>
+                            <div class="code-container">
+                                <div class="code-content" id="${codeId}">${highlightedCode}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Toggle section
+        function toggleSection(button) {
+            const content = button.nextElementSibling;
+            if (!content) return;
+
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                button.classList.add('collapsed');
+            } else {
+                content.classList.add('expanded');
+                button.classList.remove('collapsed');
+            }
+        }
+
+        // Copy code to clipboard
+        function copyCode(elementId) {
+            const codeElement = document.getElementById(elementId);
+            if (!codeElement) return;
+
+            const textContent = codeElement.innerText || codeElement.textContent;
+            
+            navigator.clipboard.writeText(textContent).then(() => {
+                const btn = event.currentTarget;
+                btn.innerHTML = '✅ Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerHTML = 'Copy Code';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // PYTHON SYNTAX HIGHLIGHTING (learned from MPR)
+        function highlightPythonCode(code) {
+            let highlighted = code
+                // Escape HTML
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                
+                // Keywords
+                .replace(/\b(import|from|def|class|if|else|elif|for|while|try|except|finally|return|with|as|break|continue|pass|yield|lambda|global|nonlocal|assert|del|raise|async|await)\b/g, '<span class="keyword">$1</span>')
+                
+                // Functions
+                .replace(/\b(print|len|range|enumerate|zip|map|filter|sum|max|min|abs|round|sorted|reversed|any|all|type|isinstance|hasattr|getattr|setattr|delattr|dir|vars|id|hash|repr|str|int|float|bool|list|tuple|dict|set|frozenset|open|input|super)\b/g, '<span class="function">$1</span>')
+                
+                // Libraries
+                .replace(/\b(pd|np|plt|sns|px|go|os|sys|re|json|csv|datetime|time|math|random|collections|itertools|functools|pathlib|Path)\b/g, '<span class="variable">$1</span>')
+                
+                // Strings
+                .replace(/'([^'\\]|\\.)*'/g, '<span class="string">$&</span>')
+                .replace(/"([^"\\]|\\.)*"/g, '<span class="string">$&</span>')
+                .replace(/'''[\s\S]*?'''/g, '<span class="string">$&</span>')
+                .replace(/"""[\s\S]*?"""/g, '<span class="string">$&</span>')
+                
+                // Numbers
+                .replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>')
+                
+                // Comments
+                .replace(/#.*$/gm, '<span class="comment">$&</span>')
+                
+                // Operators
+                .replace(/([=+\-*/%<>!&|^~]+)/g, '<span class="operator">$1</span>')
+                
+                // Methods
+                .replace(/\.(\w+)/g, '.<span style="color: #38bdf8; font-weight: 500;">$1</span>')
+                
+                // Constants
+                .replace(/\b(None|True|False|self|cls)\b/g, '<span style="color: #ec4899; font-weight: 600;">$1</span>');
+            
+            return highlighted;
+        }
+
+        // Load first tab on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTab('combine_files', document.querySelector('.tab-button.active'));
+        });
+    </script>
+</body>
+</html>
