@@ -96,8 +96,8 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
       <div style="background:var(--blue-lt);border-radius:8px;padding:14px 16px;margin-bottom:18px;font-size:12px;color:var(--blue-dk);line-height:1.7;">
         <strong>What this tool fetches:</strong><br>
         Malaria testing data (suspected, tested, confirmed) at Level-5 facility for each month in the selected year range.<br>
-        <strong>Facility sources:</strong> Suspected <code>FJafyE1kzs4</code> · RDT Neg <code>mXS2g1AiPsS</code> · RDT Pos <code>p6zQLDFjSfd</code> · Microscopy Neg <code>Rijj3Fp9ksg</code> (excl CHP/MCHP) · Microscopy Pos <code>Sz13vbo2Qwh</code> (excl CHP/MCHP)<br>
-        <strong>Community (HTR/ETR):</strong> Suspected <code>wfaQBIVQxWo</code> · RDT Neg <code>YWvx4zYdp92</code> · RDT Pos <code>T7xH8GwWpEM</code><br>
+        <strong>Facility sources:</strong> RDT Neg <code>mXS2g1AiPsS</code> · RDT Pos <code>p6zQLDFjSfd</code> · Microscopy Neg <code>Rijj3Fp9ksg</code> (excl CHP/MCHP) · Microscopy Pos <code>Sz13vbo2Qwh</code> (excl CHP/MCHP)<br>
+        <strong>Community (HTR/ETR):</strong> RDT Neg <code>YWvx4zYdp92</code> · RDT Pos <code>T7xH8GwWpEM</code><br>
         <strong>Outlier correction:</strong> Upper-bound only at 99.75th percentile per facility per year. 0 stays 0, missing stays missing.
       </div>
 
@@ -236,12 +236,10 @@ const COM_RDT_NEG   = 'YWvx4zYdp92';
 const COM_RDT_POS   = 'T7xH8GwWpEM';
 const FAC_RDT=FAC_RDT_POS, FAC_MICRO=FAC_MICRO_POS, COM_RDT=COM_RDT_POS;
 const ALL_DX = [
-  ...AGE_COC_IDS.map(c=>({dxStr:`${FAC_SUSP}.${c}`,       field:`fac_susp_${c}`,      group:'fac_susp'})),
   ...AGE_COC_IDS.map(c=>({dxStr:`${FAC_RDT_NEG}.${c}`,    field:`fac_rdt_neg_${c}`,   group:'fac_rdt_neg'})),
   ...AGE_COC_IDS.map(c=>({dxStr:`${FAC_RDT_POS}.${c}`,    field:`fac_rdt_pos_${c}`,   group:'fac_rdt_pos'})),
   ...AGE_COC_IDS.map(c=>({dxStr:`${FAC_MICRO_NEG}.${c}`,  field:`fac_micro_neg_${c}`, group:'fac_micro_neg', excl:EXCL_MICRO})),
   ...AGE_COC_IDS.map(c=>({dxStr:`${FAC_MICRO_POS}.${c}`,  field:`fac_micro_pos_${c}`, group:'fac_micro_pos', excl:EXCL_MICRO})),
-  ...COM_COC_IDS.map(c=>({dxStr:`${COM_SUSP}.${c}`,        field:`com_susp_${c}`,      group:'com_susp'})),
   ...COM_COC_IDS.map(c=>({dxStr:`${COM_RDT_NEG}.${c}`,     field:`com_rdt_neg_${c}`,   group:'com_rdt_neg'})),
   ...COM_COC_IDS.map(c=>({dxStr:`${COM_RDT_POS}.${c}`,     field:`com_rdt_pos_${c}`,   group:'com_rdt_pos'})),
 ];
@@ -252,12 +250,10 @@ let COC_NAMES = {
   'NtjMVmRfvHH':'02-59m','qDXW7WMLT99':'5-14y','mdjRPpvLKdu':'15+y',
 };
 let DE_NAMES = {
-  [FAC_SUSP]:     'Suspected (Facility)',
   [FAC_RDT_NEG]:  'RDT Negative (Facility)',
   [FAC_RDT_POS]:  'RDT Positive (Facility)',
   [FAC_MICRO_NEG]:'Microscopy Negative (Facility)',
   [FAC_MICRO_POS]:'Microscopy Positive (Facility)',
-  [COM_SUSP]:     'Suspected (Community)',
   [COM_RDT_NEG]:  'RDT Negative (Community)',
   [COM_RDT_POS]:  'RDT Positive (Community)',
 };
@@ -508,17 +504,15 @@ async function startPipeline(){
           const comRdtTotal  = COM_COC_IDS.map(c=>row[`com_rdt_${c}`]).reduce((s,v)=>s+(v||0),0);
           const facHasAny = AGE_COC_IDS.some(c=>row[`fac_rdt_${c}`]!==null||row[`fac_micro_${c}`]!==null);
           const comHasAny = COM_COC_IDS.some(c=>row[`com_rdt_${c}`]!==null);
-          const anyFac=facHasAny||row.fac_susp_total!==null;
-          const anyCom=comHasAny||row.com_susp_total!==null;
+          const anyFac=hasFacTested;
+          const anyCom=hasComTested;
           if(!anyFac&&!anyCom)return;
           // Facility group totals
           const grpTotal=(grp,ids)=>{const vals=ids.map(c=>row[`${grp}_${c}`]);return vals.some(v=>v!==null)?vals.reduce((s,v)=>s+(v||0),0):null;};
-          row.fac_susp_total      = grpTotal('fac_susp',     AGE_COC_IDS);
           row.fac_rdt_neg_total   = grpTotal('fac_rdt_neg',  AGE_COC_IDS);
           row.fac_rdt_pos_total   = grpTotal('fac_rdt_pos',  AGE_COC_IDS);
           row.fac_micro_neg_total = grpTotal('fac_micro_neg',AGE_COC_IDS);
           row.fac_micro_pos_total = grpTotal('fac_micro_pos',AGE_COC_IDS);
-          row.com_susp_total      = grpTotal('com_susp',     COM_COC_IDS);
           row.com_rdt_neg_total   = grpTotal('com_rdt_neg',  COM_COC_IDS);
           row.com_rdt_pos_total   = grpTotal('com_rdt_pos',  COM_COC_IDS);
           // Facility tested = RDT Neg + RDT Pos + Micro Neg + Micro Pos
@@ -554,8 +548,8 @@ async function startPipeline(){
     document.getElementById('statsRow').innerHTML=[
       `<div class="stat-pill ok">${ST.cfgStart} → ${ST.cfgEnd} · ${ST.years.length} year(s)</div>`,
       `<div class="stat-pill">${ST.rows.length.toLocaleString()} rows · ${facRows.toLocaleString()} with facility · ${comRows.toLocaleString()} with community</div>`,
-      `<div class="stat-pill">Facility Tested: ${totalFacTested.toLocaleString()} · Confirmed: ${totalFacPos.toLocaleString()} · TPR: ${totalFacTested>0?(totalFacPos/totalFacTested*100).toFixed(1):0}%</div>`,
-      `<div class="stat-pill">Community Tested: ${totalComTested.toLocaleString()} · Confirmed: ${totalComPos.toLocaleString()} · TPR: ${totalComTested>0?(totalComPos/totalComTested*100).toFixed(1):0}%</div>`,
+      `<div class="stat-pill">Facility Tested: ${totalFacTested.toLocaleString()}</div>`,
+      `<div class="stat-pill">Community Tested: ${totalComTested.toLocaleString()}</div>`,
       `<div class="stat-pill ok">Overall Tested: ${totalOverall.toLocaleString()}</div>`,
       `<div class="stat-pill">${totalAssessed.toLocaleString()} non-zero data points assessed</div>`,
       `<div class="stat-pill warn">${ST.outlierLog.length.toLocaleString()} corrections · ${nOutlierFac} facilities · ${outlierPct}% of data points</div>`,
@@ -584,17 +578,15 @@ function buildHeaders(){
   const base=['District','Chiefdom','Facility','Type','Year','Month','Period'];
   const dn=DE_NAMES;
   const mkCols=(de,cocs)=>cocs.map(c=>`${dn[de]||de} - ${COC_NAMES[c]||c}`);
-  const facSuspCols   =mkCols(FAC_SUSP,     AGE_COC_IDS);
   const facRdtNegCols =mkCols(FAC_RDT_NEG,  AGE_COC_IDS);
   const facRdtPosCols =mkCols(FAC_RDT_POS,  AGE_COC_IDS);
   const facMicroNegCols=mkCols(FAC_MICRO_NEG,AGE_COC_IDS);
   const facMicroPosCols=mkCols(FAC_MICRO_POS,AGE_COC_IDS);
-  const comSuspCols   =mkCols(COM_SUSP,     COM_COC_IDS);
   const comRdtNegCols =mkCols(COM_RDT_NEG,  COM_COC_IDS);
   const comRdtPosCols =mkCols(COM_RDT_POS,  COM_COC_IDS);
-  const facCols=[...facSuspCols,'Fac Susp Total',...facRdtNegCols,'Fac RDT Neg Total',...facRdtPosCols,'Fac RDT Pos Total',...facMicroNegCols,'Fac Micro Neg Total',...facMicroPosCols,'Fac Micro Pos Total','Fac Tested Total','Fac TPR (%)','Outlier'];
-  const comCols=[...comSuspCols,'Com Susp Total',...comRdtNegCols,'Com RDT Neg Total',...comRdtPosCols,'Com RDT Pos Total','Com Tested Total','Com TPR (%)','Outlier'];
-  const allCols=[...facCols,...comCols.slice(0,-1),'Overall Tested','Overall Confirmed','Overall TPR (%)','Outlier'];
+  const facCols=[...facRdtNegCols,'Fac RDT Neg Total',...facRdtPosCols,'Fac RDT Pos Total',...facMicroNegCols,'Fac Micro Neg Total',...facMicroPosCols,'Fac Micro Pos Total','Fac Tested Total','Outlier'];
+  const comCols=[...comRdtNegCols,'Com RDT Neg Total',...comRdtPosCols,'Com RDT Pos Total','Com Tested Total','Outlier'];
+  const allCols=[...facCols,...comCols.slice(0,-1),'Overall Tested','Outlier'];
   return {
     overall:  [...base,...allCols],
     facility: [...base,...facCols],
@@ -618,23 +610,16 @@ function getRows(type){
   // ── Wide format for facility / community / overall ──
   // Use corrected values (already applied in-place in rawSlots)
   // Outlier flag per row = any variable corrected for that facility-month
-  const pct=(n,d)=>d>0?+(n/d*100).toFixed(1):'';
   const facRow=r=>[
-    ...AGE_COC_IDS.map(c=>r[`fac_susp_${c}`]??''),      r.fac_susp_total??'',
     ...AGE_COC_IDS.map(c=>r[`fac_rdt_neg_${c}`]??''),   r.fac_rdt_neg_total??'',
     ...AGE_COC_IDS.map(c=>r[`fac_rdt_pos_${c}`]??''),   r.fac_rdt_pos_total??'',
     ...AGE_COC_IDS.map(c=>r[`fac_micro_neg_${c}`]??''), r.fac_micro_neg_total??'',
     ...AGE_COC_IDS.map(c=>r[`fac_micro_pos_${c}`]??''), r.fac_micro_pos_total??'',
-    r.fac_tested_total??'',
-    pct((r.fac_rdt_pos_total||0)+(r.fac_micro_pos_total||0), r.fac_tested_total||0),
-    r.outlier_flag??''];
+    r.fac_tested_total??'',r.outlier_flag??''];
   const comRow=r=>[
-    ...COM_COC_IDS.map(c=>r[`com_susp_${c}`]??''),      r.com_susp_total??'',
     ...COM_COC_IDS.map(c=>r[`com_rdt_neg_${c}`]??''),   r.com_rdt_neg_total??'',
     ...COM_COC_IDS.map(c=>r[`com_rdt_pos_${c}`]??''),   r.com_rdt_pos_total??'',
-    r.com_tested_total??'',
-    pct(r.com_rdt_pos_total||0, r.com_tested_total||0),
-    r.outlier_flag??''];
+    r.com_tested_total??'',r.outlier_flag??''];
 
   if(type==='facility') return ST.rows.map(r=>[...base(r),...facRow(r)]);
   if(type==='community') return ST.rows.filter(r=>r.com_tested_total!==null).map(r=>[...base(r),...comRow(r)]);
@@ -642,9 +627,8 @@ function getRows(type){
   // overall
   return ST.rows.map(r=>{
     const overallTested=(r.fac_tested_total||0)+(r.com_tested_total||0);
-    const overallConf=(r.fac_rdt_pos_total||0)+(r.fac_micro_pos_total||0)+(r.com_rdt_pos_total||0);
     return [...base(r),...facRow(r).slice(0,-1),...comRow(r).slice(0,-1),
-      overallTested||'', overallConf||'', pct(overallConf,overallTested), r.outlier_flag??''];
+      overallTested||'',r.outlier_flag??''];
   });
 }
 
