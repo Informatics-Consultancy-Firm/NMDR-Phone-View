@@ -3,1418 +3,2491 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>User Guide | NMDR Sierra Leone</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<title>NMCP Reporting Status Tool — ICF-SL</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
-    <style>
-        /* ============================================
-           MAIN STYLES (FULLY RESTORED)
-           ============================================ */
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --blue:     #2c6793;
-            --blue-dk:  #1f4a6a;
-            --blue-lt:  #e8f0f7;
-            --white:    #ffffff;
-            --bg:       #f0f5f9;
-            --border:   #d0dde8;
-            --muted:    #6c7a89;
-            --gold:     #ffc107;
-            --raw-accent: #b4652c;
-            --clean-accent: #2c6e5c;
-            --snt-teal: #1f7a6b;
-            --code-bg: #1a3a5c;
-            --code-text: #e2e8f0;
-        }
-
-        html, body {
-            width: 100%;
-            height: auto;
-            min-height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Roboto', 'Segoe UI', sans-serif;
-            background: var(--bg);
-            min-height: 100vh;
-            display: flex;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dk) 100%);
-            padding: 20px 0;
-            box-shadow: 2px 0 15px rgba(0,0,0,0.15);
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            flex-shrink: 0;
-            overflow-y: auto;
-        }
-
-        .sidebar-header {
-            padding: 16px 20px;
-            border-bottom: 2px solid rgba(255,255,255,0.1);
-            margin-bottom: 16px;
-        }
-
-        .sidebar-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: rgba(255,255,255,0.6);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .sidebar-icon {
-            width: 28px;
-            height: 28px;
-            background: var(--gold);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--blue);
-        }
-
-        .nav-tabs {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            padding: 0 12px;
-        }
-
-        .nav-tab-btn {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: rgba(255,255,255,0.7);
-            padding: 12px 16px;
-            text-align: left;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-            border-radius: 6px;
-        }
-
-        .nav-tab-btn:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.95); border-left-color: var(--gold); }
-        .nav-tab-btn.active { background: rgba(255,255,255,0.15); color: var(--white); border-left-color: var(--gold); font-weight: 600; }
-
-        /* DQA Content Container */
-        .dqa-container { width: 100%; }
-        .dqa-loader { text-align: center; padding: 60px 20px; color: var(--muted); }
-        .dqa-loader-spinner { display: inline-block; width: 40px; height: 40px; border: 4px solid var(--blue-lt); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Main content */
-        .main {
-            flex: 1;
-            padding: 28px 32px;
-            overflow-y: auto;
-            background: var(--bg);
-            min-width: 0;
-        }
-
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Hero section */
-        .hero {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 28px 32px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            border-left: 4px solid var(--blue);
-        }
-
-        .hero-tag {
-            display: inline-block;
-            background: var(--blue-lt);
-            color: var(--blue);
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            padding: 4px 12px;
-            border-radius: 20px;
-            margin-bottom: 10px;
-        }
-
-        .hero h1 { font-size: 26px; color: var(--blue); font-weight: 700; margin-bottom: 8px; }
-        .hero p { font-size: 13px; color: var(--muted); line-height: 1.7; }
-
-        /* Cards */
-        .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 28px; }
-        .card { background: var(--white); border-radius: 14px; border: 2px solid var(--border); overflow: hidden; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-        .card:hover { transform: translateY(-6px); box-shadow: 0 16px 32px rgba(0,0,0,0.12); border-color: var(--blue); }
-        .card-stripe { height: 4px; background: linear-gradient(90deg, var(--blue), var(--blue-dk)); }
-        .card-body { padding: 28px 32px; }
-        .card-icon-row { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
-        .card-icon { width: 56px; height: 56px; background: var(--blue-lt); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .card-icon svg { width: 28px; height: 28px; stroke: var(--blue); stroke-width: 1.5; fill: none; }
-        .card-num { font-size: 12px; font-weight: 800; color: var(--blue); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
-        .card-title { font-size: 20px; font-weight: 700; color: #1a2e3d; line-height: 1.3; margin-bottom: 4px; }
-        .card-divider { height: 1px; background: var(--border); margin: 18px 0 16px 0; }
-        .card-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-        .card-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; font-weight: 500; color: #2c4b62; line-height: 1.4; }
-        .card-list li::before { content: "•"; font-size: 18px; font-weight: bold; color: var(--gold); margin-top: -1px; }
-
-        .section-label { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
-        .section-label::before { content: ''; width: 28px; height: 3px; background: var(--gold); }
-
-        /* Sub-tab navigation */
-        .sub-tab-nav { display: flex; gap: 4px; background: var(--white); border-bottom: 1px solid var(--border); border-radius: 8px 8px 0 0; margin-bottom: 20px; flex-wrap: wrap; }
-        .sub-tab-btn { font-family: inherit; font-size: 13px; font-weight: 600; padding: 12px 28px; background: transparent; border: none; border-bottom: 3px solid transparent; color: var(--muted); cursor: pointer; transition: all 0.2s; }
-        .sub-tab-btn:hover { color: var(--blue); background: var(--blue-lt); }
-        .sub-tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); background: var(--blue-lt); }
-
-        /* SNT Category collapsible styles */
-        .snt-category {
-            background: var(--white);
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .category-header {
-            background: var(--blue-lt);
-            padding: 14px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--blue-dk);
-        }
-
-        .category-header:hover { background: #dfeaf3; }
-        .category-title { font-size: 14px; display: flex; align-items: center; gap: 10px; }
-        .category-toggle { font-size: 18px; font-weight: 700; color: var(--blue); }
-        .category-content { padding: 16px 20px; border-top: 1px solid var(--border); display: none; background: var(--white); }
-        .category-content.open { display: block; }
-
-        .files-grid { display: flex; flex-direction: column; gap: 12px; }
-        .file-item { background: #fafcfd; border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-        .file-item:hover { background: var(--white); border-color: var(--blue); }
-        .file-info { display: flex; align-items: center; gap: 12px; }
-        .file-name { font-weight: 600; font-size: 13px; color: #1f3b4a; font-family: monospace; }
-        .file-meta { font-size: 10px; color: var(--muted); margin-top: 2px; }
-        .btn-download-snt { background: var(--snt-teal); color: white; border: none; padding: 6px 16px; border-radius: 20px; font-size: 11px; font-weight: 500; cursor: pointer; }
-        .btn-download-snt:hover { background: #135f52; }
-
-        /* Slides container */
-        .slides-container {
-            background: var(--white);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            overflow: hidden;
-            margin-top: 0;
-        }
-
-        .slides-container iframe { width: 100%; height: auto; min-height: 500px; border: none; display: block; }
-        .presentation-header { background: var(--blue-lt); padding: 12px 20px; font-weight: 600; color: var(--blue-dk); border-bottom: 1px solid var(--border); }
-
-        /* Data Available styles */
-        .data-tab-nav { display: flex; gap: 4px; background: var(--white); border-bottom: 1px solid var(--border); border-radius: 8px 8px 0 0; margin-bottom: 20px; flex-wrap: wrap; }
-        .data-tab-btn { font-family: inherit; font-size: 13px; font-weight: 600; padding: 12px 20px; background: transparent; border: none; border-bottom: 3px solid transparent; color: var(--muted); cursor: pointer; }
-        .data-tab-btn:hover { color: var(--blue); background: var(--blue-lt); }
-        .data-tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); background: var(--blue-lt); }
-        .snt-ds-btn { font-family: inherit; font-size: 13px; font-weight: 600; padding: 12px 20px; background: transparent; border: none; border-bottom: 3px solid transparent; color: var(--muted); cursor: pointer; }
-        .snt-ds-btn:hover { color: var(--blue); background: var(--blue-lt); }
-        .snt-ds-btn.active { color: var(--blue); border-bottom-color: var(--blue); background: var(--blue-lt); }
-        .mpr-ds-btn { font-family: inherit; font-size: 13px; font-weight: 600; padding: 12px 20px; background: transparent; border: none; border-bottom: 3px solid transparent; color: var(--muted); cursor: pointer; }
-        .mpr-ds-btn:hover { color: var(--blue); background: var(--blue-lt); }
-        .mpr-ds-btn.active { color: var(--blue); border-bottom-color: var(--blue); background: var(--blue-lt); }
-
-        .doc-panel {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            margin-bottom: 24px;
-            overflow: hidden;
-        }
-
-        .doc-header {
-            background: var(--blue-lt);
-            padding: 14px 20px;
-            border-bottom: 1px solid var(--border);
-            font-weight: 600;
-            color: var(--blue-dk);
-        }
-
-        .doc-body {
-            padding: 18px 20px;
-            font-size: 13px;
-            color: var(--muted);
-            line-height: 1.6;
-        }
-
-        .doc-body ul { margin-left: 20px; margin-top: 8px; }
-        .guide-note {
-            background: var(--blue-lt);
-            border-left: 3px solid var(--blue);
-            padding: 12px 16px;
-            margin-top: 12px;
-            border-radius: 4px;
-        }
-
-        .year-selector {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin: 16px 0 20px;
-        }
-
-        .year-pill {
-            background: var(--white);
-            border: 1px solid var(--border);
-            padding: 6px 14px;
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            border-radius: 20px;
-            transition: all 0.2s;
-        }
-
-        .year-pill:hover { background: var(--blue-lt); border-color: var(--blue); }
-        .year-pill.active { background: var(--blue); color: white; border-color: var(--blue); }
-
-        .district-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-        }
-
-        .district-card {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            overflow: hidden;
-            transition: all 0.2s;
-        }
-
-        .district-card:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.08); }
-
-        .card-accent { height: 3px; }
-        .card-accent.raw { background: var(--raw-accent); }
-        .card-accent.clean { background: var(--clean-accent); }
-
-        .district-body { padding: 16px; }
-
-        .district-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 4px;
-        }
-
-        .district-name { font-weight: 700; font-size: 15px; color: var(--blue); }
-
-        .status-badge {
-            font-size: 9px;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-weight: 600;
-        }
-        .status-ready { background: #e8f5ee; color: #1a8a4a; }
-
-        .district-region { font-size: 10px; color: var(--muted); margin-bottom: 12px; }
-
-        .file-info-download {
-            background: var(--blue-lt);
-            padding: 8px 10px;
-            margin: 12px 0;
-            display: flex;
-            justify-content: space-between;
-            font-size: 10px;
-            font-family: monospace;
-            border-radius: 6px;
-        }
-
-        .btn-download {
-            width: 100%;
-            padding: 9px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 11px;
-            cursor: pointer;
-            color: white;
-        }
-
-        .btn-download.raw { background: var(--raw-accent); }
-        .btn-download.clean { background: var(--clean-accent); }
-
-        .placeholder-section {
-            background: var(--white);
-            border-radius: 8px;
-            padding: 48px 32px;
-            text-align: center;
-            border: 2px dashed var(--border);
-        }
-
-        .placeholder-section h2 { color: var(--blue); margin-bottom: 12px; }
-        .placeholder-section p { color: var(--muted); }
-
-        .dashboard-container {
-            width: 100%;
-            background: transparent;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .data-pane { display: none; }
-        .data-pane.active-pane { display: block; }
-        .snt-ds-pane { display: none; }
-        .snt-ds-pane.active-pane { display: block; }
-        .mpr-ds-pane { display: none; }
-        .mpr-ds-pane.active-pane { display: block; }
-        .wmd-year-btn { font-family: inherit; font-size: 13px; font-weight: 600; padding: 12px 20px; background: transparent; border: none; border-bottom: 3px solid transparent; color: var(--muted); cursor: pointer; }
-        .wmd-year-btn:hover { color: var(--blue); background: var(--blue-lt); }
-        .wmd-year-btn.active { color: var(--blue); border-bottom-color: var(--blue); background: var(--blue-lt); }
-        .wmd-year-pane { display: none; }
-        .wmd-year-pane.active { display: block; }
-
-        /* Bulletin styles */
-        .bulletin-months-nav {
-            display: flex;
-            gap: 4px;
-            background: var(--white);
-            border-bottom: 1px solid var(--border);
-            border-radius: 8px 8px 0 0;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .bulletin-month-btn {
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 600;
-            padding: 12px 20px;
-            background: transparent;
-            border: none;
-            border-bottom: 3px solid transparent;
-            color: var(--muted);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .bulletin-month-btn:hover { color: var(--blue); background: var(--blue-lt); }
-        .bulletin-month-btn.active { color: var(--blue); border-bottom-color: var(--blue); background: var(--blue-lt); }
-
-        .bulletin-month-content {
-            display: none;
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-top: none;
-            border-radius: 0 0 8px 8px;
-            padding: 24px;
-        }
-
-        .bulletin-month-content.active { display: block; }
-
-        .weeks-nav {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-        }
-
-        .week-btn {
-            padding: 10px 20px;
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 12px;
-            cursor: pointer;
-            color: var(--muted);
-            transition: all 0.2s;
-        }
-
-        .week-btn:hover { background: var(--blue-lt); color: var(--blue); }
-        .week-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
-
-        .week-content {
-            display: none;
-            background: var(--bg);
-            border-radius: 8px;
-            padding: 20px;
-        }
-
-        .week-content.active { display: block; }
-        
-        /* ---- Responsive iframe wrapper ---- */
-        .iframe-responsive-wrap {
-            position: relative;
-            width: 100%;
-            padding-top: 58.5%;
-            overflow: hidden;
-            border-radius: 8px;
-            background: var(--white);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-        }
-        .iframe-responsive-wrap iframe {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100% !important;
-            height: 100% !important;
-            border: none;
-        }
-
-        .bulletin-iframe {
-            width: 100%;
-            min-height: 750px;
-            border: none;
-            border-radius: 8px;
-            background: var(--white);
-        }
-
-        .doc-iframe-wrap {
-            width: 100%;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            background: var(--white);
-        }
-        /* Document Viewer with Navigation */
-        .doc-viewer-wrapper {
-            display: flex;
-            gap: 16px;
-            background: var(--white);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        .doc-toc-sidebar {
-            width: 220px;
-            background: #f8fafb;
-            border-right: 1px solid var(--border);
-            padding: 16px;
-            overflow-y: auto;
-            flex-shrink: 0;
-            max-height: 700px;
-        }
-
-        .doc-toc-title {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--blue);
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--gold);
-        }
-
-        .toc-section {
-            margin-bottom: 10px;
-        }
-
-        .toc-heading {
-            width: 100%;
-            text-align: left;
-            padding: 8px 10px;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--blue);
-            font-size: 12px;
-            transition: all 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .toc-heading:hover {
-            background: #e8f0f7;
-            border-color: var(--blue);
-        }
-
-        .toc-toggle {
-            font-size: 10px;
-            transition: transform 0.2s;
-        }
-
-        .toc-heading.open .toc-toggle {
-            transform: rotate(180deg);
-        }
-
-        .toc-sublist {
-            list-style: none;
-            padding: 6px 0 0 0;
-            display: none;
-            gap: 2px;
-            flex-direction: column;
-        }
-
-        .toc-sublist.open {
-            display: flex;
-        }
-
-        .toc-item {
-            padding: 6px 10px;
-            font-size: 11px;
-            color: #6c7a89;
-            cursor: pointer;
-            background: #ffffff;
-            border-left: 3px solid transparent;
-            border-radius: 3px;
-            transition: all 0.2s;
-        }
-
-        .toc-item:hover {
-            background: #e8f0f7;
-            color: var(--blue);
-            border-left-color: var(--gold);
-        }
-
-        .doc-viewer-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 16px;
-        }
-
-        .doc-controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-            padding: 10px;
-            background: #f8fafb;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-        }
-
-        .control-group {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-
-        .doc-nav-btn {
-            padding: 6px 12px;
-            background: var(--blue);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 11px;
-            transition: all 0.2s;
-        }
-
-        .doc-nav-btn:hover:not(:disabled) {
-            background: #1f4a6a;
-            transform: translateY(-1px);
-        }
-
-        .doc-nav-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .page-input {
-            padding: 6px 8px;
-            border: 1px solid var(--border);
-            border-radius: 5px;
-            font-size: 11px;
-            width: 50px;
-            text-align: center;
-        }
-
-        .page-display {
-            font-size: 11px;
-            color: #6c7a89;
-            font-weight: 500;
-            min-width: 80px;
-        }
-
-        .doc-iframe-wrapper {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            overflow: hidden;
-            min-height: 600px;
-        }
-
-        .doc-iframe-wrapper iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .doc-toc-sidebar::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        .doc-toc-sidebar::-webkit-scrollbar-track {
-            background: #f0f5f9;
-        }
-
-        .doc-toc-sidebar::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 3px;
-        }
-
-        .doc-toc-sidebar::-webkit-scrollbar-thumb:hover {
-            background: #999;
-        }
-
-        /* Code repository iframe wrapper */
-        .code-repo-iframe-wrapper {
-            width: 100%;
-            border-radius: 12px;
-            overflow: hidden;
-            background: var(--white);
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            margin-bottom: 20px;
-        }
-        .code-repo-iframe-wrapper iframe {
-            width: 100%;
-            min-height: 85vh;
-            border: none;
-            display: block;
-        }
-
-        /* Role Modal Styles */
-        .role-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #ffffff;
-            backdrop-filter: none;
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Roboto', sans-serif;
-        }
-        .role-card {
-            background: white;
-            border-radius: 20px;
-            padding: 48px 56px;
-            max-width: 700px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-            border: 2px solid var(--border);
-        }
-        .role-card h1 { color: var(--blue); margin-bottom: 12px; font-size: 32px; font-weight: 900; letter-spacing: -0.5px; }
-        .role-card h2 { color: var(--blue); margin-bottom: 8px; font-size: 24px; margin-top: 0; }
-        .role-card p { color: var(--muted); margin-bottom: 32px; font-size: 14px; line-height: 1.6; }
-        .role-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 28px 0; }
-        .role-btn { padding: 18px 20px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 15px; transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .role-btn.national { background: var(--blue); color: white; }
-        .role-btn.district { background: #2c6e5c; color: white; }
-        .role-btn.chiefdom { background: #b4652c; color: white; }
-        .role-btn.phu { background: #6c7a89; color: white; }
-        .role-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); filter: brightness(1.08); }
-        .password-input { display: none; margin-top: 24px; }
-        .password-input input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; font-size: 14px; }
-        .password-input button { background: var(--blue); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; }
-        .access-denied { color: #d32f2f; font-size: 12px; margin-top: 8px; display: none; }
-        .disabled-tab { display: none; }
-
-        @media (max-width: 1100px) { .district-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: relative; padding: 12px 0; }
-            .main { padding: 20px; }
-            .nav-tabs { flex-direction: row; flex-wrap: wrap; justify-content: center; }
-            .nav-tab-btn { text-align: center; border-left: none; border-bottom: 2px solid transparent; }
-            .nav-tab-btn.active { border-left-color: transparent; border-bottom-color: var(--gold); }
-            .cards-grid { grid-template-columns: 1fr; }
-            .district-grid { grid-template-columns: repeat(2, 1fr); }
-            .slides-container iframe { min-height: 300px; }
-            .hero h1 { font-size: 22px; }
-            .bulletin-iframe { min-height: 300px; }
-            .doc-iframe-wrap iframe { min-height: 600px; }
-            .iframe-responsive-wrap { padding-top: 65%; }
-            .role-card { padding: 24px; }
-            .code-repo-iframe-wrapper iframe { min-height: 60vh; }
-        }
-        @media (max-width: 480px) { .district-grid { grid-template-columns: 1fr; } }
-
-        .sidebar-logout {
-            padding: 16px 12px 8px;
-            margin-top: auto;
-        }
-        .logout-btn {
-            width: 100%;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.18);
-            color: rgba(255,255,255,0.75);
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-        }
-        .logout-btn:hover {
-            background: rgba(255,80,80,0.18);
-            border-color: rgba(255,120,120,0.4);
-            color: #ffaaaa;
-        }
-        .sidebar { display: flex; flex-direction: column; }
-        .sidebar nav { flex: 1; }
-
-        /* Document Category Tabs */
-        .doc-category-tab {
-            padding: 10px 18px;
-            background: transparent;
-            border: none;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--muted);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border-bottom: 2px solid transparent;
-        }
-        .doc-category-tab:hover { color: var(--blue); }
-        .doc-category-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
-
-        /* Document Category Panes */
-        .doc-category-pane { display: none; animation: fadeIn 0.3s ease; }
-        .doc-category-pane.active { display: block; }
-
-        .doc-header-section { margin-bottom: 24px; }
-        .doc-header-section h2 { margin-bottom: 4px; }
-        .doc-header-section p { font-size: 13px; color: var(--muted); }
-
-        /* Document Availability Table */
-        .doc-table-wrapper {
-            background: var(--white);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-            border: 2px solid var(--border);
-        }
-
-        .doc-availability-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        .doc-availability-table thead {
-            background: var(--blue-lt);
-            border-bottom: 2px solid var(--border);
-        }
-
-        .doc-availability-table th {
-            padding: 14px 16px;
-            text-align: center;
-            font-weight: 700;
-            color: var(--blue);
-            white-space: nowrap;
-        }
-
-        .doc-availability-table th:first-child {
-            text-align: left;
-        }
-
-        .doc-availability-table td {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--border);
-            text-align: center;
-        }
-
-        .doc-availability-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .doc-availability-table td:first-child {
-            text-align: left;
-            font-weight: 500;
-            color: var(--blue);
-        }
-
-        .doc-availability-table code {
-            background: var(--blue-lt);
-            color: var(--blue);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .status-ready {
-            display: inline-block;
-            color: #1a8a4a;
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        .status-not {
-            display: inline-block;
-            color: var(--muted);
-            font-weight: 500;
-        }
-
-        .btn-mini {
-            width: 32px;
-            height: 32px;
-            padding: 0;
-            border: none;
-            border-radius: 6px;
-            background: var(--blue-lt);
-            color: var(--blue);
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-mini:hover:not(:disabled) {
-            background: var(--blue);
-            color: var(--white);
-        }
-
-        .btn-mini:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        /* User Guide Tabs */
-        .user-guide-tab-btn {
-            padding: 10px 18px;
-            background: transparent;
-            border: none;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--muted);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border-bottom: 2px solid transparent;
-        }
-        .user-guide-tab-btn:hover { color: var(--blue); }
-        .user-guide-tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
-
-        .user-guide-pane { display: none; animation: fadeIn 0.3s ease; }
-        .user-guide-pane.active { display: block; }
-
-        /* SBD App Iframe */
-        .sbd-app-wrapper {
-            width: 100%;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-            border: 2px solid var(--border);
-        }
-
-        .sbd-app-wrapper iframe {
-            width: 100%;
-            height: 900px;
-            border: none;
-            display: block;
-        }
-
-        /* Document Cards Grid */
-        .docs-cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .doc-card {
-            background: var(--white);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .doc-card:hover {
-            border-color: var(--blue);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-            transform: translateY(-2px);
-        }
-
-        .doc-card-header {
-            background: var(--blue-lt);
-            padding: 16px;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .doc-card-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--blue);
-            margin-bottom: 4px;
-        }
-
-        .doc-card-subtitle {
-            font-size: 12px;
-            color: var(--muted);
-        }
-
-        .doc-card-body {
-            padding: 16px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .doc-year-button {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
-            border-radius: 8px;
-            background: var(--bg);
-            border: 2px solid var(--border);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .doc-year-button:hover:not(:disabled) {
-            background: var(--blue-lt);
-            border-color: var(--blue);
-        }
-
-        .doc-year-button[onclick*="Download"]:hover {
-            background: #e8f5ee;
-            border-color: #1a8a4a;
-        }
-
-        .year-badge {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--blue);
-            min-width: 50px;
-        }
-
-        .year-status {
-            font-size: 11px;
-            font-weight: 600;
-            padding: 3px 8px;
-            border-radius: 4px;
-            margin-left: auto;
-        }
-
-        .year-status.ready {
-            background: #e8f5ee;
-            color: #1a8a4a;
-        }
-
-        .year-status.notready {
-            background: #f5f5f5;
-            color: var(--muted);
-        }
-
-        .doc-card-footer {
-            padding: 12px 16px;
-            background: var(--bg);
-            border-top: 2px solid var(--border);
-            font-size: 11px;
-            color: var(--muted);
-            font-family: monospace;
-            word-break: break-all;
-        }
-
-        /* MPD Tab Navigation */
-        .mpd-tab-nav {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 28px;
-            flex-wrap: wrap;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 12px;
-        }
-
-        .mpd-tab-btn {
-            padding: 11px 18px;
-            background: transparent;
-            border: none;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--muted);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-bottom: 3px solid transparent;
-            position: relative;
-        }
-
-        .mpd-tab-btn:hover {
-            color: var(--blue);
-        }
-
-        .mpd-tab-btn.active {
-            color: var(--blue);
-            border-bottom-color: var(--blue);
-        }
-
-        /* MPD Tab Panes */
-        .mpd-tab-pane {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .mpd-tab-pane.active {
-            display: block;
-        }
-
-        .mpd-section-header {
-            margin-bottom: 24px;
-        }
-
-        /* Document Cards Grid */
-        .document-cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 32px;
-        }
-
-        .document-card {
-            background: var(--white);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .document-card:hover {
-            border-color: var(--blue);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-            transform: translateY(-3px);
-        }
-
-        .doc-card-header {
-            background: var(--blue-lt);
-            padding: 16px;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .doc-card-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--blue);
-            margin-bottom: 4px;
-        }
-
-        .doc-card-subtitle {
-            font-size: 12px;
-            color: var(--muted);
-        }
-
-        .doc-card-body {
-            padding: 16px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .doc-card-filename {
-            background: var(--bg);
-            padding: 10px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-family: monospace;
-            color: var(--blue);
-            font-weight: 600;
-            word-break: break-all;
-            margin-bottom: 8px;
-        }
-
-        .doc-action-buttons {
-            display: flex;
-            gap: 8px;
-            margin-top: auto;
-        }
-
-        .btn-doc-action {
-            flex: 1;
-            padding: 10px 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            text-align: center;
-        }
-
-        .btn-download {
-            background: #e8f5ee;
-            color: #1a8a4a;
-            border: 1px solid #1a8a4a;
-        }
-
-        .btn-download:hover {
-            background: #1a8a4a;
-            color: white;
-        }
-
-        .btn-open {
-            background: var(--blue-lt);
-            color: var(--blue);
-            border: 1px solid var(--blue);
-        }
-
-        .btn-open:hover {
-            background: var(--blue);
-            color: white;
-        }
-
-        .btn-not-available {
-            background: #f5f5f5;
-            color: var(--muted);
-            border: 1px solid var(--border);
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 600;
-            margin-left: auto;
-        }
-
-        .status-available {
-            background: #e8f5ee;
-            color: #1a8a4a;
-        }
-
-        .status-unavailable {
-            background: #f5f5f5;
-            color: var(--muted);
-        }
-
-        /* PDF Viewer Modal - FULL SCREEN IN MAIN AREA */
-        .pdf-viewer-modal {
-            position: fixed;
-            top: 0;
-            left: 260px;
-            right: 0;
-            bottom: 0;
-            width: calc(100% - 260px);
-            height: 100vh;
-            background: rgba(0,0,0,0.9);
-            display: flex;
-            align-items: stretch;
-            justify-content: stretch;
-            z-index: 1000;
-            padding: 0;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .pdf-viewer-container {
-            background: var(--white);
-            border-radius: 0;
-            overflow: hidden;
-            box-shadow: none;
-            max-width: 100%;
-            width: 100%;
-            max-height: 100vh;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .pdf-viewer-header {
-            background: var(--blue);
-            color: white;
-            padding: 16px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: none;
-            flex-shrink: 0;
-            z-index: 1001;
-        }
-
-        .pdf-viewer-header h3 {
-            margin: 0;
-            font-size: 18px;
-            flex: 1;
-        }
-
-        .pdf-close-btn {
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 32px;
-            cursor: pointer;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            flex-shrink: 0;
-        }
-
-        .pdf-close-btn:hover {
-            background: rgba(255,255,255,0.2);
-            border-radius: 4px;
-        }
-
-        .pdf-viewer-content {
-            flex: 1;
-            overflow: auto;
-            padding: 0;
-            background: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .pdf-viewer-content iframe {
-            width: 100% !important;
-            height: 100% !important;
-            border: none !important;
-            border-radius: 0 !important;
-        }
-
-        .pdf-viewer-footer {
-            padding: 12px 24px;
-            background: var(--blue-lt);
-            border-top: 1px solid var(--border);
-            text-align: center;
-            flex-shrink: 0;
-        }
-
-        @media (max-width: 768px) {
-            .pdf-viewer-modal {
-                left: 0;
-                width: 100%;
-            }
-
-            .pdf-viewer-container {
-                border-radius: 0;
-                max-height: 100vh;
-            }
-
-            .pdf-viewer-content {
-                padding: 0;
-            }
-
-            .pdf-viewer-content iframe {
-                height: 100% !important;
-            }
-
-            .pdf-viewer-header h3 {
-                font-size: 14px;
-            }
-
-            .pdf-close-btn {
-                font-size: 24px;
-                width: 40px;
-                height: 40px;
-            }
-        }
-
-        /* FULLSCREEN DQA OVERLAY */
-        .dqa-fullscreen-overlay { display: none; position: fixed; inset: 0; background: #f0f5f9; z-index: 99999; overflow-y: auto; flex-direction: column; }
-        .dqa-fullscreen-overlay.show { display: flex; }
-        .dqa-fullscreen-header { background: linear-gradient(135deg, #2c6793 0%, #1f4a6a 100%); color: white; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .dqa-fullscreen-header h1 { font-size: 18px; margin: 0; }
-        .dqa-fullscreen-close { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 24px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
-        .dqa-fullscreen-close:hover { background: rgba(255,255,255,0.3); transform: scale(1.1); }
-        .dqa-fullscreen-body { flex: 1; padding: 28px 32px; overflow-y: auto; }
-
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --blue:#2c6793;--blue-dk:#1f4a6a;--blue-lt:#e8f0f7;
+  --white:#ffffff;--bg:#f0f5f9;--border:#d0dde8;--muted:#6c7a89;
+  --gold:#ffc107;--green:#28a745;--teal:#17a2b8;--red:#dc3545;
+}
+html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans-serif;background:var(--bg);}
+
+/* ── HEADER ── */
+.page-header{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-dk) 100%);color:#fff;padding:22px 32px;box-shadow:0 2px 12px rgba(0,0,0,.18);}
+.header-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.logo-box{background:#fff;border-radius:8px;padding:6px 10px;display:flex;align-items:center;justify-content:center;}
+.logo-box img{width:80px;height:auto;border-radius:4px;}
+.header-text h1{font-size:20px;font-weight:700;letter-spacing:.5px;margin-bottom:2px;}
+.header-text p{font-size:12px;opacity:.85;}
+
+/* ── LAYOUT ── */
+.page-body{max-width:1400px;margin:0 auto;padding:24px 28px;}
+
+/* ── CARDS / PANELS ── */
+.card{background:var(--white);border-radius:12px;border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:22px;overflow:hidden;}
+.card-head{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border);}
+.card-head h2{font-size:15px;font-weight:700;color:var(--blue-dk);letter-spacing:.3px;}
+.card-body{padding:20px;}
+
+/* ── FORM CONTROLS ── */
+.cfg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:16px;}
+.form-group label{display:block;font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;}
+.form-control{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;color:#222;background:#fff;transition:border-color .2s;}
+.form-control:focus{outline:none;border-color:var(--blue);}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.4px;transition:all .2s;text-transform:uppercase;}
+.btn-primary{background:var(--blue);color:#fff;} .btn-primary:hover{background:var(--blue-dk);}
+.btn-gold{background:var(--gold);color:#000;} .btn-gold:hover{background:#e0a800;}
+.btn-green{background:var(--green);color:#fff;} .btn-green:hover{background:#1e7e34;}
+.btn-teal{background:var(--teal);color:#fff;} .btn-teal:hover{background:#138496;}
+.btn-outline{background:#fff;color:var(--blue);border:1.5px solid var(--blue);} .btn-outline:hover{background:var(--blue-lt);}
+.btn-sm{padding:6px 12px;font-size:11px;}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+
+/* ── PROGRESS ── */
+.progress-panel{border:2px solid var(--blue);border-radius:8px;overflow:hidden;margin-bottom:16px;}
+.progress-head{background:var(--blue);color:#fff;padding:10px 16px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.progress-body{padding:14px;background:#0d1117;}
+.pbar-wrap{height:8px;background:#1a1a2e;border-radius:4px;overflow:hidden;margin:10px 0;}
+.pbar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));border-radius:4px;transition:width .35s;}
+.step-list{display:flex;flex-direction:column;gap:5px;max-height:220px;overflow-y:auto;}
+.step-item{display:flex;align-items:flex-start;gap:9px;padding:6px 10px;border-radius:5px;font-size:11px;font-family:'Courier New',monospace;}
+.step-item.pending{background:#1a1a2e;color:#555;}
+.step-item.running{background:#1a2e4a;color:var(--teal);animation:pulse 1.4s ease-in-out infinite;}
+.step-item.done{background:#0a2e0a;color:var(--green);}
+.step-item.error{background:#2e0a0a;color:var(--red);}
+.step-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:2px;}
+.step-item.pending .step-dot{background:#555;}
+.step-item.running .step-dot{background:var(--teal);}
+.step-item.done .step-dot{background:var(--green);}
+.step-item.error .step-dot{background:var(--red);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+
+/* ── STATS PILLS ── */
+.stats-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;}
+.stat-pill{background:var(--blue-lt);border:1.5px solid var(--blue);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;color:var(--blue);}
+.stat-pill.ok{background:#d4edda;border-color:var(--green);color:#155724;}
+.stat-pill.warn{background:#fff3cd;border-color:var(--gold);color:#856404;}
+
+/* ── TABS ── */
+.tab-nav{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
+.tab-btn{padding:10px 20px;background:transparent;border:none;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;font-family:inherit;}
+.tab-btn:hover{color:var(--blue);background:var(--blue-lt);}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);background:var(--blue-lt);}
+.tab-pane{display:none;} .tab-pane.active{display:block;}
+
+/* ── PALETTE GRID ── */
+.pal-grid{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;}
+.pal-tile{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;border:2px solid var(--border);background:#f8f9fa;cursor:pointer;font-size:11px;font-weight:700;color:var(--blue);transition:all .2s;}
+.pal-tile.selected{border-color:var(--blue);background:var(--blue-lt);}
+.pal-swatch{width:16px;height:13px;border-radius:2px;border:1px solid #ccc;}
+
+/* ── COLLAPSIBLE ── */
+.collap{border:2px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:14px;}
+.collap-head{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;cursor:pointer;background:var(--blue-lt);border-bottom:1px solid var(--border);user-select:none;}
+.collap-head:hover{background:#dfe9f3;}
+.collap-head h3{font-size:13px;font-weight:700;color:var(--blue-dk);}
+.collap-chev{transition:transform .25s;color:var(--blue);font-size:16px;font-weight:700;}
+.collap-body{padding:16px;background:#fff;}
+.collap-body.hidden{display:none;}
+
+/* ── CANVAS WRAPPERS ── */
+.canvas-wrap{position:relative;width:100%;padding-top:85%;background:#ffffff;border-radius:6px;overflow:hidden;}
+.canvas-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;}
+.map-panel{border:2px solid var(--border);border-radius:8px;overflow:hidden;}
+.map-panel-head{padding:8px 12px;font-size:11px;font-weight:700;text-align:center;letter-spacing:.5px;color:#fff;}
+.maps-3col{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;}
+@media(max-width:860px){.maps-3col{grid-template-columns:1fr;}}
+
+/* ── LEGEND ── */
+.legend-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:var(--blue-lt);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:12px;}
+.legend-title{font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-right:4px;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#2c4b62;}
+.legend-sw{width:18px;height:13px;border-radius:2px;border:1px solid #aaa;flex-shrink:0;}
+
+/* ── TOOLTIP ── */
+#rsTooltip{position:fixed;background:rgba(10,20,40,.93);color:#fff;border-radius:7px;padding:9px 13px;font-size:12px;pointer-events:none;z-index:99999;display:none;max-width:230px;line-height:1.6;box-shadow:0 4px 14px rgba(0,0,0,.3);font-family:'Segoe UI',Arial,sans-serif;}
+#rsTooltip strong{color:var(--gold);font-size:13px;display:block;margin-bottom:3px;}
+
+/* ── HEATMAP OPTIONS ── */
+.opt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:12px;}
+
+/* ── ALERT ── */
+.alert{padding:11px 16px;border-radius:6px;margin-bottom:12px;font-size:13px;border:1.5px solid;}
+.alert-info{background:var(--blue-lt);border-color:var(--blue);color:var(--blue-dk);}
+.alert-warn{background:#fff3cd;border-color:var(--gold);color:#856404;}
+.alert-err{background:#f8d7da;border-color:var(--red);color:#721c24;}
+
+/* ── TABLE ── */
+.data-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);}
+.data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-table thead{background:var(--blue-lt);border-bottom:2px solid var(--border);}
+.data-table th{padding:10px 12px;text-align:left;font-weight:700;color:var(--blue);white-space:nowrap;}
+.data-table td{padding:9px 12px;border-bottom:1px solid var(--border);color:#2c4b62;}
+.data-table tbody tr:last-child td{border-bottom:none;}
+.data-table tbody tr:hover{background:var(--blue-lt);}
+
+/* ── MONTHLY MAPS ── */
+.month-map-card{background:#fff;border-radius:8px;border:1.5px solid var(--border);overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.07);}
+.month-map-card.blank{background:#f5f7fa;border-style:dashed;border-color:#c8d5e0;}
+.month-map-card .mmhead{padding:6px 10px;font-size:11px;font-weight:700;letter-spacing:.5px;text-align:center;text-transform:uppercase;}
+.month-map-card .mmhead.active{background:var(--blue);color:#fff;}
+.month-map-card .mmhead.blank-head{background:#e4ecf4;color:#8899aa;}
+.month-map-card .mm-canvas-wrap{position:relative;width:100%;padding-top:110%;background:#ffffff;}
+.month-map-card .mm-canvas-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;}
+.month-map-card .mm-blank-body{padding:20px 10px;text-align:center;color:#aabbc9;font-size:12px;}
+.month-map-card .mm-legend{padding:5px 8px;background:#f8fbff;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:3px 8px;align-items:center;}
+.mm-leg-item{display:flex;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#3a5068;white-space:nowrap;}
+.mm-leg-sw{width:12px;height:9px;border-radius:1px;border:1px solid rgba(0,0,0,.15);flex-shrink:0;}
+@media(max-width:900px){#monthlyMapsGrid{grid-template-columns:repeat(3,1fr)!important;}}
+@media(max-width:600px){#monthlyMapsGrid{grid-template-columns:repeat(2,1fr)!important;}}
+
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted);border:2px dashed var(--border);border-radius:8px;}
+.empty-state .icon{font-size:36px;margin-bottom:10px;}
+
+/* ── FACILITY TRACKING ── */
+.trk-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--blue-lt);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;}
+.trk-search{flex:1;min-width:180px;max-width:300px;}
+.trk-district{border:1.5px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden;background:#fff;}
+.trk-dist-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--blue);color:#fff;cursor:pointer;user-select:none;gap:10px;}
+.trk-dist-head:hover{background:var(--blue-dk);}
+.trk-dist-name{font-size:13px;font-weight:700;letter-spacing:.3px;}
+.trk-dist-pills{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.trk-dist-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.2);color:#fff;white-space:nowrap;}
+.trk-dist-pill.rep{background:rgba(40,167,69,.7);}
+.trk-dist-pill.nrep{background:rgba(220,53,69,.5);}
+.trk-dist-chev{font-size:14px;transition:transform .2s;flex-shrink:0;}
+.trk-dist-body{display:none;padding:10px 12px;background:#f8fbff;}
+.trk-dist-body.open{display:block;}
+.trk-chiefdom{border:1px solid var(--border);border-radius:6px;margin-bottom:6px;overflow:hidden;background:#fff;}
+.trk-chief-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:#e8f0f7;cursor:pointer;user-select:none;gap:8px;}
+.trk-chief-head:hover{background:#d5e3f0;}
+.trk-chief-name{font-size:12px;font-weight:700;color:var(--blue-dk);}
+.trk-chief-pills{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
+.trk-chief-pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:9px;white-space:nowrap;}
+.trk-chief-pill.rep{background:#d4edda;color:#155724;border:1px solid #c3e6cb;}
+.trk-chief-pill.nrep{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb;}
+.trk-chief-chev{font-size:12px;transition:transform .2s;color:var(--blue);flex-shrink:0;}
+.trk-chief-body{display:none;padding:8px 12px;background:#fff;}
+.trk-chief-body.open{display:block;}
+.trk-fac-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:5px;}
+.trk-fac{display:flex;align-items:center;gap:7px;padding:6px 10px;border-radius:5px;font-size:11px;font-weight:600;border:1px solid transparent;}
+.trk-fac.rep{background:#d4edda;border-color:#c3e6cb;color:#155724;}
+.trk-fac.nrep{background:#f8d7da;border-color:#f5c6cb;color:#721c24;}
+.trk-fac-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.trk-fac.rep .trk-fac-dot{background:#28a745;}
+.trk-fac.nrep .trk-fac-dot{background:#dc3545;}
+.trk-empty{text-align:center;color:var(--muted);padding:20px;font-size:12px;}
+.trk-period-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:14px;flex-wrap:wrap;overflow-x:auto;}
+.trk-period-btn{padding:7px 16px;background:transparent;border:none;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;font-family:inherit;white-space:nowrap;}
+.trk-period-btn:hover{color:var(--blue);background:var(--blue-lt);}
+.trk-period-btn.active{color:var(--blue);border-bottom-color:var(--blue);background:var(--blue-lt);}
+
+/* ── FOOTER ── */
+.page-footer{background:var(--blue-dk);color:rgba(255,255,255,.8);text-align:center;padding:14px;font-size:11px;margin-top:28px;}
 </style>
 </head>
-<body style="background:#f0f5f9;font-family:'Roboto','Segoe UI',sans-serif;padding:20px;">
+<body>
 
-<div class="hero">
-  <div class="hero-tag">Support and Training</div>
-  <h1>User Guide</h1>
-  <p>Role-specific guides, video tutorials, and documentation for NMDR users at all levels.</p>
-</div>
-<div style="display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap;border-bottom:2px solid var(--border);padding-bottom:12px;">
-  <button class="user-guide-tab-btn active" data-ug-tab="national">National Staff</button>
-  <button class="user-guide-tab-btn" data-ug-tab="district">District Staff</button>
-  <button class="user-guide-tab-btn" data-ug-tab="chiefdom">Chiefdom Supervisor</button>
-  <button class="user-guide-tab-btn" data-ug-tab="phu">PHU Staff</button>
-</div>
-<div id="ug-national" class="user-guide-pane active">
-  <div class="cards-grid">
-    <div class="card"><div class="card-stripe"></div><div class="card-body"><div class="card-icon-row"><div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v16H4z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="12" y2="13"/></svg></div><div><div class="card-num">Guide</div><div class="card-title">NMDR National Staff Handbook</div></div></div><div class="card-divider"></div><div class="doc-body"><p>Complete operational guide for national-level data management and oversight.</p><button class="btn-download-snt" style="background:var(--blue);" onclick="alert('Download: NMDR_National_Handbook.pdf')">📘 Download PDF</button></div></div></div>
-    <div class="card"><div class="card-stripe"></div><div class="card-body"><div class="card-icon-row"><div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 7l-7 5 7 5V7zM1 5h15v14H1z"/></svg></div><div><div class="card-num">Video</div><div class="card-title">Dashboard Walkthrough</div></div></div><div class="card-divider"></div><div class="doc-body"><p>Step-by-step video tutorial for national dashboards and reports.</p><button class="btn-download-snt" style="background:var(--blue);" onclick="alert('Playing video tutorial')">▶ Watch Tutorial</button></div></div></div>
+<div id="rsTooltip"></div>
+
+<!-- ═══ HEADER ═══ -->
+<div class="page-header">
+  <div class="header-row">
+    <div class="logo-box">
+      <img src="https://github.com/mohamedsillahkanu/gdp-dashboard-2/raw/6c7463b0d5c3be150aafae695a4bcbbd8aeb1499/ICF-SL.jpg" alt="ICF-SL">
+    </div>
+    <div class="header-text">
+      <h1>NMCP Reporting Status Tool</h1>
+      <p>National Malaria Control Programme · Sierra Leone · ICF-SL</p>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;">
+      <span id="headerPill" style="background:rgba(255,255,255,.15);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.5px;">Ready</span>
+    </div>
   </div>
 </div>
-<div id="ug-district" class="user-guide-pane">
-  <div class="cards-grid">
-    <div class="card"><div class="card-stripe"></div><div class="card-body"><div class="card-icon-row"><div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v16H4z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="12" y2="13"/></svg></div><div><div class="card-num">Guide</div><div class="card-title">District Data Management Guide</div></div></div><div class="card-divider"></div><div class="doc-body"><p>Role-specific guide for district malaria officers and M&E leads.</p><button class="btn-download-snt" style="background:var(--blue);" onclick="alert('Download: District_Guide.pdf')">📘 Download PDF</button></div></div></div>
-    <div class="card"><div class="card-stripe"></div><div class="card-body"><div class="card-icon-row"><div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 7l-7 5 7 5V7zM1 5h15v14H1z"/></svg></div><div><div class="card-num">Video</div><div class="card-title">District Reporting Workflow</div></div></div><div class="card-divider"></div><div class="doc-body"><p>Video training for district-level data entry and validation.</p><button class="btn-download-snt" style="background:var(--blue);" onclick="alert('Playing district tutorial')">▶ Watch Tutorial</button></div></div></div>
+
+<!-- ═══ BODY ═══ -->
+<div class="page-body">
+
+  <!-- ── CONFIG PANEL ── -->
+  <div class="card">
+    <div class="card-head">
+      <h2>⚙ Pipeline Configuration</h2>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-gold" onclick="rs_startPipeline()">&#9654; Run Pipeline</button>
+        <button class="btn btn-outline btn-sm" onclick="rs_reset()">↺ Reset</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div id="alertBox"></div>
+      <div class="cfg-grid">
+        <div class="form-group">
+          <label>Start Month</label>
+          <input type="month" class="form-control" id="cfgStart" value="2026-01">
+        </div>
+        <div class="form-group">
+          <label>End Month</label>
+          <input type="month" class="form-control" id="cfgEnd" value="2026-12">
+        </div>
+      </div>
+      <div style="background:var(--blue-lt);border-left:3px solid var(--blue);border-radius:4px;padding:10px 14px;font-size:12px;color:var(--blue-dk);">
+        Fetches all Level-5 health facilities from DHIS2. A facility is <strong>Reported</strong> if the sum of all malaria data element values &gt; 0 for that month. Produces heatmaps, geographic maps, summary table, and downloadable Excel.
+      </div>
+    </div>
   </div>
-</div>
-<div id="ug-chiefdom" class="user-guide-pane">
-  <div class="cards-grid">
-    <div class="card"><div class="card-stripe"></div><div class="card-body"><div class="card-icon-row"><div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v16H4z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="12" y2="13"/></svg></div><div><div class="card-num">Guide</div><div class="card-title">Chiefdom Supervision Manual</div></div></div><div class="card-divider"></div><div class="doc-body"><p>Practical guide for chiefdom-level data supervision and quality assurance.</p><button class="btn-download-snt" style="background:var(--blue);" onclick="alert('Download: Chiefdom_Supervision.pdf')">📘 Download PDF</button></div></div></div>
-    <div class="card"><div class="card-stripe"></div><div class="card-body"><div class="card-icon-row"><div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 7l-7 5 7 5V7zM1 5h15v14H1z"/></svg></div><div><div class="card-num">Video</div><div class="card-title">Field Data Collection Tips</div></div></div><div class="card-divider"></div><div class="doc-body"><p>Best practices for chiefdom supervisors in the field.</p><button class="btn-download-snt" style="background:var(--blue);" onclick="alert('Playing chiefdom tutorial')">▶ Watch Tutorial</button></div></div></div>
+
+  <!-- ── PROGRESS ── -->
+  <div id="progressSection" style="display:none;" class="card">
+    <div class="card-head"><h2>⏳ Pipeline Progress</h2><span id="pctLabel" style="font-size:13px;font-weight:700;color:var(--blue);">0%</span></div>
+    <div class="card-body" style="padding:14px;">
+      <div class="pbar-wrap"><div class="pbar-fill" id="pbarFill" style="width:0%"></div></div>
+      <div class="step-list" id="stepList"></div>
+    </div>
   </div>
+
+  <!-- ── RESULTS ── -->
+  <div id="resultsSection" style="display:none;">
+
+    <!-- Stats -->
+    <div class="card">
+      <div class="card-head"><h2>📊 Summary Statistics</h2></div>
+      <div class="card-body">
+        <div class="stats-row" id="statsRow"></div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="card">
+      <div class="card-head" style="padding-bottom:0;border-bottom:none;">
+        <h2>Results</h2>
+      </div>
+      <div class="card-body" style="padding-top:12px;">
+        <div class="tab-nav">
+          <button class="tab-btn active" data-tab="heatmaps">Heatmaps</button>
+          <button class="tab-btn" data-tab="geomaps">Geographic Maps</button>
+          <button class="tab-btn" data-tab="tracking">🏥 Facility Tracking</button>
+          <button class="tab-btn" data-tab="summary">Summary Table</button>
+          <button class="tab-btn" data-tab="downloads">Downloads</button>
+        </div>
+
+        <!-- ── TAB: HEATMAPS ── -->
+        <div id="tab-heatmaps" class="tab-pane active">
+
+          <!-- Options -->
+          <div class="collap">
+            <div class="collap-head" onclick="toggleCollap(this)">
+              <h3>Chart Options</h3><span class="collap-chev">▼</span>
+            </div>
+            <div class="collap-body">
+              <div class="opt-grid">
+                <div class="form-group">
+                  <label>Chart Title</label>
+                  <input type="text" class="form-control" id="hmTitle" value="NMCP Malaria EPI Reporting Status">
+                </div>
+                <div class="form-group">
+                  <label>X-Axis Label</label>
+                  <input type="text" class="form-control" id="hmXLabel" value="Time Period (YYYY-MM)">
+                </div>
+                <div class="form-group">
+                  <label>Y-Axis Label</label>
+                  <input type="text" class="form-control" id="hmYLabel" value="Health Facilities">
+                </div>
+                <div class="form-group">
+                  <label>Width (px)</label>
+                  <input type="number" class="form-control" id="hmW" value="1400" min="600" max="4000" step="50">
+                </div>
+                <div class="form-group">
+                  <label>Height (px)</label>
+                  <input type="number" class="form-control" id="hmH" value="750" min="300" max="3000" step="50">
+                </div>
+              </div>
+              <p style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Color Palette — Reported (1) listed first</p>
+              <div id="hmPaletteGrid" class="pal-grid"></div>
+              <div class="btn-row">
+                <button class="btn btn-gold btn-sm" onclick="rs_redrawHeatmaps()">↺ Redraw</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chart 1 -->
+          <div class="collap">
+            <div class="collap-head" onclick="toggleCollap(this)" style="background:#e7f3ff;border-color:var(--blue);">
+              <h3 style="color:var(--blue);">Chart 1 — All Facilities</h3><span class="collap-chev" style="color:var(--blue);">▼</span>
+            </div>
+            <div class="collap-body" style="overflow-x:auto;text-align:center;padding:14px;">
+              <div id="hmTitle1" style="font-size:15px;font-weight:700;color:var(--blue);margin-bottom:4px;"></div>
+              <div id="hmSub1" style="font-size:11px;color:var(--muted);margin-bottom:10px;"></div>
+              <canvas id="hmCanvas1" style="max-width:100%;border-radius:6px;border:2px solid var(--blue);display:block;margin:0 auto;"></canvas>
+              <div class="btn-row" style="justify-content:center;margin-top:10px;">
+                <button class="btn btn-green btn-sm" onclick="rs_downloadHeatmap('hmCanvas1','all_facilities')">↓ Download Chart 1 (PNG)</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chart 2 -->
+          <div class="collap">
+            <div class="collap-head" onclick="toggleCollap(this)" style="background:#d4edda;border-color:var(--green);">
+              <h3 style="color:#155724;">Chart 2 — Active Facilities Only</h3><span class="collap-chev" style="color:#155724;">▼</span>
+            </div>
+            <div class="collap-body" style="overflow-x:auto;text-align:center;padding:14px;">
+              <div id="hmTitle2" style="font-size:15px;font-weight:700;color:var(--green);margin-bottom:4px;"></div>
+              <div id="hmSub2" style="font-size:11px;color:var(--muted);margin-bottom:10px;"></div>
+              <canvas id="hmCanvas2" style="max-width:100%;border-radius:6px;border:2px solid var(--green);display:block;margin:0 auto;"></canvas>
+              <div class="btn-row" style="justify-content:center;margin-top:10px;">
+                <button class="btn btn-green btn-sm" onclick="rs_downloadHeatmap('hmCanvas2','active_facilities')">↓ Download Chart 2 (PNG)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── TAB: GEO MAPS ── -->
+        <div id="tab-geomaps" class="tab-pane">
+
+          <!-- Controls bar -->
+          <div style="background:var(--blue-lt);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px;">
+              <div class="form-group" style="margin:0;">
+                <label>Map Level</label>
+                <select class="form-control" id="geoLevel" style="width:auto;min-width:120px;">
+                  <option value="national">National</option>
+                  <option value="district">District</option>
+                  <option value="chiefdom" selected>Chiefdom</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin:0;">
+                <label>Year (Annual Summary)</label>
+                <select class="form-control" id="geoYear" style="width:auto;min-width:90px;"></select>
+              </div>
+              <button class="btn btn-teal btn-sm" onclick="rs_renderGeoMaps()" style="margin-top:18px;">↺ Redraw All Maps</button>
+              <span id="geoStatus" style="font-size:11px;color:var(--blue);font-weight:600;margin-top:18px;"></span>
+            </div>
+            <div style="border-top:1px solid var(--border);padding-top:10px;">
+              <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px;">🎨 Colour Palette — select then click Redraw</div>
+              <div id="mapPaletteGrid" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+            </div>
+          </div>
+
+          <!-- ── SECTION 1: Monthly Maps Grid ── -->
+          <div style="background:var(--blue);color:#fff;padding:10px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;justify-content:space-between;">
+            <span>📅 Monthly Reporting Status Maps — January to December</span>
+            <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4);" onclick="rs_downloadMonthlyGrid()">↓ Download Monthly Grid (PNG)</button>
+          </div>
+          <div id="monthlyMapsGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px;background:#f8fbff;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;margin-bottom:20px;">
+            <!-- Generated by JS -->
+          </div>
+
+          <!-- ── SECTION 2: Annual Summary Maps ── -->
+          <div style="background:var(--blue-dk);color:#fff;padding:10px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;justify-content:space-between;">
+            <span>🗺 Annual Summary Maps</span>
+            <button class="btn btn-gold btn-sm" onclick="rs_geoDownloadSubplot()">↓ Download Annual Subplot (PNG)</button>
+          </div>
+          <div style="padding:14px;background:#f8fbff;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;margin-bottom:16px;">
+            <div class="maps-3col">
+              <div class="map-panel">
+                <div class="map-panel-head" style="background:var(--blue);">NATIONAL — OVERVIEW</div>
+                <div class="canvas-wrap"><canvas id="geoNational"></canvas></div>
+              </div>
+              <div class="map-panel">
+                <div class="map-panel-head" style="background:var(--teal);">DISTRICT — REPORTING RATE</div>
+                <div class="canvas-wrap"><canvas id="geoDistrict"></canvas></div>
+              </div>
+              <div class="map-panel">
+                <div class="map-panel-head" style="background:var(--green);">CHIEFDOM — HOVER FOR RATE</div>
+                <div class="canvas-wrap" style="cursor:crosshair;"><canvas id="geoChiefdom"></canvas></div>
+              </div>
+            </div>
+            <!-- Dynamic legend for annual maps -->
+            <div id="annualLegendBar" class="legend-bar" style="margin-top:8px;"></div>
+            <div class="btn-row" style="margin-top:8px;">
+              <button class="btn btn-primary btn-sm" onclick="rs_geoDownload('geoNational','national')">↓ National PNG</button>
+              <button class="btn btn-teal btn-sm" onclick="rs_geoDownload('geoDistrict','district')">↓ District PNG</button>
+              <button class="btn btn-green btn-sm" onclick="rs_geoDownload('geoChiefdom','chiefdom')">↓ Chiefdom PNG</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── TAB: FACILITY TRACKING ── -->
+        <div id="tab-tracking" class="tab-pane">
+
+          <!-- Toolbar -->
+          <div class="trk-toolbar">
+            <div class="form-group" style="margin:0;">
+              <label>Year</label>
+              <select class="form-control" id="trkYear" style="width:auto;min-width:90px;" onchange="trk_render()"></select>
+            </div>
+            <input type="text" class="form-control trk-search" id="trkSearch" placeholder="Search facility, chiefdom, district…" oninput="trk_render()">
+            <div style="display:flex;gap:6px;align-items:center;margin-top:18px;">
+              <label style="font-size:11px;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:4px;cursor:pointer;">
+                <input type="checkbox" id="trkShowRep" checked onchange="trk_render()"> Show Reported
+              </label>
+              <label style="font-size:11px;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:4px;cursor:pointer;">
+                <input type="checkbox" id="trkShowNrep" checked onchange="trk_render()"> Show Not Reported
+              </label>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="trk_expandAll(true)" style="margin-top:18px;">⊞ Expand All</button>
+            <button class="btn btn-outline btn-sm" onclick="trk_expandAll(false)" style="margin-top:18px;">⊟ Collapse All</button>
+          </div>
+
+          <!-- Month selector tabs -->
+          <div class="trk-period-tabs" id="trkMonthTabs"></div>
+
+          <!-- District tree -->
+          <div id="trkTree"></div>
+
+        </div>
+
+        <!-- ── TAB: SUMMARY TABLE ── -->
+        <div id="tab-summary" class="tab-pane">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+            <input type="text" class="form-control" id="tblSearch" placeholder="Search district, chiefdom, period…" style="max-width:300px;" oninput="rs_filterTable()">
+            <select class="form-control" id="tblGroup" style="width:auto;" onchange="rs_buildTable()">
+              <option value="district_monthly">District × Month</option>
+              <option value="district_yearly">District × Year</option>
+              <option value="chiefdom_monthly">Chiefdom × Month</option>
+              <option value="chiefdom_yearly">Chiefdom × Year</option>
+              <option value="facility_monthly">Facility × Month</option>
+            </select>
+            <button class="btn btn-outline btn-sm" onclick="rs_exportTableExcel()">↓ Export Table (Excel)</button>
+          </div>
+          <div id="tblCount" style="font-size:11px;color:var(--muted);margin-bottom:8px;"></div>
+          <div class="data-table-wrap">
+            <table class="data-table" id="summaryTable">
+              <thead id="tblHead"></thead>
+              <tbody id="tblBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ── TAB: DOWNLOADS ── -->
+        <div id="tab-downloads" class="tab-pane">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
+
+            <div style="border:2px solid var(--blue);border-radius:10px;overflow:hidden;">
+              <div style="background:var(--blue);color:#fff;padding:10px 16px;font-size:13px;font-weight:700;">Heatmap Charts</div>
+              <div style="padding:16px;display:flex;flex-direction:column;gap:8px;">
+                <button class="btn btn-outline" onclick="rs_downloadHeatmap('hmCanvas1','all_facilities')">↓ Chart 1 — All Facilities (PNG)</button>
+                <button class="btn btn-outline" onclick="rs_downloadHeatmap('hmCanvas2','active_facilities')">↓ Chart 2 — Active Facilities (PNG)</button>
+                <button class="btn btn-gold" onclick="rs_downloadBothHeatmapSubplot()">↓ Both Charts Subplot (PNG)</button>
+              </div>
+            </div>
+
+            <div style="border:2px solid var(--teal);border-radius:10px;overflow:hidden;">
+              <div style="background:var(--teal);color:#fff;padding:10px 16px;font-size:13px;font-weight:700;">Geographic Maps</div>
+              <div style="padding:16px;display:flex;flex-direction:column;gap:8px;">
+                <button class="btn btn-outline" onclick="rs_geoDownload('geoNational','national')">↓ National Map (PNG)</button>
+                <button class="btn btn-outline" onclick="rs_geoDownload('geoDistrict','district')">↓ District Map (PNG)</button>
+                <button class="btn btn-outline" onclick="rs_geoDownload('geoChiefdom','chiefdom')">↓ Chiefdom Map (PNG)</button>
+                <button class="btn btn-gold" onclick="rs_geoDownloadSubplot()">↓ All 3 Maps Subplot (PNG)</button>
+              </div>
+            </div>
+
+            <div style="border:2px solid var(--green);border-radius:10px;overflow:hidden;">
+              <div style="background:var(--green);color:#fff;padding:10px 16px;font-size:13px;font-weight:700;">Data Exports</div>
+              <div style="padding:16px;display:flex;flex-direction:column;gap:8px;">
+                <button class="btn btn-outline" onclick="rs_exportExcel()">↓ Full Report (Excel — all sheets)</button>
+                <button class="btn btn-outline" onclick="rs_exportTableExcel()">↓ Current Table View (Excel)</button>
+                <button class="btn btn-outline" onclick="rs_exportCSV()">↓ Facility-Month Status (CSV)</button>
+              </div>
+            </div>
+
+            <div style="border:2px solid #276DC3;border-radius:10px;overflow:hidden;">
+              <div style="background:#276DC3;color:#fff;padding:10px 16px;font-size:13px;font-weight:700;">Reproducible Code</div>
+              <div style="padding:16px;display:flex;flex-direction:column;gap:8px;">
+                <button class="btn btn-outline" style="color:#276DC3;border-color:#276DC3;" onclick="rs_downloadR()">↓ Download R Script</button>
+                <button class="btn btn-outline" style="color:#3776AB;border-color:#3776AB;" onclick="rs_downloadPy()">↓ Download Python Script</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div><!-- /resultsSection -->
+
+</div><!-- /page-body -->
+
+<div class="page-footer">
+  National Malaria Control Programme (NMCP) — Ministry of Health, Sierra Leone &nbsp;|&nbsp;
+  Technical Partner: Informatics Consultancy Firm – Sierra Leone (ICF-SL) &nbsp;|&nbsp;
+  mdrsl.chaiprod.com
 </div>
-<div id="ug-phu" class="user-guide-pane">
-  <div class="cards-grid">
-    <div class="card"><div class="card-stripe"></div><div class="card-body"><div class="card-icon-row"><div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v16H4z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="12" y2="13"/></svg></div><div><div class="card-num">Guide</div><div class="card-title">PHU Data Entry Quick Guide</div></div></div><div class="card-divider"></div><div class="doc-body"><p>Easy reference for PHU staff on malaria data entry and forms.</p><button class="btn-download-snt" style="background:var(--blue);" onclick="alert('Download: PHU_QuickGuide.pdf')">📘 Download PDF</button></div></div></div>
-    <div class="card"><div class="card-stripe"></div><div class="card-body"><div class="card-icon-row"><div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 7l-7 5 7 5V7zM1 5h15v14H1z"/></svg></div><div><div class="card-num">Video</div><div class="card-title">HMIS Malaria Module</div></div></div><div class="card-divider"></div><div class="doc-body"><p>Step-by-step HMIS malaria module data entry tutorial.</p><button class="btn-download-snt" style="background:var(--blue);" onclick="alert('Playing PHU tutorial')">▶ Watch Tutorial</button></div></div></div>
-  </div>
-</div>
+
 <script>
-document.querySelectorAll('.user-guide-tab-btn').forEach(btn => {
-  btn.addEventListener('click', function() {
-    document.querySelectorAll('.user-guide-tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.user-guide-pane').forEach(p => p.classList.remove('active'));
-    this.classList.add('active');
-    document.getElementById('ug-' + this.dataset.ugTab).classList.add('active');
+// ═══════════════════════════════════════════════════════════════════
+//  CONSTANTS
+// ═══════════════════════════════════════════════════════════════════
+const PROXY     = 'https://script.google.com/macros/s/AKfycbyRXc68PYSmDSCYPakAS8Gc9R00kRjmsMYoDujPYMItyquXfwMAJUtRqXLiDlNWbSfDQQ/exec';
+const BASE_URL  = 'https://sl.dhis2.org/hmis23';
+const AUTH      = 'Basic ' + btoa('musa-sillahkanu:Navigator/2024!');
+const LEVEL_PHU = 5, LEVEL_DIST = 2, LEVEL_CHIEF = 4;
+
+const DE_UIDS = [
+  'FJafyE1kzs4','Rijj3Fp9ksg','Sz13vbo2Qwh','mXS2g1AiPsS','p6zQLDFjSfd',
+  'wU8EdHifSLa','XKTCuR0W3YN','jkVioQxQcnk','wfaQBIVQxWo','YWvx4zYdp92',
+  'T7xH8GwWpEM','h3zJa6hAgib','Imkks0HAl7E'
+];
+
+
+
+const RS_PALETTES = {
+  blackYellow: { name:'Black / Yellow',  colors:['#DDCC77','#212529'], default:true },
+  tealOrange:  { name:'Teal / Orange',   colors:['#009988','#EE7733'] },
+  bluOrange:   { name:'Blue / Orange',   colors:['#0077BB','#EE7733'] },
+  navyYellow:  { name:'Navy / Yellow',   colors:['#332288','#CCBB44'] },
+  viridis:     { name:'Viridis',         colors:['#21918c','#440154'] },
+  redGreen:    { name:'Red / Green',     colors:['#28a745','#dc3545'] },
+};
+
+// ═══════════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════════
+let ST = {
+  config: null,
+  orgHierarchy: {},        // {ouId: {id,name,districtName,chiefdomName,hfCode}}
+  rawSums: {},             // {ouId: {period: sum}}
+  reportData: [],          // [{hf_uid,ouId,Date,status,districtName,chiefdomName}]
+  selectedPalette: 'blackYellow',
+  geoCache: { chiefdomGeo:null, districtGeo:null, bbox:null },
+  geoDistrictRates: {},
+  geoChiefdomRates: {},
+  geoChiefdomHits: [],
+};
+
+// ═══════════════════════════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════════════════════════
+async function dhis2(path) {
+  const url = BASE_URL + path;
+  const pUrl = PROXY + '?url=' + encodeURIComponent(url) + '&Authorization=' + encodeURIComponent(AUTH);
+  const r = await fetch(pUrl);
+  if (!r.ok) throw new Error('HTTP ' + r.status + ': ' + path.slice(0,60));
+  return r.json();
+}
+
+function genPeriods(s, e) {
+  const out = [];
+  let [y,m] = s.split('-').map(Number);
+  const [ey,em] = e.split('-').map(Number);
+  while (y < ey || (y===ey && m<=em)) {
+    out.push(`${y}${String(m).padStart(2,'0')}`); m++; if(m>12){m=1;y++;}
+  }
+  return out;
+}
+
+function sleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
+
+function showAlert(msg, type='info') {
+  document.getElementById('alertBox').innerHTML =
+    `<div class="alert alert-${type}">${msg}</div>`;
+  setTimeout(()=>{ document.getElementById('alertBox').innerHTML=''; }, 7000);
+}
+
+function setProgress(p) {
+  document.getElementById('pbarFill').style.width = p + '%';
+  document.getElementById('pctLabel').textContent = Math.round(p) + '%';
+}
+
+const stepEls = {};
+function addStep(id, txt) {
+  const d = document.createElement('div');
+  d.className = 'step-item pending'; d.id = 'st_' + id;
+  d.innerHTML = `<div class="step-dot"></div><span>${txt}</span>`;
+  document.getElementById('stepList').appendChild(d);
+  stepEls[id] = d;
+}
+function setStep(id, status, msg) {
+  const el = stepEls[id]; if(!el) return;
+  el.className = 'step-item ' + status;
+  const pre = {running:'» ',done:'✓ ',error:'✗ '}[status]||'';
+  if(msg) el.querySelector('span').textContent = pre + msg;
+  else el.querySelector('span').textContent = pre + el.querySelector('span').textContent.replace(/^[»✓✗] /,'');
+}
+
+function setPill(txt, bg) {
+  const el = document.getElementById('headerPill');
+  el.textContent = txt;
+  el.style.background = bg || 'rgba(255,255,255,.15)';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  PIPELINE
+// ═══════════════════════════════════════════════════════════════════
+async function rs_startPipeline() {
+  const start = document.getElementById('cfgStart').value;
+  const end   = document.getElementById('cfgEnd').value;
+  if(!start || !end || start > end) { showAlert('Select a valid date range.','warn'); return; }
+
+  ST.config = { start, end, periods: genPeriods(start, end) };
+  ST.orgHierarchy = {}; ST.rawSums = {}; ST.reportData = {};
+
+  document.getElementById('progressSection').style.display = 'block';
+  document.getElementById('resultsSection').style.display  = 'none';
+  document.getElementById('stepList').innerHTML = '';
+  Object.keys(stepEls).forEach(k => delete stepEls[k]);
+  setProgress(2);
+  setPill('Running…','rgba(255,193,7,.5)');
+
+  [
+    ['s1','Fetching Level-5 org hierarchy'],
+    ['s2','Assigning HF codes'],
+    ['s3','Fetching EPI data values'],
+    ['s4','Determining reporting status'],
+    ['s5','Computing aggregates'],
+    ['s6','Loading GeoJSON'],
+    ['s7','Computing geographic rates'],
+    ['s8','Drawing outputs'],
+  ].forEach(([id,txt]) => addStep(id,txt));
+
+  try {
+    // ── Step 1: Org hierarchy ──
+    setStep('s1','running');
+    const ouData = await dhis2(
+      `/api/organisationUnits.json?level=${LEVEL_PHU}&fields=id,displayName,ancestors[id,displayName,level]&paging=false`
+    );
+    const ous = ouData.organisationUnits || [];
+    ous.forEach(ou => {
+      const anc = (ou.ancestors||[]).sort((a,b)=>a.level-b.level);
+      const dist  = anc.find(a=>a.level===LEVEL_DIST);
+      const chief = anc.find(a=>a.level===LEVEL_CHIEF);
+      ST.orgHierarchy[ou.id] = {
+        id:ou.id, name:ou.displayName,
+        districtName: dist  ? dist.displayName  : '',
+        chiefdomName: chief ? chief.displayName : '',
+        hfCode: '',
+      };
+    });
+    const nFac = Object.keys(ST.orgHierarchy).length;
+    setStep('s1','done',`${nFac} facilities loaded`); setProgress(12);
+
+    // ── Step 2: HF codes ──
+    setStep('s2','running');
+    const sorted = Object.values(ST.orgHierarchy).sort((a,b)=>
+      (a.districtName+a.name).localeCompare(b.districtName+b.name));
+    sorted.forEach((ou,i)=>{
+      ST.orgHierarchy[ou.id].hfCode = 'HF' + String(i+1).padStart(String(nFac).length,'0');
+    });
+    setStep('s2','done',`HF001…HF${nFac}`); setProgress(18);
+
+    // ── Step 3: Fetch data values ──
+    setStep('s3','running');
+    const ouIds = Object.keys(ST.orgHierarchy);
+    const ouB = [], pB = [];
+    for(let i=0;i<ouIds.length;i+=60) ouB.push(ouIds.slice(i,i+60));
+    for(let i=0;i<ST.config.periods.length;i+=6) pB.push(ST.config.periods.slice(i,i+6));
+    const total = ouB.length * pB.length; let done=0;
+    ST.rawSums = {};
+    for(const ob of ouB) {
+      for(const pb of pB) {
+        const url = `/api/dataValueSets.json?dataElement=${DE_UIDS.join(',')}&orgUnit=${ob.join(',')}&period=${pb.join(',')}&children=false`;
+        const resp = await dhis2(url);
+        (resp.dataValues||[]).forEach(dv=>{
+          if(!ST.rawSums[dv.orgUnit]) ST.rawSums[dv.orgUnit]={};
+          ST.rawSums[dv.orgUnit][dv.period] = (ST.rawSums[dv.orgUnit][dv.period]||0) + (parseFloat(dv.value)||0);
+        });
+        done++;
+        const pct = 18 + Math.round((done/total)*42);
+        setStep('s3','running',`Batch ${done}/${total} · ${pb[0]}→${pb[pb.length-1]}`);
+        setProgress(pct);
+        await sleep(60);
+      }
+    }
+    setStep('s3','done','Data fetched'); setProgress(60);
+
+    // ── Step 4: Reporting status ──
+    setStep('s4','running');
+    ST.reportData = [];
+    let reported=0, notReported=0;
+    ouIds.forEach(ouId=>{
+      const ou = ST.orgHierarchy[ouId];
+      ST.config.periods.forEach(per=>{
+        const status = ((ST.rawSums[ouId]||{})[per]||0) > 0 ? 1 : 0;
+        ST.reportData.push({
+          hf_uid: ou.hfCode, ouId, Date:`${per.slice(0,4)}-${per.slice(4,6)}`,
+          status, districtName: ou.districtName, chiefdomName: ou.chiefdomName,
+        });
+        if(status) reported++; else notReported++;
+      });
+    });
+    const activeHFs = new Set(ST.reportData.filter(r=>r.status).map(r=>r.hf_uid));
+    const neverHFs  = new Set(ouIds.map(id=>ST.orgHierarchy[id].hfCode)).size - activeHFs.size;
+    const allHFs    = [...new Set(ST.reportData.map(r=>r.hf_uid))];
+    const activeRate = activeHFs.size>0 ? ((reported/(activeHFs.size*ST.config.periods.length))*100).toFixed(1) : '0.0';
+    setStep('s4','done',`${reported} reported · ${activeRate}% rate (active facilities)`);
+    setProgress(70);
+
+    // ── Step 5: Aggregates ──
+    setStep('s5','running');
+    rs_buildAggregates();
+    setStep('s5','done',`${ST.reportData.length} records aggregated`); setProgress(76);
+
+    // ── Step 6: GeoJSON ──
+    setStep('s6','running');
+    if (!ST.geoCache.chiefdomGeo) {
+      const [cg, dg] = await Promise.all([
+        fetch(CHIEFDOM_GEOJSON).then(r=>r.json()),
+        fetch(DISTRICT_GEOJSON).then(r=>r.json()).catch(()=>null),
+      ]);
+      ST.geoCache.chiefdomGeo = cg;
+      ST.geoCache.districtGeo = dg;
+      let mnX=Infinity,mnY=Infinity,mxX=-Infinity,mxY=-Infinity;
+      (cg.features||[]).forEach(f=>{
+        walkCoords(f.geometry,c=>{
+          if(c[0]<mnX)mnX=c[0];if(c[0]>mxX)mxX=c[0];
+          if(c[1]<mnY)mnY=c[1];if(c[1]>mxY)mxY=c[1];
+        });
+      });
+      ST.geoCache.bbox = {mnX,mnY,mxX,mxY};
+    }
+    setStep('s6','done',`${(ST.geoCache.chiefdomGeo.features||[]).length} chiefdom features`); setProgress(83);
+
+    // ── Step 7: Geo rates ──
+    setStep('s7','running');
+    const defaultYear = ST.config.periods[ST.config.periods.length-1].slice(0,4);
+    rs_computeGeoRates(defaultYear);
+    populateYearDropdown();
+    setStep('s7','done',`Rates computed for ${defaultYear}`); setProgress(90);
+
+    // ── Step 8: Draw ──
+    setStep('s8','running');
+
+    // Show results panel FIRST so canvases have real layout dimensions
+    document.getElementById('progressSection').style.display = 'none';
+    document.getElementById('resultsSection').style.display  = 'block';
+    await sleep(120);  // allow browser to reflow
+
+    let drawErrors = [];
+    try { rs_drawBothHeatmaps(); } catch(e){ drawErrors.push('Heatmaps: '+e.message); }
+    try { rs_renderGeoMaps();    } catch(e){ drawErrors.push('Geo maps: '+e.message); }
+    try { rs_buildTable();       } catch(e){ drawErrors.push('Table: '+e.message); }
+    try { trk_init();            } catch(e){ drawErrors.push('Tracking: '+e.message); }
+
+    if(drawErrors.length) {
+      setStep('s8','error','Draw errors: ' + drawErrors.join(' | '));
+      showAlert('Some outputs failed to draw: ' + drawErrors.join('; '), 'warn');
+    } else {
+      setStep('s8','done','All outputs ready');
+    }
+    setProgress(100);
+
+    // ── Stats ──
+    const nFacActive = activeHFs.size;
+    const nFacNever  = neverHFs;
+    document.getElementById('statsRow').innerHTML = [
+      `<div class="stat-pill">${nFac} total facilities</div>`,
+      `<div class="stat-pill ok">${nFacActive} active (reported ≥1 month)</div>`,
+      `<div class="stat-pill warn">${nFacNever} never reported</div>`,
+      `<div class="stat-pill">${ST.config.periods.length} months · ${start} → ${end}</div>`,
+      `<div class="stat-pill ok">${activeRate}% reporting rate (active)</div>`,
+      `<div class="stat-pill">${reported.toLocaleString()} reported facility-months</div>`,
+    ].join('');
+
+    setPill('Done ✓','rgba(40,167,69,.55)');
+
+  } catch(err) {
+    console.error(err);
+    showAlert('Pipeline error: ' + err.message, 'err');
+    setPill('Error','rgba(220,53,69,.5)');
+    Object.keys(stepEls).forEach(k=>{
+      if(stepEls[k].classList.contains('running')) stepEls[k].className='step-item error';
+    });
+  }
+}
+
+function rs_reset() {
+  ST = {
+    config:null, orgHierarchy:{}, rawSums:{}, reportData:[],
+    selectedPalette:'blackYellow',
+    geoCache:{chiefdomGeo:null,districtGeo:null,bbox:null},
+    geoDistrictRates:{}, geoChiefdomRates:{}, geoChiefdomHits:[],
+  };
+  document.getElementById('progressSection').style.display = 'none';
+  document.getElementById('resultsSection').style.display  = 'none';
+  document.getElementById('stepList').innerHTML = '';
+  setProgress(0);
+  setPill('Ready','rgba(255,255,255,.15)');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  AGGREGATES
+// ═══════════════════════════════════════════════════════════════════
+let AGG = { distMonthly:{}, distYearly:{}, chiefMonthly:{}, chiefYearly:{}, facMonthly:{} };
+
+function rs_buildAggregates() {
+  AGG = { distMonthly:{}, distYearly:{}, chiefMonthly:{}, chiefYearly:{}, facMonthly:{} };
+  ST.reportData.forEach(row => {
+    const yr = row.Date.slice(0,4), mo = row.Date.slice(5,7);
+    const d = row.districtName, c = row.chiefdomName, f = row.hf_uid;
+
+    // District monthly
+    const dMk = `${d}|${row.Date}`;
+    if(!AGG.distMonthly[dMk]) AGG.distMonthly[dMk] = {district:d,year:yr,month:mo,date:row.Date,reported:0,total:0};
+    AGG.distMonthly[dMk].reported += row.status; AGG.distMonthly[dMk].total++;
+
+    // District yearly
+    const dYk = `${d}|${yr}`;
+    if(!AGG.distYearly[dYk]) AGG.distYearly[dYk] = {district:d,year:yr,reported:0,total:0};
+    AGG.distYearly[dYk].reported += row.status; AGG.distYearly[dYk].total++;
+
+    // Chiefdom monthly
+    const cMk = `${c}|${row.Date}`;
+    if(!AGG.chiefMonthly[cMk]) AGG.chiefMonthly[cMk] = {district:d,chiefdom:c,year:yr,month:mo,date:row.Date,reported:0,total:0};
+    AGG.chiefMonthly[cMk].reported += row.status; AGG.chiefMonthly[cMk].total++;
+
+    // Chiefdom yearly
+    const cYk = `${c}|${yr}`;
+    if(!AGG.chiefYearly[cYk]) AGG.chiefYearly[cYk] = {district:d,chiefdom:c,year:yr,reported:0,total:0};
+    AGG.chiefYearly[cYk].reported += row.status; AGG.chiefYearly[cYk].total++;
+
+    // Facility monthly
+    const fMk = `${f}|${row.Date}`;
+    if(!AGG.facMonthly[fMk]) AGG.facMonthly[fMk] = {hf_uid:f,district:d,chiefdom:c,year:yr,month:mo,date:row.Date,status:row.status};
+    else AGG.facMonthly[fMk].status = row.status;
+  });
+
+  // Compute rate % on each
+  const addRate = obj => Object.values(obj).forEach(r => {
+    r.rate_pct = r.total>0 ? +((r.reported/r.total)*100).toFixed(1) : null;
+    r.category = r.rate_pct===null ? 'No data' : GEO_BREAKS.find(b=>r.rate_pct<=b.max)?.label || '80–100%';
+  });
+  addRate(AGG.distMonthly); addRate(AGG.distYearly);
+  addRate(AGG.chiefMonthly); addRate(AGG.chiefYearly);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  HEATMAPS
+// ═══════════════════════════════════════════════════════════════════
+function rs_buildPaletteGrid() {
+  const grid = document.getElementById('hmPaletteGrid');
+  grid.innerHTML = Object.entries(RS_PALETTES).map(([key,p])=>
+    `<div onclick="rs_selectPalette('${key}')" class="pal-tile ${key===ST.selectedPalette?'selected':''}">
+       <div class="pal-swatch" style="background:${p.colors[0]}"></div>
+       <div class="pal-swatch" style="background:${p.colors[1]}"></div>
+       ${p.name}
+     </div>`
+  ).join('');
+}
+
+function rs_selectPalette(key) {
+  ST.selectedPalette = key; rs_buildPaletteGrid();
+}
+
+function rs_drawBothHeatmaps() {
+  rs_buildPaletteGrid();
+  const pal   = RS_PALETTES[ST.selectedPalette];
+  const title = document.getElementById('hmTitle').value || 'NMCP Malaria EPI Reporting Status';
+  const allHFs    = [...new Set(ST.reportData.map(r=>r.hf_uid))];
+  const activeHFs = allHFs.filter(hf=>ST.reportData.some(r=>r.hf_uid===hf&&r.status));
+  const neverCt   = allHFs.length - activeHFs.length;
+  const t1 = `${title} — All Facilities`;
+  const t2 = `${title} — Active Facilities Only (${neverCt} never-reporting excluded)`;
+  const s1 = `${allHFs.length} facilities · ${ST.config.start} → ${ST.config.end}`;
+  const s2 = `${activeHFs.length} facilities with ≥1 reported month`;
+  document.getElementById('hmTitle1').textContent = t1;
+  document.getElementById('hmSub1').textContent   = s1;
+  document.getElementById('hmTitle2').textContent = t2;
+  document.getElementById('hmSub2').textContent   = s2;
+  rs_drawHeatmap('hmCanvas1', allHFs,    t1, s1, pal);
+  rs_drawHeatmap('hmCanvas2', activeHFs, t2, s2, pal);
+}
+
+function rs_redrawHeatmaps() { rs_drawBothHeatmaps(); }
+
+function rs_drawHeatmap(canvasId, hfSubset, title, subtitle, pal) {
+  const canvas = document.getElementById(canvasId); if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const cW  = parseInt(document.getElementById('hmW').value)||1400;
+  const cH  = parseInt(document.getElementById('hmH').value)||750;
+  const xLab = document.getElementById('hmXLabel').value;
+  const yLab = document.getElementById('hmYLabel').value;
+  const COL_REP = pal.colors[0], COL_NOT = pal.colors[1];
+
+  const hfData = {};
+  ST.reportData.forEach(row=>{
+    if(!hfSubset.includes(row.hf_uid)) return;
+    if(!hfData[row.hf_uid]) hfData[row.hf_uid]={};
+    hfData[row.hf_uid][row.Date] = row.status;
+  });
+  const dates = [...new Set(ST.reportData.map(r=>r.Date))].sort();
+  const nD = dates.length, nH = hfSubset.length;
+  if(!nH || !nD) return;
+
+  const sorted = hfSubset.map(hf=>({hf,rate:dates.filter(d=>hfData[hf]?.[d]).length/nD}))
+    .sort((a,b)=>b.rate-a.rate);
+  const hfIds = sorted.map(s=>s.hf);
+
+  const TITLE_H=58, LEG_H=48, XLAB_H=88, XTITLE_H=26;
+  const YTITLE_W=28, R_PAD=18;
+  const mTop=TITLE_H+LEG_H, mBot=XLAB_H+XTITLE_H, mLeft=YTITLE_W+10;
+  canvas.width=cW; canvas.height=cH;
+  canvas.style.width='100%'; canvas.style.height='auto';
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,cW,cH);
+
+  const hW=cW-mLeft-R_PAD, hH=cH-mTop-mBot;
+  const CW=hW/nD, CH=hH/nH;
+  const sX=mLeft, sY=mTop;
+
+  // Title
+  ctx.fillStyle='#004080'; ctx.font='bold 15px Oswald,Arial,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  wrapText(ctx,title,cW/2,10,cW-40,21);
+
+  // Legend
+  const legY=TITLE_H+8, bW=20,bH=13, legCX=cW/2;
+  ctx.fillStyle='#f0f4f8'; ctx.strokeStyle='#004080'; ctx.lineWidth=1.5;
+  ctx.fillRect(legCX-160,legY-4,320,28); ctx.strokeRect(legCX-160,legY-4,320,28);
+  ctx.fillStyle=COL_REP; ctx.fillRect(legCX-148,legY+2,bW,bH);
+  ctx.strokeStyle='#555'; ctx.lineWidth=0.5; ctx.strokeRect(legCX-148,legY+2,bW,bH);
+  ctx.fillStyle='#000'; ctx.font='bold 11px Oswald,Arial,sans-serif';
+  ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.fillText('Reported (1)',legCX-122,legY+9);
+  ctx.fillStyle=COL_NOT; ctx.fillRect(legCX+20,legY+2,bW,bH);
+  ctx.strokeStyle='#555'; ctx.strokeRect(legCX+20,legY+2,bW,bH);
+  ctx.fillStyle='#000'; ctx.fillText('Not Reported (0)',legCX+46,legY+9);
+
+  // Cells
+  hfIds.forEach((hf,hi)=>{
+    dates.forEach((date,di)=>{
+      ctx.fillStyle = (hfData[hf]?.[date]||0)===1 ? COL_REP : COL_NOT;
+      ctx.fillRect(sX+di*CW, sY+hi*CH, CW+0.5, CH+0.5);
+    });
+  });
+  ctx.strokeStyle='#004080'; ctx.lineWidth=2;
+  ctx.strokeRect(sX,sY,hW,hH);
+
+  // X labels
+  ctx.fillStyle='#111'; ctx.font='bold 10px Oswald,Arial,sans-serif';
+  ctx.textAlign='right'; ctx.textBaseline='middle';
+  const intv = CW>=11 ? 1 : Math.ceil(14/CW);
+  dates.forEach((date,di)=>{
+    if(di%intv!==0) return;
+    const cx=sX+di*CW+CW/2;
+    ctx.save(); ctx.translate(cx,sY+hH+6); ctx.rotate(-Math.PI/2);
+    ctx.fillText(date,0,0); ctx.restore();
+  });
+  ctx.fillStyle='#004080'; ctx.font='bold 12px Oswald,Arial,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='bottom';
+  ctx.fillText(xLab, sX+hW/2, cH-4);
+  ctx.save(); ctx.fillStyle='#004080'; ctx.font='bold 12px Oswald,Arial,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.translate(14,sY+hH/2); ctx.rotate(-Math.PI/2);
+  ctx.fillText(yLab,0,0); ctx.restore();
+  ctx.fillStyle='#888'; ctx.font='10px Oswald,Arial,sans-serif';
+  ctx.textAlign='right'; ctx.textBaseline='bottom';
+  ctx.fillText(`ICF-SL / NMCP · ${nH} facilities × ${nD} periods`,cW-5,cH-4);
+}
+
+function wrapText(ctx,text,x,y,maxW,lh){
+  const words=text.split(' '); let line='',cy=y;
+  words.forEach(w=>{
+    const test=line+(line?' ':'')+w;
+    if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,x,cy);line=w;cy+=lh;}
+    else line=test;
+  });
+  if(line)ctx.fillText(line,x,cy);
+}
+
+function rs_downloadHeatmap(canvasId, suffix) {
+  const canvas = document.getElementById(canvasId); if(!canvas) return;
+  const a = document.createElement('a');
+  a.download = `NMCP_ReportingStatus_${suffix}.png`;
+  a.href = canvas.toDataURL('image/png'); a.click();
+}
+
+function rs_downloadBothHeatmapSubplot() {
+  const c1 = document.getElementById('hmCanvas1');
+  const c2 = document.getElementById('hmCanvas2');
+  if(!c1||!c2) return;
+  const W = c1.width, H = c1.height;
+  const PAD=24, GAP=20, TITLE_H=52;
+  const out = document.createElement('canvas');
+  out.width  = W; out.height = TITLE_H + H + GAP + H + PAD;
+  const ctx  = out.getContext('2d');
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,out.width,out.height);
+  ctx.fillStyle='#1f4a6a'; ctx.font='bold 22px Oswald,Arial,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.fillText(`NMCP Malaria EPI Reporting Status · ${ST.config.start} → ${ST.config.end}`, W/2, 14);
+  ctx.drawImage(c1, 0, TITLE_H);
+  ctx.drawImage(c2, 0, TITLE_H + H + GAP);
+  const a = document.createElement('a');
+  a.download = `NMCP_ReportingStatus_BothCharts.png`;
+  a.href = out.toDataURL('image/png'); a.click();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  GEOGRAPHIC MAPS
+// ═══════════════════════════════════════════════════════════════════
+
+// GeoJSON URLs
+// Chiefdom: property 'adm3' = "Dea Chiefdom" (Title Case + "Chiefdom")
+//           property 'FIRST_DNAM' = "KAILAHUN" (ALLCAPS district name)
+// District: property 'FIRST_DNAM' = "KAILAHUN" (ALLCAPS)
+const CHIEFDOM_GEOJSON = 'https://raw.githubusercontent.com/mohamedsillahkanu/tpr/8b16cd164aa5116242b9e8e29ea777cf79a1b211/Chiefdom_shp.geojson';
+const DISTRICT_GEOJSON = 'https://raw.githubusercontent.com/mohamedsillahkanu/tpr/d202a234dfd9b30de6216b5da59b2a1ee14283b5/District_Shapefiles.geojson';
+
+// ── MAP PALETTES — 5 bins: 0-20, 20-40, 40-60, 60-80, 80-100 ──
+const MAP_PALETTES = {
+  blues: {
+    name: 'Blues',
+    colors: ['#c6dbef','#9ecae1','#6baed6','#2171b5','#084594'],
+    bg: '#ddeeff',
+  },
+  rdylgn: {
+    name: 'Red → Green',
+    colors: ['#d73027','#fc8d59','#ffffbf','#91cf60','#1a9850'],
+    bg: '#f5f5e8',
+  },
+  rdylbu: {
+    name: 'Red → Blue',
+    colors: ['#d73027','#fc8d59','#ffffbf','#91bfdb','#4575b4'],
+    bg: '#f0f4f8',
+  },
+  ylgnbu: {
+    name: 'Yellow → Blue',
+    colors: ['#ffffcc','#a1dab4','#41b6c4','#2c7fb8','#253494'],
+    bg: '#f0f8ee',
+  },
+  oranges: {
+    name: 'Oranges',
+    colors: ['#feedde','#fdbe85','#fd8d3c','#e6550d','#a63603'],
+    bg: '#fff5ee',
+  },
+  purples: {
+    name: 'Purples',
+    colors: ['#efedf5','#bcbddc','#9e9ac8','#756bb1','#54278f'],
+    bg: '#f4f0fa',
+  },
+  greens: {
+    name: 'Greens',
+    colors: ['#edf8e9','#bae4b3','#74c476','#31a354','#006d2c'],
+    bg: '#edf8f0',
+  },
+  spectral: {
+    name: 'Spectral',
+    colors: ['#d53e4f','#fc8d59','#fee08b','#99d594','#3288bd'],
+    bg: '#f8f5ee',
+  },
+};
+
+let selectedMapPalette = 'rdylgn';
+
+function getBreaks() {
+  const pal = MAP_PALETTES[selectedMapPalette] || MAP_PALETTES.blues;
+  return [
+    { max: 20,  label: '0–20%',   color: pal.colors[0] },
+    { max: 40,  label: '20–40%',  color: pal.colors[1] },
+    { max: 60,  label: '40–60%',  color: pal.colors[2] },
+    { max: 80,  label: '60–80%',  color: pal.colors[3] },
+    { max: 100, label: '80–100%', color: pal.colors[4] },
+  ];
+}
+
+// Keep GEO_BREAKS as a live getter alias for backward compat
+Object.defineProperty(window, 'GEO_BREAKS', { get: () => getBreaks() });
+
+function getMapBg() {
+  return '#ffffff';
+}
+
+function geoColor(rate) {
+  if (rate === null || rate === undefined || isNaN(rate)) return '#cccccc';
+  const breaks = getBreaks();
+  for (const b of breaks) { if (rate <= b.max) return b.color; }
+  return breaks[4].color;
+}
+
+// Build palette picker tiles
+function rs_buildMapPaletteGrid() {
+  const grid = document.getElementById('mapPaletteGrid');
+  if (!grid) return;
+  grid.innerHTML = Object.entries(MAP_PALETTES).map(([key, pal]) => {
+    const swatches = pal.colors.map(c =>
+      `<div style="width:16px;height:13px;background:${c};border-radius:1px;border:1px solid rgba(0,0,0,.1);flex-shrink:0;"></div>`
+    ).join('');
+    const sel = key === selectedMapPalette;
+    return `<div onclick="rs_selectMapPalette('${key}')" id="mpt_${key}"
+      style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:7px;
+             border:2px solid ${sel?'var(--blue)':'var(--border)'};
+             background:${sel?'var(--blue-lt)':'#f8f9fa'};
+             cursor:pointer;font-size:11px;font-weight:700;color:var(--blue);
+             transition:all .2s;white-space:nowrap;">
+      <div style="display:flex;gap:2px;">${swatches}</div>
+      ${pal.name}
+    </div>`;
+  }).join('');
+}
+
+function rs_selectMapPalette(key) {
+  selectedMapPalette = key;
+  rs_buildMapPaletteGrid();
+  // Update the static legend bar in annual maps section
+  rs_updateAnnualLegendBar();
+}
+
+// Normalise name: ALLCAPS or Title Case → lowercase, strip "chiefdom/district/province"
+function normName(n) {
+  return (n || '')
+    .toLowerCase()
+    .replace(/\bchiefdom\b/g, '')
+    .replace(/\bdistrict\b/g, '')
+    .replace(/\bprovince\b/g, '')
+    .replace(/[-_]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Populate geo year dropdown from pipeline periods
+function populateYearDropdown() {
+  const sel = document.getElementById('geoYear'); if (!sel) return;
+  const years = [...new Set((ST.config?.periods || []).map(p => p.slice(0, 4)))].sort();
+  sel.innerHTML = years.map(y =>
+    `<option value="${y}" ${y === years[years.length - 1] ? 'selected' : ''}>${y}</option>`
+  ).join('');
+}
+
+// Compute reporting rates for a given year — ACTIVE FACILITIES ONLY
+// Active = facility reported at least once in ANY period across the whole dataset
+function rs_computeGeoRates(year) {
+  // Determine active facility IDs (reported >= 1 month across all time)
+  const activeFacIds = new Set(
+    ST.reportData.filter(r => r.status === 1).map(r => r.ouId)
+  );
+
+  const distM = {}, chiefM = {};
+  ST.reportData.forEach(row => {
+    if (!activeFacIds.has(row.ouId)) return;        // skip never-reporting
+    if (row.Date.slice(0, 4) !== year) return;
+    const d = row.districtName, c = row.chiefdomName;
+    if (d) { if (!distM[d]) distM[d] = { r:0, t:0 }; distM[d].r += row.status; distM[d].t++; }
+    if (c) { if (!chiefM[c]) chiefM[c] = { r:0, t:0 }; chiefM[c].r += row.status; chiefM[c].t++; }
+  });
+
+  // Store by original name AND by normName for fuzzy matching
+  ST.geoDistrictRates = {};
+  ST.geoChiefdomRates = {};
+  Object.entries(distM).forEach(([k, v]) => {
+    const rate = v.t > 0 ? (v.r / v.t) * 100 : null;
+    ST.geoDistrictRates[k]           = rate;
+    ST.geoDistrictRates[normName(k)] = rate;
+  });
+  Object.entries(chiefM).forEach(([k, v]) => {
+    const rate = v.t > 0 ? (v.r / v.t) * 100 : null;
+    ST.geoChiefdomRates[k]           = rate;
+    ST.geoChiefdomRates[normName(k)] = rate;
+  });
+}
+
+// Look up rate: try exact → normName → null
+function lookupRate(shpName, rateMap) {
+  if (rateMap[shpName] !== undefined) return rateMap[shpName];
+  const n = normName(shpName);
+  if (rateMap[n] !== undefined) return rateMap[n];
+  return null;
+}
+
+function makeTf(canvas) {
+  const { mnX, mnY, mxX, mxY } = ST.geoCache.bbox;
+  const W = canvas.width || 640, H = canvas.height || 640, P = W * 0.04;
+  const rangeX = (mxX - mnX) || 1, rangeY = (mxY - mnY) || 1;
+  const sx = (W - P*2) / rangeX, sy = (H - P*2) / rangeY;
+  const sc = Math.min(sx, sy);
+  const ox = P + (W - P*2 - rangeX*sc) / 2;
+  const oy = P + (H - P*2 - rangeY*sc) / 2;
+  return c => [ox + (c[0] - mnX) * sc, H - (oy + (c[1] - mnY) * sc)];
+}
+
+function sizeCanvas(canvas) {
+  let el = canvas.parentElement, w = 0;
+  while (el && w < 10) { w = el.offsetWidth; el = el.parentElement; }
+  w = w || 560;
+  canvas.width = canvas.height = w * 2;
+}
+
+function walkCoords(geom, cb) {
+  if (!geom) return;
+  if (geom.type === 'Polygon')      geom.coordinates[0].forEach(cb);
+  if (geom.type === 'MultiPolygon') geom.coordinates.forEach(p => p[0].forEach(cb));
+}
+
+function drawPoly(ctx, geom, tf) {
+  const go = cs => {
+    ctx.beginPath();
+    cs.forEach(ring => ring.forEach((c, i) => {
+      const [x, y] = tf(c); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }));
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+  };
+  if (geom.type === 'Polygon')      go(geom.coordinates);
+  if (geom.type === 'MultiPolygon') geom.coordinates.forEach(p => go(p));
+}
+
+function centroid(geom) {
+  const pts = []; walkCoords(geom, c => pts.push(c));
+  if (!pts.length) return null;
+  return [pts.reduce((s, p) => s + p[0], 0) / pts.length,
+          pts.reduce((s, p) => s + p[1], 0) / pts.length];
+}
+
+function geoLabel(ctx, txt, x, y, sz) {
+  ctx.font = `bold ${sz || 10}px Oswald,Arial,sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#1a2e3d'; ctx.fillText(txt, x, y);
+}
+
+// ── Shared helper: clean solid national map — no internal lines, thick outer border ──
+function drawNationalSolid(ctx, W, H, tf, fillColor) {
+  const geo = ST.geoCache.chiefdomGeo;
+  if (!geo) return;
+
+  const buildPath = () => {
+    ctx.beginPath();
+    (geo.features || []).forEach(f => {
+      const add = coords => coords.forEach(ring => {
+        ring.forEach((c,i) => { const [x,y]=tf(c); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+        ctx.closePath();
+      });
+      if (f.geometry.type==='Polygon')      add(f.geometry.coordinates);
+      if (f.geometry.type==='MultiPolygon') f.geometry.coordinates.forEach(p=>add(p));
+    });
+  };
+
+  const bw = Math.max(3, Math.round(W * 0.007)); // border width
+
+  // Step 1: Draw thick border stroke (will have internal lines — we paint over them next)
+  buildPath();
+  ctx.strokeStyle = '#1a2e3d';
+  ctx.lineWidth   = bw * 2;   // double width — inner half gets covered by fill
+  ctx.lineJoin    = 'round';
+  ctx.stroke();
+
+  // Step 2: Clip to shape and flood-fill — covers all internal stroke halves perfectly
+  ctx.save();
+  buildPath();
+  ctx.clip();
+  ctx.fillStyle = fillColor;
+  ctx.fillRect(0, 0, W, H);
+  ctx.restore();
+  // Result: only the outer half of the border stroke remains visible — clean outer ring
+}
+
+function drawNational() {
+  const canvas = document.getElementById('geoNational'); if (!canvas) return;
+  sizeCanvas(canvas);
+  const ctx = canvas.getContext('2d'), tf = makeTf(canvas);
+  const W = canvas.width, H = canvas.height;
+
+  // Compute national rate (active facilities only, selected year)
+  const year = document.getElementById('geoYear')?.value ||
+    (ST.config?.periods || []).slice(-1)[0]?.slice(0, 4) || '2024';
+  const activeFacIds = new Set(ST.reportData.filter(r => r.status === 1).map(r => r.ouId));
+  let natReported = 0, natTotal = 0;
+  ST.reportData.forEach(row => {
+    if (!activeFacIds.has(row.ouId)) return;
+    if (row.Date.slice(0, 4) !== year) return;
+    natReported += row.status;
+    natTotal    += 1;
+  });
+  const natRate  = natTotal > 0 ? (natReported / natTotal) * 100 : null;
+  const natColor = geoColor(natRate);
+
+  // Background
+  ctx.fillStyle = getMapBg();
+  ctx.fillRect(0, 0, W, H);
+
+  // Use shared helper — solid fill, no internal lines, clean outer border
+  drawNationalSolid(ctx, W, H, tf, natColor);
+
+  // Rate label centered
+  const rStr = natRate !== null ? Math.round(natRate) + '%' : '—';
+  const cat  = natRate !== null
+    ? (GEO_BREAKS.find(b => natRate <= b.max)?.label || '80–100%')
+    : 'No data';
+  const midY = H / 2;
+  const fsz  = Math.round(W * .065);
+  const fsz2 = Math.round(W * .034);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.font = `bold ${fsz}px Oswald,Arial,sans-serif`;
+  ctx.fillStyle = '#1a2e3d'; ctx.fillText(rStr, W / 2, midY);
+  ctx.font = `bold ${fsz2}px Oswald,Arial,sans-serif`;
+  ctx.fillStyle = '#1a2e3d'; ctx.fillText(cat, W / 2, midY + fsz * 0.82);
+  ctx.font = `bold ${Math.round(W * .022)}px Oswald,Arial,sans-serif`;
+  ctx.fillStyle = '#1a2e3d'; ctx.textBaseline = 'bottom';
+  ctx.fillText('Sierra Leone — National', W / 2, H - 8);
+
+  // Hover: show "Sierra Leone — National · rate%" on hover
+  canvas._hitsData = [{
+    name: 'Sierra Leone — National',
+    rate: natRate,
+    rings: (() => {
+      const rings = [];
+      (ST.geoCache.chiefdomGeo.features || []).forEach(f => {
+        const collect = cs => cs.forEach(ring => rings.push(ring.map(tf)));
+        if (f.geometry.type === 'Polygon')      collect(f.geometry.coordinates);
+        if (f.geometry.type === 'MultiPolygon') f.geometry.coordinates.forEach(p => collect(p));
+      });
+      return rings;
+    })(),
+  }];
+  canvas._hoverAttached = false;
+  attachMapHover(canvas);
+}
+
+function drawDistrict() {
+  const canvas = document.getElementById('geoDistrict'); if (!canvas) return;
+  sizeCanvas(canvas);
+  const ctx = canvas.getContext('2d'), tf = makeTf(canvas);
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = getMapBg(); ctx.fillRect(0, 0, W, H);
+
+  if (!ST.geoCache.districtGeo) {
+    ctx.fillStyle = '#6c7a89'; ctx.font = '13px Arial'; ctx.textAlign = 'center';
+    ctx.fillText('District GeoJSON unavailable', W/2, H/2); return;
+  }
+
+  const lsz = Math.max(8, Math.round(W * .022));
+
+  // Draw filled districts first (no stroke yet)
+  (ST.geoCache.districtGeo.features || []).forEach(f => {
+    const shpName = (f.properties['FIRST_DNAM'] || '').trim();
+    const rate    = lookupRate(shpName, ST.geoDistrictRates);
+    ctx.fillStyle   = geoColor(rate);
+    ctx.strokeStyle = 'transparent';
+    ctx.lineWidth   = 0;
+    const fillOnly = cs => {
+      ctx.beginPath();
+      cs.forEach(ring => ring.forEach((c, i) => {
+        const [x, y] = tf(c); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      }));
+      ctx.closePath(); ctx.fill();
+    };
+    if (f.geometry.type === 'Polygon')      fillOnly(f.geometry.coordinates);
+    if (f.geometry.type === 'MultiPolygon') f.geometry.coordinates.forEach(p => fillOnly(p));
+  });
+
+  // Draw thick black borders on top
+  (ST.geoCache.districtGeo.features || []).forEach(f => {
+    ctx.fillStyle   = 'transparent';
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth   = 3.0;
+    drawPoly(ctx, f.geometry, tf);
+  });
+
+  // Labels
+  (ST.geoCache.districtGeo.features || []).forEach(f => {
+    const shpName = (f.properties['FIRST_DNAM'] || '').trim();
+    const rate    = lookupRate(shpName, ST.geoDistrictRates);
+    const cen     = centroid(f.geometry); if (!cen) return;
+    const [cx, cy] = tf(cen);
+    const label = shpName.split(' ')
+      .map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(' ');
+    const rStr  = rate !== null ? Math.round(rate) + '%' : '—';
+    geoLabel(ctx, label, cx, cy - lsz * 0.85, lsz);
+    geoLabel(ctx, rStr,  cx, cy + lsz * 0.85, lsz);
+  });
+
+  // Build hits for hover
+  canvas._hitsData = buildHits(ST.geoCache.districtGeo, 'FIRST_DNAM', ST.geoDistrictRates, tf, null);
+  canvas._hoverAttached = false;
+  attachMapHover(canvas);
+}
+
+// ── MAP 3: Chiefdom — choropleth, grey chiefdom borders, thick black district overlay, hover tooltip ──
+function drawChiefdom() {
+  const canvas = document.getElementById('geoChiefdom'); if (!canvas) return;
+  sizeCanvas(canvas);
+  const ctx = canvas.getContext('2d'), tf = makeTf(canvas);
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = getMapBg(); ctx.fillRect(0, 0, W, H);
+
+  // adm3 = "Dea Chiefdom" — choropleth with black chiefdom borders
+  (ST.geoCache.chiefdomGeo.features || []).forEach(f => {
+    const shpName = (f.properties['adm3'] || '').trim();
+    const rate    = lookupRate(shpName, ST.geoChiefdomRates);
+    ctx.fillStyle   = geoColor(rate);
+    ctx.strokeStyle = 'rgba(0,0,0,.5)';
+    ctx.lineWidth   = 0.6;
+    drawPoly(ctx, f.geometry, tf);
+  });
+
+  // District overlay — thick black border on top
+  if (ST.geoCache.districtGeo) {
+    (ST.geoCache.districtGeo.features || []).forEach(f => {
+      ctx.fillStyle   = 'transparent';
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth   = 2.0;
+      drawPoly(ctx, f.geometry, tf);
+    });
+  }
+
+  // Build hits and attach hover
+  canvas._hitsData = buildHits(ST.geoCache.chiefdomGeo, 'adm3', ST.geoChiefdomRates, tf, null);
+  canvas._hoverAttached = false; // reset so attachMapHover re-runs after redraw
+  attachMapHover(canvas);
+}
+
+// ── Tooltip hit-test ──
+function pointInRing(px, py, ring) {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i], [xj, yj] = ring[j];
+    if (((yi > py) !== (yj > py)) && px < (xj - xi) * (py - yi) / (yj - yi) + xi)
+      inside = !inside;
+  }
+  return inside;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  UNIVERSAL HOVER TOOLTIP — works on any canvas with ._hitsData
+// ═══════════════════════════════════════════════════════════════════
+// Each canvas stores: canvas._hitsData = [{name, rate, period, rings}]
+
+function attachMapHover(canvas) {
+  if (!canvas) return;
+  // Remove old listeners if already attached
+  if (canvas._mmoveHandler) canvas.removeEventListener('mousemove', canvas._mmoveHandler);
+  if (canvas._mleaveHandler) canvas.removeEventListener('mouseleave', canvas._mleaveHandler);
+
+  canvas.style.cursor = 'crosshair';
+  canvas._hoverAttached = true;
+
+  canvas._mmoveHandler = evt => {
+    const tip  = document.getElementById('rsTooltip');
+    const hits = canvas._hitsData;
+    if (!hits || !hits.length) { tip.style.display='none'; return; }
+
+    const rect = canvas.getBoundingClientRect();
+    const sx   = canvas.width  / rect.width;
+    const sy   = canvas.height / rect.height;
+    const mx   = (evt.clientX - rect.left) * sx;
+    const my   = (evt.clientY - rect.top)  * sy;
+
+    let hit = null;
+    for (const h of hits) {
+      for (const ring of h.rings) {
+        if (pointInRing(mx, my, ring)) { hit = h; break; }
+      }
+      if (hit) break;
+    }
+
+    if (hit) {
+      const rStr = hit.rate !== null ? Math.round(hit.rate) + '%' : 'No data';
+      const breaks = getBreaks();
+      let cat = 'No data';
+      if (hit.rate !== null) {
+        for (const b of breaks) { if (hit.rate <= b.max) { cat = b.label; break; } }
+      }
+      const periodLabel = hit.period
+        ? ` · ${MONTH_NAMES[parseInt(hit.period.slice(4,6))-1]} ${hit.period.slice(0,4)}`
+        : '';
+      const colorBox = hit.rate !== null
+        ? `<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${geoColor(hit.rate)};border:1px solid rgba(255,255,255,.4);margin-right:4px;vertical-align:middle;"></span>`
+        : '';
+      tip.style.display = 'block';
+      tip.style.left    = (evt.clientX + 16) + 'px';
+      tip.style.top     = (evt.clientY - 12) + 'px';
+      tip.innerHTML = `<strong>${hit.name}</strong>${periodLabel}<br>Reporting rate: ${colorBox}<b>${rStr}</b><br><span style="opacity:.8;">Category: ${cat}</span><br><span style="font-size:10px;opacity:.6;">Active facilities only</span>`;
+    } else {
+      tip.style.display = 'none';
+    }
+  };
+
+  canvas._mleaveHandler = () => {
+    document.getElementById('rsTooltip').style.display = 'none';
+  };
+
+  canvas.addEventListener('mousemove', canvas._mmoveHandler);
+  canvas.addEventListener('mouseleave', canvas._mleaveHandler);
+}
+
+// Keep for backward compat — now a no-op (attachMapHover handles chiefdom too)
+function attachChiefdomListeners() {
+  const c = document.getElementById('geoChiefdom');
+  attachMapHover(c);
+}
+
+// Build hit-test data (polygon rings in canvas coords) for a geo canvas
+function buildHits(geo, nameProp, rateMap, tf, periodTag) {
+  const hits = [];
+  (geo.features || []).forEach(f => {
+    const shpName = (f.properties[nameProp] || '').trim();
+    let rate = rateMap[shpName];
+    if (rate === undefined) rate = rateMap[normName(shpName)];
+    if (rate === undefined) rate = null;
+    const rings = [];
+    const collect = cs => cs.forEach(ring => rings.push(ring.map(tf)));
+    if (f.geometry.type === 'Polygon')      collect(f.geometry.coordinates);
+    if (f.geometry.type === 'MultiPolygon') f.geometry.coordinates.forEach(p => collect(p));
+    hits.push({ name: shpName, rate, rings, period: periodTag || null });
+  });
+  return hits;
+}
+
+function rs_updateAnnualLegendBar() {
+  const el = document.getElementById('annualLegendBar');
+  if (!el) return;
+  const breaks = getBreaks();
+  el.innerHTML = `<span class="legend-title">Reporting rate</span>` +
+    breaks.map(b => `<div class="legend-item"><div class="legend-sw" style="background:${b.color};"></div>${b.label}</div>`).join('') +
+    `<div class="legend-item"><div class="legend-sw" style="background:#cccccc;"></div>No data</div>`;
+}
+
+// ── Main render ──
+function rs_renderGeoMaps() {
+  const year     = document.getElementById('geoYear')?.value ||
+                   (ST.config?.periods || []).slice(-1)[0]?.slice(0, 4) || '2026';
+  const statusEl = document.getElementById('geoStatus');
+  if (!ST.geoCache.bbox) { if (statusEl) statusEl.textContent = '⚠ GeoJSON not loaded.'; return; }
+
+  rs_computeGeoRates(year);
+  rs_buildMapPaletteGrid();
+  rs_updateAnnualLegendBar();
+  if (statusEl) statusEl.textContent = 'Drawing…';
+
+  // Build monthly grid first
+  rs_buildMonthlyGrid();
+
+  drawNational(); drawDistrict(); drawChiefdom();
+  attachChiefdomListeners();
+  if (statusEl) {
+    const nc = Math.round(Object.keys(ST.geoChiefdomRates).length / 2);
+    const nd = Math.round(Object.keys(ST.geoDistrictRates).length / 2);
+    statusEl.textContent = `✓ ${year} · ${nd} districts · ${nc} chiefdoms`;
+  }
+}
+
+// ── Monthly maps: build 12-slot grid, fill only selected periods ──
+const MONTH_NAMES = ['January','February','March','April','May','June',
+                     'July','August','September','October','November','December'];
+
+function rs_buildMonthlyGrid() {
+  const grid = document.getElementById('monthlyMapsGrid');
+  if (!grid) return;
+  const level = document.getElementById('geoLevel')?.value || 'chiefdom';
+
+  // Figure out which periods exist in this run
+  const activePeriods = new Set((ST.config?.periods || []).map(p => p)); // e.g. "202601"
+  const year = document.getElementById('geoYear')?.value ||
+               (ST.config?.periods || []).slice(-1)[0]?.slice(0, 4) || '2026';
+
+  grid.innerHTML = '';
+
+  for (let mo = 1; mo <= 12; mo++) {
+    const mStr   = String(mo).padStart(2,'0');
+    const period = `${year}${mStr}`;          // e.g. "202601"
+    const hasData = activePeriods.has(period);
+    const card    = document.createElement('div');
+
+    if (!hasData) {
+      // Blank placeholder
+      card.className = 'month-map-card blank';
+      card.innerHTML = `
+        <div class="mmhead blank-head">${MONTH_NAMES[mo-1]} ${year}</div>
+        <div class="mm-blank-body">
+          <div style="font-size:28px;opacity:.25;margin-bottom:6px;">🗺</div>
+          <div>No data for this period</div>
+          <div style="font-size:10px;margin-top:3px;opacity:.7;">Run pipeline with this period to populate</div>
+        </div>`;
+    } else {
+      card.className = 'month-map-card';
+      const canvasId = `mmCanvas_${period}`;
+      card.innerHTML = `
+        <div class="mmhead active">${MONTH_NAMES[mo-1]} ${year}</div>
+        <div class="mm-canvas-wrap"><canvas id="${canvasId}"></canvas></div>
+        <div class="mm-legend" id="mmLeg_${period}"></div>`;
+    }
+
+    grid.appendChild(card);
+
+    if (hasData) {
+      // Draw after DOM is ready
+      const canvasId = `mmCanvas_${period}`;
+      setTimeout(() => drawMonthMap(canvasId, period, level), 0);
+    }
+  }
+}
+
+// ── Draw a single monthly choropleth canvas ──
+// ── Draw a monthly NATIONAL map — single solid fill clipped to SL outline ──
+function drawMonthMapNational(canvas, period) {
+  let el = canvas.parentElement, w = 0;
+  while (el && w < 10) { w = el.offsetWidth; el = el.parentElement; }
+  w = Math.max(w || 200, 120);
+  canvas.width = canvas.height = w * 2;
+
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const tf = makeTf(canvas);
+
+  // Compute national rate for this period (active facilities only)
+  const activeFacIds = new Set(ST.reportData.filter(r => r.status === 1).map(r => r.ouId));
+  let natR = 0, natT = 0;
+  ST.reportData.forEach(row => {
+    if (!activeFacIds.has(row.ouId)) return;
+    if (row.Date.replace('-','') !== period) return;
+    natR += row.status; natT++;
+  });
+  const natRate    = natT > 0 ? (natR / natT) * 100 : null;
+  const natRateStr = natT > 0 ? ((natR / natT) * 100).toFixed(1) + '%' : '—';
+  const fillColor  = geoColor(natRate);
+
+  // Background
+  ctx.fillStyle = getMapBg();
+  ctx.fillRect(0, 0, W, H);
+
+  // Use drawNationalSolid helper — fills shape, no internal lines, clean outer border
+  drawNationalSolid(ctx, W, H, tf, fillColor);
+
+  // Rate label centred
+  const breaks = getBreaks();
+  const cat = natRate !== null ? (breaks.find(b=>natRate<=b.max)?.label||'80–100%') : 'No data';
+  const fsz  = Math.round(W * 0.12);
+  const fsz2 = Math.round(W * 0.055);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.font = `bold ${fsz}px Oswald,Arial,sans-serif`;
+  ctx.fillStyle = '#0d1f2d'; ctx.fillText(natRateStr, W/2, H/2);
+  ctx.font = `bold ${fsz2}px Oswald,Arial,sans-serif`;
+  ctx.fillStyle = '#0d1f2d'; ctx.fillText(cat, W/2, H/2 + fsz*0.78);
+
+  // Update legend
+  const legEl = document.getElementById(`mmLeg_${period}`);
+  if (legEl) {
+    legEl.innerHTML = `<div class="mm-leg-item">
+      <div class="mm-leg-sw" style="background:${fillColor};border:1px solid rgba(0,0,0,.2);"></div>
+      <span style="color:#1f4a6a;font-weight:700;">National: ${natRateStr} — ${cat}</span>
+    </div>`;
+  }
+
+  // Hover
+  const rings = [];
+  (ST.geoCache.chiefdomGeo.features||[]).forEach(f=>{
+    const collect = cs => cs.forEach(ring=>rings.push(ring.map(tf)));
+    if(f.geometry.type==='Polygon')      collect(f.geometry.coordinates);
+    if(f.geometry.type==='MultiPolygon') f.geometry.coordinates.forEach(p=>collect(p));
+  });
+  canvas._hitsData = [{ name: 'Sierra Leone — National', rate: natRate, rings, period }];
+  attachMapHover(canvas);
+}
+
+function drawMonthMap(canvasId, period, level) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas || !ST.geoCache.bbox) return;
+
+  // Route national level to dedicated renderer
+  if (level === 'national') { drawMonthMapNational(canvas, period); return; }
+
+  // Size canvas square to its container
+  let el = canvas.parentElement, w = 0;
+  while (el && w < 10) { w = el.offsetWidth; el = el.parentElement; }
+  w = Math.max(w || 200, 120);
+  canvas.width = canvas.height = w * 2; // retina-ish
+
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const tf = makeTf(canvas);
+
+  // Compute rates for this period (active facilities only)
+  const activeFacIds = new Set(ST.reportData.filter(r => r.status === 1).map(r => r.ouId));
+  const rateMap = {}; // by name (norm)
+  const agg = {};
+
+  ST.reportData.forEach(row => {
+    if (!activeFacIds.has(row.ouId)) return;
+    const rowPer = row.Date.replace('-',''); // "2026-01" → "202601"
+    if (rowPer !== period) return;
+    const key = level === 'district' ? row.districtName : row.chiefdomName;
+    if (!key) return;
+    if (!agg[key]) agg[key] = {r:0,t:0};
+    agg[key].r += row.status;
+    agg[key].t++;
+  });
+
+  const normMap = {};
+  Object.entries(agg).forEach(([k,v]) => {
+    const rate = v.t > 0 ? (v.r/v.t)*100 : null;
+    normMap[k] = rate;
+    normMap[normName(k)] = rate;
+  });
+
+  // Background
+  ctx.fillStyle = getMapBg();
+  ctx.fillRect(0, 0, W, H);
+
+  // Category count tracker for legend
+  const catCounts = {};
+  getBreaks().forEach(b => { catCounts[b.label] = 0; });
+  catCounts['No data'] = 0;
+
+  const geo = level === 'district' ? ST.geoCache.districtGeo : ST.geoCache.chiefdomGeo;
+  if (!geo) {
+    ctx.fillStyle = '#888'; ctx.font = '12px Arial';
+    ctx.textAlign = 'center'; ctx.fillText('GeoJSON unavailable', W/2, H/2);
+    return;
+  }
+
+  const nameProp = level === 'district' ? 'FIRST_DNAM' : 'adm3';
+
+  // Fill polygons
+  (geo.features || []).forEach(f => {
+    const shpName = (f.properties[nameProp] || '').trim();
+    let rate = normMap[shpName];
+    if (rate === undefined) rate = normMap[normName(shpName)];
+    if (rate === undefined) rate = null;
+
+    const color = geoColor(rate);
+    ctx.fillStyle = color;
+    ctx.strokeStyle = level === 'district' ? 'rgba(30,50,70,.7)' : 'rgba(0,0,0,.55)';
+    ctx.lineWidth   = level === 'district' ? 1.2 : 0.6;
+    drawPoly(ctx, f.geometry, tf);
+
+    // Count categories
+    if (rate === null) { catCounts['No data']++; }
+    else { const b = getBreaks().find(b => rate <= b.max); if (b) catCounts[b.label]++; }
+  });
+
+  // If chiefdom level, overlay district borders
+  if (level === 'chiefdom' && ST.geoCache.districtGeo) {
+    (ST.geoCache.districtGeo.features || []).forEach(f => {
+      ctx.fillStyle = 'transparent';
+      ctx.strokeStyle = '#1a2e3d';
+      ctx.lineWidth = 1.8;
+      drawPoly(ctx, f.geometry, tf);
+    });
+  }
+
+  // National rate for this period
+  const natR = Object.values(agg).reduce((s,v)=>s+v.r,0);
+  const natT = Object.values(agg).reduce((s,v)=>s+v.t,0);
+  const natRate    = natT > 0 ? (natR/natT)*100 : null;
+  const natRateStr = natT > 0 ? ((natR/natT)*100).toFixed(1)+'%' : '—';
+
+  // Watermark: national rate bottom-right
+  ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+  ctx.font = `bold ${Math.round(W*0.065)}px Oswald,Arial,sans-serif`;
+  ctx.fillStyle = '#0d1f2d'; ctx.fillText(natRateStr, W-6, H-6);
+  ctx.font = `bold ${Math.round(W*0.028)}px Oswald,Arial,sans-serif`;
+  ctx.fillStyle = '#0d1f2d'; ctx.fillText('National', W-6, H - Math.round(W*0.075));
+
+  // Update legend — breaks + National row
+  const legEl = document.getElementById(`mmLeg_${period}`);
+  if (legEl) {
+    const natColor = natRate !== null ? geoColor(natRate) : '#cccccc';
+    const natCat   = natRate !== null
+      ? (getBreaks().find(b => natRate <= b.max)?.label || '80–100%')
+      : 'No data';
+    const breakItems = [...getBreaks(), {label:'No data',color:'#cccccc'}];
+    const breakHtml  = breakItems.filter(b => catCounts[b.label] > 0).map(b =>
+      `<div class="mm-leg-item">
+        <div class="mm-leg-sw" style="background:${b.color};"></div>
+        ${b.label} <span style="color:#888;font-weight:400;">(${catCounts[b.label]})</span>
+      </div>`
+    ).join('');
+    const natHtml = `<div class="mm-leg-item" style="margin-left:auto;padding-left:6px;border-left:1.5px solid #c8d5e0;">
+        <div class="mm-leg-sw" style="background:${natColor};border:1px solid rgba(0,0,0,.2);"></div>
+        <span style="color:#1f4a6a;font-weight:700;">National: ${natRateStr}</span>
+      </div>`;
+    legEl.innerHTML = breakHtml + natHtml;
+  }
+
+  // Build hit-test data and attach hover
+  canvas._hitsData = buildHits(geo, nameProp, normMap, tf, period);
+  canvas._hoverAttached = false;
+  attachMapHover(canvas);
+}
+
+// ── Download monthly grid as single PNG ──
+function rs_downloadMonthlyGrid() {
+  const year = document.getElementById('geoYear')?.value || '2026';
+  const activePeriods = new Set((ST.config?.periods || []).map(p => p));
+  const COLS = 4, ROWS = 3;
+  const CARD_W = 320, CARD_H = 380;
+  const PAD = 20, GAP = 12, TITLE_H = 50;
+  const totalW = COLS * CARD_W + (COLS-1)*GAP + PAD*2;
+  const totalH = TITLE_H + ROWS * CARD_H + (ROWS-1)*GAP + PAD*2;
+
+  const out = document.createElement('canvas');
+  out.width = totalW; out.height = totalH;
+  const ctx = out.getContext('2d');
+
+  ctx.fillStyle = '#f0f5f9'; ctx.fillRect(0,0,totalW,totalH);
+  ctx.fillStyle = '#004080'; ctx.font = 'bold 22px Oswald,Arial,sans-serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  ctx.fillText(`NMCP Malaria EPI Reporting Status — Monthly Maps · ${year}`, totalW/2, 14);
+
+  for (let mo = 1; mo <= 12; mo++) {
+    const mStr   = String(mo).padStart(2,'0');
+    const period = `${year}${mStr}`;
+    const col    = (mo-1) % COLS;
+    const row    = Math.floor((mo-1) / COLS);
+    const x      = PAD + col*(CARD_W+GAP);
+    const y      = TITLE_H + PAD + row*(CARD_H+GAP);
+
+    // Card background
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#c8d5e0';
+    ctx.lineWidth = 1;
+    roundRect(ctx, x, y, CARD_W, CARD_H, 8);
+    ctx.fill(); ctx.stroke();
+
+    // Header
+    ctx.fillStyle = activePeriods.has(period) ? '#2c6793' : '#8899aa';
+    roundRect(ctx, x, y, CARD_W, 28, 8, 0);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 12px Oswald,Arial,sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(`${MONTH_NAMES[mo-1].toUpperCase()} ${year}`, x+CARD_W/2, y+14);
+
+    if (activePeriods.has(period)) {
+      const srcCanvas = document.getElementById(`mmCanvas_${period}`);
+      if (srcCanvas) {
+        ctx.drawImage(srcCanvas, x, y+28, CARD_W, CARD_H-28);
+      }
+    } else {
+      ctx.fillStyle = '#8899aa';
+      ctx.font = '11px Oswald,Arial,sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('No data for this period', x+CARD_W/2, y+CARD_H/2+10);
+    }
+  }
+
+  ctx.fillStyle = '#8899aa'; ctx.font = '10px Oswald,Arial,sans-serif';
+  ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+  ctx.fillText('NMCP Sierra Leone · ICF-SL · Active Facilities Only · mdrsl.chaiprod.com', totalW-10, totalH-6);
+
+  const a = document.createElement('a');
+  a.download = `NMCP_RS_MonthlyMaps_${year}.png`;
+  a.href = out.toDataURL('image/png'); a.click();
+}
+
+function roundRect(ctx, x, y, w, h, tlbr, brbr) {
+  const r = tlbr, r2 = (brbr !== undefined) ? brbr : r;
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+  ctx.lineTo(x+w, y+h-r2);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-r2, y+h);
+  ctx.lineTo(x+r2, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-r2);
+  ctx.lineTo(x, y+r);
+  ctx.quadraticCurveTo(x, y, x+r, y);
+  ctx.closePath();
+}
+
+// ── Download helpers ──
+function rs_geoDownload(canvasId, suffix) {
+  const canvas = document.getElementById(canvasId); if (!canvas) return;
+  const year = document.getElementById('geoYear')?.value || '';
+  const a = document.createElement('a');
+  a.download = `NMCP_RS_Map_${suffix}_${year}.png`;
+  a.href = canvas.toDataURL('image/png'); a.click();
+}
+
+function rs_geoDownloadSubplot() {
+  const ids    = ['geoNational', 'geoDistrict', 'geoChiefdom'];
+  const titles = ['National — Outline', 'District — Reporting Rate', 'Chiefdom — Reporting Rate'];
+  const year   = document.getElementById('geoYear')?.value || '';
+  const srcs   = ids.map(id => document.getElementById(id));
+  const cW = srcs[0]?.width || 600, cH = srcs[0]?.height || 600;
+  const PAD = 28, TITLE_H = 56, LABEL_H = 34, GAP = 14, LEG_H = 52;
+  const totalW = ids.length * cW + (ids.length - 1) * GAP + PAD * 2;
+  const totalH = TITLE_H + LABEL_H + cH + LEG_H + PAD;
+  const out    = document.createElement('canvas');
+  out.width = totalW; out.height = totalH;
+  const ctx = out.getContext('2d');
+  ctx.fillStyle = '#f0f5f9'; ctx.fillRect(0, 0, totalW, totalH);
+  ctx.fillStyle = '#1f4a6a';
+  ctx.font = `bold ${Math.round(totalW * .016)}px Oswald,Arial,sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  ctx.fillText(`NMCP Malaria Reporting Status — Geographic Maps · ${year} · Active Facilities Only`, totalW / 2, 14);
+  const headColors = ['#2c6793', '#17a2b8', '#28a745'];
+  srcs.forEach((src, i) => {
+    const x = PAD + i * (cW + GAP);
+    ctx.fillStyle = headColors[i]; ctx.fillRect(x, TITLE_H, cW, LABEL_H);
+    ctx.fillStyle = '#fff';
+    ctx.font = `bold ${Math.round(cW * .036)}px Oswald,Arial,sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(titles[i], x + cW/2, TITLE_H + LABEL_H/2);
+    if (src) ctx.drawImage(src, x, TITLE_H + LABEL_H, cW, cH);
+    ctx.strokeStyle = headColors[i]; ctx.lineWidth = 2.5;
+    ctx.strokeRect(x, TITLE_H, cW, LABEL_H + cH);
+  });
+  const legY  = TITLE_H + LABEL_H + cH + 8;
+  const items = [...GEO_BREAKS, { color: '#cccccc', label: 'No data' }];
+  const iW    = (totalW - PAD * 2) / items.length;
+  items.forEach((b, i) => {
+    const lx = PAD + i * iW;
+    ctx.fillStyle = b.color; ctx.fillRect(lx + 6, legY + 6, iW - 12, 20);
+    ctx.strokeStyle = '#999'; ctx.lineWidth = 1; ctx.strokeRect(lx + 6, legY + 6, iW - 12, 20);
+    ctx.fillStyle = '#1a2e3d';
+    ctx.font = `bold ${Math.round(iW * .13)}px Oswald,Arial,sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(b.label, lx + iW/2, legY + 29);
+  });
+  ctx.fillStyle = '#8899aa';
+  ctx.font = `${Math.round(totalW * .009)}px Oswald,Arial,sans-serif`;
+  ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+  ctx.fillText('NMCP Sierra Leone · ICF-SL · Active Facilities Only · mdrsl.chaiprod.com', totalW - PAD, totalH - 5);
+  const a = document.createElement('a');
+  a.download = `NMCP_RS_Maps_Subplot_${year}.png`;
+  a.href = out.toDataURL('image/png'); a.click();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  SUMMARY TABLE
+// ═══════════════════════════════════════════════════════════════════
+let tblRows=[], tblHeaders=[];
+
+function rs_buildTable() {
+  const grp=document.getElementById('tblGroup').value;
+  let src;
+  if(grp==='district_monthly')  { src=Object.values(AGG.distMonthly);  tblHeaders=['District','Year','Month','Date','Reported','Total Facilities','Rate (%)','Category']; }
+  else if(grp==='district_yearly')  { src=Object.values(AGG.distYearly);  tblHeaders=['District','Year','Reported','Total Facilities','Rate (%)','Category']; }
+  else if(grp==='chiefdom_monthly') { src=Object.values(AGG.chiefMonthly); tblHeaders=['District','Chiefdom','Year','Month','Date','Reported','Total','Rate (%)','Category']; }
+  else if(grp==='chiefdom_yearly')  { src=Object.values(AGG.chiefYearly);  tblHeaders=['District','Chiefdom','Year','Reported','Total','Rate (%)','Category']; }
+  else { src=Object.values(AGG.facMonthly); tblHeaders=['HF Code','District','Chiefdom','Year','Month','Date','Reported']; }
+
+  tblRows = src.map(r=>{
+    if(grp==='district_monthly')  return [r.district,r.year,r.month,r.date,r.reported,r.total,r.rate_pct,r.category];
+    if(grp==='district_yearly')   return [r.district,r.year,r.reported,r.total,r.rate_pct,r.category];
+    if(grp==='chiefdom_monthly')  return [r.district,r.chiefdom,r.year,r.month,r.date,r.reported,r.total,r.rate_pct,r.category];
+    if(grp==='chiefdom_yearly')   return [r.district,r.chiefdom,r.year,r.reported,r.total,r.rate_pct,r.category];
+    return [r.hf_uid,r.district,r.chiefdom,r.year,r.month,r.date,r.status];
+  });
+
+  document.getElementById('tblHead').innerHTML =
+    `<tr>${tblHeaders.map(h=>`<th>${h}</th>`).join('')}</tr>`;
+  rs_filterTable();
+}
+
+function rs_filterTable() {
+  const q = (document.getElementById('tblSearch').value||'').toLowerCase();
+  const filtered = q ? tblRows.filter(r=>r.some(c=>(c+'').toLowerCase().includes(q))) : tblRows;
+  document.getElementById('tblCount').textContent = `${filtered.length.toLocaleString()} of ${tblRows.length.toLocaleString()} records`;
+  document.getElementById('tblBody').innerHTML = filtered.slice(0,2000).map(r=>
+    `<tr>${r.map(c=>`<td>${c??''}</td>`).join('')}</tr>`
+  ).join('');
+}
+
+function rs_exportTableExcel() {
+  const grp = document.getElementById('tblGroup').value;
+  const ws  = XLSX.utils.aoa_to_sheet([tblHeaders, ...tblRows]);
+  const wb  = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, grp.replace('_',' ').slice(0,31));
+  XLSX.writeFile(wb, `NMCP_RS_${grp}.xlsx`);
+}
+
+function rs_exportExcel() {
+  const wb = XLSX.utils.book_new();
+  const addSheet=(data,name,cols)=>{
+    const rows=data.map(r=>cols.reduce((o,c)=>({...o,[c]:r[c]??''}),{}));
+    if(!rows.length) return;
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), name);
+  };
+  addSheet(Object.values(AGG.distMonthly),  'District Monthly',  ['district','year','month','date','reported','total','rate_pct','category']);
+  addSheet(Object.values(AGG.distYearly),   'District Yearly',   ['district','year','reported','total','rate_pct','category']);
+  addSheet(Object.values(AGG.chiefMonthly), 'Chiefdom Monthly',  ['district','chiefdom','year','month','date','reported','total','rate_pct','category']);
+  addSheet(Object.values(AGG.chiefYearly),  'Chiefdom Yearly',   ['district','chiefdom','year','reported','total','rate_pct','category']);
+  addSheet(Object.values(AGG.facMonthly),   'Facility Monthly',  ['hf_uid','district','chiefdom','year','month','date','status']);
+  XLSX.writeFile(wb, `NMCP_ReportingStatus_${ST.config.start}_${ST.config.end}.xlsx`);
+}
+
+function rs_exportCSV() {
+  const rows = ST.reportData;
+  const header='hf_uid,district,chiefdom,date,status';
+  const csv = header + '\n' + rows.map(r=>
+    `${r.hf_uid},${r.districtName},${r.chiefdomName},${r.Date},${r.status}`
+  ).join('\n');
+  const a=document.createElement('a');
+  a.download=`NMCP_RS_FacilityMonth_${ST.config.start}_${ST.config.end}.csv`;
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv); a.click();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  CODE DOWNLOADS
+// ═══════════════════════════════════════════════════════════════════
+function triggerDL(content, fname) {
+  const a=document.createElement('a');
+  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(content);
+  a.download=fname; a.click();
+}
+
+function rs_downloadR() {
+  const s=ST.config?.start||'2020-01', e=ST.config?.end||'2024-12';
+  triggerDL(`# NMCP Reporting Status — R Script
+# Period: ${s} → ${e}
+# ICF-SL
+
+library(httr); library(jsonlite); library(dplyr); library(ggplot2); library(openxlsx)
+
+BASE_URL <- "https://sl.dhis2.org/hmis23"
+USERNAME <- "your_username"; PASSWORD <- "your_password"
+START_YM <- "${s}"; END_YM <- "${e}"
+
+DE_UIDS <- c("FJafyE1kzs4","Rijj3Fp9ksg","Sz13vbo2Qwh","mXS2g1AiPsS","p6zQLDFjSfd",
+             "wU8EdHifSLa","XKTCuR0W3YN","jkVioQxQcnk","wfaQBIVQxWo","YWvx4zYdp92",
+             "T7xH8GwWpEM","h3zJa6hAgib","Imkks0HAl7E")
+
+auth <- authenticate(USERNAME, PASSWORD)
+dhis2 <- function(path) fromJSON(content(GET(paste0(BASE_URL,path),auth),"text",encoding="UTF-8"),flatten=TRUE)
+
+gen_periods <- function(s,e) format(seq(as.Date(paste0(s,"-01")),as.Date(paste0(e,"-01")),by="month"),"%Y%m")
+
+# Fetch hierarchy
+ou_data <- dhis2("/api/organisationUnits.json?level=5&fields=id,displayName,ancestors[id,displayName,level]&paging=false")
+hier <- lapply(ou_data$organisationUnits, function(ou) {
+  dist  <- Filter(function(a) a$level==2, ou$ancestors)
+  chief <- Filter(function(a) a$level==4, ou$ancestors)
+  list(id=ou$id, name=ou$displayName,
+       districtName=if(length(dist))dist[[1]]$displayName else "",
+       chiefdomName =if(length(chief))chief[[1]]$displayName else "")
+})
+names(hier) <- sapply(hier,function(x)x$id)
+
+# Fetch data
+periods <- gen_periods(START_YM, END_YM)
+ou_ids  <- names(hier)
+ou_batches <- split(ou_ids, ceiling(seq_along(ou_ids)/60))
+p_batches  <- split(periods, ceiling(seq_along(periods)/6))
+raw_sums   <- list()
+
+for(ob in ou_batches) for(pb in p_batches) {
+  path <- paste0("/api/dataValueSets.json?dataElement=",paste(DE_UIDS,collapse=","),
+                 "&orgUnit=",paste(ob,collapse=","),"&period=",paste(pb,collapse=","),"&children=false")
+  dvs <- dhis2(path)$dataValues
+  if(!is.null(dvs)&&nrow(dvs)>0) for(i in seq_len(nrow(dvs))){
+    dv <- dvs[i,]; ou <- dv$orgUnit; per <- dv$period
+    if(!ou %in% names(raw_sums)) raw_sums[[ou]] <- list()
+    raw_sums[[ou]][[per]] <- (raw_sums[[ou]][[per]]%||%0) + (as.numeric(dv$value)%||%0)
+  }
+  Sys.sleep(0.06)
+}
+
+# Status table
+rows <- list()
+for(ou_id in ou_ids) {
+  ou <- hier[[ou_id]]
+  for(per in periods) {
+    status <- if((raw_sums[[ou_id]][[per]]%||%0)>0) 1L else 0L
+    rows[[length(rows)+1]] <- data.frame(
+      hf_uid=ou_id, district=ou$districtName, chiefdom=ou$chiefdomName,
+      period=per, year=substr(per,1,4), month=substr(per,5,6), status=status, stringsAsFactors=FALSE)
+  }
+}
+status_df <- bind_rows(rows)
+
+# Aggregates
+dist_monthly  <- status_df %>% group_by(district,year,month,period) %>%
+  summarise(reported=sum(status),total=n(),.groups="drop") %>% mutate(rate_pct=round(reported/total*100,1))
+dist_yearly   <- status_df %>% group_by(district,year) %>%
+  summarise(reported=sum(status),total=n(),.groups="drop") %>% mutate(rate_pct=round(reported/total*100,1))
+chief_monthly <- status_df %>% group_by(district,chiefdom,year,month,period) %>%
+  summarise(reported=sum(status),total=n(),.groups="drop") %>% mutate(rate_pct=round(reported/total*100,1))
+chief_yearly  <- status_df %>% group_by(district,chiefdom,year) %>%
+  summarise(reported=sum(status),total=n(),.groups="drop") %>% mutate(rate_pct=round(reported/total*100,1))
+
+# Heatmap
+heatmap_wide <- status_df %>% select(hf_uid,period,status) %>%
+  pivot_wider(names_from=period,values_from=status,values_fill=0)
+sorted_hf <- heatmap_wide %>% mutate(rate=rowSums(across(-hf_uid))/length(periods)) %>%
+  arrange(desc(rate)) %>% pull(hf_uid)
+status_long <- status_df %>% mutate(hf_uid=factor(hf_uid,levels=rev(sorted_hf)))
+
+p_all <- ggplot(status_long,aes(x=period,y=hf_uid,fill=factor(status))) +
+  geom_tile(color="white",linewidth=.15) +
+  scale_fill_manual(values=c("0"="#212529","1"="#DDCC77"),labels=c("Not Reported","Reported")) +
+  labs(title=paste("NMCP Malaria EPI Reporting Status —",START_YM,"to",END_YM),
+       x="Period (YYYYMM)",y="Health Facility",fill="Status") +
+  theme_minimal(base_size=9) +
+  theme(axis.text.x=element_text(angle=90,hjust=1,size=6),axis.text.y=element_blank())
+ggsave("NMCP_RS_Heatmap_All.png",p_all,width=22,height=14,dpi=300)
+
+# Export
+wb <- createWorkbook()
+for(nm in c("dist_monthly","dist_yearly","chief_monthly","chief_yearly","status_df")) {
+  addWorksheet(wb,nm); writeData(wb,nm,get(nm))
+}
+saveWorkbook(wb,paste0("NMCP_ReportingStatus_${s}_${e}.xlsx"),overwrite=TRUE)
+cat("Done.\\n")
+`, `NMCP_ReportingStatus_${s}_${e}.R`);
+}
+
+function rs_downloadPy() {
+  const s=ST.config?.start||'2020-01', e=ST.config?.end||'2024-12';
+  triggerDL(`# NMCP Reporting Status — Python Script
+# Period: ${s} → ${e}
+# ICF-SL
+
+import requests, pandas as pd, numpy as np, time
+import matplotlib.pyplot as plt
+from requests.auth import HTTPBasicAuth
+from dateutil.relativedelta import relativedelta
+from datetime import datetime
+
+BASE_URL = "https://sl.dhis2.org/hmis23"
+USERNAME = "your_username"; PASSWORD = "your_password"
+START_YM = "${s}"; END_YM = "${e}"
+auth = HTTPBasicAuth(USERNAME, PASSWORD)
+
+DE_UIDS = ["FJafyE1kzs4","Rijj3Fp9ksg","Sz13vbo2Qwh","mXS2g1AiPsS","p6zQLDFjSfd",
+           "wU8EdHifSLa","XKTCuR0W3YN","jkVioQxQcnk","wfaQBIVQxWo","YWvx4zYdp92",
+           "T7xH8GwWpEM","h3zJa6hAgib","Imkks0HAl7E"]
+
+def dhis2(path):
+    r = requests.get(BASE_URL+path, auth=auth); r.raise_for_status(); return r.json()
+
+def gen_periods(s,e):
+    start,end = datetime.strptime(s,"%Y-%m"),datetime.strptime(e,"%Y-%m")
+    result,cur = [],start
+    while cur<=end: result.append(cur.strftime("%Y%m")); cur+=relativedelta(months=1)
+    return result
+
+# Hierarchy
+print("Fetching hierarchy...")
+ou_data = dhis2("/api/organisationUnits.json?level=5&fields=id,displayName,ancestors[id,displayName,level]&paging=false")
+hier = {}
+for ou in ou_data.get("organisationUnits",[]):
+    anc  = sorted(ou.get("ancestors",[]),key=lambda a:a["level"])
+    dist = next((a for a in anc if a["level"]==2),{})
+    chie = next((a for a in anc if a["level"]==4),{})
+    hier[ou["id"]] = {"id":ou["id"],"name":ou["displayName"],
+                      "districtName":dist.get("displayName",""),
+                      "chiefdomName":chie.get("displayName","")}
+print(f"  {len(hier)} facilities")
+
+# Data
+periods    = gen_periods(START_YM, END_YM)
+ou_ids     = list(hier.keys())
+ou_batches = [ou_ids[i:i+60] for i in range(0,len(ou_ids),60)]
+p_batches  = [periods[i:i+6] for i in range(0,len(periods),6)]
+raw_sums   = {}
+total=len(ou_batches)*len(p_batches); done=0
+for ob in ou_batches:
+    for pb in p_batches:
+        path=("/api/dataValueSets.json?dataElement="+",".join(DE_UIDS)+
+              "&orgUnit="+",".join(ob)+"&period="+",".join(pb)+"&children=false")
+        for dv in dhis2(path).get("dataValues",[]):
+            raw_sums.setdefault(dv["orgUnit"],{})
+            per=dv["period"]
+            raw_sums[dv["orgUnit"]][per]=raw_sums[dv["orgUnit"]].get(per,0)+(float(dv["value"]) if dv["value"] else 0)
+        done+=1; print(f"\\r  {done}/{total}",end="",flush=True); time.sleep(0.06)
+print()
+
+# Status table
+rows=[]
+for ou_id,ou in hier.items():
+    for per in periods:
+        rows.append({"hf_uid":ou_id,"district":ou["districtName"],"chiefdom":ou["chiefdomName"],
+                     "period":per,"year":per[:4],"month":per[4:],
+                     "status":int(raw_sums.get(ou_id,{}).get(per,0)>0)})
+df = pd.DataFrame(rows)
+
+# Aggregates
+def agg(grp_cols):
+    return df.groupby(grp_cols)["status"].agg(reported="sum",total="count").reset_index().assign(rate_pct=lambda x:(x.reported/x.total*100).round(1))
+
+dist_monthly  = agg(["district","year","month","period"])
+dist_yearly   = agg(["district","year"])
+chief_monthly = agg(["district","chiefdom","year","month","period"])
+chief_yearly  = agg(["district","chiefdom","year"])
+
+# Heatmap
+pivot   = df.pivot_table(index="hf_uid",columns="period",values="status",fill_value=0)
+sorted_ = pivot.sum(axis=1).sort_values(ascending=False).index
+pivot   = pivot.loc[sorted_]
+
+fig,ax = plt.subplots(figsize=(max(18,len(periods)*.4),max(10,len(hier)*.04)))
+import matplotlib.colors as mc
+ax.imshow(pivot.values,aspect="auto",cmap=mc.ListedColormap(["#212529","#DDCC77"]),vmin=0,vmax=1,interpolation="none")
+ax.set_xticks(range(len(periods))); ax.set_xticklabels(periods,rotation=90,fontsize=6)
+ax.set_yticks([]); ax.set_title(f"NMCP Reporting Status {START_YM}–{END_YM}",fontsize=13,fontweight="bold")
+ax.set_xlabel("Period (YYYYMM)"); ax.set_ylabel("Health Facilities")
+plt.tight_layout()
+plt.savefig(f"NMCP_RS_Heatmap_{START_YM}_{END_YM}.png",dpi=300,bbox_inches="tight")
+plt.close(); print("Heatmap saved")
+
+# Export
+fname=f"NMCP_ReportingStatus_${s}_${e}.xlsx"
+with pd.ExcelWriter(fname,engine="openpyxl") as w:
+    dist_monthly.to_excel(w,sheet_name="District Monthly",index=False)
+    dist_yearly.to_excel(w,sheet_name="District Yearly",index=False)
+    chief_monthly.to_excel(w,sheet_name="Chiefdom Monthly",index=False)
+    chief_yearly.to_excel(w,sheet_name="Chiefdom Yearly",index=False)
+    df.to_excel(w,sheet_name="Facility Month",index=False)
+print(f"Saved: {fname}")
+`, `NMCP_ReportingStatus_${s}_${e}.py`);
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+//  FACILITY TRACKING TAB
+// ═══════════════════════════════════════════════════════════════════
+let TRK = { year: null, month: null };
+
+function trk_init() {
+  // Populate year dropdown
+  const years = [...new Set((ST.config?.periods||[]).map(p=>p.slice(0,4)))].sort();
+  const ySel = document.getElementById('trkYear');
+  if (!ySel) return;
+  ySel.innerHTML = years.map(y=>`<option value="${y}">${y}</option>`).join('');
+  ySel.value = years[years.length-1];
+  TRK.year  = years[years.length-1];
+  // Build month tabs
+  trk_buildMonthTabs();
+  trk_render();
+}
+
+function trk_buildMonthTabs() {
+  const tabsEl = document.getElementById('trkMonthTabs');
+  if (!tabsEl) return;
+  const year = document.getElementById('trkYear')?.value || TRK.year;
+  // Which months have data for this year?
+  const activePeriods = new Set((ST.config?.periods||[]).filter(p=>p.slice(0,4)===year));
+  tabsEl.innerHTML = '';
+
+  // "All" tab first
+  const allBtn = document.createElement('button');
+  allBtn.className = 'trk-period-btn' + (TRK.month===null?' active':'');
+  allBtn.textContent = 'Full Year';
+  allBtn.onclick = () => { TRK.month = null; trk_setActiveMonthTab(allBtn); trk_render(); };
+  tabsEl.appendChild(allBtn);
+
+  MONTH_NAMES.forEach((name, idx) => {
+    const mStr   = String(idx+1).padStart(2,'0');
+    const period = `${year}${mStr}`;
+    const hasData = activePeriods.has(period);
+    const btn = document.createElement('button');
+    btn.className = 'trk-period-btn' + (!hasData?' disabled':'') + (TRK.month===mStr?' active':'');
+    btn.textContent = name.slice(0,3);
+    btn.title = hasData ? `${name} ${year}` : `No data for ${name} ${year}`;
+    btn.style.opacity = hasData ? '1' : '0.4';
+    btn.style.cursor  = hasData ? 'pointer' : 'default';
+    if (hasData) {
+      btn.onclick = () => { TRK.month = mStr; trk_setActiveMonthTab(btn); trk_render(); };
+    }
+    tabsEl.appendChild(btn);
+  });
+}
+
+function trk_setActiveMonthTab(activeBtn) {
+  document.querySelectorAll('.trk-period-btn').forEach(b=>b.classList.remove('active'));
+  activeBtn.classList.add('active');
+}
+
+function trk_render() {
+  const year    = document.getElementById('trkYear')?.value || TRK.year;
+  TRK.year = year;
+  trk_buildMonthTabs();
+
+  const month   = TRK.month; // null = full year aggregate
+  const q       = (document.getElementById('trkSearch')?.value||'').toLowerCase().trim();
+  const showRep  = document.getElementById('trkShowRep')?.checked !== false;
+  const showNrep = document.getElementById('trkShowNrep')?.checked !== false;
+  const tree     = document.getElementById('trkTree');
+  if (!tree) return;
+
+  // Build lookup: {ouId → {name, districtName, chiefdomName}}
+  const hier = ST.orgHierarchy;
+
+  // Build status map: ouId → { reported: bool, periods: {mm: bool} }
+  const statusMap = {};
+  ST.reportData.forEach(row => {
+    if (row.Date.slice(0,4) !== year) return;
+    const mo = row.Date.slice(5,7);
+    if (!statusMap[row.ouId]) statusMap[row.ouId] = { periods:{} };
+    statusMap[row.ouId].periods[mo] = (statusMap[row.ouId].periods[mo]||0) || row.status;
+    // if any period in month reported, mark as reported
+    if (row.status) statusMap[row.ouId].periods[mo] = 1;
+  });
+
+  // Determine per-facility status for selected period
+  function facStatus(ouId) {
+    const s = statusMap[ouId];
+    if (!s) return 0;
+    if (month) return s.periods[month] ? 1 : 0;
+    // Full year: reported if ANY month reported
+    return Object.values(s.periods).some(v=>v) ? 1 : 0;
+  }
+
+  // Group: district → chiefdom → [{ouId, name, status}]
+  const tree_data = {};
+  Object.values(hier).forEach(ou => {
+    const d = ou.districtName || 'Unknown District';
+    const c = ou.chiefdomName || 'Unknown Chiefdom';
+    const name = ou.name || ou.id;
+    // Search filter
+    if (q && ![name,d,c].join(' ').toLowerCase().includes(q)) return;
+    if (!tree_data[d]) tree_data[d] = {};
+    if (!tree_data[d][c]) tree_data[d][c] = [];
+    tree_data[d][c].push({ ouId: ou.id, name, status: facStatus(ou.id) });
+  });
+
+  // Sort facilities within each chiefdom by status desc (reported first) then name
+  Object.values(tree_data).forEach(chiefs => {
+    Object.values(chiefs).forEach(facs => {
+      facs.sort((a,b) => b.status - a.status || a.name.localeCompare(b.name));
+    });
+  });
+
+  const distNames = Object.keys(tree_data).sort();
+  if (!distNames.length) {
+    tree.innerHTML = `<div class="trk-empty">No facilities match your search.</div>`;
+    return;
+  }
+
+  tree.innerHTML = '';
+  distNames.forEach(dist => {
+    const chiefs = tree_data[dist];
+    const chiefNames = Object.keys(chiefs).sort();
+
+    // District-level totals
+    let dRep=0, dTotal=0;
+    chiefNames.forEach(c => { chiefs[c].forEach(f => { dTotal++; if(f.status) dRep++; }); });
+    const dRate = dTotal>0 ? Math.round(dRep/dTotal*100) : 0;
+
+    const distEl = document.createElement('div');
+    distEl.className = 'trk-district';
+
+    const distHead = document.createElement('div');
+    distHead.className = 'trk-dist-head';
+    distHead.innerHTML = `
+      <span class="trk-dist-name">📍 ${dist}</span>
+      <div class="trk-dist-pills">
+        <span class="trk-dist-pill">${chiefNames.length} chiefdoms</span>
+        <span class="trk-dist-pill">${dTotal} facilities</span>
+        <span class="trk-dist-pill rep">✓ ${dRep} reported</span>
+        <span class="trk-dist-pill nrep">✗ ${dTotal-dRep} not reported</span>
+        <span class="trk-dist-pill">${dRate}%</span>
+      </div>
+      <span class="trk-dist-chev">▶</span>`;
+
+    const distBody = document.createElement('div');
+    distBody.className = 'trk-dist-body';
+
+    distHead.onclick = () => {
+      const open = distBody.classList.toggle('open');
+      distHead.querySelector('.trk-dist-chev').textContent = open ? '▼' : '▶';
+    };
+
+    chiefNames.forEach(chief => {
+      const facs = chiefs[chief];
+      let cRep = facs.filter(f=>f.status).length;
+      const cTotal = facs.length;
+      const cRate = cTotal>0 ? Math.round(cRep/cTotal*100) : 0;
+
+      const chiefEl = document.createElement('div');
+      chiefEl.className = 'trk-chiefdom';
+
+      const chiefHead = document.createElement('div');
+      chiefHead.className = 'trk-chief-head';
+      chiefHead.innerHTML = `
+        <span class="trk-chief-name">🏘 ${chief}</span>
+        <div class="trk-chief-pills">
+          <span class="trk-chief-pill">${cTotal} facilities</span>
+          <span class="trk-chief-pill rep">✓ ${cRep}</span>
+          <span class="trk-chief-pill nrep">✗ ${cTotal-cRep}</span>
+          <span class="trk-chief-pill" style="background:var(--blue-lt);color:var(--blue);border:1px solid var(--border);">${cRate}%</span>
+        </div>
+        <span class="trk-chief-chev">▶</span>`;
+
+      const chiefBody = document.createElement('div');
+      chiefBody.className = 'trk-chief-body';
+
+      chiefHead.onclick = () => {
+        const open = chiefBody.classList.toggle('open');
+        chiefHead.querySelector('.trk-chief-chev').textContent = open ? '▼' : '▶';
+      };
+
+      // Facility grid
+      const grid = document.createElement('div');
+      grid.className = 'trk-fac-grid';
+
+      facs.forEach(f => {
+        if (!showRep  && f.status===1) return;
+        if (!showNrep && f.status===0) return;
+        const facEl = document.createElement('div');
+        facEl.className = `trk-fac ${f.status ? 'rep' : 'nrep'}`;
+
+        // Per-month dots if showing full year
+        let dotsHtml = '';
+        if (!month) {
+          const sm = statusMap[f.ouId]?.periods || {};
+          dotsHtml = `<span style="display:flex;gap:2px;margin-left:auto;">` +
+            MONTH_NAMES.map((_,i)=>{
+              const mo = String(i+1).padStart(2,'0');
+              const year_ = year;
+              const period = `${year_}${mo}`;
+              const hasPeriod = (ST.config?.periods||[]).includes(period);
+              if (!hasPeriod) return `<span title="${MONTH_NAMES[i]}" style="width:7px;height:7px;border-radius:50%;background:#ddd;flex-shrink:0;"></span>`;
+              const v = sm[mo];
+              const col = v ? '#28a745' : '#dc3545';
+              return `<span title="${MONTH_NAMES[i]}: ${v?'Reported':'Not reported'}" style="width:7px;height:7px;border-radius:50%;background:${col};flex-shrink:0;"></span>`;
+            }).join('') + `</span>`;
+        }
+
+        facEl.innerHTML = `<div class="trk-fac-dot"></div><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${f.name}">${f.name}</span>${dotsHtml}`;
+        grid.appendChild(facEl);
+      });
+
+      if (!grid.children.length) {
+        grid.innerHTML = `<div class="trk-empty" style="padding:8px;">No facilities match current filters.</div>`;
+      }
+
+      chiefBody.appendChild(grid);
+      chiefEl.appendChild(chiefHead);
+      chiefEl.appendChild(chiefBody);
+      distBody.appendChild(chiefEl);
+    });
+
+    distEl.appendChild(distHead);
+    distEl.appendChild(distBody);
+    tree.appendChild(distEl);
+  });
+}
+
+function trk_expandAll(open) {
+  document.querySelectorAll('.trk-dist-body').forEach(b => {
+    b.classList.toggle('open', open);
+    const chev = b.previousElementSibling?.querySelector('.trk-dist-chev');
+    if (chev) chev.textContent = open ? '▼' : '▶';
+  });
+  document.querySelectorAll('.trk-chief-body').forEach(b => {
+    b.classList.toggle('open', open);
+    const chev = b.previousElementSibling?.querySelector('.trk-chief-chev');
+    if (chev) chev.textContent = open ? '▼' : '▶';
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  UI HELPERS
+// ═══════════════════════════════════════════════════════════════════
+function toggleCollap(head) {
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.collap-chev');
+  body.classList.toggle('hidden');
+  if(chev) chev.textContent = body.classList.contains('hidden') ? '▶' : '▼';
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const tab=btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+tab).classList.add('active');
+    if(tab==='geomaps') setTimeout(()=>{ rs_buildMonthlyGrid(); attachChiefdomListeners(); },200);
+    if(tab==='tracking') setTimeout(()=>{ trk_render(); },100);
   });
 });
+
+// Init palette grid on load
+rs_buildPaletteGrid();
+rs_buildMapPaletteGrid();
+rs_updateAnnualLegendBar();
 </script>
-</body></html>
+</body>
+</html>
