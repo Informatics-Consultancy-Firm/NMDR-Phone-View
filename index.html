@@ -260,6 +260,15 @@
         .dv-progress { height: 5px; background: #e0e8f0; border-radius: 4px; overflow: hidden; margin: 10px 0 4px; }
         .dv-progress-bar { height: 100%; background: linear-gradient(90deg,#004080,#17a2b8); border-radius: 4px; transition: width .4s ease; }
 
+        /* HMIS LAUNCH CARDS */
+        .hmis-launch-card:hover {
+            transform: translateY(-4px) !important;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.13) !important;
+            border-color: var(--blue) !important;
+        }
+        @media (max-width: 900px) { #hmisCardGrid { grid-template-columns: repeat(2,1fr) !important; } }
+        @media (max-width: 540px) { #hmisCardGrid { grid-template-columns: 1fr !important; } }
+
         @media (max-width: 360px) {
             .role-card h1 { font-size: 22px; }
             .role-buttons { gap: 8px; }
@@ -345,7 +354,7 @@
             </button>
             <div class="nav-group-children" id="children-surveillance">
 
-                <!-- ══ 1.0.1 Malaria Epi (MOVED UP) ══ -->
+                <!-- ══ 1.0.1 Malaria Epi ══ -->
                 <button class="nav-child nav-l1-toggle" id="malariaEpiToggle" onclick="toggleNestedGroup('malariaEpiChildren','malariaEpiChevron','malariaEpiToggle',event)">
                     <span>1.0.1 Malaria Epi</span>
                     <svg id="malariaEpiChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
@@ -369,7 +378,7 @@
                     </div>
                 </div>
 
-                <!-- ══ 1.0.2 Monitoring and Evaluation (MOVED DOWN) ══ -->
+                <!-- ══ 1.0.2 Monitoring and Evaluation ══ -->
                 <button class="nav-child nav-l1-toggle" id="meToggle" onclick="toggleNestedGroup('meChildren','meChevron','meToggle',event)">
                     <span>1.0.2 Monitoring &amp; Evaluation</span>
                     <svg id="meChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
@@ -377,7 +386,6 @@
                 <div id="meChildren" style="overflow:hidden;max-height:0;transition:max-height .3s ease;">
                     <button class="nav-child nav-l2" data-tab="me-dqa">1.0.2.1 Data Quality Assessment</button>
 
-                    <!-- 1.0.2.2 Key Malaria Data Elements -->
                     <button class="nav-child nav-l2-toggle" id="meDetailedToggle" onclick="toggleNestedGroup('meDetailedChildren','meDetailedChevron','meDetailedToggle',event)">
                         <span>1.0.2.2 Key Malaria Data Elements</span>
                         <svg id="meDetailedChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
@@ -391,7 +399,6 @@
                         <button class="nav-child nav-l3" data-tab="med-ptr">1.0.2.2.6 Treated</button>
                     </div>
 
-                    <!-- 1.0.2.3 Key Malaria Indicators -->
                     <button class="nav-child nav-l2-toggle" id="meIndicatorsToggle" onclick="toggleNestedGroup('meIndicatorsChildren','meIndicatorsChevron','meIndicatorsToggle',event)">
                         <span>1.0.2.3 Key Malaria Indicators</span>
                         <svg id="meIndicatorsChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
@@ -403,7 +410,6 @@
                         <button class="nav-child nav-l3" data-tab="med-cfr">1.0.2.3.4 Confirmed &amp; Treatment Rate</button>
                     </div>
 
-                    <!-- 1.0.2.4 Comparative Analysis on Key Indicators -->
                     <button class="nav-child nav-l2-toggle" id="meCompIndToggle" onclick="toggleNestedGroup('meCompIndChildren','meCompIndChevron','meCompIndToggle',event)">
                         <span>1.0.2.4 Comparative Analysis on Key Indicators</span>
                         <svg id="meCompIndChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
@@ -499,7 +505,6 @@
                 <svg class="nav-chevron" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="nav-group-children" id="children-vectorcontrol">
-                <!-- 4.0.1 Entomology -->
                 <button class="nav-child nav-l1-toggle" id="vcEntoToggle" onclick="toggleNestedGroup('vcEntoChildren','vcEntoChevron','vcEntoToggle',event)">
                     <span>4.0.1 Entomology</span>
                     <svg id="vcEntoChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
@@ -509,7 +514,6 @@
                     <button class="nav-child nav-l2" data-tab="ento-report">4.0.1.2 Report</button>
                     <button class="nav-child nav-l2" data-tab="ento-dashboard">4.0.1.3 Dashboard</button>
                 </div>
-                <!-- 4.0.2 Insecticide Resistance -->
                 <button class="nav-child nav-l1-toggle" id="vcIrToggle" onclick="toggleNestedGroup('vcIrChildren','vcIrChevron','vcIrToggle',event)">
                     <span>4.0.2 Insecticide Resistance</span>
                     <svg id="vcIrChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.7;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
@@ -625,7 +629,6 @@
         </div>
         <div class="section-label">About the Repository</div>
         <div class="cards-grid">
-            <!-- WHAT -->
             <div class="card"><div class="card-stripe"></div><div class="card-body">
                 <div class="card-icon-row">
                     <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
@@ -640,7 +643,6 @@
                     <li><strong>Funded:</strong> The Global Fund</li>
                 </ul>
             </div></div>
-            <!-- WHY -->
             <div class="card"><div class="card-stripe"></div><div class="card-body">
                 <div class="card-icon-row">
                     <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
@@ -655,7 +657,6 @@
                     <li>Improve data quality for decision-making</li>
                 </ul>
             </div></div>
-            <!-- FOCUS -->
             <div class="card"><div class="card-stripe"></div><div class="card-body">
                 <div class="card-icon-row">
                     <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
@@ -671,7 +672,6 @@
                     <li>Analytics</li>
                 </ul>
             </div></div>
-            <!-- BENEFITS -->
             <div class="card"><div class="card-stripe"></div><div class="card-body">
                 <div class="card-icon-row">
                     <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
@@ -687,7 +687,6 @@
             </div></div>
         </div>
 
-        <!-- ══ NMDR ARCHITECTURE DIAGRAM (before WHO slides) ══ -->
         <div class="section-label" style="margin-top:4px;">NMDR Architecture &amp; Data Flow</div>
         <div class="nmdr-info-block">
             <div class="nmdr-info-header">
@@ -701,7 +700,7 @@
                 </div>
                 <div class="nmdr-divider"></div>
                 <div class="nmdr-diagram-wrap">
-                    <img src="nmdr_info.png" alt="NMDR DHIS2 Architecture — Malaria Module, Ento/IR Module, Repository, Transformation, Burden Reduction Dashboards">
+                    <img src="nmdr_info.png" alt="NMDR DHIS2 Architecture">
                 </div>
             </div>
         </div>
@@ -766,18 +765,169 @@
     <div id="me-comp-u5"      class="tab-content"><div id="me-comp-u5-wrap"      class="me-detail-wrap"></div></div>
     <div id="me-comp-allages" class="tab-content"><div id="me-comp-allages-wrap" class="me-detail-wrap"></div></div>
 
-    <!-- 1.0.1 Malaria Epi — HMIS (Monthly) -->
+    <!-- ════════════════════════════════════════════
+         1.0.1.1 HMIS (Monthly) — DATA EXTRACTION
+         9-card launcher grid (3 cols × 3 rows)
+    ════════════════════════════════════════════ -->
     <div id="hmis-extraction" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-hmis-extraction" src="" data-src="hmis_extraction.html" loading="lazy" allow="fullscreen"></iframe></div>
+        <div class="hero" style="border-left-color:#2c6793;margin-bottom:18px;">
+            <div class="hero-tag">1.0.1.1 HMIS (Monthly)</div>
+            <h1>Data Extraction</h1>
+            <p>Select a data element below to open the extraction tool. Each tool connects live to DHIS2 HMIS and supports facility/community disaggregation, choropleth maps, charts, and exports.</p>
+        </div>
+        <div class="section-label">HMIS Data Elements</div>
+
+        <div id="hmisCardGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:22px;">
+
+            <!-- 01 OPD -->
+            <div class="hmis-launch-card" onclick="openHmisFrame('opd.html','OPD — Outpatient Department')" style="background:#fff;border-radius:12px;border:2px solid var(--border);box-shadow:0 3px 10px rgba(0,0,0,0.06);cursor:pointer;transition:all .25s;overflow:hidden;">
+                <div style="height:5px;background:linear-gradient(90deg,#2c6793,#1f4a6a);"></div>
+                <div style="padding:22px 20px;">
+                    <div style="width:46px;height:46px;background:#e8f0f7;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2c6793" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    </div>
+                    <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#2c6793;text-transform:uppercase;margin-bottom:5px;">01</div>
+                    <div style="font-size:16px;font-weight:700;color:#1a2e3d;line-height:1.3;margin-bottom:6px;">OPD</div>
+                    <div style="font-size:12px;color:#6c7a89;line-height:1.5;">Outpatient Department visits — all ages and disaggregations</div>
+                    <div style="margin-top:14px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#2c6793;">Open Tool <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+                </div>
+            </div>
+
+            <!-- 02 SUSPECTED -->
+            <div class="hmis-launch-card" onclick="openHmisFrame('suspected.html','Suspected — Fever Suspected Malaria')" style="background:#fff;border-radius:12px;border:2px solid var(--border);box-shadow:0 3px 10px rgba(0,0,0,0.06);cursor:pointer;transition:all .25s;overflow:hidden;">
+                <div style="height:5px;background:linear-gradient(90deg,#2c7a4a,#1f5c35);"></div>
+                <div style="padding:22px 20px;">
+                    <div style="width:46px;height:46px;background:#e6f4ec;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2c7a4a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 014 4v4a4 4 0 01-8 0V6a4 4 0 014-4z"/><path d="M6 21v-2a6 6 0 0112 0v2"/></svg>
+                    </div>
+                    <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#2c7a4a;text-transform:uppercase;margin-bottom:5px;">02</div>
+                    <div style="font-size:16px;font-weight:700;color:#1a2e3d;line-height:1.3;margin-bottom:6px;">Suspected</div>
+                    <div style="font-size:12px;color:#6c7a89;line-height:1.5;">Fever / suspected malaria cases by age group and facility type</div>
+                    <div style="margin-top:14px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#2c7a4a;">Open Tool <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+                </div>
+            </div>
+
+            <!-- 03 TESTED -->
+            <div class="hmis-launch-card" onclick="openHmisFrame('testing.html','Tested — Malaria Testing')" style="background:#fff;border-radius:12px;border:2px solid var(--border);box-shadow:0 3px 10px rgba(0,0,0,0.06);cursor:pointer;transition:all .25s;overflow:hidden;">
+                <div style="height:5px;background:linear-gradient(90deg,#6c4faa,#4b3480);"></div>
+                <div style="padding:22px 20px;">
+                    <div style="width:46px;height:46px;background:#ede8f7;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6c4faa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v11m0 0H5a2 2 0 00-2 2v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 00-2-2h-4m-5 0h5"/></svg>
+                    </div>
+                    <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#6c4faa;text-transform:uppercase;margin-bottom:5px;">03</div>
+                    <div style="font-size:16px;font-weight:700;color:#1a2e3d;line-height:1.3;margin-bottom:6px;">Tested</div>
+                    <div style="font-size:12px;color:#6c7a89;line-height:1.5;">RDT and microscopy testing volumes by age group and facility</div>
+                    <div style="margin-top:14px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#6c4faa;">Open Tool <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+                </div>
+            </div>
+
+            <!-- 04 CONFIRMED -->
+            <div class="hmis-launch-card" onclick="openHmisFrame('confirmed.html','Confirmed — Confirmed Malaria Cases')" style="background:#fff;border-radius:12px;border:2px solid var(--border);box-shadow:0 3px 10px rgba(0,0,0,0.06);cursor:pointer;transition:all .25s;overflow:hidden;">
+                <div style="height:5px;background:linear-gradient(90deg,#c0392b,#922b21);"></div>
+                <div style="padding:22px 20px;">
+                    <div style="width:46px;height:46px;background:#fdecea;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#c0392b;text-transform:uppercase;margin-bottom:5px;">04</div>
+                    <div style="font-size:16px;font-weight:700;color:#1a2e3d;line-height:1.3;margin-bottom:6px;">Confirmed</div>
+                    <div style="font-size:12px;color:#6c7a89;line-height:1.5;">Laboratory-confirmed malaria cases, all ages and age-disaggregated</div>
+                    <div style="margin-top:14px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#c0392b;">Open Tool <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+                </div>
+            </div>
+
+            <!-- 05 CONFIRMED AND TREATED -->
+            <div class="hmis-launch-card" onclick="openHmisFrame('confirmed_and_treated.html','Confirmed and Treated')" style="background:#fff;border-radius:12px;border:2px solid var(--border);box-shadow:0 3px 10px rgba(0,0,0,0.06);cursor:pointer;transition:all .25s;overflow:hidden;">
+                <div style="height:5px;background:linear-gradient(90deg,#d4850a,#a3620a);"></div>
+                <div style="padding:22px 20px;">
+                    <div style="width:46px;height:46px;background:#fef3e2;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4850a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#d4850a;text-transform:uppercase;margin-bottom:5px;">05</div>
+                    <div style="font-size:16px;font-weight:700;color:#1a2e3d;line-height:1.3;margin-bottom:6px;">Confirmed &amp; Treated</div>
+                    <div style="font-size:12px;color:#6c7a89;line-height:1.5;">Confirmed malaria cases that received ACT treatment</div>
+                    <div style="margin-top:14px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#d4850a;">Open Tool <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+                </div>
+            </div>
+
+            <!-- 06 PRESUMPTIVE -->
+            <div class="hmis-launch-card" onclick="openHmisFrame('presumptive.html','Presumptive Treatment')" style="background:#fff;border-radius:12px;border:2px solid var(--border);box-shadow:0 3px 10px rgba(0,0,0,0.06);cursor:pointer;transition:all .25s;overflow:hidden;">
+                <div style="height:5px;background:linear-gradient(90deg,#1a7a8a,#135e6b);"></div>
+                <div style="padding:22px 20px;">
+                    <div style="width:46px;height:46px;background:#e0f4f7;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a7a8a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0016.5 3c-1.76 0-3.322.89-4.5 2.31C10.822 3.89 9.26 3 7.5 3A5.5 5.5 0 002 8.5c0 2.3 1.5 4.05 3 5.5l7 7 7-7z"/></svg>
+                    </div>
+                    <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#1a7a8a;text-transform:uppercase;margin-bottom:5px;">06</div>
+                    <div style="font-size:16px;font-weight:700;color:#1a2e3d;line-height:1.3;margin-bottom:6px;">Presumptive Treatment</div>
+                    <div style="font-size:12px;color:#6c7a89;line-height:1.5;">Clinically-diagnosed malaria treated without lab confirmation</div>
+                    <div style="margin-top:14px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#1a7a8a;">Open Tool <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+                </div>
+            </div>
+
+            <!-- 07 CONFIRMED NOT TREATED -->
+            <div class="hmis-launch-card" onclick="openHmisFrame('confirmed_not_treated.html','Confirmed Not Treated')" style="background:#fff;border-radius:12px;border:2px solid var(--border);box-shadow:0 3px 10px rgba(0,0,0,0.06);cursor:pointer;transition:all .25s;overflow:hidden;">
+                <div style="height:5px;background:linear-gradient(90deg,#7b3f8a,#582c63);"></div>
+                <div style="padding:22px 20px;">
+                    <div style="width:46px;height:46px;background:#f3e8f7;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7b3f8a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                    </div>
+                    <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#7b3f8a;text-transform:uppercase;margin-bottom:5px;">07</div>
+                    <div style="font-size:16px;font-weight:700;color:#1a2e3d;line-height:1.3;margin-bottom:6px;">Confirmed Not Treated</div>
+                    <div style="font-size:12px;color:#6c7a89;line-height:1.5;">Confirmed malaria cases that did not receive ACT treatment</div>
+                    <div style="margin-top:14px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#7b3f8a;">Open Tool <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+                </div>
+            </div>
+
+            <!-- 08 TREATED -->
+            <div class="hmis-launch-card" onclick="openHmisFrame('treated.html','Treated — All Malaria Cases Treated')" style="background:#fff;border-radius:12px;border:2px solid var(--border);box-shadow:0 3px 10px rgba(0,0,0,0.06);cursor:pointer;transition:all .25s;overflow:hidden;">
+                <div style="height:5px;background:linear-gradient(90deg,#3a6b2a,#28501e);"></div>
+                <div style="padding:22px 20px;">
+                    <div style="width:46px;height:46px;background:#e8f5e2;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3a6b2a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                    </div>
+                    <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#3a6b2a;text-transform:uppercase;margin-bottom:5px;">08</div>
+                    <div style="font-size:16px;font-weight:700;color:#1a2e3d;line-height:1.3;margin-bottom:6px;">Treated</div>
+                    <div style="font-size:12px;color:#6c7a89;line-height:1.5;">All malaria cases treated — confirmed and presumptive combined</div>
+                    <div style="margin-top:14px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#3a6b2a;">Open Tool <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+                </div>
+            </div>
+
+            <!-- 09 ALL DATA ELEMENTS — accent card -->
+            <div class="hmis-launch-card" onclick="openHmisFrame('all.html','All HMIS Data Elements')" style="background:linear-gradient(135deg,#1f4a6a 0%,#2c6793 100%);border-radius:12px;border:2px solid #1f4a6a;box-shadow:0 3px 14px rgba(44,103,147,0.25);cursor:pointer;transition:all .25s;overflow:hidden;">
+                <div style="height:5px;background:var(--gold);"></div>
+                <div style="padding:22px 20px;">
+                    <div style="width:46px;height:46px;background:rgba(255,193,7,0.18);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffc107" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    </div>
+                    <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#ffc107;text-transform:uppercase;margin-bottom:5px;">09</div>
+                    <div style="font-size:16px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:6px;">All Data Elements</div>
+                    <div style="font-size:12px;color:rgba(255,255,255,0.65);line-height:1.5;">Complete HMIS extraction — all malaria data elements combined</div>
+                    <div style="margin-top:14px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#ffc107;">Open Tool <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Inline iframe viewer (shown on card click) -->
+        <div id="hmisFramePane" style="display:none;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.12);border:2px solid var(--blue);">
+            <div style="background:var(--blue);color:#fff;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                <span id="hmisFrameTitle" style="font-size:13px;font-weight:700;"></span>
+                <button onclick="closeHmisFrame()" style="background:rgba(255,255,255,0.12);border:none;color:#fff;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;line-height:1;">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    Close
+                </button>
+            </div>
+            <iframe id="hmisFrameEmbed" src="" style="width:100%;min-height:85vh;border:none;display:block;"></iframe>
+        </div>
     </div>
+    <!-- ═══════════════════════════════════════════ -->
+
     <div id="hmis-epi-dashboard" class="tab-content"><div id="hmis-epi-dashboard-wrap" class="me-detail-wrap"></div></div>
+
     <!-- 1.0.1.2 eIDSR (Weekly) -->
     <div id="eidsr-extraction" class="tab-content">
         <div class="iframe-pane"><iframe id="frame-eidsr-extraction" src="" data-src="eidsr_extraction.html" loading="lazy" allow="fullscreen"></iframe></div>
     </div>
-    <div id="eidsr-dashboard" class="tab-content">
     <div id="eidsr-dashboard" class="tab-content"><div id="eidsr-dashboard-wrap" class="me-detail-wrap"></div></div>
-    </div>
 
     <!-- 1.0.3 TES -->
     <div id="tes-data" class="tab-content">
@@ -805,151 +955,58 @@
     </div>
 
     <!-- 3.0 INTERVENTIONS -->
-    <div id="int-pmc" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-int-pmc" src="" data-src="int_pmc.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="int-malaria-vaccine" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-int-malaria-vaccine" src="" data-src="int_malaria_vaccine.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="int-penta" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-int-penta" src="" data-src="int_penta.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="int-measles" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-int-measles" src="" data-src="int_measles.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="int-vitamin-a" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-int-vitamin-a" src="" data-src="int_vitamin_a.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="int-iptp" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-int-iptp" src="" data-src="int_iptp.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="int-anc" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-int-anc" src="" data-src="int_anc.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="int-mass-itn" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-int-mass-itn" src="" data-src="int_mass_itn.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="int-sbd" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-int-sbd" src="" data-src="int_sbd.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="int-irs" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-int-irs" src="" data-src="int_irs.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
+    <div id="int-pmc" class="tab-content"><div class="iframe-pane"><iframe id="frame-int-pmc" src="" data-src="int_pmc.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="int-malaria-vaccine" class="tab-content"><div class="iframe-pane"><iframe id="frame-int-malaria-vaccine" src="" data-src="int_malaria_vaccine.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="int-penta" class="tab-content"><div class="iframe-pane"><iframe id="frame-int-penta" src="" data-src="int_penta.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="int-measles" class="tab-content"><div class="iframe-pane"><iframe id="frame-int-measles" src="" data-src="int_measles.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="int-vitamin-a" class="tab-content"><div class="iframe-pane"><iframe id="frame-int-vitamin-a" src="" data-src="int_vitamin_a.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="int-iptp" class="tab-content"><div class="iframe-pane"><iframe id="frame-int-iptp" src="" data-src="int_iptp.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="int-anc" class="tab-content"><div class="iframe-pane"><iframe id="frame-int-anc" src="" data-src="int_anc.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="int-mass-itn" class="tab-content"><div class="iframe-pane"><iframe id="frame-int-mass-itn" src="" data-src="int_mass_itn.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="int-sbd" class="tab-content"><div class="iframe-pane"><iframe id="frame-int-sbd" src="" data-src="int_sbd.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="int-irs" class="tab-content"><div class="iframe-pane"><iframe id="frame-int-irs" src="" data-src="int_irs.html" loading="lazy" allow="fullscreen"></iframe></div></div>
 
     <!-- 4.0 VECTOR CONTROL -->
-    <div id="ento-data" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-ento-data" src="" data-src="ento_data.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="ento-report" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-ento-report" src="" data-src="ento_report.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="ento-dashboard" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-ento-dashboard" src="" data-src="ento_dashboard.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="ir-data" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-ir-data" src="" data-src="ir_data.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="ir-report" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-ir-report" src="" data-src="ir_report.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="ir-dashboard" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-ir-dashboard" src="" data-src="ir_dashboard.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
+    <div id="ento-data" class="tab-content"><div class="iframe-pane"><iframe id="frame-ento-data" src="" data-src="ento_data.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="ento-report" class="tab-content"><div class="iframe-pane"><iframe id="frame-ento-report" src="" data-src="ento_report.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="ento-dashboard" class="tab-content"><div class="iframe-pane"><iframe id="frame-ento-dashboard" src="" data-src="ento_dashboard.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="ir-data" class="tab-content"><div class="iframe-pane"><iframe id="frame-ir-data" src="" data-src="ir_data.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="ir-report" class="tab-content"><div class="iframe-pane"><iframe id="frame-ir-report" src="" data-src="ir_report.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="ir-dashboard" class="tab-content"><div class="iframe-pane"><iframe id="frame-ir-dashboard" src="" data-src="ir_dashboard.html" loading="lazy" allow="fullscreen"></iframe></div></div>
 
     <!-- USER GUIDE -->
-    <div id="user-guide" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-user-guide" src="" data-src="user_guide.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
+    <div id="user-guide" class="tab-content"><div class="iframe-pane"><iframe id="frame-user-guide" src="" data-src="user_guide.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="bulletins" class="tab-content"><div class="iframe-pane"><iframe id="frame-bulletins" src="" data-src="bulletins.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="mpd" class="tab-content"><div class="iframe-pane"><iframe id="frame-mpd" src="" data-src="mpd.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="campaign-survey" class="tab-content"><div class="iframe-pane"><iframe id="frame-campaign-survey" src="" data-src="campaign_survey.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="sbd-app" class="tab-content"><div class="iframe-pane"><iframe id="frame-sbd-app" src="" data-src="data_collection_apps.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="analytics-training" class="tab-content"><div class="iframe-pane"><iframe id="frame-analytics-training" src="" data-src="analytics_learning.html" loading="lazy" allow="fullscreen"></iframe></div></div>
 
-    <!-- WEEKLY BULLETINS -->
-    <div id="bulletins" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-bulletins" src="" data-src="bulletins.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
+    <!-- D-MAT (AUTOMATION) -->
+    <div id="dmat-dqa" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-dqa" src="" data-src="dqa.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="dmat-processing" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-processing" src="" data-src="dmat_processing.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="dmat-reporting" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-reporting" src="" data-src="dmat_reporting.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="dmat-suspected" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-suspected" src="" data-src="dmat_suspected.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="dmat-tested" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-tested" src="" data-src="dmat_tested.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="dmat-confirmed" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-confirmed" src="" data-src="dmat_confirmed.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="dmat-treated" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-treated" src="" data-src="dmat_treated.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="dmat-presumptive" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-presumptive" src="" data-src="dmat_presumptive.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="dmat-comparative" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-comparative" src="" data-src="dmat_comparative.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="dmat-u5" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-u5" src="" data-src="dmat_u5.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="dmat-allages" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-allages" src="" data-src="dmat_allages.html" loading="lazy" allow="fullscreen"></iframe></div></div>
 
-    <!-- MALARIA PROGRAMME DOCS -->
-    <div id="mpd" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-mpd" src="" data-src="mpd.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-
-    <!-- CAMPAIGN & SURVEY -->
-    <div id="campaign-survey" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-campaign-survey" src="" data-src="campaign_survey.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-
-    <!-- DATA COLLECTION APPS -->
-    <div id="sbd-app" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-sbd-app" src="" data-src="data_collection_apps.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-
-    <!-- ANALYTICS LEARNING -->
-    <div id="analytics-training" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-analytics-training" src="" data-src="analytics_learning.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-
-    <!-- D-MAT (AUTOMATION) SUB-TABS -->
-    <div id="dmat-dqa" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-dmat-dqa" src="" data-src="dqa.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="dmat-processing" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-dmat-processing" src="" data-src="dmat_processing.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="dmat-reporting" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-dmat-reporting" src="" data-src="dmat_reporting.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="dmat-suspected" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-dmat-suspected" src="" data-src="dmat_suspected.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="dmat-tested" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-dmat-tested" src="" data-src="dmat_tested.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="dmat-confirmed" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-dmat-confirmed" src="" data-src="dmat_confirmed.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="dmat-treated" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-dmat-treated" src="" data-src="dmat_treated.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="dmat-presumptive" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-dmat-presumptive" src="" data-src="dmat_presumptive.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="dmat-comparative" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-dmat-comparative" src="" data-src="dmat_comparative.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="dmat-u5" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-dmat-u5" src="" data-src="dmat_u5.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="dmat-allages" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-dmat-allages" src="" data-src="dmat_allages.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-
-    <!-- SNT 2015-2025 -->
-    <div id="snt" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-snt" src="" data-src="snt.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-
-    <!-- MPR 2021-2023 -->
-    <div id="mpr" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-mpr" src="" data-src="mpr.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-
-    <!-- OTHER ANALYSIS -->
-    <div id="other-analysis" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-other-analysis" src="" data-src="other_analysis.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
+    <!-- SNT / MPR / OTHER -->
+    <div id="snt" class="tab-content"><div class="iframe-pane"><iframe id="frame-snt" src="" data-src="snt.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="mpr" class="tab-content"><div class="iframe-pane"><iframe id="frame-mpr" src="" data-src="mpr.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="other-analysis" class="tab-content"><div class="iframe-pane"><iframe id="frame-other-analysis" src="" data-src="other_analysis.html" loading="lazy" allow="fullscreen"></iframe></div></div>
 
     <!-- 8.0 FINANCE -->
-    <div id="finance-data" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-finance-data" src="" data-src="finance_data.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="finance-report" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-finance-report" src="" data-src="finance_report.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
-    <div id="finance-dashboard" class="tab-content">
-        <div class="iframe-pane"><iframe id="frame-finance-dashboard" src="" data-src="finance_dashboard.html" loading="lazy" allow="fullscreen"></iframe></div>
-    </div>
+    <div id="finance-data" class="tab-content"><div class="iframe-pane"><iframe id="frame-finance-data" src="" data-src="finance_data.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="finance-report" class="tab-content"><div class="iframe-pane"><iframe id="frame-finance-report" src="" data-src="finance_report.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="finance-dashboard" class="tab-content"><div class="iframe-pane"><iframe id="frame-finance-dashboard" src="" data-src="finance_dashboard.html" loading="lazy" allow="fullscreen"></iframe></div></div>
 
     <!-- ADMIN DASHBOARD -->
     <div id="admin-dashboard" class="tab-content">
-
         <div style="background:#f8f9fa;border:3px solid #004080;border-radius:10px;overflow:hidden;margin-bottom:20px;font-family:'Roboto',sans-serif;">
             <div style="background:#004080;color:#fff;padding:12px 22px;font-size:14px;font-weight:700;letter-spacing:.5px;display:flex;align-items:center;gap:10px;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -970,14 +1027,8 @@
         </div>
 
         <div style="display:flex;gap:0;background:var(--white);border-radius:10px 10px 0 0;border:2px solid var(--border);border-bottom:none;overflow:hidden;margin-bottom:0;">
-            <button id="adminTabAuto" onclick="switchAdminTab('auto')"
-                style="flex:1;padding:14px 20px;background:#004080;color:#fff;border:none;font-family:'Roboto',sans-serif;font-size:14px;font-weight:700;letter-spacing:.5px;cursor:pointer;border-right:2px solid rgba(255,255,255,0.2);transition:all .2s;">
-                &#9881; Epi AUTOMATION
-            </button>
-            <button id="adminTabDqa" onclick="switchAdminTab('dqa')"
-                style="flex:1;padding:14px 20px;background:rgba(0,0,0,0.04);color:#666;border:none;font-family:'Roboto',sans-serif;font-size:14px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .2s;">
-                &#128203; DQA TOOL
-            </button>
+            <button id="adminTabAuto" onclick="switchAdminTab('auto')" style="flex:1;padding:14px 20px;background:#004080;color:#fff;border:none;font-family:'Roboto',sans-serif;font-size:14px;font-weight:700;letter-spacing:.5px;cursor:pointer;border-right:2px solid rgba(255,255,255,0.2);transition:all .2s;">&#9881; Epi AUTOMATION</button>
+            <button id="adminTabDqa"  onclick="switchAdminTab('dqa')"  style="flex:1;padding:14px 20px;background:rgba(0,0,0,0.04);color:#666;border:none;font-family:'Roboto',sans-serif;font-size:14px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .2s;">&#128203; DQA TOOL</button>
         </div>
 
         <div id="adminPaneAuto" style="border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.1);border:2px solid var(--border);border-top:none;">
@@ -991,12 +1042,26 @@
             </div>
             <iframe id="dqaEmbedIframe" src="" data-src="dqa_tool_v5_drive.html" title="DQA Tool" allow="fullscreen" referrerpolicy="strict-origin-when-cross-origin" style="width:100%;min-height:90vh;border:none;display:block;"></iframe>
         </div>
-
     </div><!-- /admin-dashboard -->
 
 </main>
 
 <script>
+/* ════════════════════════════════════════════
+   HMIS EXTRACTION CARD HELPERS
+════════════════════════════════════════════ */
+function openHmisFrame(src, title) {
+    document.getElementById('hmisFrameTitle').textContent = title;
+    document.getElementById('hmisFrameEmbed').src = src;
+    var pane = document.getElementById('hmisFramePane');
+    pane.style.display = 'block';
+    setTimeout(function(){ pane.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 80);
+}
+function closeHmisFrame() {
+    document.getElementById('hmisFramePane').style.display = 'none';
+    document.getElementById('hmisFrameEmbed').src = '';
+}
+
 /* ════════════════════════════════════════════
    ROLE-BASED ACCESS CONTROL
 ════════════════════════════════════════════ */
@@ -1014,14 +1079,11 @@ var rolePasswords = {
 var DMAT_TABS = ['dmat-dqa','dmat-processing','dmat-reporting','dmat-suspected','dmat-tested',
                  'dmat-confirmed','dmat-treated','dmat-presumptive',
                  'dmat-comparative','dmat-u5','dmat-allages'];
-
 var ME_SUMMARY_TABS = ['me-summary-epi','me-summary-int','me-summary-stock'];
-
 var ME_DETAIL_TABS = ['med-suspected','med-tested','med-confirmed','med-treated',
                       'med-presumptive','med-comp-u5','med-comp-allages',
                       'med-reporting','med-testing','med-tpr','med-cfr','med-ptr',
                       'me-comp-u5','me-comp-allages'];
-
 var MALARIA_EPI_TABS = ['hmis-extraction','hmis-epi-dashboard','eidsr-extraction','eidsr-dashboard'];
 var TES_TABS         = ['tes-data','tes-report','tes-dashboard'];
 var INT_TABS         = ['int-pmc','int-malaria-vaccine','int-penta','int-measles','int-vitamin-a','int-iptp','int-anc','int-mass-itn','int-sbd','int-irs'];
@@ -1093,12 +1155,7 @@ function verifyPassword() {
     var pw    = document.getElementById('rolePassword').value;
     var user  = document.getElementById('roleUsername').value;
     var errEl = document.getElementById('passwordError');
-    var ok    = false;
-    if (selectedRole === 'admin') {
-        ok = (user === 'admin' && pw === 'admin');
-    } else {
-        ok = (pw === rolePasswords[selectedRole]);
-    }
+    var ok    = (selectedRole === 'admin') ? (user === 'admin' && pw === 'admin') : (pw === rolePasswords[selectedRole]);
     if (ok) {
         enableTabsForRole(selectedRole);
     } else {
@@ -1117,79 +1174,50 @@ document.getElementById('rolePassword').addEventListener('keypress', function(e)
 const DV_GAS = 'https://script.google.com/macros/s/AKfycbyTprTce5ft5gxSwY7jOku2GNeKMG8V-X1BrY0jB3QDPyuVWXwFPNr_CH80BRfcLcwD/exec';
 
 function dvDecodeSrcdoc(dataUrl) {
-    // If it's already plain HTML, return as-is
     var str = typeof dataUrl === 'string' ? dataUrl.trim() : '';
     if (str.startsWith('<') || str.toLowerCase().startsWith('<!doctype')) return str;
-    // Strip data URI prefix if present
     var b64 = str.startsWith('data:') ? str.split(',')[1] : str;
-    try {
-        return decodeURIComponent(escape(atob(b64)));
-    } catch(e) {
-        // If atob fails, return raw string (might already be decoded HTML)
-        return str;
-    }
+    try { return decodeURIComponent(escape(atob(b64))); } catch(e) { return str; }
 }
 
 let meDqaLoaded = false;
 function loadMeDqa() {
     if (meDqaLoaded) return;
     meDqaLoaded = true;
-
-    const progEl  = document.getElementById('meDqaProgress');
-    const barEl   = document.getElementById('meDqaBar');
-    const statEl  = document.getElementById('meDqaStatus');
-    const emptyEl = document.getElementById('meDqaEmpty');
-    const frameEl = document.getElementById('meDqaFrame');
-    const ifEl    = document.getElementById('meDqaIframe');
-
-    function setP(pct, msg) {
-        if(progEl){ progEl.style.display='block'; barEl.style.width=pct+'%'; }
-        if(statEl){ statEl.style.display='block'; statEl.textContent=msg; }
-    }
-    function doneP() {
-        if(progEl) progEl.style.display='none';
-        if(statEl) statEl.style.display='none';
-    }
-    function showErr(msg) {
-        if(emptyEl) emptyEl.innerHTML='<p style="color:#dc3545;font-size:13px;font-weight:700;">&#9888; '+msg+'</p>';
-        doneP();
-    }
-
-    setP(15, 'Loading dashboard…');
-
-    fetch(DV_GAS + '?action=getDashboard')
-        .then(r => { setP(50,'Parsing response…'); return r.json(); })
-        .then(resp => {
-            if (!resp.ok) { showErr(resp.error || 'No DQA report yet — admin must publish first.'); return; }
-            const images = resp.images || {};
-            const meta   = resp.meta   || {};
-            const titles = meta.titles || {};
-            const dqaUrl = images['dqa_report.html'] || '';
-            if (!dqaUrl) { showErr('No DQA report saved yet — admin must run and publish the DQA tool.'); return; }
-
-            setP(80, 'Rendering report…');
-            try {
-                const html = dvDecodeSrcdoc(dqaUrl);
-                if(emptyEl)  emptyEl.style.display  = 'none';
-                if(frameEl)  frameEl.style.display  = 'block';
-                if(ifEl)     ifEl.srcdoc             = html;
-
-                const t = titles.dqaTitle || 'DQA Report';
-                const p = titles.dqaPeriod || meta.period || '';
-                document.getElementById('meDqaTitle').textContent    = t;
-                document.getElementById('meDqaSubtitle').textContent = 'Period: ' + p + (meta.ts ? ' · Updated: ' + meta.ts : '');
-                document.getElementById('meDqaMetaPill').textContent  = p + (meta.ts ? ' · ' + meta.ts : '');
-
-                if (titles.dqaFacilities || titles.dqaAvgScore || titles.dqaHighPriority) {
-                    document.getElementById('meDqaStats').style.display = 'flex';
-                    if(titles.dqaFacilities)  document.getElementById('meDqaStatFac').innerHTML   = '&#127968; '+titles.dqaFacilities;
-                    if(titles.dqaAvgScore)    document.getElementById('meDqaStatScore').innerHTML = '&#11088; Avg: '+titles.dqaAvgScore;
-                    if(titles.dqaHighPriority)document.getElementById('meDqaStatHigh').innerHTML  = '&#9888; '+titles.dqaHighPriority;
+    const progEl=document.getElementById('meDqaProgress'),barEl=document.getElementById('meDqaBar');
+    const statEl=document.getElementById('meDqaStatus'),emptyEl=document.getElementById('meDqaEmpty');
+    const frameEl=document.getElementById('meDqaFrame'),ifEl=document.getElementById('meDqaIframe');
+    function setP(p,m){if(progEl){progEl.style.display='block';barEl.style.width=p+'%';}if(statEl){statEl.style.display='block';statEl.textContent=m;}}
+    function doneP(){if(progEl)progEl.style.display='none';if(statEl)statEl.style.display='none';}
+    function showErr(m){if(emptyEl)emptyEl.innerHTML='<p style="color:#dc3545;font-size:13px;font-weight:700;">&#9888; '+m+'</p>';doneP();}
+    setP(15,'Loading dashboard…');
+    fetch(DV_GAS+'?action=getDashboard')
+        .then(r=>{setP(50,'Parsing response…');return r.json();})
+        .then(resp=>{
+            if(!resp.ok){showErr(resp.error||'No DQA report yet — admin must publish first.');return;}
+            const images=resp.images||{},meta=resp.meta||{},titles=meta.titles||{};
+            const dqaUrl=images['dqa_report.html']||'';
+            if(!dqaUrl){showErr('No DQA report saved yet — admin must run and publish the DQA tool.');return;}
+            setP(80,'Rendering report…');
+            try{
+                const html=dvDecodeSrcdoc(dqaUrl);
+                if(emptyEl)emptyEl.style.display='none';
+                if(frameEl)frameEl.style.display='block';
+                if(ifEl)ifEl.srcdoc=html;
+                const t=titles.dqaTitle||'DQA Report',p=titles.dqaPeriod||meta.period||'';
+                document.getElementById('meDqaTitle').textContent=t;
+                document.getElementById('meDqaSubtitle').textContent='Period: '+p+(meta.ts?' · Updated: '+meta.ts:'');
+                document.getElementById('meDqaMetaPill').textContent=p+(meta.ts?' · '+meta.ts:'');
+                if(titles.dqaFacilities||titles.dqaAvgScore||titles.dqaHighPriority){
+                    document.getElementById('meDqaStats').style.display='flex';
+                    if(titles.dqaFacilities)document.getElementById('meDqaStatFac').innerHTML='&#127968; '+titles.dqaFacilities;
+                    if(titles.dqaAvgScore)document.getElementById('meDqaStatScore').innerHTML='&#11088; Avg: '+titles.dqaAvgScore;
+                    if(titles.dqaHighPriority)document.getElementById('meDqaStatHigh').innerHTML='&#9888; '+titles.dqaHighPriority;
                 }
                 doneP();
-            } catch(e) { showErr('Failed to render DQA report: ' + e.message); }
+            }catch(e){showErr('Failed to render DQA report: '+e.message);}
         })
-        .catch(err => showErr('Network error: ' + err.message));
+        .catch(err=>showErr('Network error: '+err.message));
 }
 
 /* ════════════════════════════════════════════
@@ -1200,101 +1228,56 @@ var pageLabelMap = {
     'me-summary-epi':'Detailed · Malaria Epi (Summary)',
     'me-summary-int':'Detailed · Intervention (Summary)',
     'me-summary-stock':'Detailed · Stock (Summary)',
-    'med-suspected':'Key Data · Fever Suspected Malaria',
-    'med-tested':'Key Data · Tested',
-    'med-confirmed':'Key Data · Confirmed Malaria Case',
-    'med-treated':'Key Data · Confirmed and Treated',
-    'med-presumptive':'Key Data · Presumptive Treatment',
-    'med-ptr':'Key Data · Treated',
-    'med-reporting':'Key Indicators · Reporting Rate',
-    'med-testing':'Key Indicators · Testing Rate',
-    'med-tpr':'Key Indicators · Test Positivity Rate',
-    'med-cfr':'Key Indicators · Confirmed & Treatment Rate',
-    'med-comp-u5':'Comparative · Under Five',
-    'med-comp-allages':'Comparative · All Ages',
-    'me-detailed':'Key Malaria Data Elements',
-    'me-comp-u5':'Comparative · Under 5',
-    'me-comp-allages':'Comparative · All Ages',
-    'hmis-extraction':'HMIS · Data Extraction',
-    'hmis-epi-dashboard':'HMIS · Epi Dashboard',
-    'eidsr-extraction':'eIDSR · Data Extraction',
-    'eidsr-dashboard':'eIDSR · Dashboard',
-    'tes-data':'TES · Data',
-    'tes-report':'TES · Report',
-    'tes-dashboard':'TES · Dashboard',
-    'quant-data':'Quantification · Data',
-    'quant-dashboard':'Quantification · Dashboard',
-    'supply-track-data':'Supply Tracking · Data',
-    'supply-track-dashboard':'Supply Tracking · Dashboard',
-    'routine-interventions':'3.0 Interventions · Routine',
-    'int-pmc':'Routine · PMC',
-    'int-malaria-vaccine':'Routine · Malaria Vaccine',
-    'int-penta':'Routine · Penta',
-    'int-measles':'Routine · Measles',
-    'int-vitamin-a':'Routine · Vitamin A',
-    'int-iptp':'Routine · IPTp',
-    'int-anc':'Routine · ANC',
-    'int-mass-itn':'3.0 Interventions · Mass ITN',
-    'int-sbd':'3.0 Interventions · SBD',
-    'int-irs':'3.0 Interventions · IRS',
+    'med-suspected':'Key Data · Fever Suspected Malaria','med-tested':'Key Data · Tested',
+    'med-confirmed':'Key Data · Confirmed Malaria Case','med-treated':'Key Data · Confirmed and Treated',
+    'med-presumptive':'Key Data · Presumptive Treatment','med-ptr':'Key Data · Treated',
+    'med-reporting':'Key Indicators · Reporting Rate','med-testing':'Key Indicators · Testing Rate',
+    'med-tpr':'Key Indicators · Test Positivity Rate','med-cfr':'Key Indicators · Confirmed & Treatment Rate',
+    'med-comp-u5':'Comparative · Under Five','med-comp-allages':'Comparative · All Ages',
+    'me-comp-u5':'Comparative · Under 5','me-comp-allages':'Comparative · All Ages',
+    'hmis-extraction':'HMIS · Data Extraction','hmis-epi-dashboard':'HMIS · Epi Dashboard',
+    'eidsr-extraction':'eIDSR · Data Extraction','eidsr-dashboard':'eIDSR · Dashboard',
+    'tes-data':'TES · Data','tes-report':'TES · Report','tes-dashboard':'TES · Dashboard',
+    'quant-data':'Quantification · Data','quant-dashboard':'Quantification · Dashboard',
+    'supply-track-data':'Supply Tracking · Data','supply-track-dashboard':'Supply Tracking · Dashboard',
+    'int-pmc':'Routine · PMC','int-malaria-vaccine':'Routine · Malaria Vaccine',
+    'int-penta':'Routine · Penta','int-measles':'Routine · Measles',
+    'int-vitamin-a':'Routine · Vitamin A','int-iptp':'Routine · IPTp','int-anc':'Routine · ANC',
+    'int-mass-itn':'3.0 Interventions · Mass ITN','int-sbd':'3.0 Interventions · SBD','int-irs':'3.0 Interventions · IRS',
     'user-guide':'User Guide','bulletins':'Monthly Bulletin','mpd':'Malaria Programme Docs',
-    'campaign-survey':'Survey','sbd-app':'Data Collection Apps',
-    'analytics-training':'Analytics Learning',
-    'dmat-dqa':'D-MAT · Data Quality Assessment',
-    'dmat-processing':'D-MAT · Data Processing',
-    'dmat-reporting':'D-MAT · Reporting',
-    'dmat-suspected':'D-MAT · Suspected',
-    'dmat-tested':'D-MAT · Tested',
-    'dmat-confirmed':'D-MAT · Confirmed Cases',
-    'dmat-treated':'D-MAT · Confirmed and Treated',
-    'dmat-presumptive':'D-MAT · Presumptive Treatment',
-    'dmat-comparative':'D-MAT · Comparative Analysis',
-    'dmat-u5':'D-MAT · Comparative · Under 5',
-    'dmat-allages':'D-MAT · Comparative · All Ages',
+    'campaign-survey':'Survey','sbd-app':'Data Collection Apps','analytics-training':'Analytics Learning',
+    'dmat-dqa':'D-MAT · DQA','dmat-processing':'D-MAT · Data Processing','dmat-reporting':'D-MAT · Reporting',
+    'dmat-suspected':'D-MAT · Suspected','dmat-tested':'D-MAT · Tested','dmat-confirmed':'D-MAT · Confirmed Cases',
+    'dmat-treated':'D-MAT · Confirmed and Treated','dmat-presumptive':'D-MAT · Presumptive Treatment',
+    'dmat-comparative':'D-MAT · Comparative Analysis','dmat-u5':'D-MAT · Under 5','dmat-allages':'D-MAT · All Ages',
     'snt':'SNT 2015–2025','mpr':'MPR 2021–2023','other-analysis':'Other Analysis',
-    'ento-data':'Vector Control · Entomology · Data',
-    'ento-report':'Vector Control · Entomology · Report',
+    'ento-data':'Vector Control · Entomology · Data','ento-report':'Vector Control · Entomology · Report',
     'ento-dashboard':'Vector Control · Entomology · Dashboard',
-    'ir-data':'Vector Control · Insecticide Resistance · Data',
-    'ir-report':'Vector Control · Insecticide Resistance · Report',
-    'ir-dashboard':'Vector Control · Insecticide Resistance · Dashboard',
-    'finance-data':'Finance · Data',
-    'finance-report':'Finance · Report',
-    'finance-dashboard':'Finance · Dashboard',
+    'ir-data':'Vector Control · IR · Data','ir-report':'Vector Control · IR · Report','ir-dashboard':'Vector Control · IR · Dashboard',
+    'finance-data':'Finance · Data','finance-report':'Finance · Report','finance-dashboard':'Finance · Dashboard',
     'admin-dashboard':'Admin Dashboard'
 };
 
-function updateTopbarPage(tabId) {
-    var el = document.getElementById('topbarPage');
-    if (el) el.textContent = pageLabelMap[tabId] || tabId;
-}
+function updateTopbarPage(tabId){var el=document.getElementById('topbarPage');if(el)el.textContent=pageLabelMap[tabId]||tabId;}
 
 function activateTab(tabId) {
     if (currentUserRole) {
         var allowed = {};
-        roleAccess[currentUserRole].forEach(function(t){ allowed[t] = true; });
-        if (!allowed[tabId]) {
-            alert('Access restricted. This role does not have permission for this section.');
-            return;
-        }
+        roleAccess[currentUserRole].forEach(function(t){ allowed[t]=true; });
+        if (!allowed[tabId]) { alert('Access restricted. This role does not have permission for this section.'); return; }
     }
     document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
     var el = document.getElementById(tabId);
     if (el) el.classList.add('active');
-
-    document.querySelectorAll('.nav-item[data-tab], .nav-child[data-tab]').forEach(function(b){
-        b.classList.remove('active');
-    });
-    document.querySelectorAll('[data-tab="' + tabId + '"]').forEach(function(b){
-        b.classList.add('active');
-    });
+    document.querySelectorAll('.nav-item[data-tab], .nav-child[data-tab]').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('[data-tab="'+tabId+'"]').forEach(function(b){ b.classList.add('active'); });
 
     if (tabId === 'me-dqa') {
         loadMeDqa();
     } else if (MED_DRIVE_KEYS && MED_DRIVE_KEYS[tabId]) {
         loadMedTab(tabId);
-    } else {
-        var iframe = document.getElementById('frame-' + tabId);
+    } else if (tabId !== 'hmis-extraction') {
+        var iframe = document.getElementById('frame-'+tabId);
         if (iframe) {
             var dataSrc = iframe.getAttribute('data-src');
             if (dataSrc && !iframe.src.endsWith(dataSrc)) iframe.src = dataSrc;
@@ -1304,243 +1287,145 @@ function activateTab(tabId) {
     updateTopbarPage(tabId);
     closeDrawer();
 
-    var childBtn = document.querySelector('.nav-child[data-tab="' + tabId + '"]');
+    var childBtn = document.querySelector('.nav-child[data-tab="'+tabId+'"]');
     if (childBtn) {
         var groupChildren = childBtn.closest('.nav-group-children');
-        if (groupChildren && !groupChildren.classList.contains('open')) {
-            openGroup(groupChildren.id.replace('children-', ''));
-        }
+        if (groupChildren && !groupChildren.classList.contains('open')) openGroup(groupChildren.id.replace('children-',''));
         var node = childBtn.parentElement;
         while (node && !node.classList.contains('nav-group-children')) {
             if (node.id) {
-                var isCollapsed = !node.style.maxHeight || node.style.maxHeight === '0px';
+                var isCollapsed = !node.style.maxHeight || node.style.maxHeight==='0px';
                 if (isCollapsed) {
-                    node.style.maxHeight = '2000px';
-                    var chevronId = node.id.replace('Children', 'Chevron');
-                    var chevron = document.getElementById(chevronId);
-                    if (chevron) chevron.style.transform = 'rotate(180deg)';
-                    var toggleId = node.id.replace('Children', 'Toggle');
-                    var toggleBtn = document.getElementById(toggleId);
-                    if (toggleBtn) toggleBtn.classList.add('active');
+                    node.style.maxHeight='2000px';
+                    var chevronId=node.id.replace('Children','Chevron');
+                    var chevron=document.getElementById(chevronId);
+                    if(chevron)chevron.style.transform='rotate(180deg)';
+                    var toggleId=node.id.replace('Children','Toggle');
+                    var toggleBtn=document.getElementById(toggleId);
+                    if(toggleBtn)toggleBtn.classList.add('active');
                 }
             }
-            node = node.parentElement;
+            node=node.parentElement;
         }
     }
 }
 
-document.querySelectorAll('.nav-item[data-tab]').forEach(function(btn){
-    btn.addEventListener('click', function(){ activateTab(this.getAttribute('data-tab')); });
-});
-document.querySelectorAll('.nav-child[data-tab]').forEach(function(btn){
-    btn.addEventListener('click', function(){ activateTab(this.getAttribute('data-tab')); });
-});
+document.querySelectorAll('.nav-item[data-tab]').forEach(function(btn){ btn.addEventListener('click',function(){ activateTab(this.getAttribute('data-tab')); }); });
+document.querySelectorAll('.nav-child[data-tab]').forEach(function(btn){ btn.addEventListener('click',function(){ activateTab(this.getAttribute('data-tab')); }); });
 
-/* COLLAPSIBLE GROUPS */
-function openGroup(groupId) {
-    var c = document.getElementById('children-' + groupId);
-    var b = document.querySelector('[data-group="' + groupId + '"]');
-    if (c) c.classList.add('open');
-    if (b) b.classList.add('open');
+function openGroup(groupId){
+    var c=document.getElementById('children-'+groupId),b=document.querySelector('[data-group="'+groupId+'"]');
+    if(c)c.classList.add('open');if(b)b.classList.add('open');
 }
-
-function toggleNestedGroup(childrenId, chevronId, toggleId, e) {
-    if (e) e.stopPropagation();
-    var c  = document.getElementById(childrenId);
-    var ch = document.getElementById(chevronId);
-    var t  = toggleId ? document.getElementById(toggleId) : null;
-    if (!c) return;
-    var isOpen = c.style.maxHeight !== '0px' && c.style.maxHeight !== '' && c.style.maxHeight !== '0';
-    if (isOpen) {
-        c.style.maxHeight = '0';
-        if (ch) ch.style.transform = '';
-        if (t)  t.classList.remove('active');
-    } else {
-        c.style.maxHeight = '2000px';
-        if (ch) ch.style.transform = 'rotate(180deg)';
-        if (t)  t.classList.add('active');
-        var parent = c.parentElement;
-        while (parent) {
-            if (parent.id && (parent.classList.contains('nav-group-children') === false) &&
-                parent.style.maxHeight && parent.style.maxHeight !== '0px') {
-                parent.style.maxHeight = '2000px';
-            }
-            parent = parent.parentElement;
-            if (parent && parent.classList && parent.classList.contains('nav-scroll')) break;
-        }
-    }
+function toggleNestedGroup(childrenId,chevronId,toggleId,e){
+    if(e)e.stopPropagation();
+    var c=document.getElementById(childrenId),ch=document.getElementById(chevronId),t=toggleId?document.getElementById(toggleId):null;
+    if(!c)return;
+    var isOpen=c.style.maxHeight!=='0px'&&c.style.maxHeight!==''&&c.style.maxHeight!=='0';
+    if(isOpen){c.style.maxHeight='0';if(ch)ch.style.transform='';if(t)t.classList.remove('active');}
+    else{c.style.maxHeight='2000px';if(ch)ch.style.transform='rotate(180deg)';if(t)t.classList.add('active');}
 }
 
 var MED_DRIVE_KEYS = {
-
-    // ── 1.0.1 Malaria Epi ───────────────────────────────────────
-    'hmis-epi-dashboard': 'malaria_dashboard.html',
-    'eidsr-dashboard':    'eidsr_dashboard.html',
-
-    // ── 1.0.2 M&E — DQA already handled separately via loadMeDqa
-
-    // ── 1.0.2 M&E — Key Data Elements ──────────────────────────
-    'med-suspected':      'med_suspected.html',
-    'med-tested':         'med_tested.html',
-    'med-confirmed':      'med_confirmed.html',
-    'med-treated':        'med_treated.html',
-    'med-presumptive':    'med_presumptive.html',
-    'med-ptr':            'med_ptr.html',
-
-    // ── 1.0.2 M&E — Key Indicators ─────────────────────────────
-    'med-reporting':      'med_reporting.html',
-    'med-testing':        'med_testing.html',
-    'med-tpr':            'med_tpr.html',
-    'med-cfr':            'med_cfr.html',
-
-    // ── 1.0.2 M&E — Comparative Analysis ───────────────────────
-    'med-comp-u5':        'med_comp_u5.html',
-    'med-comp-allages':   'med_comp_allages.html',
-    'me-comp-u5':         'me_comp_u5.html',
-    'me-comp-allages':    'me_comp_allages.html',
-
-    // ── 1.0.2 M&E — Summary Dashboards ─────────────────────────
-    'me-summary-epi':     'malaria_epi.html',
-    'me-summary-int':     'intervention.html',
-    'me-summary-stock':   'stock.html'
+    'hmis-epi-dashboard':'malaria_dashboard.html','eidsr-dashboard':'eidsr_dashboard.html',
+    'med-suspected':'med_suspected.html','med-tested':'med_tested.html',
+    'med-confirmed':'med_confirmed.html','med-treated':'med_treated.html',
+    'med-presumptive':'med_presumptive.html','med-ptr':'med_ptr.html',
+    'med-reporting':'med_reporting.html','med-testing':'med_testing.html',
+    'med-tpr':'med_tpr.html','med-cfr':'med_cfr.html',
+    'med-comp-u5':'med_comp_u5.html','med-comp-allages':'med_comp_allages.html',
+    'me-comp-u5':'me_comp_u5.html','me-comp-allages':'me_comp_allages.html',
+    'me-summary-epi':'malaria_epi.html','me-summary-int':'intervention.html','me-summary-stock':'stock.html'
 };
 
-
-
-
-function loadMedTab(tabId) {
-    var wrap = document.getElementById(tabId + '-wrap');
-    if (!wrap) return;
-    var driveKey = MED_DRIVE_KEYS[tabId];
-    if (!driveKey) return;
-
-    wrap.innerHTML = '<div style="padding:60px 20px;text-align:center;">'
-        + '<div class="dv-loader"></div>'
-        + '<p style="font-size:13px;color:var(--muted);margin-top:14px;">Loading dashboard…</p></div>';
-
-    fetch(DV_GAS + '?action=getFileByName&filename=' + encodeURIComponent(driveKey) + '&t=' + Date.now())
-        .then(function(r){ return r.json(); })
+function loadMedTab(tabId){
+    var wrap=document.getElementById(tabId+'-wrap');
+    if(!wrap)return;
+    var driveKey=MED_DRIVE_KEYS[tabId];
+    if(!driveKey)return;
+    wrap.innerHTML='<div style="padding:60px 20px;text-align:center;"><div class="dv-loader"></div><p style="font-size:13px;color:var(--muted);margin-top:14px;">Loading dashboard…</p></div>';
+    fetch(DV_GAS+'?action=getFileByName&filename='+encodeURIComponent(driveKey)+'&t='+Date.now())
+        .then(function(r){return r.json();})
         .then(function(resp){
-            if (!resp.ok) {
-                wrap.innerHTML = '<div style="padding:60px 20px;text-align:center;color:var(--muted);">'
-                    + '<p style="font-size:13px;">File not found: <strong>' + driveKey + '</strong><br>'
-                    + 'Make sure the file exists in Google Drive.</p></div>';
-                return;
-            }
-            try {
-                var html   = dvDecodeSrcdoc(resp.content);
-                var iframe = document.createElement('iframe');
-                iframe.style.cssText = 'width:100%;height:85vh;border:none;display:block;border-radius:10px;';
-                iframe.srcdoc = html;
-                wrap.innerHTML = '';
-                wrap.appendChild(iframe);
-            } catch(e) {
-                wrap.innerHTML = '<p style="color:#dc3545;padding:20px;">Error rendering: ' + e.message + '</p>';
-            }
+            if(!resp.ok){wrap.innerHTML='<div style="padding:60px 20px;text-align:center;color:var(--muted);"><p style="font-size:13px;">File not found: <strong>'+driveKey+'</strong></p></div>';return;}
+            try{
+                var html=dvDecodeSrcdoc(resp.content);
+                var iframe=document.createElement('iframe');
+                iframe.style.cssText='width:100%;height:85vh;border:none;display:block;border-radius:10px;';
+                iframe.srcdoc=html;wrap.innerHTML='';wrap.appendChild(iframe);
+            }catch(e){wrap.innerHTML='<p style="color:#dc3545;padding:20px;">Error rendering: '+e.message+'</p>';}
         })
-        .catch(function(err){
-            wrap.innerHTML = '<p style="color:#dc3545;padding:20px;">Network error: ' + err.message + '</p>';
-        });
+        .catch(function(err){wrap.innerHTML='<p style="color:#dc3545;padding:20px;">Network error: '+err.message+'</p>';});
 }
 
-function toggleGroup(groupId) {
-    var c = document.getElementById('children-' + groupId);
-    var b = document.querySelector('[data-group="' + groupId + '"]');
-    if (!c || !b) return;
-    var isOpen = c.classList.contains('open');
-    c.classList.toggle('open', !isOpen);
-    b.classList.toggle('open', !isOpen);
+function toggleGroup(groupId){
+    var c=document.getElementById('children-'+groupId),b=document.querySelector('[data-group="'+groupId+'"]');
+    if(!c||!b)return;
+    var isOpen=c.classList.contains('open');
+    c.classList.toggle('open',!isOpen);b.classList.toggle('open',!isOpen);
 }
-
-document.querySelectorAll('.nav-group-btn[data-group]').forEach(function(btn){
-    btn.addEventListener('click', function(){ toggleGroup(this.getAttribute('data-group')); });
-});
+document.querySelectorAll('.nav-group-btn[data-group]').forEach(function(btn){ btn.addEventListener('click',function(){ toggleGroup(this.getAttribute('data-group')); }); });
 
 /* HAMBURGER / DRAWER */
-var hamburgerBtn   = document.getElementById('hamburgerBtn');
-var sidebar        = document.getElementById('sidebar');
-var sidebarOverlay = document.getElementById('sidebarOverlay');
-
-function openDrawer() {
-    sidebar.classList.add('open');
-    sidebarOverlay.classList.add('visible');
-    hamburgerBtn.classList.add('open');
-    document.body.style.overflow = 'hidden';
-}
-function closeDrawer() {
-    sidebar.classList.remove('open');
-    sidebarOverlay.classList.remove('visible');
-    hamburgerBtn.classList.remove('open');
-    document.body.style.overflow = '';
-}
-hamburgerBtn.addEventListener('click', function() {
-    sidebar.classList.contains('open') ? closeDrawer() : openDrawer();
-});
-document.getElementById('sidebarCloseBtn').addEventListener('click', closeDrawer);
-sidebarOverlay.addEventListener('click', closeDrawer);
-document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeDrawer(); });
+var hamburgerBtn=document.getElementById('hamburgerBtn'),sidebar=document.getElementById('sidebar'),sidebarOverlay=document.getElementById('sidebarOverlay');
+function openDrawer(){sidebar.classList.add('open');sidebarOverlay.classList.add('visible');hamburgerBtn.classList.add('open');document.body.style.overflow='hidden';}
+function closeDrawer(){sidebar.classList.remove('open');sidebarOverlay.classList.remove('visible');hamburgerBtn.classList.remove('open');document.body.style.overflow='';}
+hamburgerBtn.addEventListener('click',function(){sidebar.classList.contains('open')?closeDrawer():openDrawer();});
+document.getElementById('sidebarCloseBtn').addEventListener('click',closeDrawer);
+sidebarOverlay.addEventListener('click',closeDrawer);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer();});
 
 /* LOGOUT */
-document.getElementById('logoutBtn').addEventListener('click', function(){
-    currentUserRole = null; selectedRole = null;
-    meDqaLoaded = false;
-    document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
+document.getElementById('logoutBtn').addEventListener('click',function(){
+    currentUserRole=null;selectedRole=null;meDqaLoaded=false;
+    document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active');});
     document.getElementById('welcome').classList.add('active');
-    document.querySelectorAll('.nav-item[data-tab]').forEach(function(b){
-        b.classList.toggle('active', b.getAttribute('data-tab') === 'welcome');
-    });
-    document.querySelectorAll('.nav-child[data-tab]').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.nav-item[data-tab]').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-tab')==='welcome');});
+    document.querySelectorAll('.nav-child[data-tab]').forEach(function(b){b.classList.remove('active');});
     updateTopbarPage('welcome');
-    document.getElementById('adminTabBtn').style.display  = 'none';
-    document.getElementById('adminSection').style.display = 'none';
-    document.querySelectorAll('[data-tab]').forEach(function(btn){
-        btn.style.opacity = ''; btn.style.pointerEvents = '';
-    });
-    document.querySelectorAll('iframe[data-src]').forEach(function(f){ f.src = ''; });
-    document.querySelectorAll('.me-detail-wrap').forEach(function(w){ w.innerHTML = ''; });
-    document.getElementById('meDqaEmpty').style.display = 'block';
-    document.getElementById('meDqaEmpty').innerHTML = '<div class="dv-loader"></div><p style="font-size:13px;color:var(--muted);margin-top:14px;">Loading dashboard…</p>';
-    document.getElementById('meDqaFrame').style.display  = 'none';
-    document.getElementById('meDqaStats').style.display  = 'none';
-    document.getElementById('meDqaIframe').srcdoc        = '';
-    document.getElementById('passwordArea').style.display  = 'none';
-    document.getElementById('rolePassword').value          = '';
-    document.getElementById('passwordError').style.display = 'none';
-    document.getElementById('roleModal').style.display     = 'flex';
-    document.body.style.overflow = 'hidden';
+    document.getElementById('adminTabBtn').style.display='none';
+    document.getElementById('adminSection').style.display='none';
+    document.querySelectorAll('[data-tab]').forEach(function(btn){btn.style.opacity='';btn.style.pointerEvents='';});
+    document.querySelectorAll('iframe[data-src]').forEach(function(f){f.src='';});
+    document.querySelectorAll('.me-detail-wrap').forEach(function(w){w.innerHTML='';});
+    document.getElementById('meDqaEmpty').style.display='block';
+    document.getElementById('meDqaEmpty').innerHTML='<div class="dv-loader"></div><p style="font-size:13px;color:var(--muted);margin-top:14px;">Loading dashboard…</p>';
+    document.getElementById('meDqaFrame').style.display='none';
+    document.getElementById('meDqaStats').style.display='none';
+    document.getElementById('meDqaIframe').srcdoc='';
+    document.getElementById('passwordArea').style.display='none';
+    document.getElementById('rolePassword').value='';
+    document.getElementById('passwordError').style.display='none';
+    document.getElementById('roleModal').style.display='flex';
+    document.body.style.overflow='hidden';
+    closeHmisFrame();
 });
 
 /* ════════════════════════════════════════════
    ADMIN DASHBOARD — PUBLISH + SUB-TABS
 ════════════════════════════════════════════ */
-function dvStatus(msg,color){const el=document.getElementById('dvPushStatus');if(el){el.innerHTML=msg;el.style.color=color||'#28a745';}}
-function dvWorkflowLog(msg){const el=document.getElementById('dvWorkflowStatus');if(!el)return;if(!msg){el.style.display='none';el.textContent='';return;}el.style.display='block';el.textContent=msg;}
-function dvShowUpdateBar(){const bar=document.getElementById('dvUpdateBar');if(bar){bar.style.display='flex';document.getElementById('dvPushStatus').textContent='';}}
+function dvStatus(msg,color){var el=document.getElementById('dvPushStatus');if(el){el.innerHTML=msg;el.style.color=color||'#28a745';}}
+function dvWorkflowLog(msg){var el=document.getElementById('dvWorkflowStatus');if(!el)return;if(!msg){el.style.display='none';el.textContent='';return;}el.style.display='block';el.textContent=msg;}
+function dvShowUpdateBar(){var bar=document.getElementById('dvUpdateBar');if(bar){bar.style.display='flex';document.getElementById('dvPushStatus').textContent='';}}
 
-function switchAdminTab(tab) {
-    const paneAuto = document.getElementById('adminPaneAuto');
-    const paneDqa  = document.getElementById('adminPaneDqa');
-    const btnAuto  = document.getElementById('adminTabAuto');
-    const btnDqa   = document.getElementById('adminTabDqa');
-    if (tab === 'dqa') {
-        paneAuto.style.display = 'none';
-        paneDqa.style.display  = 'block';
-        btnAuto.style.background = 'rgba(0,0,0,0.04)'; btnAuto.style.color = '#666';
-        btnDqa.style.background  = '#2b5f8a';           btnDqa.style.color  = '#fff';
-        const iframe = document.getElementById('dqaEmbedIframe');
-        if (iframe && !iframe.src && iframe.getAttribute('data-src')) {
-            iframe.src = iframe.getAttribute('data-src');
-        }
-    } else {
-        paneAuto.style.display = 'block';
-        paneDqa.style.display  = 'none';
-        btnAuto.style.background = '#004080'; btnAuto.style.color = '#fff';
-        btnDqa.style.background  = 'rgba(0,0,0,0.04)'; btnDqa.style.color = '#666';
+function switchAdminTab(tab){
+    var pA=document.getElementById('adminPaneAuto'),pD=document.getElementById('adminPaneDqa');
+    var bA=document.getElementById('adminTabAuto'),bD=document.getElementById('adminTabDqa');
+    if(tab==='dqa'){
+        pA.style.display='none';pD.style.display='block';
+        bA.style.background='rgba(0,0,0,0.04)';bA.style.color='#666';
+        bD.style.background='#2b5f8a';bD.style.color='#fff';
+        var iframe=document.getElementById('dqaEmbedIframe');
+        if(iframe&&!iframe.src&&iframe.getAttribute('data-src'))iframe.src=iframe.getAttribute('data-src');
+    }else{
+        pA.style.display='block';pD.style.display='none';
+        bA.style.background='#004080';bA.style.color='#fff';
+        bD.style.background='rgba(0,0,0,0.04)';bD.style.color='#666';
     }
 }
 
 async function dvPushToDashboard(){
-    const now=new Date();const ts=now.toLocaleDateString('en-GB')+' '+now.toLocaleTimeString();
+    const now=new Date(),ts=now.toLocaleDateString('en-GB')+' '+now.toLocaleTimeString();
     const files={};
     const cv1=document.getElementById('da_rsCanvas1'),cv2=document.getElementById('da_rsCanvas2');
     if(cv1&&cv1.width>0)files['reporting_status_all_facilities.png']=cv1.toDataURL('image/png');
@@ -1553,8 +1438,7 @@ async function dvPushToDashboard(){
     const tprPeriod=(typeof da_tprState!=='undefined'&&da_tprState.config)?da_tprState.config.start+' → '+da_tprState.config.end:'';
     const period=[rsPeriod,tprPeriod].filter(Boolean).join(' | ');
     const titles={rsTitle1:rsTitle+' — All Facilities',rsTitle2:rsTitle+' — Active Facilities Only',tprTitle:document.getElementById('da_tprMapTitle')?.value||'NMCP Malaria TPR by Chiefdom'};
-    dvStatus('&#9654; Publishing '+Object.keys(files).length+' charts to Dashboard…','#17a2b8');
-    dvWorkflowLog('Publishing…');
+    dvStatus('&#9654; Publishing '+Object.keys(files).length+' charts…','#17a2b8');dvWorkflowLog('Publishing…');
     try{
         const body=new URLSearchParams({action:'saveDashboard',files:JSON.stringify(files),ts,period,titles:JSON.stringify(titles)});
         const resp=await fetch(DV_GAS,{method:'POST',body});const data=await resp.json();
@@ -1563,22 +1447,15 @@ async function dvPushToDashboard(){
     }catch(err){dvStatus('&#10008; Network error: '+err.message,'#dc3545');dvWorkflowLog('&#10008; '+err.message);}
 }
 
-window.addEventListener('message', function(e) {
-    if (!e.data || typeof e.data !== 'object') return;
-    if (e.data.type === 'dqa_saved') {
-        const statusBar = document.getElementById('dqaEmbedStatus');
-        const statusMsg = document.getElementById('dqaEmbedStatusMsg');
-        if (statusBar) {
-            const p=e.data.period||'',s=e.data.avgScore||'',h=e.data.highPriority||'';
-            if(statusMsg) statusMsg.textContent='✔ DQA report published'+(p?' — '+p:'')+(s?' · Avg: '+s:'')+(h?' · High priority: '+h:'');
-            statusBar.style.display='flex';
-        }
-        dvShowUpdateBar();
-        const bar=document.getElementById('dvUpdateBar');
-        if(bar) bar.scrollIntoView({behavior:'smooth',block:'nearest'});
-        meDqaLoaded = false;
+window.addEventListener('message',function(e){
+    if(!e.data||typeof e.data!=='object')return;
+    if(e.data.type==='dqa_saved'){
+        var statusBar=document.getElementById('dqaEmbedStatus'),statusMsg=document.getElementById('dqaEmbedStatusMsg');
+        if(statusBar){var p=e.data.period||'',s=e.data.avgScore||'',h=e.data.highPriority||'';if(statusMsg)statusMsg.textContent='✔ DQA report published'+(p?' — '+p:'')+(s?' · Avg: '+s:'')+(h?' · High priority: '+h:'');statusBar.style.display='flex';}
+        dvShowUpdateBar();var bar=document.getElementById('dvUpdateBar');if(bar)bar.scrollIntoView({behavior:'smooth',block:'nearest'});
+        meDqaLoaded=false;
     }
-    if (e.data.type === 'pipeline_done') dvShowUpdateBar();
+    if(e.data.type==='pipeline_done')dvShowUpdateBar();
 });
 </script>
 </body>
