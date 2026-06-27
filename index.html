@@ -554,20 +554,21 @@
             </button>
             <div class="nav-group-children" id="children-dmat">
                 <button class="nav-child nav-l2" data-tab="dmat-dqa">6.0.1 Data Quality Assessment</button>
-                <button class="nav-child nav-l2" data-tab="dmat-processing">6.0.2 Data Processing</button>
-                <button class="nav-child nav-l2" data-tab="dmat-reporting">6.0.3 Reporting</button>
-                <button class="nav-child nav-l2" data-tab="dmat-suspected">6.0.4 Suspected</button>
-                <button class="nav-child nav-l2" data-tab="dmat-tested">6.0.5 Tested</button>
-                <button class="nav-child nav-l2" data-tab="dmat-confirmed">6.0.6 Confirmed Cases</button>
-                <button class="nav-child nav-l2" data-tab="dmat-treated">6.0.7 Confirmed and Treated</button>
+                <button class="nav-child nav-l2" data-tab="dmat-reporting">6.0.2 Reporting</button>
+                <button class="nav-child nav-l2" data-tab="dmat-suspected">6.0.3 Suspected</button>
+                <button class="nav-child nav-l2" data-tab="dmat-tested">6.0.4 Tested</button>
+                <button class="nav-child nav-l2" data-tab="dmat-confirmed">6.0.5 Confirmed Cases</button>
+                <button class="nav-child nav-l2" data-tab="dmat-treated">6.0.6 Confirmed and Treated</button>
+                <button class="nav-child nav-l2" data-tab="dmat-confirmed-not-treated">6.0.7 Confirmed and Not Treated</button>
                 <button class="nav-child nav-l2" data-tab="dmat-presumptive">6.0.8 Presumptive Treatment</button>
+                <button class="nav-child nav-l2" data-tab="dmat-total-treated">6.0.9 Total Treated</button>
                 <button class="nav-child nav-l2-toggle" id="dmatCompToggle" onclick="toggleNestedGroup('dmatCompChildren','dmatCompChevron','dmatCompToggle',event)">
-                    <span>6.0.9 Comparative Analysis</span>
+                    <span>6.0.10 Comparative Analysis</span>
                     <svg id="dmatCompChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <div id="dmatCompChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;">
-                    <button class="nav-child nav-l3" data-tab="dmat-u5">6.0.9.1 Under 5</button>
-                    <button class="nav-child nav-l3" data-tab="dmat-allages">6.0.9.2 All Ages</button>
+                    <button class="nav-child nav-l3" data-tab="dmat-u5">6.0.10.1 Under 5</button>
+                    <button class="nav-child nav-l3" data-tab="dmat-allages">6.0.10.2 All Ages</button>
                 </div>
             </div>
         </div>
@@ -583,7 +584,14 @@
             <div class="nav-group-children" id="children-retro">
                 <button class="nav-child nav-l2" data-tab="snt">7.0.1 SNT 2015&#8211;2025</button>
                 <button class="nav-child nav-l2" data-tab="mpr">7.0.2 MPR 2021&#8211;2023</button>
-                <button class="nav-child nav-l2" data-tab="other-analysis">7.0.3 Other Analysis</button>
+                <button class="nav-child nav-l2-toggle" id="otherAnalysisToggle" onclick="toggleNestedGroup('otherAnalysisChildren','otherAnalysisChevron','otherAnalysisToggle',event)">
+                    <span>7.0.3 Other Analysis</span>
+                    <svg id="otherAnalysisChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="otherAnalysisChildren" style="overflow:hidden;max-height:0;transition:max-height .3s ease;">
+                    <button class="nav-child nav-l3" data-tab="other-trend-allages">7.0.3.1 Trend Analysis (All Ages)</button>
+                    <button class="nav-child nav-l3" data-tab="other-trend-u5">7.0.3.2 Trend Analysis (Under 5)</button>
+                </div>
             </div>
         </div>
 
@@ -984,13 +992,14 @@
 
     <!-- D-MAT (AUTOMATION) -->
     <div id="dmat-dqa" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-dqa" src="" data-src="dqa.html" loading="lazy" allow="fullscreen"></iframe></div></div>
-    <div id="dmat-processing" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-processing" src="" data-src="dmat_processing.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="dmat-reporting" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-reporting" src="" data-src="dmat_reporting.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="dmat-suspected" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-suspected" src="" data-src="dmat_suspected.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="dmat-tested" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-tested" src="" data-src="dmat_tested.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="dmat-confirmed" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-confirmed" src="" data-src="dmat_confirmed.html" loading="lazy" allow="fullscreen"></iframe></div></div>
-    <div id="dmat-treated" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-treated" src="" data-src="dmat_treated.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="dmat-treated" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-treated" src="" data-src="dmat_confirmed_and_treated.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="dmat-confirmed-not-treated" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-confirmed-not-treated" src="" data-src="dmat_confirmed_not_treated.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="dmat-presumptive" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-presumptive" src="" data-src="dmat_presumptive.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="dmat-total-treated" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-total-treated" src="" data-src="dmat_total_treated.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="dmat-comparative" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-comparative" src="" data-src="dmat_comparative.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="dmat-u5" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-u5" src="" data-src="dmat_u5.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="dmat-allages" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-allages" src="" data-src="dmat_allages.html" loading="lazy" allow="fullscreen"></iframe></div></div>
@@ -998,7 +1007,8 @@
     <!-- SNT / MPR / OTHER -->
     <div id="snt" class="tab-content"><div class="iframe-pane"><iframe id="frame-snt" src="" data-src="snt.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="mpr" class="tab-content"><div class="iframe-pane"><iframe id="frame-mpr" src="" data-src="mpr.html" loading="lazy" allow="fullscreen"></iframe></div></div>
-    <div id="other-analysis" class="tab-content"><div class="iframe-pane"><iframe id="frame-other-analysis" src="" data-src="other_analysis.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="other-trend-allages" class="tab-content"><div class="iframe-pane"><iframe id="frame-other-trend-allages" src="" data-src="other_trend_allages.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="other-trend-u5" class="tab-content"><div class="iframe-pane"><iframe id="frame-other-trend-u5" src="" data-src="other_trend_u5.html" loading="lazy" allow="fullscreen"></iframe></div></div>
 
     <!-- 8.0 FINANCE -->
     <div id="finance-data" class="tab-content"><div class="iframe-pane"><iframe id="frame-finance-data" src="" data-src="finance_data.html" loading="lazy" allow="fullscreen"></iframe></div></div>
@@ -1076,8 +1086,9 @@ var rolePasswords = {
     admin:    'admin'
 };
 
-var DMAT_TABS = ['dmat-dqa','dmat-processing','dmat-reporting','dmat-suspected','dmat-tested',
-                 'dmat-confirmed','dmat-treated','dmat-presumptive',
+var DMAT_TABS = ['dmat-dqa','dmat-reporting','dmat-suspected','dmat-tested',
+                 'dmat-confirmed','dmat-treated','dmat-confirmed-not-treated',
+                 'dmat-presumptive','dmat-total-treated',
                  'dmat-comparative','dmat-u5','dmat-allages'];
 var ME_SUMMARY_TABS = ['me-summary-epi','me-summary-int','me-summary-stock'];
 var ME_DETAIL_TABS = ['med-suspected','med-tested','med-confirmed','med-treated',
@@ -1094,7 +1105,7 @@ var SCM_TABS         = ['quant-data','quant-dashboard','supply-track-data','supp
 var roleAccess = {
     national: ['welcome','me-dqa','me-detailed',
                'user-guide','bulletins','mpd','campaign-survey',
-               'sbd-app','analytics-training','snt','mpr','other-analysis']
+               'sbd-app','analytics-training','snt','mpr','other-trend-allages','other-trend-u5']
                .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS).concat(DMAT_TABS)
                .concat(MALARIA_EPI_TABS).concat(TES_TABS).concat(SCM_TABS).concat(INT_TABS)
                .concat(ENTO_TABS).concat(FINANCE_TABS),
@@ -1111,7 +1122,7 @@ var roleAccess = {
                .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS).concat(INT_TABS),
     admin:    ['welcome','me-dqa','me-detailed',
                'user-guide','bulletins','mpd','campaign-survey',
-               'sbd-app','analytics-training','snt','mpr','other-analysis',
+               'sbd-app','analytics-training','snt','mpr','other-trend-allages','other-trend-u5',
                'admin-dashboard']
                .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS).concat(DMAT_TABS)
                .concat(MALARIA_EPI_TABS).concat(TES_TABS).concat(SCM_TABS).concat(INT_TABS)
@@ -1246,11 +1257,14 @@ var pageLabelMap = {
     'int-mass-itn':'3.0 Interventions · Mass ITN','int-sbd':'3.0 Interventions · SBD','int-irs':'3.0 Interventions · IRS',
     'user-guide':'User Guide','bulletins':'Monthly Bulletin','mpd':'Malaria Programme Docs',
     'campaign-survey':'Survey','sbd-app':'Data Collection Apps','analytics-training':'Analytics Learning',
-    'dmat-dqa':'D-MAT · DQA','dmat-processing':'D-MAT · Data Processing','dmat-reporting':'D-MAT · Reporting',
+    'dmat-dqa':'D-MAT · DQA','dmat-reporting':'D-MAT · Reporting',
     'dmat-suspected':'D-MAT · Suspected','dmat-tested':'D-MAT · Tested','dmat-confirmed':'D-MAT · Confirmed Cases',
-    'dmat-treated':'D-MAT · Confirmed and Treated','dmat-presumptive':'D-MAT · Presumptive Treatment',
+    'dmat-treated':'D-MAT · Confirmed and Treated','dmat-confirmed-not-treated':'D-MAT · Confirmed and Not Treated',
+    'dmat-presumptive':'D-MAT · Presumptive Treatment','dmat-total-treated':'D-MAT · Total Treated',
     'dmat-comparative':'D-MAT · Comparative Analysis','dmat-u5':'D-MAT · Under 5','dmat-allages':'D-MAT · All Ages',
-    'snt':'SNT 2015–2025','mpr':'MPR 2021–2023','other-analysis':'Other Analysis',
+    'snt':'SNT 2015–2025','mpr':'MPR 2021–2023',
+    'other-trend-allages':'Other Analysis · Trend Analysis (All Ages)',
+    'other-trend-u5':'Other Analysis · Trend Analysis (Under 5)',
     'ento-data':'Vector Control · Entomology · Data','ento-report':'Vector Control · Entomology · Report',
     'ento-dashboard':'Vector Control · Entomology · Dashboard',
     'ir-data':'Vector Control · IR · Data','ir-report':'Vector Control · IR · Report','ir-dashboard':'Vector Control · IR · Dashboard',
