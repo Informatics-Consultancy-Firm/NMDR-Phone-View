@@ -569,13 +569,14 @@
                 <button class="nav-child nav-l2" data-tab="dmat-confirmed-not-treated">6.0.7 Confirmed and Not Treated</button>
                 <button class="nav-child nav-l2" data-tab="dmat-presumptive">6.0.8 Presumptive Treatment</button>
                 <button class="nav-child nav-l2" data-tab="dmat-total-treated">6.0.9 Total Treated</button>
+                <button class="nav-child nav-l2" data-tab="dmat-tpr">6.0.10 Test Positivity Rate</button>
                 <button class="nav-child nav-l2-toggle" id="dmatCompToggle" onclick="toggleNestedGroup('dmatCompChildren','dmatCompChevron','dmatCompToggle',event)">
-                    <span>6.0.10 Comparative Analysis</span>
+                    <span>6.0.11 Comparative Analysis</span>
                     <svg id="dmatCompChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <div id="dmatCompChildren" style="overflow:hidden;max-height:0;transition:max-height .25s ease;">
-                    <button class="nav-child nav-l3" data-tab="dmat-u5">6.0.10.1 Under 5</button>
-                    <button class="nav-child nav-l3" data-tab="dmat-allages">6.0.10.2 All Ages</button>
+                    <button class="nav-child nav-l3" data-tab="dmat-u5">6.0.11.1 Under 5</button>
+                    <button class="nav-child nav-l3" data-tab="dmat-allages">6.0.11.2 All Ages</button>
                 </div>
             </div>
         </div>
@@ -1008,6 +1009,7 @@
     <div id="dmat-confirmed-not-treated" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-confirmed-not-treated" src="" data-src="dmat_confirmed_not_treated.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="dmat-presumptive" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-presumptive" src="" data-src="dmat_presumptive.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="dmat-total-treated" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-total-treated" src="" data-src="dmat_total_treated.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="dmat-tpr" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-tpr" src="" data-src="tpr.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="dmat-comparative" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-comparative" src="" data-src="dmat_comparative.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="dmat-u5" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-u5" src="" data-src="dmat_u5.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="dmat-allages" class="tab-content"><div class="iframe-pane"><iframe id="frame-dmat-allages" src="" data-src="dmat_allages.html" loading="lazy" allow="fullscreen"></iframe></div></div>
@@ -1096,7 +1098,7 @@ var rolePasswords = {
 
 var DMAT_TABS = ['dmat-dqa','dmat-reporting','dmat-suspected','dmat-tested',
                  'dmat-confirmed','dmat-treated','dmat-confirmed-not-treated',
-                 'dmat-presumptive','dmat-total-treated',
+                 'dmat-presumptive','dmat-total-treated','dmat-tpr',
                  'dmat-comparative','dmat-u5','dmat-allages'];
 var ME_SUMMARY_TABS = ['me-summary-epi','me-summary-int','me-summary-stock'];
 var ME_DETAIL_TABS = ['med-suspected','med-tested','med-confirmed','med-treated',
@@ -1269,6 +1271,7 @@ var pageLabelMap = {
     'dmat-suspected':'D-MAT · Suspected','dmat-tested':'D-MAT · Tested','dmat-confirmed':'D-MAT · Confirmed Cases',
     'dmat-treated':'D-MAT · Confirmed and Treated','dmat-confirmed-not-treated':'D-MAT · Confirmed and Not Treated',
     'dmat-presumptive':'D-MAT · Presumptive Treatment','dmat-total-treated':'D-MAT · Total Treated',
+    'dmat-tpr':'D-MAT · Test Positivity Rate',
     'dmat-comparative':'D-MAT · Comparative Analysis','dmat-u5':'D-MAT · Under 5','dmat-allages':'D-MAT · All Ages',
     'snt':'SNT 2015–2025','mpr':'MPR 2021–2023',
     'other-trend-allages':'Other Analysis · Trend Analysis (All Ages)',
