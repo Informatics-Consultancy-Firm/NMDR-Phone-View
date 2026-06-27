@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <base target="_self">
-    <title>National Malaria Data Repository</title>
+    <title>National Malaria Data Repository | ICF-SL</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -538,7 +538,14 @@
                 <button class="nav-child nav-l2" data-tab="user-guide">5.0.1 User Guide</button>
                 <button class="nav-child nav-l2" data-tab="bulletins">5.0.2 Monthly Bulletin</button>
                 <button class="nav-child nav-l2" data-tab="mpd">5.0.3 Malaria Programme Docs</button>
-                <button class="nav-child nav-l2" data-tab="campaign-survey">5.0.4 Survey</button>
+                <button class="nav-child nav-l2-toggle" id="surveyToggle" onclick="toggleNestedGroup('surveyChildren','surveyChevron','surveyToggle',event)">
+                    <span>5.0.4 Survey</span>
+                    <svg id="surveyChevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s;flex-shrink:0;opacity:0.6;margin-left:4px;"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="surveyChildren" style="overflow:hidden;max-height:0;transition:max-height .3s ease;">
+                    <button class="nav-child nav-l3" data-tab="survey-data">5.0.4.1 Data</button>
+                    <button class="nav-child nav-l3" data-tab="survey-report">5.0.4.2 Report</button>
+                </div>
                 <button class="nav-child nav-l2" data-tab="sbd-app">5.0.5 Data Collection Apps</button>
                 <button class="nav-child nav-l2" data-tab="analytics-training">5.0.6 Analytics Learning</button>
             </div>
@@ -986,7 +993,8 @@
     <div id="user-guide" class="tab-content"><div class="iframe-pane"><iframe id="frame-user-guide" src="" data-src="user_guide.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="bulletins" class="tab-content"><div class="iframe-pane"><iframe id="frame-bulletins" src="" data-src="bulletins.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="mpd" class="tab-content"><div class="iframe-pane"><iframe id="frame-mpd" src="" data-src="mpd.html" loading="lazy" allow="fullscreen"></iframe></div></div>
-    <div id="campaign-survey" class="tab-content"><div class="iframe-pane"><iframe id="frame-campaign-survey" src="" data-src="campaign_survey.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="survey-data" class="tab-content"><div class="iframe-pane"><iframe id="frame-survey-data" src="" data-src="survey_data.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="survey-report" class="tab-content"><div class="iframe-pane"><iframe id="frame-survey-report" src="" data-src="survey_report.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="sbd-app" class="tab-content"><div class="iframe-pane"><iframe id="frame-sbd-app" src="" data-src="data_collection_apps.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="analytics-training" class="tab-content"><div class="iframe-pane"><iframe id="frame-analytics-training" src="" data-src="analytics_learning.html" loading="lazy" allow="fullscreen"></iframe></div></div>
 
@@ -1104,7 +1112,7 @@ var SCM_TABS         = ['quant-data','quant-dashboard','supply-track-data','supp
 
 var roleAccess = {
     national: ['welcome','me-dqa','me-detailed',
-               'user-guide','bulletins','mpd','campaign-survey',
+               'user-guide','bulletins','mpd','survey-data','survey-report',
                'sbd-app','analytics-training','snt','mpr','other-trend-allages','other-trend-u5']
                .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS).concat(DMAT_TABS)
                .concat(MALARIA_EPI_TABS).concat(TES_TABS).concat(SCM_TABS).concat(INT_TABS)
@@ -1121,7 +1129,7 @@ var roleAccess = {
                'user-guide','bulletins','analytics-training']
                .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS).concat(INT_TABS),
     admin:    ['welcome','me-dqa','me-detailed',
-               'user-guide','bulletins','mpd','campaign-survey',
+               'user-guide','bulletins','mpd','survey-data','survey-report',
                'sbd-app','analytics-training','snt','mpr','other-trend-allages','other-trend-u5',
                'admin-dashboard']
                .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS).concat(DMAT_TABS)
@@ -1256,7 +1264,7 @@ var pageLabelMap = {
     'int-vitamin-a':'Routine · Vitamin A','int-iptp':'Routine · IPTp','int-anc':'Routine · ANC',
     'int-mass-itn':'3.0 Interventions · Mass ITN','int-sbd':'3.0 Interventions · SBD','int-irs':'3.0 Interventions · IRS',
     'user-guide':'User Guide','bulletins':'Monthly Bulletin','mpd':'Malaria Programme Docs',
-    'campaign-survey':'Survey','sbd-app':'Data Collection Apps','analytics-training':'Analytics Learning',
+    'campaign-survey':'Survey','survey-data':'Survey · Data','survey-report':'Survey · Report','sbd-app':'Data Collection Apps','analytics-training':'Analytics Learning',
     'dmat-dqa':'D-MAT · DQA','dmat-reporting':'D-MAT · Reporting',
     'dmat-suspected':'D-MAT · Suspected','dmat-tested':'D-MAT · Tested','dmat-confirmed':'D-MAT · Confirmed Cases',
     'dmat-treated':'D-MAT · Confirmed and Treated','dmat-confirmed-not-treated':'D-MAT · Confirmed and Not Treated',
