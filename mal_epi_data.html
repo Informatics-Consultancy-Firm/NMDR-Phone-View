@@ -549,7 +549,6 @@
                 <button class="btn btn-secondary" onclick="resetFilters()">Reset Filters</button>
                 <button class="btn btn-secondary" onclick="exportData()">Export CSV</button>
                 <button class="btn btn-secondary" onclick="downloadSnapshot()">&#11015; Snapshot</button>
-                <!-- ── NEW: Save to Google Drive ── -->
                 <button class="btn-drive" id="driveSaveBtn" onclick="saveDashboardToDrive()">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;">
                         <path d="M6.28 3l5.22 9.04L5.94 21H2L7.72 12 2 3h4.28zM15.5 3L22 15h-5.5L10 3h5.5zM16.5 21L9 9h5.5l7.5 12h-5.5z"/>
@@ -582,7 +581,6 @@
                 </div>
             </div>
 
-            <!-- ── Drive save status bar ── -->
             <div id="driveStatusBar">
                 <div id="driveStatusMsg"></div>
                 <div class="ds-progress-wrap" id="driveProgressWrap" style="display:none;">
@@ -716,16 +714,15 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
 // ═══════════════════════════════════════════════════════════════
-//  NMCP Malaria Analytics Dashboard  v5
-//  GAS Proxy → sl.dhis2.org/hmis23
-//  Added: Google Drive save (same pattern as DQA Tool v5)
+//  NMCP Malaria Analytics Dashboard  v6
+//  Fixes:
+//    1. Horizontal bar chart tooltip — value correctly read from ctx.parsed.x
+//    2. Snapshot no longer includes "New Query" button
 // ═══════════════════════════════════════════════════════════════
 
 const PROXY    = 'https://script.google.com/macros/s/AKfycbyRXc68PYSmDSCYPakAS8Gc9R00kRjmsMYoDujPYMItyquXfwMAJUtRqXLiDlNWbSfDQQ/exec';
 const BASE_URL = 'https://sl.dhis2.org/hmis23';
 const AUTH     = 'Basic ' + btoa('musa-sillahkanu:Navigator/2024!');
-
-// ── Same GAS endpoint used by DQA Tool + NMDR Admin Dashboard ──
 const DRIVE_GAS = 'https://script.google.com/macros/s/AKfycbyTprTce5ft5gxSwY7jOku2GNeKMG8V-X1BrY0jB3QDPyuVWXwFPNr_CH80BRfcLcwD/exec';
 
 const LEVEL_DIST  = 2;
@@ -788,7 +785,6 @@ const DX_LOOKUP = {};
 DX_MAP.forEach(d => { DX_LOOKUP[d.dxStr] = d; });
 const ALL_DX = [...new Set(DX_MAP.map(d => d.dxStr))];
 
-// ── State ──
 let rawData      = [];
 let filteredData = [];
 let charts       = {};
@@ -798,7 +794,6 @@ let _running     = false;
 let _cfgStart    = '';
 let _cfgEnd      = '';
 
-// ── Core fetch via GAS proxy ──
 async function dhis2(path) {
     const url  = BASE_URL + path;
     const pUrl = PROXY + '?url=' + encodeURIComponent(url) + '&Authorization=' + encodeURIComponent(AUTH);
@@ -840,7 +835,6 @@ function getHFType(name) {
     return 'Other';
 }
 
-// ── Progress UI ──
 const stepEls = {};
 
 function setProgress(pct, phase, detail) {
@@ -894,7 +888,6 @@ function syncStickyHeight() {
 }
 window.addEventListener('resize', syncStickyHeight);
 
-// ── Nav ──
 function toggleNav() {
     document.getElementById('navMenu').classList.toggle('active');
     document.getElementById('navArrow').classList.toggle('collapsed');
@@ -906,7 +899,6 @@ function scrollToSection(id) {
     document.getElementById('navArrow').classList.remove('collapsed');
 }
 
-// ── Slot helpers ──
 let _accMap = {};
 
 function emptySlot(ouId, period) {
@@ -946,7 +938,6 @@ function showConfigScreen() {
     document.getElementById('dashboardScreen').style.display = 'none';
 }
 
-// ── Main pipeline ──
 async function runPipeline() {
     if (_running) return;
     const start = (document.getElementById('cfgStart') || {}).value;
@@ -963,7 +954,6 @@ async function runPipeline() {
     }
     if (errEl) errEl.style.display = 'none';
 
-    // Store config for Drive save
     _cfgStart = start;
     _cfgEnd   = end;
 
@@ -1159,7 +1149,6 @@ async function runPipeline() {
     }
 }
 
-// ── Geo filters ──
 function populateGeoFilters() {
     const distSet = {};
     _phuIds.forEach(id => {
@@ -1285,15 +1274,51 @@ function resetFilters() {
 
 function exportData() {
     if (!filteredData.length) { alert('No data to export'); return; }
-    const cols = ['level2','level4','level5','hfType','year','month',
-                  'opd','suspected','totalTests','confirmed','actTreatment',
-                  'confirmedAndTreated','presumptiveTreatment','admissions','deaths'];
-    const csv = [cols.join(','),
-        ...filteredData.map(r => cols.map(c => r[c] ?? '').join(','))
-    ].join('\n');
+
+    // ── All columns: hierarchy + all raw slot fields + derived indicators ──
+    const cols = [
+        // Hierarchy
+        'level2','level4','level5','hfType','year','month',
+        // OPD
+        'opd','opdUnder5','opdOver5',
+        // Suspected — facility
+        'suspectedHF','suspectedHF_U5','suspectedHF_5_14','suspectedHF_15plus',
+        // Suspected — community
+        'suspectedCommunity','suspectedCom_U5','suspectedCom_5_14','suspectedCom_15plus',
+        // RDT — facility
+        'rdtPosHF','rdtPosHF_U5','rdtPosHF_5_14','rdtPosHF_15plus','rdtNegHF',
+        // RDT — community
+        'rdtPosCom','rdtPosCom_U5','rdtPosCom_5_14','rdtPosCom_15plus','rdtNegCom',
+        // Microscopy
+        'microPos','microPos_U5','microPos_5_14','microPos_15plus','microNeg',
+        // ACT — facility
+        'actUnder24','actOver24',
+        // ACT — community
+        'actComUnder24','actComOver24',
+        // Admissions
+        'admUnder5','adm5_14','admOver15',
+        // Deaths — children
+        'deathChild','deathChild_1_59m','deathChild_5_9y','deathChild_10_14y',
+        // Deaths — adults
+        'deathAdult','deathAdult_Female','deathAdult_Male',
+        // Derived indicators
+        'suspected','rdtTests','microTests','totalTests',
+        'confirmed','actTreatment','confirmedAndTreated','presumptiveTreatment',
+        'admissions','deaths',
+    ];
+
+    const header = cols.join(',');
+    const rows = filteredData.map(r =>
+        cols.map(c => {
+            const v = r[c];
+            return v === undefined || v === null ? '' : v;
+        }).join(',')
+    );
+
+    const csv = [header, ...rows].join('\n');
     const a = document.createElement('a');
     a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-    a.download = 'malaria_data_' + new Date().toISOString().slice(0,10) + '.csv';
+    a.download = 'malaria_data_' + _cfgStart + '_' + _cfgEnd + '_' + new Date().toISOString().slice(0,10) + '.csv';
     a.click();
 }
 
@@ -1309,7 +1334,6 @@ function downloadSnapshot() {
     setTimeout(() => URL.revokeObjectURL(url), 3000);
 }
 
-// ── Multi-select helpers ──
 function toggleMultiDropdown(which) {
     document.getElementById(which + 'Dropdown').classList.toggle('open');
 }
@@ -1369,51 +1393,34 @@ function destroyChart(id) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  GOOGLE DRIVE SAVE — ported from DQA Tool v5
-//  Builds a standalone HTML snapshot, base64-encodes it,
-//  POSTs to the same GAS saveDashboard endpoint used by DQA
+//  GOOGLE DRIVE SAVE
 // ═══════════════════════════════════════════════════════════════
 
-/**
- * buildDashboardHtml()
- * ---------------------
- * Produces a fully self-contained static HTML snapshot:
- *   1. Captures every Chart.js canvas as a base64 PNG image
- *   2. Clones the live DOM
- *   3. Embeds rawData + ouHierarchy as JSON in a bootstrap <script>
- *   4. Bootstrap restores all state and calls renderDashboard() on load
- *   5. Filters, navigation, charts — full functionality identical to live tool
- *
- * WHY no canvas→image conversion:
- *   If we replace <canvas> with <img>, Chart.js has nothing to draw onto when
- *   applyFilters() → renderDashboard() runs after a filter change, so charts
- *   would stay frozen. Keeping the <canvas> elements means renderDashboard()
- *   works exactly as in the live tool.
- *   cloneNode() gives blank canvases — the bootstrap re-renders them on load.
- */
 function buildDashboardHtml() {
     const start  = _cfgStart;
     const end    = _cfgEnd;
     const totals = getTotals(rawData);
     const tpr    = calcPct(totals.confirmed, totals.totalTests);
 
-    // ── Step 1: Clone the full DOM — keeps all scripts, styles, canvases, nav
     const clone = document.documentElement.cloneNode(true);
 
     function drop(id)   { const el = clone.querySelector('#' + id); if (el) el.remove(); }
-    function dropQ(sel) { clone.querySelectorAll(sel).forEach(el => el.remove()); }
 
-    // ── Step 2: Remove screens not needed in snapshot ──────────────────
     drop('configScreen');
     drop('pipelineScreen');
     drop('driveSaveBtn');
     drop('driveStatusBar');
 
-    // ── Step 3: Show dashboard screen ──────────────────────────────────
+    // ── FIX 2: Remove "New Query" button from the saved snapshot ──────────────
+    // The button calls showConfigScreen() which hides the dashboard — not useful
+    // in a standalone saved file since there's no pipeline to re-run.
+    clone.querySelectorAll('.sticky-actions .btn').forEach(function(btn) {
+        if (btn.textContent.trim().includes('New Query')) btn.remove();
+    });
+
     const dashScreen = clone.querySelector('#dashboardScreen');
     if (dashScreen) dashScreen.style.display = 'block';
 
-    // ── Step 4: Update subtitle & status ───────────────────────────────
     const stickySubEl = clone.querySelector('.sticky-subtitle');
     if (stickySubEl) stickySubEl.textContent = start + ' → ' + end + ' · ' + rawData.length.toLocaleString() + ' records · ICF-SL / NMCP';
 
@@ -1422,7 +1429,6 @@ function buildDashboardHtml() {
     const lastUpdate = clone.querySelector('#lastUpdate');
     if (lastUpdate) lastUpdate.textContent = new Date().toLocaleString();
 
-    // ── Step 5: Info banner ─────────────────────────────────────────────
     const container = clone.querySelector('#dashScrollContent .container');
     if (container) {
         const banner = document.createElement('div');
@@ -1439,20 +1445,13 @@ function buildDashboardHtml() {
         container.insertBefore(banner, container.firstChild);
     }
 
-    // Ensure Chart.js CDN script is the FIRST script in the clone body
-    // so it starts loading before anything else executes
     const cloneBody = clone.querySelector('body');
     const existingChartScript = clone.querySelector('script[src*="chart.js"]');
     if (existingChartScript && cloneBody && cloneBody.firstChild !== existingChartScript) {
         cloneBody.insertBefore(existingChartScript, cloneBody.firstChild);
     }
 
-    // ── Step 6: Remove any previous bootstrap, inject new one ──────────
-    // The bootstrap runs after Chart.js loads (it is placed at end of <body>).
-    // It restores all state globals then calls the full renderDashboard() —
-    // exactly what the live pipeline does — so charts draw, filters work,
-    // nav works, everything works identically to the live tool.
-    dropQ('script#__dash_bootstrap__');
+    clone.querySelectorAll('script#__dash_bootstrap__').forEach(s => s.remove());
 
     const STATE = {
         start, end,
@@ -1467,7 +1466,6 @@ function buildDashboardHtml() {
     var S = ${JSON.stringify(STATE)};
 
     function init() {
-        // Restore all state globals
         rawData        = S.rawData;
         filteredData   = S.rawData.slice();
         _ouHierarchy   = S.ouHierarchy;
@@ -1477,7 +1475,6 @@ function buildDashboardHtml() {
         window._typeCounts    = S.typeCounts;
         window._totalAssessed = S.totalAssessed;
 
-        // Show dashboard, hide other screens
         var cs = document.getElementById('configScreen');
         var ps = document.getElementById('pipelineScreen');
         var ds = document.getElementById('dashboardScreen');
@@ -1485,21 +1482,14 @@ function buildDashboardHtml() {
         if (ps) ps.style.display = 'none';
         if (ds) ds.style.display = 'block';
 
-        // Populate all filter dropdowns
         populateGeoFilters();
         populateTimeFilters();
-
-        // Full render — Chart.js is guaranteed loaded at this point
         renderDashboard();
-
-        // Sync sticky bar height so nav menu positions correctly
         syncStickyHeight();
         setTimeout(syncStickyHeight, 200);
     }
 
-    // Wait for Chart.js CDN to finish loading before rendering
     if (typeof Chart !== 'undefined') {
-        // Chart.js already loaded (cached)
         init();
     } else {
         window.addEventListener('load', init);
@@ -1515,10 +1505,6 @@ function buildDashboardHtml() {
     return '<!DOCTYPE html>\n' + clone.outerHTML;
 }
 
-/**
- * driveStatusUI(msg, cssClass, pct)
- * Show progress in the #driveStatusBar element
- */
 function driveStatusUI(msg, cssClass, pct) {
     const bar  = document.getElementById('driveStatusBar');
     const msgEl = document.getElementById('driveStatusMsg');
@@ -1527,7 +1513,7 @@ function driveStatusUI(msg, cssClass, pct) {
     if (!bar) return;
 
     bar.style.display = 'block';
-    bar.className = 'ds-uploading'; // reset
+    bar.className = 'ds-uploading';
     if (cssClass) bar.className = cssClass;
     if (msgEl) msgEl.textContent = msg;
 
@@ -1539,7 +1525,6 @@ function driveStatusUI(msg, cssClass, pct) {
                                  : cssClass === 'ds-error' ? '#d32f2f' : '#f0a500';
         }
     } else {
-        // Indeterminate — animate
         if (pw) pw.style.display = 'block';
         if (pf) {
             pf.style.width = '100%';
@@ -1549,15 +1534,6 @@ function driveStatusUI(msg, cssClass, pct) {
     }
 }
 
-/**
- * saveDashboardToDrive()
- * ----------------------
- * 4-stage upload matching DQA Tool pattern exactly:
- *   Stage 1 — Build HTML snapshot
- *   Stage 2 — Base64-encode
- *   Stage 3 — POST to GAS
- *   Stage 4 — Process response
- */
 async function saveDashboardToDrive() {
     if (!rawData.length) {
         alert('Run the pipeline first — no data loaded yet.');
@@ -1568,7 +1544,6 @@ async function saveDashboardToDrive() {
     if (btn) { btn.disabled = true; }
 
     try {
-        // Stage 1 — Build snapshot
         driveStatusUI('Stage 1/4 — Building dashboard snapshot…', 'ds-uploading', 10);
         await sleep(30);
 
@@ -1581,7 +1556,6 @@ async function saveDashboardToDrive() {
             return;
         }
 
-        // Stage 2 — Base64 encode
         const rawKB = Math.round(html.length / 1024);
         driveStatusUI('Stage 2/4 — Encoding ' + rawKB + ' KB to base64…', 'ds-uploading', 30);
         await sleep(30);
@@ -1600,7 +1574,6 @@ async function saveDashboardToDrive() {
             return;
         }
 
-        // Stage 3 — Upload to GAS
         const sizeKB = Math.round(b64.length / 1024);
         driveStatusUI('Stage 3/4 — Uploading ' + sizeKB + ' KB to Google Drive…', 'ds-uploading', 55);
         await sleep(30);
@@ -1611,7 +1584,6 @@ async function saveDashboardToDrive() {
         const totals   = getTotals(rawData);
         const tpr      = calcPct(totals.confirmed, totals.totalTests) + '%';
 
-        // File key: malaria_dashboard.html — shown on Dashboard tab in NMDR portal
         const files  = { 'malaria_dashboard.html': 'data:text/html;base64,' + b64 };
         const titles = {
             dashTitle:   'Malaria Dashboard · ' + period,
@@ -1638,7 +1610,6 @@ async function saveDashboardToDrive() {
             return;
         }
 
-        // Stage 4 — Process response
         driveStatusUI('Stage 4/4 — GAS processing response…', 'ds-uploading', 85);
         let data;
         try { data = await resp.json(); }
@@ -1650,7 +1621,6 @@ async function saveDashboardToDrive() {
                 ' · ' + rawData.length.toLocaleString() + ' records · TPR: ' + tpr,
                 'ds-done', 100
             );
-            // Notify parent frame (NMDR portal) if embedded
             try {
                 window.parent.postMessage({
                     type: 'malaria_dashboard_saved', period, tpr,
@@ -1671,7 +1641,8 @@ async function saveDashboardToDrive() {
 
 
 // ── Chart factory helpers ──
-function pieOpts(colors) {
+
+function pieOpts() {
     return {
         responsive: true,
         maintainAspectRatio: false,
@@ -1691,6 +1662,11 @@ function pieOpts(colors) {
     };
 }
 
+// ── FIX 1: Horizontal bar chart tooltip ──────────────────────────────────────
+// Chart.js puts the bar value in ctx.parsed.x for horizontal bars (indexAxis:'y')
+// and in ctx.parsed.y for vertical bars. The old code always checked parsed.y
+// first which returned the category-axis index on horizontal charts instead of
+// the actual data value.
 function barOpts(extraOpts) {
     const base = {
         responsive: true,
@@ -1702,7 +1678,10 @@ function barOpts(extraOpts) {
                     label: function(ctx) {
                         const vals  = ctx.dataset.data;
                         const total = vals.reduce((a, b) => a + (b || 0), 0);
-                        const val   = ctx.parsed.y !== undefined ? ctx.parsed.y : ctx.parsed.x;
+                        // horizontal bar (indexAxis:'y'): value in ctx.parsed.x
+                        // vertical bar:                  value in ctx.parsed.y
+                        const isHoriz = ctx.chart.config.options?.indexAxis === 'y';
+                        const val   = isHoriz ? ctx.parsed.x : (ctx.parsed.y ?? ctx.parsed.x ?? 0);
                         const pct   = total > 0 ? ((val / total) * 100).toFixed(1) : '0.0';
                         return ' ' + val.toLocaleString() + ' (' + pct + '%)';
                     }
