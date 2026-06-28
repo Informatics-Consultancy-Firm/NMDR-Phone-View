@@ -1,0 +1,3061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NMCP Reporting Status Tool — ICF-SL</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --blue:#2c6793;--blue-dk:#1f4a6a;--blue-lt:#e8f0f7;
+  --white:#ffffff;--bg:#f0f5f9;--border:#d0dde8;--muted:#6c7a89;
+  --gold:#ffc107;--green:#28a745;--teal:#17a2b8;--red:#dc3545;
+}
+html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans-serif;background:var(--bg);}
+
+/* ── HEADER ── */
+.page-header{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-dk) 100%);color:#fff;padding:22px 32px;box-shadow:0 2px 12px rgba(0,0,0,.18);}
+.header-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.logo-box{background:#fff;border-radius:8px;padding:6px 10px;display:flex;align-items:center;justify-content:center;}
+.logo-box img{width:80px;height:auto;border-radius:4px;}
+.header-text h1{font-size:20px;font-weight:700;letter-spacing:.5px;margin-bottom:2px;}
+.header-text p{font-size:12px;opacity:.85;}
+
+/* ── LAYOUT ── */
+.page-body{max-width:1400px;margin:0 auto;padding:24px 28px;}
+
+/* ── CARDS / PANELS ── */
+.card{background:var(--white);border-radius:12px;border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:22px;overflow:hidden;}
+.card-head{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border);}
+.card-head h2{font-size:15px;font-weight:700;color:var(--blue-dk);letter-spacing:.3px;}
+.card-body{padding:20px;}
+
+/* ── FORM CONTROLS ── */
+.cfg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:16px;}
+.form-group label{display:block;font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;}
+.form-control{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;color:#222;background:#fff;transition:border-color .2s;}
+.form-control:focus{outline:none;border-color:var(--blue);}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.4px;transition:all .2s;text-transform:uppercase;}
+.btn-primary{background:var(--blue);color:#fff;} .btn-primary:hover{background:var(--blue-dk);}
+.btn-gold{background:var(--gold);color:#000;} .btn-gold:hover{background:#e0a800;}
+.btn-green{background:var(--green);color:#fff;} .btn-green:hover{background:#1e7e34;}
+.btn-teal{background:var(--teal);color:#fff;} .btn-teal:hover{background:#138496;}
+.btn-outline{background:#fff;color:var(--blue);border:1.5px solid var(--blue);} .btn-outline:hover{background:var(--blue-lt);}
+.btn-sm{padding:6px 12px;font-size:11px;}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+
+/* ── PROGRESS ── */
+.progress-panel{border:2px solid var(--blue);border-radius:8px;overflow:hidden;margin-bottom:16px;}
+.progress-head{background:var(--blue);color:#fff;padding:10px 16px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.progress-body{padding:14px;background:#0d1117;}
+.pbar-wrap{height:8px;background:#1a1a2e;border-radius:4px;overflow:hidden;margin:10px 0;}
+.pbar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));border-radius:4px;transition:width .35s;}
+.step-list{display:flex;flex-direction:column;gap:5px;max-height:220px;overflow-y:auto;}
+.step-item{display:flex;align-items:flex-start;gap:9px;padding:6px 10px;border-radius:5px;font-size:11px;font-family:'Courier New',monospace;}
+.step-item.pending{background:#1a1a2e;color:#555;}
+.step-item.running{background:#1a2e4a;color:var(--teal);animation:pulse 1.4s ease-in-out infinite;}
+.step-item.done{background:#0a2e0a;color:var(--green);}
+.step-item.error{background:#2e0a0a;color:var(--red);}
+.step-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:2px;}
+.step-item.pending .step-dot{background:#555;}
+.step-item.running .step-dot{background:var(--teal);}
+.step-item.done .step-dot{background:var(--green);}
+.step-item.error .step-dot{background:var(--red);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+
+/* ── STATS PILLS ── */
+.stats-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;}
+.stat-pill{background:var(--blue-lt);border:1.5px solid var(--blue);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;color:var(--blue);}
+.stat-pill.ok{background:#d4edda;border-color:var(--green);color:#155724;}
+.stat-pill.warn{background:#fff3cd;border-color:var(--gold);color:#856404;}
+
+/* ── TABS ── */
+.tab-nav{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
+.tab-btn{padding:10px 20px;background:transparent;border:none;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;font-family:inherit;}
+.tab-btn:hover{color:var(--blue);background:var(--blue-lt);}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);background:var(--blue-lt);}
+.tab-pane{display:none;} .tab-pane.active{display:block;}
+
+/* ── PALETTE GRID ── */
+.pal-grid{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;}
+.pal-tile{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;border:2px solid var(--border);background:#f8f9fa;cursor:pointer;font-size:11px;font-weight:700;color:var(--blue);transition:all .2s;}
+.pal-tile.selected{border-color:var(--blue);background:var(--blue-lt);}
+.pal-swatch{width:16px;height:13px;border-radius:2px;border:1px solid #ccc;}
+
+/* ── COLLAPSIBLE ── */
+.collap{border:2px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:14px;}
+.collap-head{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;cursor:pointer;background:var(--blue-lt);border-bottom:1px solid var(--border);user-select:none;}
+.collap-head:hover{background:#dfe9f3;}
+.collap-head h3{font-size:13px;font-weight:700;color:var(--blue-dk);}
+.collap-chev{transition:transform .25s;color:var(--blue);font-size:16px;font-weight:700;}
+.collap-body{padding:16px;background:#fff;}
+.collap-body.hidden{display:none;}
+
+/* ── CANVAS WRAPPERS ── */
+.canvas-wrap{position:relative;width:100%;padding-top:85%;background:#ffffff;border-radius:6px;overflow:hidden;}
+.canvas-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;}
+.map-panel{border:2px solid var(--border);border-radius:8px;overflow:hidden;}
+.map-panel-head{padding:8px 12px;font-size:11px;font-weight:700;text-align:center;letter-spacing:.5px;color:#fff;}
+.maps-3col{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;}
+@media(max-width:860px){.maps-3col{grid-template-columns:1fr;}}
+
+/* ── LEGEND ── */
+.legend-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:var(--blue-lt);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:12px;}
+.legend-title{font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-right:4px;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#2c4b62;}
+.legend-sw{width:18px;height:13px;border-radius:2px;border:1px solid #aaa;flex-shrink:0;}
+
+/* ── TOOLTIP ── */
+#rsTooltip{position:fixed;background:rgba(10,20,40,.93);color:#fff;border-radius:7px;padding:9px 13px;font-size:12px;pointer-events:none;z-index:99999;display:none;max-width:230px;line-height:1.6;box-shadow:0 4px 14px rgba(0,0,0,.3);font-family:'Segoe UI',Arial,sans-serif;}
+#rsTooltip strong{color:var(--gold);font-size:13px;display:block;margin-bottom:3px;}
+
+/* ── HEATMAP OPTIONS ── */
+.opt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:12px;}
+
+/* ── ALERT ── */
+.alert{padding:11px 16px;border-radius:6px;margin-bottom:12px;font-size:13px;border:1.5px solid;}
+.alert-info{background:var(--blue-lt);border-color:var(--blue);color:var(--blue-dk);}
+.alert-warn{background:#fff3cd;border-color:var(--gold);color:#856404;}
+.alert-err{background:#f8d7da;border-color:var(--red);color:#721c24;}
+
+/* ── TABLE ── */
+.data-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);}
+.data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-table thead{background:var(--blue-lt);border-bottom:2px solid var(--border);}
+.data-table th{padding:10px 12px;text-align:left;font-weight:700;color:var(--blue);white-space:nowrap;}
+.data-table td{padding:9px 12px;border-bottom:1px solid var(--border);color:#2c4b62;}
+.data-table tbody tr:last-child td{border-bottom:none;}
+.data-table tbody tr:hover{background:var(--blue-lt);}
+
+/* ── MONTHLY MAPS ── */
+.month-map-card{background:#fff;border-radius:8px;border:1.5px solid var(--border);overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.07);}
+.month-map-card.blank{background:#f5f7fa;border-style:dashed;border-color:#c8d5e0;}
+.month-map-card .mmhead{padding:6px 10px;font-size:11px;font-weight:700;letter-spacing:.5px;text-align:center;text-transform:uppercase;}
+.month-map-card .mmhead.active{background:var(--blue);color:#fff;}
+.month-map-card .mmhead.blank-head{background:#e4ecf4;color:#8899aa;}
+.month-map-card .mm-canvas-wrap{position:relative;width:100%;padding-top:110%;background:#ffffff;}
+.month-map-card .mm-canvas-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;}
+.month-map-card .mm-blank-body{padding:20px 10px;text-align:center;color:#aabbc9;font-size:12px;}
+.month-map-card .mm-legend{padding:5px 8px;background:#f8fbff;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:3px 8px;align-items:center;}
+.mm-leg-item{display:flex;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#3a5068;white-space:nowrap;}
+.mm-leg-sw{width:12px;height:9px;border-radius:1px;border:1px solid rgba(0,0,0,.15);flex-shrink:0;}
+@media(max-width:900px){#monthlyMapsGrid{grid-template-columns:repeat(3,1fr)!important;}}
+@media(max-width:600px){#monthlyMapsGrid{grid-template-columns:repeat(2,1fr)!important;}}
+
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted);border:2px dashed var(--border);border-radius:8px;}
+.empty-state .icon{font-size:36px;margin-bottom:10px;}
+
+/* ── FACILITY TRACKING ── */
+.trk-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--blue-lt);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;}
+.trk-search{flex:1;min-width:180px;max-width:300px;}
+.trk-district{border:1.5px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden;background:#fff;}
+.trk-dist-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--blue);color:#fff;cursor:pointer;user-select:none;gap:10px;}
+.trk-dist-head:hover{background:var(--blue-dk);}
+.trk-dist-name{font-size:13px;font-weight:700;letter-spacing:.3px;}
+.trk-dist-pills{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.trk-dist-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.2);color:#fff;white-space:nowrap;}
+.trk-dist-pill.rep{background:rgba(40,167,69,.7);}
+.trk-dist-pill.nrep{background:rgba(220,53,69,.5);}
+.trk-dist-chev{font-size:14px;transition:transform .2s;flex-shrink:0;}
+.trk-dist-body{display:none;padding:10px 12px;background:#f8fbff;}
+.trk-dist-body.open{display:block;}
+.trk-chiefdom{border:1px solid var(--border);border-radius:6px;margin-bottom:6px;overflow:hidden;background:#fff;}
+.trk-chief-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:#e8f0f7;cursor:pointer;user-select:none;gap:8px;}
+.trk-chief-head:hover{background:#d5e3f0;}
+.trk-chief-name{font-size:12px;font-weight:700;color:var(--blue-dk);}
+.trk-chief-pills{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
+.trk-chief-pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:9px;white-space:nowrap;}
+.trk-chief-pill.rep{background:#d4edda;color:#155724;border:1px solid #c3e6cb;}
+.trk-chief-pill.nrep{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb;}
+.trk-chief-chev{font-size:12px;transition:transform .2s;color:var(--blue);flex-shrink:0;}
+.trk-chief-body{display:none;padding:8px 12px;background:#fff;}
+.trk-chief-body.open{display:block;}
+.trk-fac-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:5px;}
+.trk-fac{display:flex;align-items:center;gap:7px;padding:6px 10px;border-radius:5px;font-size:11px;font-weight:600;border:1px solid transparent;}
+.trk-fac.rep{background:#d4edda;border-color:#c3e6cb;color:#155724;}
+.trk-fac.nrep{background:#f8d7da;border-color:#f5c6cb;color:#721c24;}
+.trk-fac.partial{background:#fff3cd;border-color:#ffc107;color:#856404;}
+.trk-fac-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.trk-fac.rep .trk-fac-dot{background:#28a745;}
+.trk-fac.nrep .trk-fac-dot{background:#dc3545;}
+.trk-fac.partial .trk-fac-dot{background:#ffc107;}
+.trk-empty{text-align:center;color:var(--muted);padding:20px;font-size:12px;}
+.trk-period-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:14px;flex-wrap:wrap;overflow-x:auto;}
+.trk-period-btn{padding:7px 16px;background:transparent;border:none;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;font-family:inherit;white-space:nowrap;}
+.trk-period-btn:hover{color:var(--blue);background:var(--blue-lt);}
+.trk-period-btn.active{color:var(--blue);border-bottom-color:var(--blue);background:var(--blue-lt);}
+
+/* ── FOOTER ── */
+.page-footer{background:var(--blue-dk);color:rgba(255,255,255,.8);text-align:center;padding:14px;font-size:11px;margin-top:28px;}
+</style>
+</head>
+<body>
+
+<div id="rsTooltip"></div>
+
+<!-- ═══ HEADER ═══ -->
+<div class="page-header">
+  <div class="header-row">
+    <div class="logo-box">
+      <img src="https://github.com/mohamedsillahkanu/gdp-dashboard-2/raw/6c7463b0d5c3be150aafae695a4bcbbd8aeb1499/ICF-SL.jpg" alt="ICF-SL">
+    </div>
+    <div class="header-text">
+      <h1>NMCP Reporting Status Tool</h1>
+      <p>National Malaria Control Programme · Sierra Leone · ICF-SL</p>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;">
+      <span id="headerPill" style="background:rgba(255,255,255,.15);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.5px;">Ready</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BODY ═══ -->
+<div class="page-body">
+
+  <!-- ── CONFIG PANEL ── -->
+  <div class="card" id="configCard">
+    <div class="card-head">
+      <h2>⚙ Pipeline Configuration</h2>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-gold" onclick="rs_startPipeline()">&#9654; Run Pipeline</button>
+        <button class="btn btn-outline btn-sm" onclick="rs_reset()">↺ Reset</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div id="alertBox"></div>
+      <div class="cfg-grid">
+        <div class="form-group">
+          <label>Start Month</label>
+          <input type="month" class="form-control" id="cfgStart" value="2026-01">
+        </div>
+        <div class="form-group">
+          <label>End Month</label>
+          <input type="month" class="form-control" id="cfgEnd" value="2026-12">
+        </div>
+      </div>
+      <!-- ── METHODOLOGY ── -->
+      <div style="margin-top:4px;">
+        <div style="background:var(--blue);color:#fff;padding:9px 16px;border-radius:6px 6px 0 0;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('.mchev').textContent=this.nextElementSibling.classList.contains('hidden')?'▶':'▼';">
+          Methodology &amp; Data Elements <span class="mchev">▼</span>
+        </div>
+        <div style="border:1.5px solid var(--border);border-top:none;border-radius:0 0 6px 6px;padding:18px 20px;background:#fff;font-size:12px;color:#2c4b62;line-height:1.7;">
+
+          <!-- Facility classification -->
+          <div style="margin-bottom:16px;">
+            <div style="font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">1 · Facility Registry</div>
+            <p>All <strong>Level-5</strong> organisation units are fetched from DHIS2 and classified by name suffix using <code>getHFType()</code>. Only the five assessed facility types are retained; all others are excluded.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+              <span style="background:#e7f3ff;border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-weight:700;font-size:11px;">Hospital</span>
+              <span style="background:#e7f3ff;border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-weight:700;font-size:11px;">Clinic</span>
+              <span style="background:#e7f3ff;border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-weight:700;font-size:11px;">CHC</span>
+              <span style="background:#e7f3ff;border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-weight:700;font-size:11px;">CHP</span>
+              <span style="background:#e7f3ff;border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-weight:700;font-size:11px;">MCHP</span>
+            </div>
+            <p style="margin-top:8px;">Level-6 community health worker (CHW / HTR / ETR) units that sit beneath a Level-5 MCHP are also fetched. Their data values are rolled up and accumulated into the parent MCHP's monthly total.</p>
+          </div>
+
+          <!-- Data elements table -->
+          <div style="margin-bottom:16px;">
+            <div style="font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">2 · Data Elements Used (13 total)</div>
+
+            <p style="margin-bottom:8px;"><strong>Dataset HF01 — Outpatient Morbidity</strong> &nbsp;·&nbsp; Facility Level-5 · Monthly</p>
+            <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px;">
+              <thead><tr style="background:var(--blue-lt);">
+                <th style="padding:5px 8px;text-align:left;color:var(--blue);font-weight:800;border:1px solid var(--border);">#</th>
+                <th style="padding:5px 8px;text-align:left;color:var(--blue);font-weight:800;border:1px solid var(--border);">Data Element</th>
+                <th style="padding:5px 8px;text-align:left;color:var(--blue);font-weight:800;border:1px solid var(--border);">UID</th>
+                <th style="padding:5px 8px;text-align:left;color:var(--blue);font-weight:800;border:1px solid var(--border);">Disaggregation</th>
+              </tr></thead>
+              <tbody>
+                <tr style="border:1px solid var(--border);"><td style="padding:4px 8px;border:1px solid var(--border);">1</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case — suspected Malaria</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">FJafyE1kzs4</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
+                <tr style="border:1px solid var(--border);background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">2</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (Microscopy) — Negative</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">Rijj3Fp9ksg</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
+                <tr style="border:1px solid var(--border);"><td style="padding:4px 8px;border:1px solid var(--border);">3</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (Microscopy) — Positive</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">Sz13vbo2Qwh</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
+                <tr style="border:1px solid var(--border);background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">4</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (RDT) — Negative</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">mXS2g1AiPsS</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
+                <tr style="border:1px solid var(--border);"><td style="padding:4px 8px;border:1px solid var(--border);">5</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (RDT) — Positive</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">p6zQLDFjSfd</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
+                <tr style="border:1px solid var(--border);background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">6</td><td style="padding:4px 8px;border:1px solid var(--border);">Malaria treated with ACT &lt;24 hours</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">wU8EdHifSLa</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
+                <tr style="border:1px solid var(--border);"><td style="padding:4px 8px;border:1px solid var(--border);">7</td><td style="padding:4px 8px;border:1px solid var(--border);">Malaria treated with ACT &gt;24 hours</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">XKTCuR0W3YN</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
+                <tr style="border:1px solid var(--border);background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">8</td><td style="padding:4px 8px;border:1px solid var(--border);">OPD (New and follow-up curative)</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">jkVioQxQcnk</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5+y</td></tr>
+              </tbody>
+            </table>
+
+            <p style="margin-bottom:8px;"><strong>Dataset HF04 — Community Based Services</strong> &nbsp;·&nbsp; Level-6 CHW/HTR/ETR (rolled up to Level-5 MCHP) · Monthly</p>
+            <table style="width:100%;border-collapse:collapse;font-size:11px;">
+              <thead><tr style="background:#e8f5e9;">
+                <th style="padding:5px 8px;text-align:left;color:#155724;font-weight:800;border:1px solid var(--border);">#</th>
+                <th style="padding:5px 8px;text-align:left;color:#155724;font-weight:800;border:1px solid var(--border);">Data Element</th>
+                <th style="padding:5px 8px;text-align:left;color:#155724;font-weight:800;border:1px solid var(--border);">UID</th>
+                <th style="padding:5px 8px;text-align:left;color:#155724;font-weight:800;border:1px solid var(--border);">Disaggregation</th>
+              </tr></thead>
+              <tbody>
+                <tr style="border:1px solid var(--border);"><td style="padding:4px 8px;border:1px solid var(--border);">9</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case (suspected malaria) in HTR and ETR</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">wfaQBIVQxWo</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
+                <tr style="border:1px solid var(--border);background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">10</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (RDT) in HTR — Negative</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">YWvx4zYdp92</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
+                <tr style="border:1px solid var(--border);"><td style="padding:4px 8px;border:1px solid var(--border);">11</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (RDT) in HTR — Positive</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">T7xH8GwWpEM</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
+                <tr style="border:1px solid var(--border);background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">12</td><td style="padding:4px 8px;border:1px solid var(--border);">Malaria treated with ACT in HTR &lt;24 hours</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">h3zJa6hAgib</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
+                <tr style="border:1px solid var(--border);"><td style="padding:4px 8px;border:1px solid var(--border);">13</td><td style="padding:4px 8px;border:1px solid var(--border);">Malaria treated with ACT in HTR &gt;24 hours</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">Imkks0HAl7E</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Reporting rule -->
+          <div style="margin-bottom:10px;">
+            <div style="font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">3 · Reporting Status Rule</div>
+            <div style="background:#d4edda;border:1.5px solid var(--green);border-radius:6px;padding:10px 14px;">
+              <strong style="color:#155724;">Reported (1)</strong> — A facility is considered to have reported for a given month if the <em>sum of all values across any of the 13 data elements above is greater than zero</em> for that facility-month combination.<br>
+              <strong style="color:#721c24;">Not Reported (0)</strong> — If no non-zero value is found across all 13 data elements for that facility and month, the facility is marked as not reported.
+            </div>
+            <p style="margin-top:8px;font-size:11px;color:var(--muted);">HF04 community data entered at Level-6 CHW/HTR/ETR units is rolled up to the parent Level-5 MCHP before this check is applied. A single non-zero community record is therefore sufficient to mark the MCHP as reported for that month.</p>
+          </div>
+
+          <!-- Outputs -->
+          <div>
+            <div style="font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">4 · Outputs</div>
+            <p>Reporting heatmaps (all facilities · active facilities only), geographic choropleth maps at national / district / chiefdom level, facility-level tracking tree, summary aggregation tables, and downloadable Excel / CSV / R / Python exports.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PROGRESS ── -->
+  <div id="progressSection" style="display:none;" class="card">
+    <div class="card-head"><h2>⏳ Pipeline Progress</h2><span id="pctLabel" style="font-size:13px;font-weight:700;color:var(--blue);">0%</span></div>
+    <div class="card-body" style="padding:14px;">
+      <div class="pbar-wrap"><div class="pbar-fill" id="pbarFill" style="width:0%"></div></div>
+      <div class="step-list" id="stepList"></div>
+    </div>
+  </div>
+
+  <!-- ── RESULTS ── -->
+  <div id="resultsSection" style="display:none;">
+
+    <!-- Stats -->
+    <div class="card">
+      <div class="card-head">
+        <h2>📊 Summary Statistics</h2>
+        <button class="btn btn-outline btn-sm" onclick="rs_reset()">← New Query</button>
+        <button class="btn btn-primary btn-sm" id="pushDriveBtn" onclick="rs_pushToDrive()" style="background:linear-gradient(135deg,#1f8a50,#0f6e3a);border:none;">⬆ Push &amp; Update</button>
+      </div>
+      <div class="card-body">
+        <div class="stats-row" id="statsRow"></div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="card">
+      <div class="card-head" style="padding-bottom:0;border-bottom:none;">
+        <h2>Results</h2>
+      </div>
+      <div class="card-body" style="padding-top:12px;">
+        <div class="tab-nav">
+          <button class="tab-btn active" data-tab="heatmaps">Heatmaps</button>
+          <button class="tab-btn" data-tab="geomaps">Geographic Maps</button>
+          <button class="tab-btn" data-tab="tracking">🏥 Facility Tracking</button>
+          <button class="tab-btn" data-tab="summary">Summary Table</button>
+          <button class="tab-btn" data-tab="downloads">Downloads</button>
+          <button class="tab-btn" data-tab="methodology">Methodology</button>
+        </div>
+
+        <!-- ── TAB: HEATMAPS ── -->
+        <div id="tab-heatmaps" class="tab-pane active">
+
+          <!-- Options -->
+          <div class="collap">
+            <div class="collap-head" onclick="toggleCollap(this)">
+              <h3>Chart Options</h3><span class="collap-chev">▼</span>
+            </div>
+            <div class="collap-body">
+              <div class="opt-grid">
+                <div class="form-group">
+                  <label>Chart Title</label>
+                  <input type="text" class="form-control" id="hmTitle" value="NMCP Malaria EPI Reporting Status">
+                </div>
+                <div class="form-group">
+                  <label>X-Axis Label</label>
+                  <input type="text" class="form-control" id="hmXLabel" value="Time Period (YYYY-MM)">
+                </div>
+                <div class="form-group">
+                  <label>Y-Axis Label</label>
+                  <input type="text" class="form-control" id="hmYLabel" value="Health Facilities">
+                </div>
+                <div class="form-group">
+                  <label>Width (px)</label>
+                  <input type="number" class="form-control" id="hmW" value="1400" min="600" max="4000" step="50">
+                </div>
+                <div class="form-group">
+                  <label>Height (px)</label>
+                  <input type="number" class="form-control" id="hmH" value="750" min="300" max="3000" step="50">
+                </div>
+              </div>
+              <p style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Color Palette — Reported (1) listed first</p>
+              <div id="hmPaletteGrid" class="pal-grid"></div>
+              <div class="btn-row">
+                <button class="btn btn-gold btn-sm" onclick="rs_redrawHeatmaps()">↺ Redraw</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chart 1 -->
+          <div class="collap">
+            <div class="collap-head" onclick="toggleCollap(this)" style="background:#e7f3ff;border-color:var(--blue);">
+              <h3 style="color:var(--blue);">Chart 1 — All Facilities</h3><span class="collap-chev" style="color:var(--blue);">▼</span>
+            </div>
+            <div class="collap-body" style="overflow-x:auto;text-align:center;padding:14px;">
+              <div id="hmTitle1" style="font-size:15px;font-weight:700;color:var(--blue);margin-bottom:4px;"></div>
+              <div id="hmSub1" style="font-size:11px;color:var(--muted);margin-bottom:10px;"></div>
+              <canvas id="hmCanvas1" style="max-width:100%;border-radius:6px;border:2px solid var(--blue);display:block;margin:0 auto;"></canvas>
+              <div class="btn-row" style="justify-content:center;margin-top:10px;">
+                <button class="btn btn-green btn-sm" onclick="rs_downloadHeatmap('hmCanvas1','all_facilities')">↓ Download Chart 1 (PNG)</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chart 2 -->
+          <div class="collap">
+            <div class="collap-head" onclick="toggleCollap(this)" style="background:#d4edda;border-color:var(--green);">
+              <h3 style="color:#155724;">Chart 2 — Active Facilities Only</h3><span class="collap-chev" style="color:#155724;">▼</span>
+            </div>
+            <div class="collap-body" style="overflow-x:auto;text-align:center;padding:14px;">
+              <div id="hmTitle2" style="font-size:15px;font-weight:700;color:var(--green);margin-bottom:4px;"></div>
+              <div id="hmSub2" style="font-size:11px;color:var(--muted);margin-bottom:10px;"></div>
+              <canvas id="hmCanvas2" style="max-width:100%;border-radius:6px;border:2px solid var(--green);display:block;margin:0 auto;"></canvas>
+              <div class="btn-row" style="justify-content:center;margin-top:10px;">
+                <button class="btn btn-green btn-sm" onclick="rs_downloadHeatmap('hmCanvas2','active_facilities')">↓ Download Chart 2 (PNG)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── TAB: GEO MAPS ── -->
+        <div id="tab-geomaps" class="tab-pane">
+
+          <!-- Controls bar -->
+          <div style="background:var(--blue-lt);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px;">
+              <div class="form-group" style="margin:0;">
+                <label>Map Level</label>
+                <select class="form-control" id="geoLevel" style="width:auto;min-width:120px;">
+                  <option value="national">National</option>
+                  <option value="district">District</option>
+                  <option value="chiefdom" selected>Chiefdom</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin:0;">
+                <label>Year (Annual Summary)</label>
+                <select class="form-control" id="geoYear" style="width:auto;min-width:90px;"></select>
+              </div>
+              <button class="btn btn-teal btn-sm" onclick="rs_renderGeoMaps()" style="margin-top:18px;">↺ Redraw All Maps</button>
+              <span id="geoStatus" style="font-size:11px;color:var(--blue);font-weight:600;margin-top:18px;"></span>
+            </div>
+            <div style="border-top:1px solid var(--border);padding-top:10px;">
+              <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px;">🎨 Colour Palette — select then click Redraw</div>
+              <div id="mapPaletteGrid" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+            </div>
+          </div>
+
+          <!-- ── SECTION 1: Monthly Maps Grid ── -->
+          <div style="background:var(--blue);color:#fff;padding:10px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;justify-content:space-between;">
+            <span>📅 Monthly Reporting Status Maps — January to December</span>
+            <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4);" onclick="rs_downloadMonthlyGrid()">↓ Download Monthly Grid (PNG)</button>
+          </div>
+          <div id="monthlyMapsGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px;background:#f8fbff;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;margin-bottom:20px;">
+            <!-- Generated by JS -->
+          </div>
+
+          <!-- ── SECTION 2: Annual Summary Maps ── -->
+          <div style="background:var(--blue-dk);color:#fff;padding:10px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;justify-content:space-between;">
+            <span>🗺 Annual Summary Maps</span>
+            <button class="btn btn-gold btn-sm" onclick="rs_geoDownloadSubplot()">↓ Download Annual Subplot (PNG)</button>
+          </div>
+          <div style="padding:14px;background:#f8fbff;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;margin-bottom:16px;">
+            <div class="maps-3col">
+              <div class="map-panel">
+                <div class="map-panel-head" style="background:var(--blue);">NATIONAL — OVERVIEW</div>
+                <div class="canvas-wrap"><canvas id="geoNational"></canvas></div>
+              </div>
+              <div class="map-panel">
+                <div class="map-panel-head" style="background:var(--teal);">DISTRICT — REPORTING RATE</div>
+                <div class="canvas-wrap"><canvas id="geoDistrict"></canvas></div>
+              </div>
+              <div class="map-panel">
+                <div class="map-panel-head" style="background:var(--green);">CHIEFDOM — HOVER FOR RATE</div>
+                <div class="canvas-wrap" style="cursor:crosshair;"><canvas id="geoChiefdom"></canvas></div>
+              </div>
+            </div>
+            <!-- Dynamic legend for annual maps -->
+            <div id="annualLegendBar" class="legend-bar" style="margin-top:8px;"></div>
+            <div class="btn-row" style="margin-top:8px;">
+              <button class="btn btn-primary btn-sm" onclick="rs_geoDownload('geoNational','national')">↓ National PNG</button>
+              <button class="btn btn-teal btn-sm" onclick="rs_geoDownload('geoDistrict','district')">↓ District PNG</button>
+              <button class="btn btn-green btn-sm" onclick="rs_geoDownload('geoChiefdom','chiefdom')">↓ Chiefdom PNG</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── TAB: FACILITY TRACKING ── -->
+        <div id="tab-tracking" class="tab-pane">
+
+          <!-- Toolbar -->
+          <div class="trk-toolbar">
+            <div class="form-group" style="margin:0;">
+              <label>Year</label>
+              <select class="form-control" id="trkYear" style="width:auto;min-width:90px;" onchange="trk_render()"></select>
+            </div>
+            <input type="text" class="form-control trk-search" id="trkSearch" placeholder="Search facility, chiefdom, district…" oninput="trk_render()">
+            <div style="display:flex;gap:6px;align-items:center;margin-top:18px;">
+              <label style="font-size:11px;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:4px;cursor:pointer;">
+                <input type="checkbox" id="trkShowRep" checked onchange="trk_render()"> Show Reported
+              </label>
+              <label style="font-size:11px;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:4px;cursor:pointer;">
+                <input type="checkbox" id="trkShowNrep" checked onchange="trk_render()"> Show Not Reported
+              </label>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="trk_expandAll(true)" style="margin-top:18px;">⊞ Expand All</button>
+            <button class="btn btn-outline btn-sm" onclick="trk_expandAll(false)" style="margin-top:18px;">⊟ Collapse All</button>
+          </div>
+
+          <!-- Month selector tabs -->
+          <div class="trk-period-tabs" id="trkMonthTabs"></div>
+
+          <!-- District tree -->
+          <div id="trkTree"></div>
+
+        </div>
+
+        <!-- ── TAB: SUMMARY TABLE ── -->
+        <div id="tab-summary" class="tab-pane">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+            <input type="text" class="form-control" id="tblSearch" placeholder="Search district, chiefdom, period…" style="max-width:300px;" oninput="rs_filterTable()">
+            <select class="form-control" id="tblGroup" style="width:auto;" onchange="rs_buildTable()">
+              <option value="national_monthly">National × Month</option>
+              <option value="national_yearly">National × Year</option>
+              <option value="district_monthly">District × Month</option>
+              <option value="district_yearly">District × Year</option>
+              <option value="chiefdom_monthly">Chiefdom × Month</option>
+              <option value="chiefdom_yearly">Chiefdom × Year</option>
+              <option value="facility_monthly">Facility × Month</option>
+            </select>
+            <button class="btn btn-outline btn-sm" onclick="rs_exportTableExcel()">↓ Export Table (Excel)</button>
+          </div>
+          <div id="tblCount" style="font-size:11px;color:var(--muted);margin-bottom:8px;"></div>
+          <div class="data-table-wrap">
+            <table class="data-table" id="summaryTable">
+              <thead id="tblHead"></thead>
+              <tbody id="tblBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ── TAB: DOWNLOADS ── -->
+        <div id="tab-downloads" class="tab-pane">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
+
+            <div style="border:2px solid var(--blue);border-radius:10px;overflow:hidden;">
+              <div style="background:var(--blue);color:#fff;padding:10px 16px;font-size:13px;font-weight:700;">Heatmap Charts</div>
+              <div style="padding:16px;display:flex;flex-direction:column;gap:8px;">
+                <button class="btn btn-outline" onclick="rs_downloadHeatmap('hmCanvas1','all_facilities')">↓ Chart 1 — All Facilities (PNG)</button>
+                <button class="btn btn-outline" onclick="rs_downloadHeatmap('hmCanvas2','active_facilities')">↓ Chart 2 — Active Facilities (PNG)</button>
+                <button class="btn btn-gold" onclick="rs_downloadBothHeatmapSubplot()">↓ Both Charts Subplot (PNG)</button>
+              </div>
+            </div>
+
+            <div style="border:2px solid var(--teal);border-radius:10px;overflow:hidden;">
+              <div style="background:var(--teal);color:#fff;padding:10px 16px;font-size:13px;font-weight:700;">Geographic Maps</div>
+              <div style="padding:16px;display:flex;flex-direction:column;gap:8px;">
+                <button class="btn btn-outline" onclick="rs_geoDownload('geoNational','national')">↓ National Map (PNG)</button>
+                <button class="btn btn-outline" onclick="rs_geoDownload('geoDistrict','district')">↓ District Map (PNG)</button>
+                <button class="btn btn-outline" onclick="rs_geoDownload('geoChiefdom','chiefdom')">↓ Chiefdom Map (PNG)</button>
+                <button class="btn btn-gold" onclick="rs_geoDownloadSubplot()">↓ All 3 Maps Subplot (PNG)</button>
+              </div>
+            </div>
+
+            <div style="border:2px solid var(--green);border-radius:10px;overflow:hidden;">
+              <div style="background:var(--green);color:#fff;padding:10px 16px;font-size:13px;font-weight:700;">Data Exports</div>
+              <div style="padding:16px;display:flex;flex-direction:column;gap:8px;">
+                <button class="btn btn-outline" onclick="rs_exportExcel()">↓ Full Report (Excel — all sheets)</button>
+                <button class="btn btn-outline" onclick="rs_exportTableExcel()">↓ Current Table View (Excel)</button>
+                <button class="btn btn-outline" onclick="rs_exportCSV()">↓ Facility-Month Status (CSV)</button>
+              </div>
+            </div>
+
+            <div style="border:2px solid #276DC3;border-radius:10px;overflow:hidden;">
+              <div style="background:#276DC3;color:#fff;padding:10px 16px;font-size:13px;font-weight:700;">Reproducible Code</div>
+              <div style="padding:16px;display:flex;flex-direction:column;gap:8px;">
+                <button class="btn btn-outline" style="color:#276DC3;border-color:#276DC3;" onclick="rs_downloadR()">↓ Download R Script</button>
+                <button class="btn btn-outline" style="color:#3776AB;border-color:#3776AB;" onclick="rs_downloadPy()">↓ Download Python Script</button>
+              </div>
+            </div>
+
+            <div style="border:2px solid #1f8a50;border-radius:10px;overflow:hidden;">
+              <div style="background:linear-gradient(135deg,#1f8a50,#0f6e3a);color:#fff;padding:10px 16px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;">
+                <span style="font-size:16px;">⬆</span> Push &amp; Update to NMDR Portal
+              </div>
+              <div style="padding:16px;display:flex;flex-direction:column;gap:10px;">
+                <p style="font-size:12px;color:#3a5068;line-height:1.55;">Builds a fully self-contained snapshot of this tool with all charts, maps and data embedded, then saves it to Google Drive under <code>med_reporting.html</code> for the NMDR portal to load.</p>
+                <button class="btn btn-green" id="pushDriveBtnDownloads" onclick="rs_pushToDrive()" style="background:linear-gradient(135deg,#1f8a50,#0f6e3a);border:none;justify-content:center;">⬆ Push &amp; Update</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── TAB: METHODOLOGY ── -->
+        <div id="tab-methodology" class="tab-pane">
+          <div style="max-width:900px;font-size:13px;color:#2c4b62;line-height:1.75;">
+
+            <div style="background:var(--blue);color:#fff;padding:12px 18px;border-radius:8px 8px 0 0;font-size:14px;font-weight:700;letter-spacing:.4px;">
+              Methodology — NMCP Malaria EPI Reporting Status Tool
+            </div>
+            <div style="border:1.5px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:22px 24px;background:#fff;margin-bottom:20px;">
+
+              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">1 · Facility Registry</h3>
+              <p>All Level-5 organisation units are retrieved from the DHIS2 instance (<code>sl.dhis2.org/hmis23</code>) using the <code>/api/organisationUnits</code> endpoint with ancestor fields to extract district (Level-2) and chiefdom (Level-4) hierarchy. Each facility is classified by the last word of its display name using a suffix-first rule (<code>getHFType()</code>). Only the five assessed types are retained:</p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px 0;">
+                <span style="background:#e7f3ff;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-weight:700;font-size:12px;">Hospital</span>
+                <span style="background:#e7f3ff;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-weight:700;font-size:12px;">Clinic</span>
+                <span style="background:#e7f3ff;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-weight:700;font-size:12px;">CHC</span>
+                <span style="background:#e7f3ff;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-weight:700;font-size:12px;">CHP</span>
+                <span style="background:#e7f3ff;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-weight:700;font-size:12px;">MCHP</span>
+              </div>
+              <p>Level-6 organisation units (community health workers, HTR/ETR workers operating under an MCHP) are fetched in parallel. A <code>childToL5</code> map is built to link each Level-6 UID to its Level-5 MCHP parent, so community data reported at Level-6 is correctly attributed to the parent facility.</p>
+
+              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px 0;">2 · Data Elements</h3>
+              <p>Thirteen data elements are queried via <code>/api/dataValueSets</code> across two DHIS2 datasets:</p>
+
+              <p style="margin:12px 0 6px 0;font-weight:700;color:var(--blue-dk);">HF01 — Outpatient Morbidity &nbsp;(Dataset UID: <code style="font-size:11px;">ij1VNJwxKCh</code>)</p>
+              <p style="font-size:11px;color:var(--muted);margin-bottom:6px;">Data entered directly at Level-5 by facility staff. Queried with <code>children=true</code> so Level-6 CHW/ETR community records are automatically included.</p>
+              <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:14px;">
+                <thead><tr style="background:var(--blue-lt);">
+                  <th style="padding:5px 8px;border:1px solid var(--border);color:var(--blue);font-weight:800;">#</th>
+                  <th style="padding:5px 8px;border:1px solid var(--border);color:var(--blue);font-weight:800;">Data Element</th>
+                  <th style="padding:5px 8px;border:1px solid var(--border);color:var(--blue);font-weight:800;">UID</th>
+                  <th style="padding:5px 8px;border:1px solid var(--border);color:var(--blue);font-weight:800;">Age Disaggregation</th>
+                </tr></thead>
+                <tbody>
+                  <tr><td style="padding:4px 8px;border:1px solid var(--border);">1</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case — suspected Malaria</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">FJafyE1kzs4</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
+                  <tr style="background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">2</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (Microscopy) — Negative</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">Rijj3Fp9ksg</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
+                  <tr><td style="padding:4px 8px;border:1px solid var(--border);">3</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (Microscopy) — Positive</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">Sz13vbo2Qwh</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
+                  <tr style="background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">4</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (RDT) — Negative</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">mXS2g1AiPsS</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
+                  <tr><td style="padding:4px 8px;border:1px solid var(--border);">5</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (RDT) — Positive</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">p6zQLDFjSfd</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
+                  <tr style="background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">6</td><td style="padding:4px 8px;border:1px solid var(--border);">Malaria treated with ACT &lt;24 hours</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">wU8EdHifSLa</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
+                  <tr><td style="padding:4px 8px;border:1px solid var(--border);">7</td><td style="padding:4px 8px;border:1px solid var(--border);">Malaria treated with ACT &gt;24 hours</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">XKTCuR0W3YN</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
+                  <tr style="background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">8</td><td style="padding:4px 8px;border:1px solid var(--border);">OPD (New and follow-up curative)</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">jkVioQxQcnk</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5+y</td></tr>
+                </tbody>
+              </table>
+
+              <p style="margin:0 0 6px 0;font-weight:700;color:var(--blue-dk);">HF04 — Community Based Services &nbsp;(Dataset UID: <code style="font-size:11px;">nufVxEfy3Ps</code>)</p>
+              <p style="font-size:11px;color:var(--muted);margin-bottom:6px;">Data entered at Level-6 by community health workers (HTR/ETR). All Level-6 records are rolled up to the parent Level-5 MCHP before aggregation.</p>
+              <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:18px;">
+                <thead><tr style="background:#e8f5e9;">
+                  <th style="padding:5px 8px;border:1px solid var(--border);color:#155724;font-weight:800;">#</th>
+                  <th style="padding:5px 8px;border:1px solid var(--border);color:#155724;font-weight:800;">Data Element</th>
+                  <th style="padding:5px 8px;border:1px solid var(--border);color:#155724;font-weight:800;">UID</th>
+                  <th style="padding:5px 8px;border:1px solid var(--border);color:#155724;font-weight:800;">Age Disaggregation</th>
+                </tr></thead>
+                <tbody>
+                  <tr><td style="padding:4px 8px;border:1px solid var(--border);">9</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case (suspected malaria) in HTR and ETR</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">wfaQBIVQxWo</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
+                  <tr style="background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">10</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (RDT) in HTR — Negative</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">YWvx4zYdp92</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
+                  <tr><td style="padding:4px 8px;border:1px solid var(--border);">11</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (RDT) in HTR — Positive</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">T7xH8GwWpEM</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
+                  <tr style="background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">12</td><td style="padding:4px 8px;border:1px solid var(--border);">Malaria treated with ACT in HTR &lt;24 hours</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">h3zJa6hAgib</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
+                  <tr><td style="padding:4px 8px;border:1px solid var(--border);">13</td><td style="padding:4px 8px;border:1px solid var(--border);">Malaria treated with ACT in HTR &gt;24 hours</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">Imkks0HAl7E</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
+                </tbody>
+              </table>
+
+              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">3 · Reporting Status Rule</h3>
+              <div style="background:#d4edda;border:1.5px solid var(--green);border-radius:6px;padding:12px 16px;margin-bottom:10px;">
+                <strong style="color:#155724;font-size:13px;">Reported = 1</strong> &nbsp;—&nbsp; A facility is marked as <em>Reported</em> for a given month if the sum of all values across <strong>any</strong> of the 13 data elements above is greater than zero for that facility-month combination.<br><br>
+                <strong style="color:#721c24;font-size:13px;">Not Reported = 0</strong> &nbsp;—&nbsp; If no non-zero value is found across all 13 data elements for that facility and month, the facility is marked as <em>Not Reported</em>.
+              </div>
+              <p style="font-size:11px;color:var(--muted);">HF04 community data entered at Level-6 is rolled up to the parent Level-5 MCHP before this check. A single non-zero community record is sufficient to mark the MCHP as reported.</p>
+
+              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px 0;">4 · Aggregation</h3>
+              <p>Facility-month records are aggregated to district-month, district-year, chiefdom-month, and chiefdom-year levels. The reporting rate at each level is: <code>Reported facility-months ÷ Total facility-months × 100</code>. Geographic rates are computed from the chiefdom-month aggregates and mapped to GeoJSON boundaries.</p>
+
+              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px 0;">5 · Technical Details</h3>
+              <p>DHIS2 instance: <code>sl.dhis2.org/hmis23</code> &nbsp;·&nbsp; API endpoint: <code>/api/analytics.json</code> with <code>dimension=ou:LEVEL-5</code> (DHIS2 pre-aggregates all data server-side, Level-6 CHW/ETR community records included automatically) &nbsp;·&nbsp; Org unit level: 5 (facility) &nbsp;·&nbsp; Period type: Monthly &nbsp;·&nbsp; Developed by: Informatics Consultancy Firm – Sierra Leone (ICF-SL) for the National Malaria Control Programme (NMCP).</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div><!-- /resultsSection -->
+
+</div><!-- /page-body -->
+
+<div class="page-footer">
+  National Malaria Control Programme (NMCP) — Ministry of Health, Sierra Leone &nbsp;|&nbsp;
+  Technical Partner: Informatics Consultancy Firm – Sierra Leone (ICF-SL) &nbsp;|&nbsp;
+  mdrsl.chaiprod.com
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  CONSTANTS
+// ═══════════════════════════════════════════════════════════════════
+const PROXY     = 'https://script.google.com/macros/s/AKfycbyRXc68PYSmDSCYPakAS8Gc9R00kRjmsMYoDujPYMItyquXfwMAJUtRqXLiDlNWbSfDQQ/exec';
+const DRIVE_GAS  = 'https://script.google.com/macros/s/AKfycbyTprTce5ft5gxSwY7jOku2GNeKMG8V-X1BrY0jB3QDPyuVWXwFPNr_CH80BRfcLcwD/exec';
+const BASE_URL  = 'https://sl.dhis2.org/hmis23';
+const AUTH      = 'Basic ' + btoa('musa-sillahkanu:Navigator/2024!');
+const LEVEL_PHU = 5, LEVEL_DIST = 2, LEVEL_CHIEF = 4;
+
+// ── Facility type classifier — suffix-first, then substring fallback ──────────
+// Returns 'Hospital' | 'Clinic' | 'CHC' | 'CHP' | 'MCHP' | 'Other'
+// Identical to Age Disaggregation tool — produces the canonical 1730-facility set.
+function getHFType(name) {
+  const u = (name || '').toUpperCase();
+  const parts = u.trim().split(/\s+/);
+  const suffix = parts[parts.length - 1] || '';
+  if (suffix === 'HOSPITAL') return 'Hospital';
+  if (suffix === 'MCHP')     return 'MCHP';
+  if (suffix === 'CHC')      return 'CHC';
+  if (suffix === 'CHP')      return 'CHP';
+  const clinicSuffixes = ['CLINIC','CLINNIC','CLINNC','CLIMIC','CLINC','CLINIK','CLENIC','CLINCC','CLIN'];
+  if (clinicSuffixes.includes(suffix)) return 'Clinic';
+  if (u.includes('HOSPITAL')) return 'Hospital';
+  if (u.includes('MCHP'))     return 'MCHP';
+  if (u.includes('CHC'))      return 'CHC';
+  if (u.includes('CHP'))      return 'CHP';
+  if (clinicSuffixes.some(c => u.includes(c))) return 'Clinic';
+  return 'Other';
+}
+const ASSESSED_TYPES = ['Hospital', 'Clinic', 'CHC', 'CHP', 'MCHP'];
+
+const DE_UIDS = [
+  'FJafyE1kzs4','Rijj3Fp9ksg','Sz13vbo2Qwh','mXS2g1AiPsS','p6zQLDFjSfd',
+  'wU8EdHifSLa','XKTCuR0W3YN','jkVioQxQcnk','wfaQBIVQxWo','YWvx4zYdp92',
+  'T7xH8GwWpEM','h3zJa6hAgib','Imkks0HAl7E'
+];
+
+
+
+const RS_PALETTES = {
+  blackYellow: { name:'Black / Yellow',  colors:['#DDCC77','#212529'], default:true },
+  tealOrange:  { name:'Teal / Orange',   colors:['#009988','#EE7733'] },
+  bluOrange:   { name:'Blue / Orange',   colors:['#0077BB','#EE7733'] },
+  navyYellow:  { name:'Navy / Yellow',   colors:['#332288','#CCBB44'] },
+  viridis:     { name:'Viridis',         colors:['#21918c','#440154'] },
+  redGreen:    { name:'Red / Green',     colors:['#28a745','#dc3545'] },
+};
+
+// ═══════════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════════
+let ST = {
+  config: null,
+  orgHierarchy: {},        // {ouId: {id,name,districtName,chiefdomName,hfCode}}
+  rawSums: {},             // {ouId: {period: sum}}
+  reportData: [],          // [{hf_uid,ouId,Date,status,districtName,chiefdomName}]
+  selectedPalette: 'blackYellow',
+  geoCache: { chiefdomGeo:null, districtGeo:null, bbox:null },
+  geoDistrictRates: {},
+  geoChiefdomRates: {},
+  geoChiefdomHits: [],
+};
+
+// ═══════════════════════════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════════════════════════
+async function dhis2(path) {
+  const url = BASE_URL + path;
+  const pUrl = PROXY + '?url=' + encodeURIComponent(url) + '&Authorization=' + encodeURIComponent(AUTH);
+  const r = await fetch(pUrl);
+  if (!r.ok) throw new Error('HTTP ' + r.status + ': ' + path.slice(0,60));
+  return r.json();
+}
+
+function genPeriods(s, e) {
+  const out = [];
+  let [y,m] = s.split('-').map(Number);
+  const [ey,em] = e.split('-').map(Number);
+  while (y < ey || (y===ey && m<=em)) {
+    out.push(`${y}${String(m).padStart(2,'0')}`); m++; if(m>12){m=1;y++;}
+  }
+  return out;
+}
+
+function sleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
+
+function showAlert(msg, type='info') {
+  document.getElementById('alertBox').innerHTML =
+    `<div class="alert alert-${type}">${msg}</div>`;
+  setTimeout(()=>{ document.getElementById('alertBox').innerHTML=''; }, 7000);
+}
+
+function setProgress(p) {
+  document.getElementById('pbarFill').style.width = p + '%';
+  document.getElementById('pctLabel').textContent = Math.round(p) + '%';
+}
+
+const stepEls = {};
+function addStep(id, txt) {
+  const d = document.createElement('div');
+  d.className = 'step-item pending'; d.id = 'st_' + id;
+  d.innerHTML = `<div class="step-dot"></div><span>${txt}</span>`;
+  document.getElementById('stepList').appendChild(d);
+  stepEls[id] = d;
+}
+function setStep(id, status, msg) {
+  const el = stepEls[id]; if(!el) return;
+  el.className = 'step-item ' + status;
+  const pre = {running:'» ',done:'✓ ',error:'✗ '}[status]||'';
+  if(msg) el.querySelector('span').textContent = pre + msg;
+  else el.querySelector('span').textContent = pre + el.querySelector('span').textContent.replace(/^[»✓✗] /,'');
+}
+
+function setPill(txt, bg) {
+  const el = document.getElementById('headerPill');
+  el.textContent = txt;
+  el.style.background = bg || 'rgba(255,255,255,.15)';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  PIPELINE
+// ═══════════════════════════════════════════════════════════════════
+async function rs_startPipeline() {
+  const start = document.getElementById('cfgStart').value;
+  const end   = document.getElementById('cfgEnd').value;
+  if(!start || !end || start > end) { showAlert('Select a valid date range.','warn'); return; }
+
+  ST.config = { start, end, periods: genPeriods(start, end) };
+  ST.orgHierarchy = {}; ST.rawSums = {}; ST.reportData = {};
+
+  document.getElementById('configCard').style.display    = 'none';
+  document.getElementById('progressSection').style.display = 'block';
+  document.getElementById('resultsSection').style.display  = 'none';
+  document.getElementById('stepList').innerHTML = '';
+  Object.keys(stepEls).forEach(k => delete stepEls[k]);
+  setProgress(2);
+  setPill('Running…','rgba(255,193,7,.5)');
+
+    [
+      ['s1','Fetch Level-5 facilities · classify by name (Hospital/Clinic/CHC/CHP/MCHP)'],
+      ['s2','Assign HF codes'],
+      ['s3','Fetch analytics data · DHIS2 pre-aggregates Level-6 community data automatically'],
+      ['s4','Determine reporting status per facility per month'],
+      ['s5','Compute aggregates (national / district / chiefdom / facility)'],
+      ['s6','Load GeoJSON boundaries'],
+      ['s7','Compute geographic reporting rates'],
+      ['s8','Draw heatmaps, maps, table and facility tracker'],
+    ].forEach(([id,txt]) => addStep(id,txt));
+
+  try {
+    // ── Step 1: Org hierarchy + Level-6 CHW/ETR rollup map ──────────────────
+    // Fetches Level-5 OUs, classifies by name (getHFType), keeps only the
+    // 5 assessed types.  Also fetches Level-6 OUs (CHW/ETR community workers
+    // that sit beneath MCHPs) and builds childToL5 so their data values get
+    // rolled up to the correct Level-5 MCHP parent in Step 3.
+    setStep('s1','running');
+
+    // Fetch Level-5 only — analytics.json aggregates Level-6 community data automatically
+    const ouData5 = await dhis2(
+      `/api/organisationUnits.json?level=${LEVEL_PHU}&fields=id,displayName,ancestors[id,displayName,level]&paging=false`
+    );
+
+    const ous   = ouData5.organisationUnits || [];
+    let skipped = 0;
+    const typeCounts = {};
+    ASSESSED_TYPES.forEach(t => { typeCounts[t] = 0; });
+
+    ous.forEach(ou => {
+      const hfType = getHFType(ou.displayName);
+      if (!ASSESSED_TYPES.includes(hfType)) { skipped++; return; }
+      const anc   = (ou.ancestors||[]).sort((a,b)=>a.level-b.level);
+      const dist  = anc.find(a=>a.level===LEVEL_DIST);
+      const chief = anc.find(a=>a.level===LEVEL_CHIEF);
+      ST.orgHierarchy[ou.id] = {
+        id:ou.id, name:ou.displayName, hfType,
+        districtName: dist  ? dist.displayName  : '',
+        chiefdomName: chief ? chief.displayName : '',
+        hfCode: '',
+      };
+      typeCounts[hfType]++;
+    });
+
+    const nFac = Object.keys(ST.orgHierarchy).length;
+    setStep('s1','done',
+      `${nFac} assessed facilities · ` +
+      ASSESSED_TYPES.map(t=>`${t}: ${typeCounts[t]}`).join(' · ') +
+      ` · ${skipped} other types excluded · Level-6 community data via analytics aggregation`
+    );
+    setProgress(12);
+
+    // ── Step 2: HF codes ──
+    setStep('s2','running');
+    const sorted = Object.values(ST.orgHierarchy).sort((a,b)=>
+      (a.districtName+a.name).localeCompare(b.districtName+b.name));
+    sorted.forEach((ou,i)=>{
+      ST.orgHierarchy[ou.id].hfCode = 'HF' + String(i+1).padStart(String(nFac).length,'0');
+    });
+    setStep('s2','done',`HF001…HF${nFac}`); setProgress(18);
+
+    // ── Step 3: Fetch analytics — LEVEL-5 with analytics.json ─────────────────
+    // analytics.json pre-aggregates server-side and includes Level-6 community
+    // data automatically. Instead of ~29+ OU batches × period batches we only
+    // need: ceil(13 DEs / 40) × ceil(periods / 12) = typically 2–3 calls total.
+    // Returns rows: [dxStr, period, ouId, value]
+    setStep('s3','running');
+    const ouIds = Object.keys(ST.orgHierarchy);
+    const DX_BATCH = 40, PE_BATCH = 12;
+    const dxBatches = [];
+    for(let i=0;i<DE_UIDS.length;i+=DX_BATCH) dxBatches.push(DE_UIDS.slice(i,i+DX_BATCH));
+    const pBatches = [];
+    for(let i=0;i<ST.config.periods.length;i+=PE_BATCH) pBatches.push(ST.config.periods.slice(i,i+PE_BATCH));
+    const totalCalls = dxBatches.length * pBatches.length;
+    let done = 0;
+    ST.rawSums = {};
+    for(const dxB of dxBatches) {
+      for(const pB of pBatches) {
+        const url = `/api/analytics.json`
+          + `?dimension=dx:${dxB.join(';')}`
+          + `&dimension=pe:${pB.join(';')}`
+          + `&dimension=ou:LEVEL-${LEVEL_PHU}`
+          + `&displayProperty=NAME&paging=false&ignoreLimit=true`;
+        const resp = await dhis2(url);
+        (resp.rows || []).forEach(row => {
+          const [, period, ouId, rawVal] = row;
+          const val = parseFloat(rawVal) || 0;
+          if(!val || !ST.orgHierarchy[ouId]) return;
+          if(!ST.rawSums[ouId]) ST.rawSums[ouId] = {};
+          ST.rawSums[ouId][period] = (ST.rawSums[ouId][period]||0) + val;
+        });
+        done++;
+        setStep('s3','running',`Call ${done}/${totalCalls} · ${pB[0]}→${pB[pB.length-1]}`);
+        setProgress(18 + Math.round((done/totalCalls)*42));
+      }
+    }
+    const totalRows = Object.values(ST.rawSums).reduce((s,p)=>s+Object.keys(p).length,0);
+    setStep('s3','done',`${totalCalls} analytics call(s) · ${totalRows.toLocaleString()} facility-period data points · Level-6 community included via DHIS2 aggregation`);
+    setProgress(60);
+
+    // ── Step 4: Reporting status ──
+    setStep('s4','running');
+    ST.reportData = [];
+    let reported=0, notReported=0;
+    ouIds.forEach(ouId=>{
+      const ou = ST.orgHierarchy[ouId];
+      ST.config.periods.forEach(per=>{
+        const status = ((ST.rawSums[ouId]||{})[per]||0) > 0 ? 1 : 0;
+        ST.reportData.push({
+          hf_uid: ou.hfCode, ouId, Date:`${per.slice(0,4)}-${per.slice(4,6)}`,
+          status, districtName: ou.districtName, chiefdomName: ou.chiefdomName,
+          hfType: ou.hfType,
+        });
+        if(status) reported++; else notReported++;
+      });
+    });
+    const activeHFs = new Set(ST.reportData.filter(r=>r.status).map(r=>r.hf_uid));
+    const neverHFs  = new Set(ouIds.map(id=>ST.orgHierarchy[id].hfCode)).size - activeHFs.size;
+    const allHFs    = [...new Set(ST.reportData.map(r=>r.hf_uid))];
+    const activeRate = activeHFs.size>0 ? ((reported/(activeHFs.size*ST.config.periods.length))*100).toFixed(1) : '0.0';
+    // Store activeHFs on ST so aggregates and tracking can use it
+    ST.activeHFs   = activeHFs;
+    ST.activeOuIds = new Set(ST.reportData.filter(r=>r.status).map(r=>r.ouId));
+    setStep('s4','done',`${reported} reported · ${activeRate}% rate (active facilities)`);
+    setProgress(70);
+
+    // ── Step 5: Aggregates ──
+    setStep('s5','running');
+    rs_buildAggregates();
+    setStep('s5','done',`${ST.reportData.length} records aggregated`); setProgress(76);
+
+    // ── Step 6: GeoJSON ──
+    setStep('s6','running');
+    if (!ST.geoCache.chiefdomGeo) {
+      const [cg, dg] = await Promise.all([
+        fetch(CHIEFDOM_GEOJSON).then(r=>r.json()),
+        fetch(DISTRICT_GEOJSON).then(r=>r.json()).catch(()=>null),
+      ]);
+      ST.geoCache.chiefdomGeo = cg;
+      ST.geoCache.districtGeo = dg;
+      let mnX=Infinity,mnY=Infinity,mxX=-Infinity,mxY=-Infinity;
+      (cg.features||[]).forEach(f=>{
+        walkCoords(f.geometry,c=>{
+          if(c[0]<mnX)mnX=c[0];if(c[0]>mxX)mxX=c[0];
+          if(c[1]<mnY)mnY=c[1];if(c[1]>mxY)mxY=c[1];
+        });
+      });
+      ST.geoCache.bbox = {mnX,mnY,mxX,mxY};
+    }
+    setStep('s6','done',`${(ST.geoCache.chiefdomGeo.features||[]).length} chiefdom features`); setProgress(83);
+
+    // ── Step 7: Geo rates ──
+    setStep('s7','running');
+    const defaultYear = ST.config.periods[ST.config.periods.length-1].slice(0,4);
+    rs_computeGeoRates(defaultYear);
+    populateYearDropdown();
+    setStep('s7','done',`Rates computed for ${defaultYear}`); setProgress(90);
+
+    // ── Step 8: Draw ──
+    setStep('s8','running');
+
+    // Show results panel FIRST so canvases have real layout dimensions
+    document.getElementById('progressSection').style.display = 'none';
+    document.getElementById('resultsSection').style.display  = 'block';
+    await sleep(120);  // allow browser to reflow
+
+    let drawErrors = [];
+    try { rs_drawBothHeatmaps(); } catch(e){ drawErrors.push('Heatmaps: '+e.message); }
+    try { rs_renderGeoMaps();    } catch(e){ drawErrors.push('Geo maps: '+e.message); }
+    try { rs_buildTable();       } catch(e){ drawErrors.push('Table: '+e.message); }
+    try { trk_init();            } catch(e){ drawErrors.push('Tracking: '+e.message); }
+
+    if(drawErrors.length) {
+      setStep('s8','error','Draw errors: ' + drawErrors.join(' | '));
+      showAlert('Some outputs failed to draw: ' + drawErrors.join('; '), 'warn');
+    } else {
+      setStep('s8','done','All outputs ready');
+    }
+    setProgress(100);
+
+    // ── Stats ──
+    const nFacActive = activeHFs.size;
+    const nFacNever  = neverHFs;
+    const typePills  = ASSESSED_TYPES.map(t => {
+      const cnt = Object.values(ST.orgHierarchy).filter(o=>o.hfType===t).length;
+      return `<div class="stat-pill">${t}: ${cnt}</div>`;
+    }).join('');
+    document.getElementById('statsRow').innerHTML = [
+      `<div class="stat-pill">${nFac} facilities (5 assessed types)</div>`,
+      typePills,
+      `<div class="stat-pill ok">${nFacActive} active (reported ≥1 month)</div>`,
+      `<div class="stat-pill warn">${nFacNever} never reported</div>`,
+      `<div class="stat-pill">${ST.config.periods.length} months · ${start} → ${end}</div>`,
+      `<div class="stat-pill ok">${activeRate}% reporting rate (active facilities only)</div>`,
+      `<div class="stat-pill">${reported.toLocaleString()} reported facility-months</div>`,
+      `<div class="stat-pill" style="background:#f8d7da;border-color:var(--red);color:#721c24;">🔍 ${nFacNever} facilities never reported — visible in Facility Tracking tab</div>`,
+    ].join('');
+
+    setPill('Done ✓','rgba(40,167,69,.55)');
+
+  } catch(err) {
+    console.error(err);
+    showAlert('Pipeline error: ' + err.message, 'err');
+    setPill('Error','rgba(220,53,69,.5)');
+    // Restore config card so user can fix settings and retry
+    document.getElementById('configCard').style.display      = 'block';
+    document.getElementById('progressSection').style.display = 'block';
+    Object.keys(stepEls).forEach(k=>{
+      if(stepEls[k].classList.contains('running')) stepEls[k].className='step-item error';
+    });
+  }
+}
+
+function rs_reset() {
+  ST = {
+    config:null, orgHierarchy:{}, rawSums:{}, reportData:[],
+    selectedPalette:'blackYellow',
+    geoCache:{chiefdomGeo:null,districtGeo:null,bbox:null},
+    geoDistrictRates:{}, geoChiefdomRates:{}, geoChiefdomHits:[],
+  };
+  document.getElementById('configCard').style.display      = 'block';
+  document.getElementById('progressSection').style.display = 'none';
+  document.getElementById('resultsSection').style.display  = 'none';
+  document.getElementById('stepList').innerHTML = '';
+  setProgress(0);
+  setPill('Ready','rgba(255,255,255,.15)');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  AGGREGATES
+// ═══════════════════════════════════════════════════════════════════
+let AGG = { natMonthly:{}, natYearly:{}, distMonthly:{}, distYearly:{}, chiefMonthly:{}, chiefYearly:{}, facMonthly:{} };
+
+function rs_buildAggregates() {
+  AGG = { natMonthly:{}, natYearly:{}, distMonthly:{}, distYearly:{}, chiefMonthly:{}, chiefYearly:{}, facMonthly:{} };
+
+  // Only count active facilities (reported ≥1 month in the entire period) in totals.
+  // Never-reporting facilities are still shown in the tracking view but excluded from rate denominators.
+  const activeHFs = ST.activeHFs || new Set(ST.reportData.filter(r=>r.status).map(r=>r.hf_uid));
+
+  ST.reportData.forEach(row => {
+    const yr = row.Date.slice(0,4), mo = row.Date.slice(5,7);
+    const d = row.districtName, c = row.chiefdomName, f = row.hf_uid;
+    const isActive = activeHFs.has(f);   // only active facilities count toward rate
+
+    // National monthly — only active facilities
+    if(isActive) {
+      const nMk = row.Date;
+      if(!AGG.natMonthly[nMk]) AGG.natMonthly[nMk] = {year:yr,month:mo,date:row.Date,reported:0,total:0};
+      AGG.natMonthly[nMk].reported += row.status; AGG.natMonthly[nMk].total++;
+
+      // National yearly
+      const nYk = yr;
+      if(!AGG.natYearly[nYk]) AGG.natYearly[nYk] = {year:yr,reported:0,total:0};
+      AGG.natYearly[nYk].reported += row.status; AGG.natYearly[nYk].total++;
+
+      // District monthly
+      const dMk = `${d}|${row.Date}`;
+      if(!AGG.distMonthly[dMk]) AGG.distMonthly[dMk] = {district:d,year:yr,month:mo,date:row.Date,reported:0,total:0};
+      AGG.distMonthly[dMk].reported += row.status; AGG.distMonthly[dMk].total++;
+
+      // District yearly
+      const dYk = `${d}|${yr}`;
+      if(!AGG.distYearly[dYk]) AGG.distYearly[dYk] = {district:d,year:yr,reported:0,total:0};
+      AGG.distYearly[dYk].reported += row.status; AGG.distYearly[dYk].total++;
+
+      // Chiefdom monthly
+      const cMk = `${c}|${row.Date}`;
+      if(!AGG.chiefMonthly[cMk]) AGG.chiefMonthly[cMk] = {district:d,chiefdom:c,year:yr,month:mo,date:row.Date,reported:0,total:0};
+      AGG.chiefMonthly[cMk].reported += row.status; AGG.chiefMonthly[cMk].total++;
+
+      // Chiefdom yearly
+      const cYk = `${c}|${yr}`;
+      if(!AGG.chiefYearly[cYk]) AGG.chiefYearly[cYk] = {district:d,chiefdom:c,year:yr,reported:0,total:0};
+      AGG.chiefYearly[cYk].reported += row.status; AGG.chiefYearly[cYk].total++;
+    }
+
+    // Facility monthly — all facilities regardless (so they appear in the table)
+    const fMk = `${f}|${row.Date}`;
+    if(!AGG.facMonthly[fMk]) AGG.facMonthly[fMk] = {hf_uid:f,hfType:row.hfType||'',district:d,chiefdom:c,year:yr,month:mo,date:row.Date,status:row.status};
+    else AGG.facMonthly[fMk].status = row.status;
+  });
+
+  // Compute rate % on each
+  const addRate = obj => Object.values(obj).forEach(r => {
+    r.rate_pct = r.total>0 ? +((r.reported/r.total)*100).toFixed(1) : null;
+    r.category = r.rate_pct===null ? 'No data' : GEO_BREAKS.find(b=>r.rate_pct<=b.max)?.label || '80–100%';
+  });
+  addRate(AGG.natMonthly); addRate(AGG.natYearly);
+  addRate(AGG.distMonthly); addRate(AGG.distYearly);
+  addRate(AGG.chiefMonthly); addRate(AGG.chiefYearly);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  HEATMAPS
+// ═══════════════════════════════════════════════════════════════════
+function rs_buildPaletteGrid() {
+  const grid = document.getElementById('hmPaletteGrid');
+  grid.innerHTML = Object.entries(RS_PALETTES).map(([key,p])=>
+    `<div onclick="rs_selectPalette('${key}')" class="pal-tile ${key===ST.selectedPalette?'selected':''}">
+       <div class="pal-swatch" style="background:${p.colors[0]}"></div>
+       <div class="pal-swatch" style="background:${p.colors[1]}"></div>
+       ${p.name}
+     </div>`
+  ).join('');
+}
+
+function rs_selectPalette(key) {
+  ST.selectedPalette = key; rs_buildPaletteGrid();
+}
+
+function rs_drawBothHeatmaps() {
+  rs_buildPaletteGrid();
+  const pal   = RS_PALETTES[ST.selectedPalette];
+  const title = document.getElementById('hmTitle').value || 'NMCP Malaria EPI Reporting Status';
+  const allHFs    = [...new Set(ST.reportData.map(r=>r.hf_uid))];
+  const activeHFs = allHFs.filter(hf=>ST.reportData.some(r=>r.hf_uid===hf&&r.status));
+  const neverCt   = allHFs.length - activeHFs.length;
+  const t1 = `${title} — All Facilities`;
+  const t2 = `${title} — Active Facilities Only (${neverCt} never-reporting excluded)`;
+  const s1 = `${allHFs.length} facilities · ${ST.config.start} → ${ST.config.end}`;
+  const s2 = `${activeHFs.length} facilities with ≥1 reported month`;
+  document.getElementById('hmTitle1').textContent = t1;
+  document.getElementById('hmSub1').textContent   = s1;
+  document.getElementById('hmTitle2').textContent = t2;
+  document.getElementById('hmSub2').textContent   = s2;
+  rs_drawHeatmap('hmCanvas1', allHFs,    t1, s1, pal);
+  rs_drawHeatmap('hmCanvas2', activeHFs, t2, s2, pal);
+}
+
+function rs_redrawHeatmaps() { rs_drawBothHeatmaps(); }
+
+function rs_drawHeatmap(canvasId, hfSubset, title, subtitle, pal) {
+  const canvas = document.getElementById(canvasId); if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const cW  = parseInt(document.getElementById('hmW').value)||1400;
+  const cH  = parseInt(document.getElementById('hmH').value)||750;
+  const xLab = document.getElementById('hmXLabel').value;
+  const yLab = document.getElementById('hmYLabel').value;
+  const COL_REP = pal.colors[0], COL_NOT = pal.colors[1];
+
+  const hfData = {};
+  ST.reportData.forEach(row=>{
+    if(!hfSubset.includes(row.hf_uid)) return;
+    if(!hfData[row.hf_uid]) hfData[row.hf_uid]={};
+    hfData[row.hf_uid][row.Date] = row.status;
+  });
+  const dates = [...new Set(ST.reportData.map(r=>r.Date))].sort();
+  const nD = dates.length, nH = hfSubset.length;
+  if(!nH || !nD) return;
+
+  const sorted = hfSubset.map(hf=>({hf,rate:dates.filter(d=>hfData[hf]?.[d]).length/nD}))
+    .sort((a,b)=>b.rate-a.rate);
+  const hfIds = sorted.map(s=>s.hf);
+
+  const TITLE_H=58, LEG_H=48, XLAB_H=88, XTITLE_H=26;
+  const YTITLE_W=28, R_PAD=18;
+  const mTop=TITLE_H+LEG_H, mBot=XLAB_H+XTITLE_H, mLeft=YTITLE_W+10;
+  canvas.width=cW; canvas.height=cH;
+  canvas.style.width='100%'; canvas.style.height='auto';
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,cW,cH);
+
+  const hW=cW-mLeft-R_PAD, hH=cH-mTop-mBot;
+  const CW=hW/nD, CH=hH/nH;
+  const sX=mLeft, sY=mTop;
+
+  // Title
+  ctx.fillStyle='#004080'; ctx.font='bold 15px Oswald,Arial,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  wrapText(ctx,title,cW/2,10,cW-40,21);
+
+  // Legend
+  const legY=TITLE_H+8, bW=20,bH=13, legCX=cW/2;
+  ctx.fillStyle='#f0f4f8'; ctx.strokeStyle='#004080'; ctx.lineWidth=1.5;
+  ctx.fillRect(legCX-160,legY-4,320,28); ctx.strokeRect(legCX-160,legY-4,320,28);
+  ctx.fillStyle=COL_REP; ctx.fillRect(legCX-148,legY+2,bW,bH);
+  ctx.strokeStyle='#555'; ctx.lineWidth=0.5; ctx.strokeRect(legCX-148,legY+2,bW,bH);
+  ctx.fillStyle='#000'; ctx.font='bold 11px Oswald,Arial,sans-serif';
+  ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.fillText('Reported (1)',legCX-122,legY+9);
+  ctx.fillStyle=COL_NOT; ctx.fillRect(legCX+20,legY+2,bW,bH);
+  ctx.strokeStyle='#555'; ctx.strokeRect(legCX+20,legY+2,bW,bH);
+  ctx.fillStyle='#000'; ctx.fillText('Not Reported (0)',legCX+46,legY+9);
+
+  // Cells
+  hfIds.forEach((hf,hi)=>{
+    dates.forEach((date,di)=>{
+      ctx.fillStyle = (hfData[hf]?.[date]||0)===1 ? COL_REP : COL_NOT;
+      ctx.fillRect(sX+di*CW, sY+hi*CH, CW+0.5, CH+0.5);
+    });
+  });
+  ctx.strokeStyle='#004080'; ctx.lineWidth=2;
+  ctx.strokeRect(sX,sY,hW,hH);
+
+  // X labels
+  ctx.fillStyle='#111'; ctx.font='bold 10px Oswald,Arial,sans-serif';
+  ctx.textAlign='right'; ctx.textBaseline='middle';
+  const intv = CW>=11 ? 1 : Math.ceil(14/CW);
+  dates.forEach((date,di)=>{
+    if(di%intv!==0) return;
+    const cx=sX+di*CW+CW/2;
+    ctx.save(); ctx.translate(cx,sY+hH+6); ctx.rotate(-Math.PI/2);
+    ctx.fillText(date,0,0); ctx.restore();
+  });
+  ctx.fillStyle='#004080'; ctx.font='bold 12px Oswald,Arial,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='bottom';
+  ctx.fillText(xLab, sX+hW/2, cH-4);
+  ctx.save(); ctx.fillStyle='#004080'; ctx.font='bold 12px Oswald,Arial,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.translate(14,sY+hH/2); ctx.rotate(-Math.PI/2);
+  ctx.fillText(yLab,0,0); ctx.restore();
+  ctx.fillStyle='#888'; ctx.font='10px Oswald,Arial,sans-serif';
+  ctx.textAlign='right'; ctx.textBaseline='bottom';
+  ctx.fillText(`ICF-SL / NMCP · ${nH} facilities × ${nD} periods`,cW-5,cH-4);
+}
+
+function wrapText(ctx,text,x,y,maxW,lh){
+  const words=text.split(' '); let line='',cy=y;
+  words.forEach(w=>{
+    const test=line+(line?' ':'')+w;
+    if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,x,cy);line=w;cy+=lh;}
+    else line=test;
+  });
+  if(line)ctx.fillText(line,x,cy);
+}
+
+function rs_downloadHeatmap(canvasId, suffix) {
+  const canvas = document.getElementById(canvasId); if(!canvas) return;
+  const a = document.createElement('a');
+  a.download = `NMCP_ReportingStatus_${suffix}.png`;
+  a.href = canvas.toDataURL('image/png'); a.click();
+}
+
+function rs_downloadBothHeatmapSubplot() {
+  const c1 = document.getElementById('hmCanvas1');
+  const c2 = document.getElementById('hmCanvas2');
+  if(!c1||!c2) return;
+  const W = c1.width, H = c1.height;
+  const PAD=24, GAP=20, TITLE_H=52;
+  const out = document.createElement('canvas');
+  out.width  = W; out.height = TITLE_H + H + GAP + H + PAD;
+  const ctx  = out.getContext('2d');
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,out.width,out.height);
+  ctx.fillStyle='#1f4a6a'; ctx.font='bold 22px Oswald,Arial,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.fillText(`NMCP Malaria EPI Reporting Status · ${ST.config.start} → ${ST.config.end}`, W/2, 14);
+  ctx.drawImage(c1, 0, TITLE_H);
+  ctx.drawImage(c2, 0, TITLE_H + H + GAP);
+  const a = document.createElement('a');
+  a.download = `NMCP_ReportingStatus_BothCharts.png`;
+  a.href = out.toDataURL('image/png'); a.click();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  GEOGRAPHIC MAPS
+// ═══════════════════════════════════════════════════════════════════
+
+// GeoJSON URLs
+// Chiefdom: property 'adm3' = "Dea Chiefdom" (Title Case + "Chiefdom")
+//           property 'FIRST_DNAM' = "KAILAHUN" (ALLCAPS district name)
+// District: property 'FIRST_DNAM' = "KAILAHUN" (ALLCAPS)
+const CHIEFDOM_GEOJSON = 'https://raw.githubusercontent.com/mohamedsillahkanu/tpr/8b16cd164aa5116242b9e8e29ea777cf79a1b211/Chiefdom_shp.geojson';
+const DISTRICT_GEOJSON = 'https://raw.githubusercontent.com/mohamedsillahkanu/tpr/d202a234dfd9b30de6216b5da59b2a1ee14283b5/District_Shapefiles.geojson';
+
+// ── MAP PALETTES — 5 bins: 0-20, 20-40, 40-60, 60-80, 80-100 ──
+const MAP_PALETTES = {
+  blues: {
+    name: 'Blues',
+    colors: ['#c6dbef','#9ecae1','#6baed6','#2171b5','#084594'],
+    bg: '#ddeeff',
+  },
+  rdylgn: {
+    name: 'Red → Green',
+    colors: ['#d73027','#fc8d59','#ffffbf','#91cf60','#1a9850'],
+    bg: '#f5f5e8',
+  },
+  rdylbu: {
+    name: 'Red → Blue',
+    colors: ['#d73027','#fc8d59','#ffffbf','#91bfdb','#4575b4'],
+    bg: '#f0f4f8',
+  },
+  ylgnbu: {
+    name: 'Yellow → Blue',
+    colors: ['#ffffcc','#a1dab4','#41b6c4','#2c7fb8','#253494'],
+    bg: '#f0f8ee',
+  },
+  oranges: {
+    name: 'Oranges',
+    colors: ['#feedde','#fdbe85','#fd8d3c','#e6550d','#a63603'],
+    bg: '#fff5ee',
+  },
+  purples: {
+    name: 'Purples',
+    colors: ['#efedf5','#bcbddc','#9e9ac8','#756bb1','#54278f'],
+    bg: '#f4f0fa',
+  },
+  greens: {
+    name: 'Greens',
+    colors: ['#edf8e9','#bae4b3','#74c476','#31a354','#006d2c'],
+    bg: '#edf8f0',
+  },
+  spectral: {
+    name: 'Spectral',
+    colors: ['#d53e4f','#fc8d59','#fee08b','#99d594','#3288bd'],
+    bg: '#f8f5ee',
+  },
+};
+
+let selectedMapPalette = 'rdylgn';
+
+function getBreaks() {
+  const pal = MAP_PALETTES[selectedMapPalette] || MAP_PALETTES.blues;
+  return [
+    { max: 20,  label: '0–20%',   color: pal.colors[0] },
+    { max: 40,  label: '20–40%',  color: pal.colors[1] },
+    { max: 60,  label: '40–60%',  color: pal.colors[2] },
+    { max: 80,  label: '60–80%',  color: pal.colors[3] },
+    { max: 100, label: '80–100%', color: pal.colors[4] },
+  ];
+}
+
+// Keep GEO_BREAKS as a live getter alias for backward compat
+Object.defineProperty(window, 'GEO_BREAKS', { get: () => getBreaks() });
+
+function getMapBg() {
+  return '#ffffff';
+}
+
+function geoColor(rate) {
+  if (rate === null || rate === undefined || isNaN(rate)) return '#cccccc';
+  const breaks = getBreaks();
+  for (const b of breaks) { if (rate <= b.max) return b.color; }
+  return breaks[4].color;
+}
+
+// Build palette picker tiles
+function rs_buildMapPaletteGrid() {
+  const grid = document.getElementById('mapPaletteGrid');
+  if (!grid) return;
+  grid.innerHTML = Object.entries(MAP_PALETTES).map(([key, pal]) => {
+    const swatches = pal.colors.map(c =>
+      `<div style="width:16px;height:13px;background:${c};border-radius:1px;border:1px solid rgba(0,0,0,.1);flex-shrink:0;"></div>`
+    ).join('');
+    const sel = key === selectedMapPalette;
+    return `<div onclick="rs_selectMapPalette('${key}')" id="mpt_${key}"
+      style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:7px;
+             border:2px solid ${sel?'var(--blue)':'var(--border)'};
+             background:${sel?'var(--blue-lt)':'#f8f9fa'};
+             cursor:pointer;font-size:11px;font-weight:700;color:var(--blue);
+             transition:all .2s;white-space:nowrap;">
+      <div style="display:flex;gap:2px;">${swatches}</div>
+      ${pal.name}
+    </div>`;
+  }).join('');
+}
+
+function rs_selectMapPalette(key) {
+  selectedMapPalette = key;
+  rs_buildMapPaletteGrid();
+  // Update the static legend bar in annual maps section
+  rs_updateAnnualLegendBar();
+}
+
+// Normalise name: ALLCAPS or Title Case → lowercase, strip "chiefdom/district/province"
+function normName(n) {
+  return (n || '')
+    .toLowerCase()
+    .replace(/\bchiefdom\b/g, '')
+    .replace(/\bdistrict\b/g, '')
+    .replace(/\bprovince\b/g, '')
+    .replace(/\barea\b/g, '')
+    .replace(/[-_]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Populate geo year dropdown from pipeline periods
+function populateYearDropdown() {
+  const sel = document.getElementById('geoYear'); if (!sel) return;
+  const years = [...new Set((ST.config?.periods || []).map(p => p.slice(0, 4)))].sort();
+  sel.innerHTML = years.map(y =>
+    `<option value="${y}" ${y === years[years.length - 1] ? 'selected' : ''}>${y}</option>`
+  ).join('');
+}
+
+// Compute reporting rates for a given year — ACTIVE FACILITIES ONLY
+// Active = facility reported at least once in ANY period across the whole dataset
+function rs_computeGeoRates(year) {
+  // Determine active facility IDs (reported >= 1 month across all time)
+  const activeFacIds = new Set(
+    ST.reportData.filter(r => r.status === 1).map(r => r.ouId)
+  );
+
+  const distM = {}, chiefM = {};
+  ST.reportData.forEach(row => {
+    if (!activeFacIds.has(row.ouId)) return;        // skip never-reporting
+    if (row.Date.slice(0, 4) !== year) return;
+    const d = row.districtName, c = row.chiefdomName;
+    if (d) { if (!distM[d]) distM[d] = { r:0, t:0 }; distM[d].r += row.status; distM[d].t++; }
+    if (c) { if (!chiefM[c]) chiefM[c] = { r:0, t:0 }; chiefM[c].r += row.status; chiefM[c].t++; }
+  });
+
+  // Store by original name AND by normName for fuzzy matching
+  ST.geoDistrictRates = {};
+  ST.geoChiefdomRates = {};
+  Object.entries(distM).forEach(([k, v]) => {
+    const rate = v.t > 0 ? (v.r / v.t) * 100 : null;
+    ST.geoDistrictRates[k]           = rate;
+    ST.geoDistrictRates[normName(k)] = rate;
+  });
+  Object.entries(chiefM).forEach(([k, v]) => {
+    const rate = v.t > 0 ? (v.r / v.t) * 100 : null;
+    ST.geoChiefdomRates[k]           = rate;
+    ST.geoChiefdomRates[normName(k)] = rate;
+  });
+}
+
+// Look up rate: try exact → normName → null
+function lookupRate(shpName, rateMap) {
+  if (rateMap[shpName] !== undefined) return rateMap[shpName];
+  const n = normName(shpName);
+  if (rateMap[n] !== undefined) return rateMap[n];
+  return null;
+}
+
+function makeTf(canvas) {
+  const { mnX, mnY, mxX, mxY } = ST.geoCache.bbox;
+  const W = canvas.width || 640, H = canvas.height || 640, P = W * 0.04;
+  const rangeX = (mxX - mnX) || 1, rangeY = (mxY - mnY) || 1;
+  const sx = (W - P*2) / rangeX, sy = (H - P*2) / rangeY;
+  const sc = Math.min(sx, sy);
+  const ox = P + (W - P*2 - rangeX*sc) / 2;
+  const oy = P + (H - P*2 - rangeY*sc) / 2;
+  return c => [ox + (c[0] - mnX) * sc, H - (oy + (c[1] - mnY) * sc)];
+}
+
+function sizeCanvas(canvas) {
+  let el = canvas.parentElement, w = 0;
+  while (el && w < 10) { w = el.offsetWidth; el = el.parentElement; }
+  w = w || 560;
+  canvas.width = canvas.height = w * 2;
+}
+
+function walkCoords(geom, cb) {
+  if (!geom) return;
+  if (geom.type === 'Polygon')      geom.coordinates[0].forEach(cb);
+  if (geom.type === 'MultiPolygon') geom.coordinates.forEach(p => p[0].forEach(cb));
+}
+
+function drawPoly(ctx, geom, tf) {
+  const go = cs => {
+    ctx.beginPath();
+    cs.forEach(ring => ring.forEach((c, i) => {
+      const [x, y] = tf(c); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }));
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+  };
+  if (geom.type === 'Polygon')      go(geom.coordinates);
+  if (geom.type === 'MultiPolygon') geom.coordinates.forEach(p => go(p));
+}
+
+function centroid(geom) {
+  const pts = []; walkCoords(geom, c => pts.push(c));
+  if (!pts.length) return null;
+  return [pts.reduce((s, p) => s + p[0], 0) / pts.length,
+          pts.reduce((s, p) => s + p[1], 0) / pts.length];
+}
+
+function geoLabel(ctx, txt, x, y, sz) {
+  ctx.font = `bold ${sz || 10}px Oswald,Arial,sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#1a2e3d'; ctx.fillText(txt, x, y);
+}
+
+// ── Shared helper: clean solid national map — no internal lines, thick outer border ──
+function drawNationalSolid(ctx, W, H, tf, fillColor) {
+  const geo = ST.geoCache.chiefdomGeo;
+  if (!geo) return;
+
+  const buildPath = () => {
+    ctx.beginPath();
+    (geo.features || []).forEach(f => {
+      const add = coords => coords.forEach(ring => {
+        ring.forEach((c,i) => { const [x,y]=tf(c); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+        ctx.closePath();
+      });
+      if (f.geometry.type==='Polygon')      add(f.geometry.coordinates);
+      if (f.geometry.type==='MultiPolygon') f.geometry.coordinates.forEach(p=>add(p));
+    });
+  };
+
+  const bw = Math.max(3, Math.round(W * 0.007)); // border width
+
+  // Step 1: Draw thick border stroke (will have internal lines — we paint over them next)
+  buildPath();
+  ctx.strokeStyle = '#1a2e3d';
+  ctx.lineWidth   = bw * 2;   // double width — inner half gets covered by fill
+  ctx.lineJoin    = 'round';
+  ctx.stroke();
+
+  // Step 2: Clip to shape and flood-fill — covers all internal stroke halves perfectly
+  ctx.save();
+  buildPath();
+  ctx.clip();
+  ctx.fillStyle = fillColor;
+  ctx.fillRect(0, 0, W, H);
+  ctx.restore();
+  // Result: only the outer half of the border stroke remains visible — clean outer ring
+}
+
+function drawNational() {
+  const canvas = document.getElementById('geoNational'); if (!canvas) return;
+  sizeCanvas(canvas);
+  const ctx = canvas.getContext('2d'), tf = makeTf(canvas);
+  const W = canvas.width, H = canvas.height;
+
+  // Compute national rate (active facilities only, selected year)
+  const year = document.getElementById('geoYear')?.value ||
+    (ST.config?.periods || []).slice(-1)[0]?.slice(0, 4) || '2024';
+  const activeFacIds = new Set(ST.reportData.filter(r => r.status === 1).map(r => r.ouId));
+  let natReported = 0, natTotal = 0;
+  ST.reportData.forEach(row => {
+    if (!activeFacIds.has(row.ouId)) return;
+    if (row.Date.slice(0, 4) !== year) return;
+    natReported += row.status;
+    natTotal    += 1;
+  });
+  const natRate  = natTotal > 0 ? (natReported / natTotal) * 100 : null;
+  const natColor = geoColor(natRate);
+
+  // Background
+  ctx.fillStyle = getMapBg();
+  ctx.fillRect(0, 0, W, H);
+
+  // Use shared helper — solid fill, no internal lines, clean outer border
+  drawNationalSolid(ctx, W, H, tf, natColor);
+
+  // Rate label centered
+  const rStr = natRate !== null ? Math.round(natRate) + '%' : '—';
+  const cat  = natRate !== null
+    ? (GEO_BREAKS.find(b => natRate <= b.max)?.label || '80–100%')
+    : 'No data';
+  const midY = H / 2;
+  const fsz  = Math.round(W * .065);
+  const fsz2 = Math.round(W * .034);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.font = `bold ${fsz}px Oswald,Arial,sans-serif`;
+  ctx.fillStyle = '#1a2e3d'; ctx.fillText(rStr, W / 2, midY);
+  ctx.font = `bold ${fsz2}px Oswald,Arial,sans-serif`;
+  ctx.fillStyle = '#1a2e3d'; ctx.fillText(cat, W / 2, midY + fsz * 0.82);
+  ctx.font = `bold ${Math.round(W * .022)}px Oswald,Arial,sans-serif`;
+  ctx.fillStyle = '#1a2e3d'; ctx.textBaseline = 'bottom';
+  ctx.fillText('Sierra Leone — National', W / 2, H - 8);
+
+  // Hover: show "Sierra Leone — National · rate%" on hover
+  canvas._hitsData = [{
+    name: 'Sierra Leone — National',
+    rate: natRate,
+    rings: (() => {
+      const rings = [];
+      (ST.geoCache.chiefdomGeo.features || []).forEach(f => {
+        const collect = cs => cs.forEach(ring => rings.push(ring.map(tf)));
+        if (f.geometry.type === 'Polygon')      collect(f.geometry.coordinates);
+        if (f.geometry.type === 'MultiPolygon') f.geometry.coordinates.forEach(p => collect(p));
+      });
+      return rings;
+    })(),
+  }];
+  canvas._hoverAttached = false;
+  attachMapHover(canvas);
+}
+
+function drawDistrict() {
+  const canvas = document.getElementById('geoDistrict'); if (!canvas) return;
+  sizeCanvas(canvas);
+  const ctx = canvas.getContext('2d'), tf = makeTf(canvas);
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = getMapBg(); ctx.fillRect(0, 0, W, H);
+
+  if (!ST.geoCache.districtGeo) {
+    ctx.fillStyle = '#6c7a89'; ctx.font = '13px Arial'; ctx.textAlign = 'center';
+    ctx.fillText('District GeoJSON unavailable', W/2, H/2); return;
+  }
+
+  const lsz = Math.max(8, Math.round(W * .022));
+
+  // Draw filled districts first (no stroke yet)
+  (ST.geoCache.districtGeo.features || []).forEach(f => {
+    const shpName = (f.properties['FIRST_DNAM'] || '').trim();
+    const rate    = lookupRate(shpName, ST.geoDistrictRates);
+    ctx.fillStyle   = geoColor(rate);
+    ctx.strokeStyle = 'transparent';
+    ctx.lineWidth   = 0;
+    const fillOnly = cs => {
+      ctx.beginPath();
+      cs.forEach(ring => ring.forEach((c, i) => {
+        const [x, y] = tf(c); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      }));
+      ctx.closePath(); ctx.fill();
+    };
+    if (f.geometry.type === 'Polygon')      fillOnly(f.geometry.coordinates);
+    if (f.geometry.type === 'MultiPolygon') f.geometry.coordinates.forEach(p => fillOnly(p));
+  });
+
+  // Draw thick black borders on top
+  (ST.geoCache.districtGeo.features || []).forEach(f => {
+    ctx.fillStyle   = 'transparent';
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth   = 4.5;
+    drawPoly(ctx, f.geometry, tf);
+  });
+
+  // Labels
+  (ST.geoCache.districtGeo.features || []).forEach(f => {
+    const shpName = (f.properties['FIRST_DNAM'] || '').trim();
+    const rate    = lookupRate(shpName, ST.geoDistrictRates);
+    const cen     = centroid(f.geometry); if (!cen) return;
+    const [cx, cy] = tf(cen);
+    const label = shpName.split(' ')
+      .map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(' ');
+    const rStr  = rate !== null ? Math.round(rate) + '%' : '—';
+    geoLabel(ctx, label, cx, cy - lsz * 0.85, lsz);
+    geoLabel(ctx, rStr,  cx, cy + lsz * 0.85, lsz);
+  });
+
+  // Build hits for hover
+  canvas._hitsData = buildHits(ST.geoCache.districtGeo, 'FIRST_DNAM', ST.geoDistrictRates, tf, null);
+  canvas._hoverAttached = false;
+  attachMapHover(canvas);
+}
+
+// ── MAP 3: Chiefdom — choropleth, grey chiefdom borders, thick black district overlay, hover tooltip ──
+function drawChiefdom() {
+  const canvas = document.getElementById('geoChiefdom'); if (!canvas) return;
+  sizeCanvas(canvas);
+  const ctx = canvas.getContext('2d'), tf = makeTf(canvas);
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = getMapBg(); ctx.fillRect(0, 0, W, H);
+
+  // adm3 = "Dea Chiefdom" — choropleth with clearly visible chiefdom borders
+  (ST.geoCache.chiefdomGeo.features || []).forEach(f => {
+    const shpName = (f.properties['adm3'] || '').trim();
+    const rate    = lookupRate(shpName, ST.geoChiefdomRates);
+    ctx.fillStyle   = geoColor(rate);
+    ctx.strokeStyle = 'rgba(0,0,0,.75)';
+    ctx.lineWidth   = 1.4;
+    drawPoly(ctx, f.geometry, tf);
+  });
+
+  // District overlay — very thick border so districts stand out clearly
+  if (ST.geoCache.districtGeo) {
+    (ST.geoCache.districtGeo.features || []).forEach(f => {
+      ctx.fillStyle   = 'transparent';
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth   = 4.0;
+      drawPoly(ctx, f.geometry, tf);
+    });
+  }
+
+  // Build hits and attach hover
+  canvas._hitsData = buildHits(ST.geoCache.chiefdomGeo, 'adm3', ST.geoChiefdomRates, tf, null);
+  canvas._hoverAttached = false; // reset so attachMapHover re-runs after redraw
+  attachMapHover(canvas);
+}
+
+// ── Tooltip hit-test ──
+function pointInRing(px, py, ring) {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i], [xj, yj] = ring[j];
+    if (((yi > py) !== (yj > py)) && px < (xj - xi) * (py - yi) / (yj - yi) + xi)
+      inside = !inside;
+  }
+  return inside;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  UNIVERSAL HOVER TOOLTIP — works on any canvas with ._hitsData
+// ═══════════════════════════════════════════════════════════════════
+// Each canvas stores: canvas._hitsData = [{name, rate, period, rings}]
+
+function attachMapHover(canvas) {
+  if (!canvas) return;
+  // Remove old listeners if already attached
+  if (canvas._mmoveHandler) canvas.removeEventListener('mousemove', canvas._mmoveHandler);
+  if (canvas._mleaveHandler) canvas.removeEventListener('mouseleave', canvas._mleaveHandler);
+
+  canvas.style.cursor = 'crosshair';
+  canvas._hoverAttached = true;
+
+  canvas._mmoveHandler = evt => {
+    const tip  = document.getElementById('rsTooltip');
+    const hits = canvas._hitsData;
+    if (!hits || !hits.length) { tip.style.display='none'; return; }
+
+    const rect = canvas.getBoundingClientRect();
+    const sx   = canvas.width  / rect.width;
+    const sy   = canvas.height / rect.height;
+    const mx   = (evt.clientX - rect.left) * sx;
+    const my   = (evt.clientY - rect.top)  * sy;
+
+    let hit = null;
+    for (const h of hits) {
+      for (const ring of h.rings) {
+        if (pointInRing(mx, my, ring)) { hit = h; break; }
+      }
+      if (hit) break;
+    }
+
+    if (hit) {
+      const rStr = hit.rate !== null ? Math.round(hit.rate) + '%' : 'No data';
+      const breaks = getBreaks();
+      let cat = 'No data';
+      if (hit.rate !== null) {
+        for (const b of breaks) { if (hit.rate <= b.max) { cat = b.label; break; } }
+      }
+      const periodLabel = hit.period
+        ? ` · ${MONTH_NAMES[parseInt(hit.period.slice(4,6))-1]} ${hit.period.slice(0,4)}`
+        : '';
+      const colorBox = hit.rate !== null
+        ? `<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${geoColor(hit.rate)};border:1px solid rgba(255,255,255,.4);margin-right:4px;vertical-align:middle;"></span>`
+        : '';
+      tip.style.display = 'block';
+      tip.style.left    = (evt.clientX + 16) + 'px';
+      tip.style.top     = (evt.clientY - 12) + 'px';
+      tip.innerHTML = `<strong>${hit.name}</strong>${periodLabel}<br>Reporting rate: ${colorBox}<b>${rStr}</b><br><span style="opacity:.8;">Category: ${cat}</span><br><span style="font-size:10px;opacity:.6;">Active facilities only</span>`;
+    } else {
+      tip.style.display = 'none';
+    }
+  };
+
+  canvas._mleaveHandler = () => {
+    document.getElementById('rsTooltip').style.display = 'none';
+  };
+
+  canvas.addEventListener('mousemove', canvas._mmoveHandler);
+  canvas.addEventListener('mouseleave', canvas._mleaveHandler);
+}
+
+// Keep for backward compat — now a no-op (attachMapHover handles chiefdom too)
+function attachChiefdomListeners() {
+  const c = document.getElementById('geoChiefdom');
+  attachMapHover(c);
+}
+
+// Build hit-test data (polygon rings in canvas coords) for a geo canvas
+function buildHits(geo, nameProp, rateMap, tf, periodTag) {
+  const hits = [];
+  (geo.features || []).forEach(f => {
+    const shpName = (f.properties[nameProp] || '').trim();
+    let rate = rateMap[shpName];
+    if (rate === undefined) rate = rateMap[normName(shpName)];
+    if (rate === undefined) rate = null;
+    const rings = [];
+    const collect = cs => cs.forEach(ring => rings.push(ring.map(tf)));
+    if (f.geometry.type === 'Polygon')      collect(f.geometry.coordinates);
+    if (f.geometry.type === 'MultiPolygon') f.geometry.coordinates.forEach(p => collect(p));
+    hits.push({ name: shpName, rate, rings, period: periodTag || null });
+  });
+  return hits;
+}
+
+function rs_updateAnnualLegendBar() {
+  const el = document.getElementById('annualLegendBar');
+  if (!el) return;
+  const breaks = getBreaks();
+  el.innerHTML = `<span class="legend-title">Reporting rate</span>` +
+    breaks.map(b => `<div class="legend-item"><div class="legend-sw" style="background:${b.color};"></div>${b.label}</div>`).join('') +
+    `<div class="legend-item"><div class="legend-sw" style="background:#cccccc;"></div>No data</div>`;
+}
+
+// ── Main render ──
+function rs_renderGeoMaps() {
+  const year     = document.getElementById('geoYear')?.value ||
+                   (ST.config?.periods || []).slice(-1)[0]?.slice(0, 4) || '2026';
+  const statusEl = document.getElementById('geoStatus');
+  if (!ST.geoCache.bbox) { if (statusEl) statusEl.textContent = '⚠ GeoJSON not loaded.'; return; }
+
+  rs_computeGeoRates(year);
+  rs_buildMapPaletteGrid();
+  rs_updateAnnualLegendBar();
+  if (statusEl) statusEl.textContent = 'Drawing…';
+
+  // Build monthly grid first
+  rs_buildMonthlyGrid();
+
+  drawNational(); drawDistrict(); drawChiefdom();
+  attachChiefdomListeners();
+  if (statusEl) {
+    const nc = Math.round(Object.keys(ST.geoChiefdomRates).length / 2);
+    const nd = Math.round(Object.keys(ST.geoDistrictRates).length / 2);
+    statusEl.textContent = `✓ ${year} · ${nd} districts · ${nc} chiefdoms`;
+  }
+}
+
+// ── Monthly maps: build 12-slot grid, fill only selected periods ──
+const MONTH_NAMES = ['January','February','March','April','May','June',
+                     'July','August','September','October','November','December'];
+
+function rs_buildMonthlyGrid() {
+  const grid = document.getElementById('monthlyMapsGrid');
+  if (!grid) return;
+  const level = document.getElementById('geoLevel')?.value || 'chiefdom';
+
+  // Figure out which periods exist in this run
+  const activePeriods = new Set((ST.config?.periods || []).map(p => p)); // e.g. "202601"
+  const year = document.getElementById('geoYear')?.value ||
+               (ST.config?.periods || []).slice(-1)[0]?.slice(0, 4) || '2026';
+
+  grid.innerHTML = '';
+
+  for (let mo = 1; mo <= 12; mo++) {
+    const mStr   = String(mo).padStart(2,'0');
+    const period = `${year}${mStr}`;          // e.g. "202601"
+    const hasData = activePeriods.has(period);
+    const card    = document.createElement('div');
+
+    if (!hasData) {
+      // Blank placeholder
+      card.className = 'month-map-card blank';
+      card.innerHTML = `
+        <div class="mmhead blank-head">${MONTH_NAMES[mo-1]} ${year}</div>
+        <div class="mm-blank-body">
+          <div style="font-size:28px;opacity:.25;margin-bottom:6px;">🗺</div>
+          <div>No data for this period</div>
+          <div style="font-size:10px;margin-top:3px;opacity:.7;">Run pipeline with this period to populate</div>
+        </div>`;
+    } else {
+      card.className = 'month-map-card';
+      const canvasId = `mmCanvas_${period}`;
+      card.innerHTML = `
+        <div class="mmhead active">${MONTH_NAMES[mo-1]} ${year}</div>
+        <div class="mm-canvas-wrap"><canvas id="${canvasId}"></canvas></div>
+        <div class="mm-legend" id="mmLeg_${period}"></div>`;
+    }
+
+    grid.appendChild(card);
+
+    if (hasData) {
+      // Draw after DOM is ready
+      const canvasId = `mmCanvas_${period}`;
+      setTimeout(() => drawMonthMap(canvasId, period, level), 0);
+    }
+  }
+}
+
+// ── Draw a single monthly choropleth canvas ──
+// ── Draw a monthly NATIONAL map — single solid fill clipped to SL outline ──
+function drawMonthMapNational(canvas, period) {
+  let el = canvas.parentElement, w = 0;
+  while (el && w < 10) { w = el.offsetWidth; el = el.parentElement; }
+  w = Math.max(w || 200, 120);
+  canvas.width = canvas.height = w * 2;
+
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const tf = makeTf(canvas);
+
+  // Compute national rate for this period (active facilities only)
+  const activeFacIds = new Set(ST.reportData.filter(r => r.status === 1).map(r => r.ouId));
+  let natR = 0, natT = 0;
+  ST.reportData.forEach(row => {
+    if (!activeFacIds.has(row.ouId)) return;
+    if (row.Date.replace('-','') !== period) return;
+    natR += row.status; natT++;
+  });
+  const natRate    = natT > 0 ? (natR / natT) * 100 : null;
+  const natRateStr = natT > 0 ? ((natR / natT) * 100).toFixed(1) + '%' : '—';
+  const fillColor  = geoColor(natRate);
+
+  // Background
+  ctx.fillStyle = getMapBg();
+  ctx.fillRect(0, 0, W, H);
+
+  // Use drawNationalSolid helper — fills shape, no internal lines, clean outer border
+  drawNationalSolid(ctx, W, H, tf, fillColor);
+
+  // Rate label centred
+  const breaks = getBreaks();
+  const cat = natRate !== null ? (breaks.find(b=>natRate<=b.max)?.label||'80–100%') : 'No data';
+  const fsz  = Math.round(W * 0.12);
+  const fsz2 = Math.round(W * 0.055);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.font = `bold ${fsz}px Oswald,Arial,sans-serif`;
+  ctx.fillStyle = '#0d1f2d'; ctx.fillText(natRateStr, W/2, H/2);
+  ctx.font = `bold ${fsz2}px Oswald,Arial,sans-serif`;
+  ctx.fillStyle = '#0d1f2d'; ctx.fillText(cat, W/2, H/2 + fsz*0.78);
+
+  // Update legend
+  const legEl = document.getElementById(`mmLeg_${period}`);
+  if (legEl) {
+    legEl.innerHTML = `<div class="mm-leg-item">
+      <div class="mm-leg-sw" style="background:${fillColor};border:1px solid rgba(0,0,0,.2);"></div>
+      <span style="color:#1f4a6a;font-weight:700;">National: ${natRateStr} — ${cat}</span>
+    </div>`;
+  }
+
+  // Hover
+  const rings = [];
+  (ST.geoCache.chiefdomGeo.features||[]).forEach(f=>{
+    const collect = cs => cs.forEach(ring=>rings.push(ring.map(tf)));
+    if(f.geometry.type==='Polygon')      collect(f.geometry.coordinates);
+    if(f.geometry.type==='MultiPolygon') f.geometry.coordinates.forEach(p=>collect(p));
+  });
+  canvas._hitsData = [{ name: 'Sierra Leone — National', rate: natRate, rings, period }];
+  attachMapHover(canvas);
+}
+
+function drawMonthMap(canvasId, period, level) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas || !ST.geoCache.bbox) return;
+
+  // Route national level to dedicated renderer
+  if (level === 'national') { drawMonthMapNational(canvas, period); return; }
+
+  // Size canvas square to its container
+  let el = canvas.parentElement, w = 0;
+  while (el && w < 10) { w = el.offsetWidth; el = el.parentElement; }
+  w = Math.max(w || 200, 120);
+  canvas.width = canvas.height = w * 2; // retina-ish
+
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const tf = makeTf(canvas);
+
+  // Compute rates for this period (active facilities only)
+  const activeFacIds = new Set(ST.reportData.filter(r => r.status === 1).map(r => r.ouId));
+  const rateMap = {}; // by name (norm)
+  const agg = {};
+
+  ST.reportData.forEach(row => {
+    if (!activeFacIds.has(row.ouId)) return;
+    const rowPer = row.Date.replace('-',''); // "2026-01" → "202601"
+    if (rowPer !== period) return;
+    const key = level === 'district' ? row.districtName : row.chiefdomName;
+    if (!key) return;
+    if (!agg[key]) agg[key] = {r:0,t:0};
+    agg[key].r += row.status;
+    agg[key].t++;
+  });
+
+  const normMap = {};
+  Object.entries(agg).forEach(([k,v]) => {
+    const rate = v.t > 0 ? (v.r/v.t)*100 : null;
+    normMap[k] = rate;
+    normMap[normName(k)] = rate;
+  });
+
+  // Background
+  ctx.fillStyle = getMapBg();
+  ctx.fillRect(0, 0, W, H);
+
+  // Category count tracker for legend
+  const catCounts = {};
+  getBreaks().forEach(b => { catCounts[b.label] = 0; });
+  catCounts['No data'] = 0;
+
+  const geo = level === 'district' ? ST.geoCache.districtGeo : ST.geoCache.chiefdomGeo;
+  if (!geo) {
+    ctx.fillStyle = '#888'; ctx.font = '12px Arial';
+    ctx.textAlign = 'center'; ctx.fillText('GeoJSON unavailable', W/2, H/2);
+    return;
+  }
+
+  const nameProp = level === 'district' ? 'FIRST_DNAM' : 'adm3';
+
+  // Fill polygons
+  (geo.features || []).forEach(f => {
+    const shpName = (f.properties[nameProp] || '').trim();
+    let rate = normMap[shpName];
+    if (rate === undefined) rate = normMap[normName(shpName)];
+    if (rate === undefined) rate = null;
+
+    const color = geoColor(rate);
+    ctx.fillStyle = color;
+    ctx.strokeStyle = level === 'district' ? 'rgba(30,50,70,.7)' : 'rgba(0,0,0,.75)';
+    ctx.lineWidth   = level === 'district' ? 1.2 : 1.4;
+    drawPoly(ctx, f.geometry, tf);
+
+    // Count categories
+    if (rate === null) { catCounts['No data']++; }
+    else { const b = getBreaks().find(b => rate <= b.max); if (b) catCounts[b.label]++; }
+  });
+
+  // If chiefdom level, overlay district borders
+  if (level === 'chiefdom' && ST.geoCache.districtGeo) {
+    (ST.geoCache.districtGeo.features || []).forEach(f => {
+      ctx.fillStyle = 'transparent';
+      ctx.strokeStyle = '#1a2e3d';
+      ctx.lineWidth = 4.0;
+      drawPoly(ctx, f.geometry, tf);
+    });
+  }
+
+  // National rate for this period
+  const natR = Object.values(agg).reduce((s,v)=>s+v.r,0);
+  const natT = Object.values(agg).reduce((s,v)=>s+v.t,0);
+  const natRate    = natT > 0 ? (natR/natT)*100 : null;
+  const natRateStr = natT > 0 ? ((natR/natT)*100).toFixed(1)+'%' : '—';
+
+  // Watermark: national rate bottom-right
+  ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+  ctx.font = `bold ${Math.round(W*0.065)}px Oswald,Arial,sans-serif`;
+  ctx.fillStyle = '#0d1f2d'; ctx.fillText(natRateStr, W-6, H-6);
+  ctx.font = `bold ${Math.round(W*0.028)}px Oswald,Arial,sans-serif`;
+  ctx.fillStyle = '#0d1f2d'; ctx.fillText('National', W-6, H - Math.round(W*0.075));
+
+  // Update legend — breaks + National row
+  const legEl = document.getElementById(`mmLeg_${period}`);
+  if (legEl) {
+    const natColor = natRate !== null ? geoColor(natRate) : '#cccccc';
+    const natCat   = natRate !== null
+      ? (getBreaks().find(b => natRate <= b.max)?.label || '80–100%')
+      : 'No data';
+    const breakItems = [...getBreaks(), {label:'No data',color:'#cccccc'}];
+    const breakHtml  = breakItems.map(b =>
+      `<div class="mm-leg-item">
+        <div class="mm-leg-sw" style="background:${b.color};"></div>
+        ${b.label} <span style="color:#888;font-weight:400;">(${catCounts[b.label]??0})</span>
+      </div>`
+    ).join('');
+    const natHtml = `<div class="mm-leg-item" style="margin-left:auto;padding-left:6px;border-left:1.5px solid #c8d5e0;">
+        <div class="mm-leg-sw" style="background:${natColor};border:1px solid rgba(0,0,0,.2);"></div>
+        <span style="color:#1f4a6a;font-weight:700;">National: ${natRateStr}</span>
+      </div>`;
+    legEl.innerHTML = breakHtml + natHtml;
+  }
+
+  // Build hit-test data and attach hover
+  canvas._hitsData = buildHits(geo, nameProp, normMap, tf, period);
+  canvas._hoverAttached = false;
+  attachMapHover(canvas);
+}
+
+// ── Download monthly grid as single PNG ──
+function rs_downloadMonthlyGrid() {
+  const year = document.getElementById('geoYear')?.value || '2026';
+  const activePeriods = new Set((ST.config?.periods || []).map(p => p));
+  const COLS = 4, ROWS = 3;
+  const CARD_W = 320, CARD_H = 380;
+  const PAD = 20, GAP = 12, TITLE_H = 50;
+  const totalW = COLS * CARD_W + (COLS-1)*GAP + PAD*2;
+  const totalH = TITLE_H + ROWS * CARD_H + (ROWS-1)*GAP + PAD*2;
+
+  const out = document.createElement('canvas');
+  out.width = totalW; out.height = totalH;
+  const ctx = out.getContext('2d');
+
+  ctx.fillStyle = '#f0f5f9'; ctx.fillRect(0,0,totalW,totalH);
+  ctx.fillStyle = '#004080'; ctx.font = 'bold 22px Oswald,Arial,sans-serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  ctx.fillText(`NMCP Malaria EPI Reporting Status — Monthly Maps · ${year}`, totalW/2, 14);
+
+  for (let mo = 1; mo <= 12; mo++) {
+    const mStr   = String(mo).padStart(2,'0');
+    const period = `${year}${mStr}`;
+    const col    = (mo-1) % COLS;
+    const row    = Math.floor((mo-1) / COLS);
+    const x      = PAD + col*(CARD_W+GAP);
+    const y      = TITLE_H + PAD + row*(CARD_H+GAP);
+
+    // Card background
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#c8d5e0';
+    ctx.lineWidth = 1;
+    roundRect(ctx, x, y, CARD_W, CARD_H, 8);
+    ctx.fill(); ctx.stroke();
+
+    // Header
+    ctx.fillStyle = activePeriods.has(period) ? '#2c6793' : '#8899aa';
+    roundRect(ctx, x, y, CARD_W, 28, 8, 0);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 12px Oswald,Arial,sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(`${MONTH_NAMES[mo-1].toUpperCase()} ${year}`, x+CARD_W/2, y+14);
+
+    if (activePeriods.has(period)) {
+      const srcCanvas = document.getElementById(`mmCanvas_${period}`);
+      if (srcCanvas) {
+        ctx.drawImage(srcCanvas, x, y+28, CARD_W, CARD_H-28);
+      }
+    } else {
+      ctx.fillStyle = '#8899aa';
+      ctx.font = '11px Oswald,Arial,sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('No data for this period', x+CARD_W/2, y+CARD_H/2+10);
+    }
+  }
+
+  ctx.fillStyle = '#8899aa'; ctx.font = '10px Oswald,Arial,sans-serif';
+  ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+  ctx.fillText('NMCP Sierra Leone · ICF-SL · Active Facilities Only · mdrsl.chaiprod.com', totalW-10, totalH-6);
+
+  const a = document.createElement('a');
+  a.download = `NMCP_RS_MonthlyMaps_${year}.png`;
+  a.href = out.toDataURL('image/png'); a.click();
+}
+
+function roundRect(ctx, x, y, w, h, tlbr, brbr) {
+  const r = tlbr, r2 = (brbr !== undefined) ? brbr : r;
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+  ctx.lineTo(x+w, y+h-r2);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-r2, y+h);
+  ctx.lineTo(x+r2, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-r2);
+  ctx.lineTo(x, y+r);
+  ctx.quadraticCurveTo(x, y, x+r, y);
+  ctx.closePath();
+}
+
+// ── Download helpers ──
+function rs_geoDownload(canvasId, suffix) {
+  const canvas = document.getElementById(canvasId); if (!canvas) return;
+  const year = document.getElementById('geoYear')?.value || '';
+  const a = document.createElement('a');
+  a.download = `NMCP_RS_Map_${suffix}_${year}.png`;
+  a.href = canvas.toDataURL('image/png'); a.click();
+}
+
+function rs_geoDownloadSubplot() {
+  const ids    = ['geoNational', 'geoDistrict', 'geoChiefdom'];
+  const titles = ['National — Outline', 'District — Reporting Rate', 'Chiefdom — Reporting Rate'];
+  const year   = document.getElementById('geoYear')?.value || '';
+  const srcs   = ids.map(id => document.getElementById(id));
+  const cW = srcs[0]?.width || 600, cH = srcs[0]?.height || 600;
+  const PAD = 28, TITLE_H = 56, LABEL_H = 34, GAP = 14, LEG_H = 52;
+  const totalW = ids.length * cW + (ids.length - 1) * GAP + PAD * 2;
+  const totalH = TITLE_H + LABEL_H + cH + LEG_H + PAD;
+  const out    = document.createElement('canvas');
+  out.width = totalW; out.height = totalH;
+  const ctx = out.getContext('2d');
+  ctx.fillStyle = '#f0f5f9'; ctx.fillRect(0, 0, totalW, totalH);
+  ctx.fillStyle = '#1f4a6a';
+  ctx.font = `bold ${Math.round(totalW * .016)}px Oswald,Arial,sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  ctx.fillText(`NMCP Malaria Reporting Status — Geographic Maps · ${year} · Active Facilities Only`, totalW / 2, 14);
+  const headColors = ['#2c6793', '#17a2b8', '#28a745'];
+  srcs.forEach((src, i) => {
+    const x = PAD + i * (cW + GAP);
+    ctx.fillStyle = headColors[i]; ctx.fillRect(x, TITLE_H, cW, LABEL_H);
+    ctx.fillStyle = '#fff';
+    ctx.font = `bold ${Math.round(cW * .036)}px Oswald,Arial,sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(titles[i], x + cW/2, TITLE_H + LABEL_H/2);
+    if (src) ctx.drawImage(src, x, TITLE_H + LABEL_H, cW, cH);
+    ctx.strokeStyle = headColors[i]; ctx.lineWidth = 2.5;
+    ctx.strokeRect(x, TITLE_H, cW, LABEL_H + cH);
+  });
+  const legY  = TITLE_H + LABEL_H + cH + 8;
+  const items = [...GEO_BREAKS, { color: '#cccccc', label: 'No data' }];
+  const iW    = (totalW - PAD * 2) / items.length;
+  items.forEach((b, i) => {
+    const lx = PAD + i * iW;
+    ctx.fillStyle = b.color; ctx.fillRect(lx + 6, legY + 6, iW - 12, 20);
+    ctx.strokeStyle = '#999'; ctx.lineWidth = 1; ctx.strokeRect(lx + 6, legY + 6, iW - 12, 20);
+    ctx.fillStyle = '#1a2e3d';
+    ctx.font = `bold ${Math.round(iW * .13)}px Oswald,Arial,sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(b.label, lx + iW/2, legY + 29);
+  });
+  ctx.fillStyle = '#8899aa';
+  ctx.font = `${Math.round(totalW * .009)}px Oswald,Arial,sans-serif`;
+  ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+  ctx.fillText('NMCP Sierra Leone · ICF-SL · Active Facilities Only · mdrsl.chaiprod.com', totalW - PAD, totalH - 5);
+  const a = document.createElement('a');
+  a.download = `NMCP_RS_Maps_Subplot_${year}.png`;
+  a.href = out.toDataURL('image/png'); a.click();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  SUMMARY TABLE
+// ═══════════════════════════════════════════════════════════════════
+let tblRows=[], tblHeaders=[];
+
+function rs_buildTable() {
+  const grp=document.getElementById('tblGroup').value;
+  let src;
+  if(grp==='national_monthly') { src=Object.values(AGG.natMonthly);  tblHeaders=['Year','Month','Date','Reported','Total Facilities','Rate (%)','Category']; }
+  else if(grp==='national_yearly')  { src=Object.values(AGG.natYearly);  tblHeaders=['Year','Reported','Total Facilities','Rate (%)','Category']; }
+  else if(grp==='district_monthly')  { src=Object.values(AGG.distMonthly);  tblHeaders=['District','Year','Month','Date','Reported','Total Facilities','Rate (%)','Category']; }
+  else if(grp==='district_yearly')   { src=Object.values(AGG.distYearly);   tblHeaders=['District','Year','Reported','Total Facilities','Rate (%)','Category']; }
+  else if(grp==='chiefdom_monthly')  { src=Object.values(AGG.chiefMonthly); tblHeaders=['District','Chiefdom','Year','Month','Date','Reported','Total','Rate (%)','Category']; }
+  else if(grp==='chiefdom_yearly')   { src=Object.values(AGG.chiefYearly);  tblHeaders=['District','Chiefdom','Year','Reported','Total','Rate (%)','Category']; }
+  else { src=Object.values(AGG.facMonthly); tblHeaders=['HF Code','HF Type','District','Chiefdom','Year','Month','Date','Reported']; }
+
+  tblRows = src.map(r=>{
+    if(grp==='national_monthly') return [r.year,r.month,r.date,r.reported,r.total,r.rate_pct,r.category];
+    if(grp==='national_yearly')  return [r.year,r.reported,r.total,r.rate_pct,r.category];
+    if(grp==='district_monthly')  return [r.district,r.year,r.month,r.date,r.reported,r.total,r.rate_pct,r.category];
+    if(grp==='district_yearly')   return [r.district,r.year,r.reported,r.total,r.rate_pct,r.category];
+    if(grp==='chiefdom_monthly')  return [r.district,r.chiefdom,r.year,r.month,r.date,r.reported,r.total,r.rate_pct,r.category];
+    if(grp==='chiefdom_yearly')   return [r.district,r.chiefdom,r.year,r.reported,r.total,r.rate_pct,r.category];
+    return [r.hf_uid,r.hfType,r.district,r.chiefdom,r.year,r.month,r.date,r.status];
+  });
+
+  document.getElementById('tblHead').innerHTML =
+    `<tr>${tblHeaders.map(h=>`<th>${h}</th>`).join('')}</tr>`;
+  rs_filterTable();
+}
+
+function rs_filterTable() {
+  const q = (document.getElementById('tblSearch').value||'').toLowerCase();
+  const filtered = q ? tblRows.filter(r=>r.some(c=>(c+'').toLowerCase().includes(q))) : tblRows;
+  document.getElementById('tblCount').textContent = `${filtered.length.toLocaleString()} of ${tblRows.length.toLocaleString()} records`;
+  document.getElementById('tblBody').innerHTML = filtered.slice(0,2000).map(r=>
+    `<tr>${r.map(c=>`<td>${c??''}</td>`).join('')}</tr>`
+  ).join('');
+}
+
+function rs_exportTableExcel() {
+  const grp = document.getElementById('tblGroup').value;
+  const ws  = XLSX.utils.aoa_to_sheet([tblHeaders, ...tblRows]);
+  const wb  = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, grp.replace('_',' ').slice(0,31));
+  XLSX.writeFile(wb, `NMCP_RS_${grp}.xlsx`);
+}
+
+function rs_exportExcel() {
+  const wb = XLSX.utils.book_new();
+  const addSheet=(data,name,cols)=>{
+    const rows=data.map(r=>cols.reduce((o,c)=>({...o,[c]:r[c]??''}),{}));
+    if(!rows.length) return;
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), name);
+  };
+  addSheet(Object.values(AGG.natMonthly),   'National Monthly',  ['year','month','date','reported','total','rate_pct','category']);
+  addSheet(Object.values(AGG.natYearly),    'National Yearly',   ['year','reported','total','rate_pct','category']);
+  addSheet(Object.values(AGG.distMonthly),  'District Monthly',  ['district','year','month','date','reported','total','rate_pct','category']);
+  addSheet(Object.values(AGG.distYearly),   'District Yearly',   ['district','year','reported','total','rate_pct','category']);
+  addSheet(Object.values(AGG.chiefMonthly), 'Chiefdom Monthly',  ['district','chiefdom','year','month','date','reported','total','rate_pct','category']);
+  addSheet(Object.values(AGG.chiefYearly),  'Chiefdom Yearly',   ['district','chiefdom','year','reported','total','rate_pct','category']);
+  addSheet(Object.values(AGG.facMonthly),   'Facility Monthly',  ['hf_uid','hfType','district','chiefdom','year','month','date','status']);
+  XLSX.writeFile(wb, `NMCP_ReportingStatus_${ST.config.start}_${ST.config.end}.xlsx`);
+}
+
+function rs_exportCSV() {
+  const rows = ST.reportData;
+  const header='hf_uid,hf_type,district,chiefdom,date,status';
+  const csv = header + '\n' + rows.map(r=>
+    `${r.hf_uid},${ST.orgHierarchy[r.ouId]?.hfType||''},${r.districtName},${r.chiefdomName},${r.Date},${r.status}`
+  ).join('\n');
+  const a=document.createElement('a');
+  a.download=`NMCP_RS_FacilityMonth_${ST.config.start}_${ST.config.end}.csv`;
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv); a.click();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  CODE DOWNLOADS
+// ═══════════════════════════════════════════════════════════════════
+function triggerDL(content, fname) {
+  const a=document.createElement('a');
+  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(content);
+  a.download=fname; a.click();
+}
+
+function rs_downloadR() {
+  const s=ST.config?.start||'2020-01', e=ST.config?.end||'2024-12';
+  triggerDL(`# NMCP Reporting Status — R Script
+# Period: ${s} → ${e}
+# ICF-SL
+
+library(httr); library(jsonlite); library(dplyr); library(ggplot2); library(openxlsx)
+
+BASE_URL <- "https://sl.dhis2.org/hmis23"
+USERNAME <- "your_username"; PASSWORD <- "your_password"
+START_YM <- "${s}"; END_YM <- "${e}"
+
+DE_UIDS <- c("FJafyE1kzs4","Rijj3Fp9ksg","Sz13vbo2Qwh","mXS2g1AiPsS","p6zQLDFjSfd",
+             "wU8EdHifSLa","XKTCuR0W3YN","jkVioQxQcnk","wfaQBIVQxWo","YWvx4zYdp92",
+             "T7xH8GwWpEM","h3zJa6hAgib","Imkks0HAl7E")
+
+auth <- authenticate(USERNAME, PASSWORD)
+dhis2 <- function(path) fromJSON(content(GET(paste0(BASE_URL,path),auth),"text",encoding="UTF-8"),flatten=TRUE)
+
+gen_periods <- function(s,e) format(seq(as.Date(paste0(s,"-01")),as.Date(paste0(e,"-01")),by="month"),"%Y%m")
+
+# Fetch hierarchy
+ou_data <- dhis2("/api/organisationUnits.json?level=5&fields=id,displayName,ancestors[id,displayName,level]&paging=false")
+hier <- lapply(ou_data$organisationUnits, function(ou) {
+  dist  <- Filter(function(a) a$level==2, ou$ancestors)
+  chief <- Filter(function(a) a$level==4, ou$ancestors)
+  list(id=ou$id, name=ou$displayName,
+       districtName=if(length(dist))dist[[1]]$displayName else "",
+       chiefdomName =if(length(chief))chief[[1]]$displayName else "")
+})
+names(hier) <- sapply(hier,function(x)x$id)
+
+# Fetch data
+periods <- gen_periods(START_YM, END_YM)
+ou_ids  <- names(hier)
+ou_batches <- split(ou_ids, ceiling(seq_along(ou_ids)/60))
+p_batches  <- split(periods, ceiling(seq_along(periods)/6))
+raw_sums   <- list()
+
+for(ob in ou_batches) for(pb in p_batches) {
+  path <- paste0("/api/dataValueSets.json?dataElement=",paste(DE_UIDS,collapse=","),
+                 "&orgUnit=",paste(ob,collapse=","),"&period=",paste(pb,collapse=","),"&children=false")
+  dvs <- dhis2(path)$dataValues
+  if(!is.null(dvs)&&nrow(dvs)>0) for(i in seq_len(nrow(dvs))){
+    dv <- dvs[i,]; ou <- dv$orgUnit; per <- dv$period
+    if(!ou %in% names(raw_sums)) raw_sums[[ou]] <- list()
+    raw_sums[[ou]][[per]] <- (raw_sums[[ou]][[per]]%||%0) + (as.numeric(dv$value)%||%0)
+  }
+  Sys.sleep(0.06)
+}
+
+# Status table
+rows <- list()
+for(ou_id in ou_ids) {
+  ou <- hier[[ou_id]]
+  for(per in periods) {
+    status <- if((raw_sums[[ou_id]][[per]]%||%0)>0) 1L else 0L
+    rows[[length(rows)+1]] <- data.frame(
+      hf_uid=ou_id, district=ou$districtName, chiefdom=ou$chiefdomName,
+      period=per, year=substr(per,1,4), month=substr(per,5,6), status=status, stringsAsFactors=FALSE)
+  }
+}
+status_df <- bind_rows(rows)
+
+# Aggregates
+dist_monthly  <- status_df %>% group_by(district,year,month,period) %>%
+  summarise(reported=sum(status),total=n(),.groups="drop") %>% mutate(rate_pct=round(reported/total*100,1))
+dist_yearly   <- status_df %>% group_by(district,year) %>%
+  summarise(reported=sum(status),total=n(),.groups="drop") %>% mutate(rate_pct=round(reported/total*100,1))
+chief_monthly <- status_df %>% group_by(district,chiefdom,year,month,period) %>%
+  summarise(reported=sum(status),total=n(),.groups="drop") %>% mutate(rate_pct=round(reported/total*100,1))
+chief_yearly  <- status_df %>% group_by(district,chiefdom,year) %>%
+  summarise(reported=sum(status),total=n(),.groups="drop") %>% mutate(rate_pct=round(reported/total*100,1))
+
+# Heatmap
+heatmap_wide <- status_df %>% select(hf_uid,period,status) %>%
+  pivot_wider(names_from=period,values_from=status,values_fill=0)
+sorted_hf <- heatmap_wide %>% mutate(rate=rowSums(across(-hf_uid))/length(periods)) %>%
+  arrange(desc(rate)) %>% pull(hf_uid)
+status_long <- status_df %>% mutate(hf_uid=factor(hf_uid,levels=rev(sorted_hf)))
+
+p_all <- ggplot(status_long,aes(x=period,y=hf_uid,fill=factor(status))) +
+  geom_tile(color="white",linewidth=.15) +
+  scale_fill_manual(values=c("0"="#212529","1"="#DDCC77"),labels=c("Not Reported","Reported")) +
+  labs(title=paste("NMCP Malaria EPI Reporting Status —",START_YM,"to",END_YM),
+       x="Period (YYYYMM)",y="Health Facility",fill="Status") +
+  theme_minimal(base_size=9) +
+  theme(axis.text.x=element_text(angle=90,hjust=1,size=6),axis.text.y=element_blank())
+ggsave("NMCP_RS_Heatmap_All.png",p_all,width=22,height=14,dpi=300)
+
+# Export
+wb <- createWorkbook()
+for(nm in c("dist_monthly","dist_yearly","chief_monthly","chief_yearly","status_df")) {
+  addWorksheet(wb,nm); writeData(wb,nm,get(nm))
+}
+saveWorkbook(wb,paste0("NMCP_ReportingStatus_${s}_${e}.xlsx"),overwrite=TRUE)
+cat("Done.\\n")
+`, `NMCP_ReportingStatus_${s}_${e}.R`);
+}
+
+function rs_downloadPy() {
+  const s=ST.config?.start||'2020-01', e=ST.config?.end||'2024-12';
+  triggerDL(`# NMCP Reporting Status — Python Script
+# Period: ${s} → ${e}
+# ICF-SL
+
+import requests, pandas as pd, numpy as np, time
+import matplotlib.pyplot as plt
+from requests.auth import HTTPBasicAuth
+from dateutil.relativedelta import relativedelta
+from datetime import datetime
+
+BASE_URL = "https://sl.dhis2.org/hmis23"
+USERNAME = "your_username"; PASSWORD = "your_password"
+START_YM = "${s}"; END_YM = "${e}"
+auth = HTTPBasicAuth(USERNAME, PASSWORD)
+
+DE_UIDS = ["FJafyE1kzs4","Rijj3Fp9ksg","Sz13vbo2Qwh","mXS2g1AiPsS","p6zQLDFjSfd",
+           "wU8EdHifSLa","XKTCuR0W3YN","jkVioQxQcnk","wfaQBIVQxWo","YWvx4zYdp92",
+           "T7xH8GwWpEM","h3zJa6hAgib","Imkks0HAl7E"]
+
+def dhis2(path):
+    r = requests.get(BASE_URL+path, auth=auth); r.raise_for_status(); return r.json()
+
+def gen_periods(s,e):
+    start,end = datetime.strptime(s,"%Y-%m"),datetime.strptime(e,"%Y-%m")
+    result,cur = [],start
+    while cur<=end: result.append(cur.strftime("%Y%m")); cur+=relativedelta(months=1)
+    return result
+
+# Hierarchy
+print("Fetching hierarchy...")
+ou_data = dhis2("/api/organisationUnits.json?level=5&fields=id,displayName,ancestors[id,displayName,level]&paging=false")
+hier = {}
+for ou in ou_data.get("organisationUnits",[]):
+    anc  = sorted(ou.get("ancestors",[]),key=lambda a:a["level"])
+    dist = next((a for a in anc if a["level"]==2),{})
+    chie = next((a for a in anc if a["level"]==4),{})
+    hier[ou["id"]] = {"id":ou["id"],"name":ou["displayName"],
+                      "districtName":dist.get("displayName",""),
+                      "chiefdomName":chie.get("displayName","")}
+print(f"  {len(hier)} facilities")
+
+# Data
+periods    = gen_periods(START_YM, END_YM)
+ou_ids     = list(hier.keys())
+ou_batches = [ou_ids[i:i+60] for i in range(0,len(ou_ids),60)]
+p_batches  = [periods[i:i+6] for i in range(0,len(periods),6)]
+raw_sums   = {}
+total=len(ou_batches)*len(p_batches); done=0
+for ob in ou_batches:
+    for pb in p_batches:
+        path=("/api/dataValueSets.json?dataElement="+",".join(DE_UIDS)+
+              "&orgUnit="+",".join(ob)+"&period="+",".join(pb)+"&children=false")
+        for dv in dhis2(path).get("dataValues",[]):
+            raw_sums.setdefault(dv["orgUnit"],{})
+            per=dv["period"]
+            raw_sums[dv["orgUnit"]][per]=raw_sums[dv["orgUnit"]].get(per,0)+(float(dv["value"]) if dv["value"] else 0)
+        done+=1; print(f"\\r  {done}/{total}",end="",flush=True); time.sleep(0.06)
+print()
+
+# Status table
+rows=[]
+for ou_id,ou in hier.items():
+    for per in periods:
+        rows.append({"hf_uid":ou_id,"district":ou["districtName"],"chiefdom":ou["chiefdomName"],
+                     "period":per,"year":per[:4],"month":per[4:],
+                     "status":int(raw_sums.get(ou_id,{}).get(per,0)>0)})
+df = pd.DataFrame(rows)
+
+# Aggregates
+def agg(grp_cols):
+    return df.groupby(grp_cols)["status"].agg(reported="sum",total="count").reset_index().assign(rate_pct=lambda x:(x.reported/x.total*100).round(1))
+
+dist_monthly  = agg(["district","year","month","period"])
+dist_yearly   = agg(["district","year"])
+chief_monthly = agg(["district","chiefdom","year","month","period"])
+chief_yearly  = agg(["district","chiefdom","year"])
+
+# Heatmap
+pivot   = df.pivot_table(index="hf_uid",columns="period",values="status",fill_value=0)
+sorted_ = pivot.sum(axis=1).sort_values(ascending=False).index
+pivot   = pivot.loc[sorted_]
+
+fig,ax = plt.subplots(figsize=(max(18,len(periods)*.4),max(10,len(hier)*.04)))
+import matplotlib.colors as mc
+ax.imshow(pivot.values,aspect="auto",cmap=mc.ListedColormap(["#212529","#DDCC77"]),vmin=0,vmax=1,interpolation="none")
+ax.set_xticks(range(len(periods))); ax.set_xticklabels(periods,rotation=90,fontsize=6)
+ax.set_yticks([]); ax.set_title(f"NMCP Reporting Status {START_YM}–{END_YM}",fontsize=13,fontweight="bold")
+ax.set_xlabel("Period (YYYYMM)"); ax.set_ylabel("Health Facilities")
+plt.tight_layout()
+plt.savefig(f"NMCP_RS_Heatmap_{START_YM}_{END_YM}.png",dpi=300,bbox_inches="tight")
+plt.close(); print("Heatmap saved")
+
+# Export
+fname=f"NMCP_ReportingStatus_${s}_${e}.xlsx"
+with pd.ExcelWriter(fname,engine="openpyxl") as w:
+    dist_monthly.to_excel(w,sheet_name="District Monthly",index=False)
+    dist_yearly.to_excel(w,sheet_name="District Yearly",index=False)
+    chief_monthly.to_excel(w,sheet_name="Chiefdom Monthly",index=False)
+    chief_yearly.to_excel(w,sheet_name="Chiefdom Yearly",index=False)
+    df.to_excel(w,sheet_name="Facility Month",index=False)
+print(f"Saved: {fname}")
+`, `NMCP_ReportingStatus_${s}_${e}.py`);
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+//  FACILITY TRACKING TAB
+// ═══════════════════════════════════════════════════════════════════
+let TRK = { year: null, month: null };
+
+function trk_init() {
+  // Populate year dropdown
+  const years = [...new Set((ST.config?.periods||[]).map(p=>p.slice(0,4)))].sort();
+  const ySel = document.getElementById('trkYear');
+  if (!ySel) return;
+  ySel.innerHTML = years.map(y=>`<option value="${y}">${y}</option>`).join('');
+  ySel.value = years[years.length-1];
+  TRK.year  = years[years.length-1];
+  // Build month tabs
+  trk_buildMonthTabs();
+  trk_render();
+}
+
+function trk_buildMonthTabs() {
+  const tabsEl = document.getElementById('trkMonthTabs');
+  if (!tabsEl) return;
+  const year = document.getElementById('trkYear')?.value || TRK.year;
+  // Which months have data for this year?
+  const activePeriods = new Set((ST.config?.periods||[]).filter(p=>p.slice(0,4)===year));
+  tabsEl.innerHTML = '';
+
+  // "All" tab first
+  const allBtn = document.createElement('button');
+  allBtn.className = 'trk-period-btn' + (TRK.month===null?' active':'');
+  allBtn.textContent = 'Full Year';
+  allBtn.onclick = () => { TRK.month = null; trk_setActiveMonthTab(allBtn); trk_render(); };
+  tabsEl.appendChild(allBtn);
+
+  MONTH_NAMES.forEach((name, idx) => {
+    const mStr   = String(idx+1).padStart(2,'0');
+    const period = `${year}${mStr}`;
+    const hasData = activePeriods.has(period);
+    const btn = document.createElement('button');
+    btn.className = 'trk-period-btn' + (!hasData?' disabled':'') + (TRK.month===mStr?' active':'');
+    btn.textContent = name.slice(0,3);
+    btn.title = hasData ? `${name} ${year}` : `No data for ${name} ${year}`;
+    btn.style.opacity = hasData ? '1' : '0.4';
+    btn.style.cursor  = hasData ? 'pointer' : 'default';
+    if (hasData) {
+      btn.onclick = () => { TRK.month = mStr; trk_setActiveMonthTab(btn); trk_render(); };
+    }
+    tabsEl.appendChild(btn);
+  });
+}
+
+function trk_setActiveMonthTab(activeBtn) {
+  document.querySelectorAll('.trk-period-btn').forEach(b=>b.classList.remove('active'));
+  activeBtn.classList.add('active');
+}
+
+function trk_render() {
+  const year    = document.getElementById('trkYear')?.value || TRK.year;
+  TRK.year = year;
+  trk_buildMonthTabs();
+
+  const month   = TRK.month; // null = full year aggregate
+  const q       = (document.getElementById('trkSearch')?.value||'').toLowerCase().trim();
+  const showRep  = document.getElementById('trkShowRep')?.checked !== false;
+  const showNrep = document.getElementById('trkShowNrep')?.checked !== false;
+  const tree     = document.getElementById('trkTree');
+  if (!tree) return;
+
+  // Build lookup: {ouId → {name, districtName, chiefdomName}}
+  const hier = ST.orgHierarchy;
+  // activeHFs by hf_uid (hfCode) — also build lookup by ouId for tree_data
+  const activeHFs   = ST.activeHFs   || new Set(ST.reportData.filter(r=>r.status).map(r=>r.hf_uid));
+  const activeOuIds = ST.activeOuIds || new Set(ST.reportData.filter(r=>r.status).map(r=>r.ouId));
+
+  // Build status map: ouId → { reported: bool, periods: {mm: bool} }
+  const statusMap = {};
+  ST.reportData.forEach(row => {
+    if (row.Date.slice(0,4) !== year) return;
+    const mo = row.Date.slice(5,7);
+    if (!statusMap[row.ouId]) statusMap[row.ouId] = { periods:{} };
+    statusMap[row.ouId].periods[mo] = (statusMap[row.ouId].periods[mo]||0) || row.status;
+    // if any period in month reported, mark as reported
+    if (row.status) statusMap[row.ouId].periods[mo] = 1;
+  });
+
+  // Determine per-facility status for selected period
+  // For a specific month: returns 1 (reported) or 0 (not reported)
+  // For full year: returns number of months reported (0..N) so rates can be computed correctly
+  function facStatus(ouId) {
+    const s = statusMap[ouId];
+    if (!s) return 0;
+    if (month) return s.periods[month] ? 1 : 0;
+    // Full year: count how many periods this facility reported
+    return Object.values(s.periods).filter(v=>v).length;
+  }
+
+  // Total periods in the selected year that exist in the pipeline run
+  const yearPeriods = (ST.config?.periods||[]).filter(p=>p.slice(0,4)===year).length || 1;
+
+  // Group: district → chiefdom → [{ouId, name, status}]
+  const tree_data = {};
+  Object.values(hier).forEach(ou => {
+    const d = ou.districtName || 'Unknown District';
+    const c = ou.chiefdomName || 'Unknown Chiefdom';
+    const name = ou.name || ou.id;
+    // Search filter
+    if (q && ![name,d,c].join(' ').toLowerCase().includes(q)) return;
+    if (!tree_data[d]) tree_data[d] = {};
+    if (!tree_data[d][c]) tree_data[d][c] = [];
+    tree_data[d][c].push({ ouId: ou.id, name, status: facStatus(ou.id) });
+  });
+
+  // Sort facilities within each chiefdom by status desc (reported first) then name
+  Object.values(tree_data).forEach(chiefs => {
+    Object.values(chiefs).forEach(facs => {
+      facs.sort((a,b) => b.status - a.status || a.name.localeCompare(b.name));
+    });
+  });
+
+  const distNames = Object.keys(tree_data).sort();
+  if (!distNames.length) {
+    tree.innerHTML = `<div class="trk-empty">No facilities match your search.</div>`;
+    return;
+  }
+
+  tree.innerHTML = '';
+  distNames.forEach(dist => {
+    const chiefs = tree_data[dist];
+    const chiefNames = Object.keys(chiefs).sort();
+
+    // District-level totals — rate based on active facilities only
+    // For full year: dRep = sum of reported months across active facilities
+    // Rate = total reported months ÷ (active facilities × yearPeriods)
+    let dRepMonths=0, dActive=0, dTotal=0;
+    chiefNames.forEach(c => { chiefs[c].forEach(f => {
+      dTotal++;
+      if(activeOuIds.has(f.ouId)) {
+        dActive++;
+        dRepMonths += month ? (f.status ? 1 : 0) : f.status; // status = months reported when full year
+      }
+    }); });
+    const dDenom = month ? dActive : dActive * yearPeriods;
+    const dRate  = dDenom>0 ? Math.round(dRepMonths/dDenom*100) : 0;
+    const dRep   = month ? dRepMonths : Math.round(dRepMonths); // for pill display
+
+    const distEl = document.createElement('div');
+    distEl.className = 'trk-district';
+
+    const distHead = document.createElement('div');
+    distHead.className = 'trk-dist-head';
+    distHead.innerHTML = `
+      <span class="trk-dist-name">📍 ${dist}</span>
+      <div class="trk-dist-pills">
+        <span class="trk-dist-pill">${chiefNames.length} chiefdoms</span>
+        <span class="trk-dist-pill">${dTotal} facilities</span>
+        <span class="trk-dist-pill">${dActive} active</span>
+        ${month ? `<span class="trk-dist-pill rep">✓ ${dRep} reported</span><span class="trk-dist-pill nrep">✗ ${dTotal-dRep} not reported</span>` : ''}
+        <span class="trk-dist-pill">${dRate}% (active)</span>
+      </div>
+      <span class="trk-dist-chev">▶</span>`;
+
+    const distBody = document.createElement('div');
+    distBody.className = 'trk-dist-body';
+
+    distHead.onclick = () => {
+      const open = distBody.classList.toggle('open');
+      distHead.querySelector('.trk-dist-chev').textContent = open ? '▼' : '▶';
+    };
+
+    chiefNames.forEach(chief => {
+      const facs = chiefs[chief];
+      let cRepMonths = 0, cActive = 0;
+      const cTotal = facs.length;
+      facs.forEach(f => {
+        if(activeOuIds.has(f.ouId)){
+          cActive++;
+          cRepMonths += month ? (f.status ? 1 : 0) : f.status;
+        }
+      });
+      const cDenom = month ? cActive : cActive * yearPeriods;
+      const cRate  = cDenom>0 ? Math.round(cRepMonths/cDenom*100) : 0;
+      const cRep   = month ? cRepMonths : Math.round(cRepMonths);
+
+      const chiefEl = document.createElement('div');
+      chiefEl.className = 'trk-chiefdom';
+
+      const chiefHead = document.createElement('div');
+      chiefHead.className = 'trk-chief-head';
+      chiefHead.innerHTML = `
+        <span class="trk-chief-name">🏘 ${chief}</span>
+        <div class="trk-chief-pills">
+          <span class="trk-chief-pill">${cTotal} facilities</span>
+          <span class="trk-chief-pill">${cActive} active</span>
+          ${month ? `<span class="trk-chief-pill rep">✓ ${cRep}</span><span class="trk-chief-pill nrep">✗ ${cTotal-cRep}</span>` : ''}
+          <span class="trk-chief-pill" style="background:var(--blue-lt);color:var(--blue);border:1px solid var(--border);">${cRate}% (active)</span>
+        </div>
+        <span class="trk-chief-chev">▶</span>`;
+
+      const chiefBody = document.createElement('div');
+      chiefBody.className = 'trk-chief-body';
+
+      chiefHead.onclick = () => {
+        const open = chiefBody.classList.toggle('open');
+        chiefHead.querySelector('.trk-chief-chev').textContent = open ? '▼' : '▶';
+      };
+
+      // Facility grid
+      const grid = document.createElement('div');
+      grid.className = 'trk-fac-grid';
+
+      facs.forEach(f => {
+        // In full year mode: f.status = count of months reported (0..N)
+        // In month mode:     f.status = 0 or 1
+        const isReported = month ? f.status === 1 : f.status > 0;
+        if (!showRep  && isReported)  return;
+        if (!showNrep && !isReported) return;
+        const facEl = document.createElement('div');
+        // Colour by rate when full year: green=full, amber=partial, red=none
+        let facClass = 'nrep';
+        if(month) {
+          facClass = f.status ? 'rep' : 'nrep';
+        } else {
+          if(f.status === 0) facClass = 'nrep';
+          else if(f.status >= yearPeriods) facClass = 'rep';
+          else facClass = 'partial';
+        }
+        facEl.className = `trk-fac ${facClass}`;
+
+        // Per-month dots + N/M label if showing full year
+        let dotsHtml = '';
+        if (!month) {
+          const sm = statusMap[f.ouId]?.periods || {};
+          const monthLabel = `<span style="font-size:9px;font-weight:700;opacity:.75;white-space:nowrap;margin-left:4px;">${f.status}/${yearPeriods}</span>`;
+          dotsHtml = `<span style="display:flex;align-items:center;gap:2px;margin-left:auto;">` +
+            MONTH_NAMES.map((_,i)=>{
+              const mo = String(i+1).padStart(2,'0');
+              const period = `${year}${mo}`;
+              const hasPeriod = (ST.config?.periods||[]).includes(period);
+              if (!hasPeriod) return `<span title="${MONTH_NAMES[i]}" style="width:7px;height:7px;border-radius:50%;background:#ddd;flex-shrink:0;"></span>`;
+              const v = sm[mo];
+              const col = v ? '#28a745' : '#dc3545';
+              return `<span title="${MONTH_NAMES[i]}: ${v?'Reported':'Not reported'}" style="width:7px;height:7px;border-radius:50%;background:${col};flex-shrink:0;"></span>`;
+            }).join('') + monthLabel + `</span>`;
+        }
+
+        facEl.innerHTML = `<div class="trk-fac-dot"></div><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${f.name}">${f.name}</span>${dotsHtml}`;
+        grid.appendChild(facEl);
+      });
+
+      if (!grid.children.length) {
+        grid.innerHTML = `<div class="trk-empty" style="padding:8px;">No facilities match current filters.</div>`;
+      }
+
+      chiefBody.appendChild(grid);
+      chiefEl.appendChild(chiefHead);
+      chiefEl.appendChild(chiefBody);
+      distBody.appendChild(chiefEl);
+    });
+
+    distEl.appendChild(distHead);
+    distEl.appendChild(distBody);
+    tree.appendChild(distEl);
+  });
+}
+
+function trk_expandAll(open) {
+  document.querySelectorAll('.trk-dist-body').forEach(b => {
+    b.classList.toggle('open', open);
+    const chev = b.previousElementSibling?.querySelector('.trk-dist-chev');
+    if (chev) chev.textContent = open ? '▼' : '▶';
+  });
+  document.querySelectorAll('.trk-chief-body').forEach(b => {
+    b.classList.toggle('open', open);
+    const chev = b.previousElementSibling?.querySelector('.trk-chief-chev');
+    if (chev) chev.textContent = open ? '▼' : '▶';
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  PUSH & UPDATE — Save snapshot to Google Drive → NMDR portal
+// ═══════════════════════════════════════════════════════════════════
+
+/**
+ * buildSnapshotHtml()
+ * Clones the live DOM, embeds ST + AGG state as JSON, injects a
+ * bootstrap script that restores everything on load — identical to live tool.
+ */
+function buildSnapshotHtml() {
+  const start = ST.config?.start || '';
+  const end   = ST.config?.end   || '';
+  const clone = document.documentElement.cloneNode(true);
+
+  // Remove screens not needed in snapshot
+  const drop = id => { const el=clone.querySelector('#'+id); if(el) el.remove(); };
+  drop('progressSection');
+  drop('configCard');
+  // Remove Push & Update buttons (no Drive in saved file)
+  clone.querySelectorAll('#pushDriveBtn,#pushDriveBtnDownloads,#driveStatusBar').forEach(el=>el.remove());
+
+  // Show results section
+  const rs = clone.querySelector('#resultsSection');
+  if(rs) rs.style.display = 'block';
+
+  // Info banner
+  const rep  = ST.reportData.filter(r=>r.status).length;
+  const tot  = ST.reportData.length;
+  const rate = tot>0 ? (rep/tot*100).toFixed(1)+'%' : '—';
+  const container = clone.querySelector('.page-body');
+  if(container) {
+    const banner = document.createElement('div');
+    banner.style.cssText='background:#e3f2fd;border:2px solid #2c6793;border-radius:10px;padding:12px 18px;margin-bottom:16px;font-weight:700;color:#1f4a6a;font-size:13px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;';
+    banner.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2c6793" stroke-width="2.5" stroke-linecap="round"><path d="M6.28 3l5.22 9.04L5.94 21H2L7.72 12 2 3h4.28zM15.5 3L22 15h-5.5L10 3h5.5zM16.5 21L9 9h5.5l7.5 12h-5.5z"/></svg>'
+      +'<div><strong>NMCP Malaria EPI Reporting Status — Saved Snapshot</strong>'
+      +' &nbsp;·&nbsp; Period: <strong>'+start+' → '+end+'</strong>'
+      +' &nbsp;·&nbsp; Overall rate: <strong>'+rate+'</strong>'
+      +' &nbsp;·&nbsp; Saved '+new Date().toLocaleDateString('en-GB')+' · ICF-SL / NMCP</div>';
+    container.insertBefore(banner, container.firstChild);
+  }
+
+  // Remove previous bootstrap
+  clone.querySelectorAll('script#__rs_bootstrap__').forEach(s=>s.remove());
+
+  const STATE = {
+    start, end,
+    config:      { start, end, periods: ST.config?.periods||[] },
+    orgHierarchy: ST.orgHierarchy,
+    rawSums:      ST.rawSums,
+    reportData:   ST.reportData,
+    selectedPalette:    ST.selectedPalette    || 'blackYellow',
+    selectedMapPalette: selectedMapPalette    || 'rdylgn',
+  };
+
+  const bootstrapJs = `
+(function(){
+  var S = ${JSON.stringify(STATE)};
+  function init() {
+    ST.config          = S.config;
+    ST.orgHierarchy    = S.orgHierarchy;
+    ST.rawSums         = S.rawSums;
+    ST.reportData      = S.reportData;
+    ST.selectedPalette = S.selectedPalette;
+    selectedMapPalette = S.selectedMapPalette;
+
+    var cc=document.getElementById('configCard');
+    var ps=document.getElementById('progressSection');
+    var rs=document.getElementById('resultsSection');
+    if(cc)cc.style.display='none';
+    if(ps)ps.style.display='none';
+    if(rs)rs.style.display='block';
+
+    rs_buildAggregates();
+    try { rs_buildPaletteGrid(); rs_drawBothHeatmaps(); } catch(e){ console.warn('Heatmap:',e); }
+    try { rs_buildTable(); } catch(e){ console.warn('Table:',e); }
+    try { populateYearDropdown(); trk_init(); } catch(e){ console.warn('Tracking:',e); }
+
+    // Re-load GeoJSON from URLs and render maps
+    var loadGeo = function() {
+      if(ST.geoCache.bbox){ rs_buildMapPaletteGrid(); rs_updateAnnualLegendBar(); rs_renderGeoMaps(); }
+      else {
+        Promise.all([
+          fetch(CHIEFDOM_GEOJSON).then(function(r){return r.json();}),
+          fetch(DISTRICT_GEOJSON).then(function(r){return r.json();}).catch(function(){return null;})
+        ]).then(function(res){
+          ST.geoCache.chiefdomGeo=res[0]; ST.geoCache.districtGeo=res[1];
+          var mnX=Infinity,mnY=Infinity,mxX=-Infinity,mxY=-Infinity;
+          (res[0].features||[]).forEach(function(f){
+            walkCoords(f.geometry,function(c){
+              if(c[0]<mnX)mnX=c[0];if(c[0]>mxX)mxX=c[0];
+              if(c[1]<mnY)mnY=c[1];if(c[1]>mxY)mxY=c[1];
+            });
+          });
+          ST.geoCache.bbox={mnX:mnX,mnY:mnY,mxX:mxX,mxY:mxY};
+          rs_buildMapPaletteGrid(); rs_updateAnnualLegendBar();
+          populateYearDropdown(); rs_renderGeoMaps();
+        }).catch(function(e){ console.warn('GeoJSON:', e); });
+      }
+    };
+
+    var nFac=Object.keys(S.orgHierarchy).length;
+    var rep2=S.reportData.filter(function(r){return r.status;}).length;
+    var tot2=S.reportData.length;
+    var rate2=tot2>0?(rep2/tot2*100).toFixed(1)+'%':'—';
+    var sr=document.getElementById('statsRow');
+    if(sr) sr.innerHTML=
+      '<div class="stat-pill">'+nFac+' facilities</div>'+
+      '<div class="stat-pill ok">'+rep2.toLocaleString()+' reported facility-months</div>'+
+      '<div class="stat-pill ok">'+rate2+' overall rate</div>'+
+      '<div class="stat-pill">'+S.start+' → '+S.end+'</div>';
+
+    setPill('Snapshot ✓','rgba(40,167,69,.55)');
+    setTimeout(loadGeo,300);
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',init);
+  } else { init(); }
+})();`;
+
+  const bodyEl = clone.querySelector('body');
+  const bs     = document.createElement('script');
+  bs.id        = '__rs_bootstrap__';
+  bs.textContent = bootstrapJs;
+  if(bodyEl) bodyEl.appendChild(bs);
+
+  return '<!DOCTYPE html>\n' + clone.outerHTML;
+}
+
+/**
+ * driveStatusUI(msg, cssClass, pct)
+ */
+function driveStatusUI(msg, cssClass, pct) {
+  const bar  = document.getElementById('driveStatusBar'); if(!bar) return;
+  const msgEl = document.getElementById('driveStatusMsg');
+  const iconEl= document.getElementById('driveStatusIcon');
+  const pw   = document.getElementById('driveProgressWrap');
+  const pf   = document.getElementById('driveProgressFill');
+
+  bar.style.display = 'block';
+
+  if(cssClass==='ds-done') {
+    bar.style.background='#d4edda'; bar.style.color='#155724'; bar.style.borderColor='#28a745';
+    if(iconEl) iconEl.textContent='✔';
+    if(pf) pf.style.background='#28a745';
+    // Auto-dismiss after 6 s
+    setTimeout(()=>{ bar.style.display='none'; }, 6000);
+  } else if(cssClass==='ds-error') {
+    bar.style.background='#fde8e0'; bar.style.color='#7a2800'; bar.style.borderColor='#d32f2f';
+    if(iconEl) iconEl.textContent='✗';
+    if(pf) pf.style.background='#d32f2f';
+  } else {
+    bar.style.background='#fff8e1'; bar.style.color='#7d5a00'; bar.style.borderColor='#f0a500';
+    if(iconEl) iconEl.textContent='⏳';
+    if(pf) pf.style.background='#f0a500';
+  }
+
+  if(msgEl) msgEl.textContent = msg;
+
+  if(pct != null && pw && pf) {
+    pw.style.display = 'block';
+    pf.style.width   = pct + '%';
+  }
+}
+
+/**
+ * rs_pushToDrive()
+ * File key: med_reporting.html (matches NMDR portal data-src)
+ */
+async function rs_pushToDrive() {
+  if(!ST.reportData||!ST.reportData.length){
+    alert('Run the pipeline first — no data loaded yet.'); return;
+  }
+  // Immediate visual feedback — change button text before any async work
+  ['pushDriveBtn','pushDriveBtnDownloads'].forEach(id=>{
+    const b=document.getElementById(id);
+    if(b){ b.disabled=true; b.textContent='⏳ Uploading…'; }
+  });
+  try {
+    driveStatusUI('Stage 1/4 — Building snapshot…','ds-uploading',10);
+    await new Promise(r=>setTimeout(r,30));
+    let html;
+    try { html=buildSnapshotHtml(); }
+    catch(e){ driveStatusUI('Build failed: '+e.message,'ds-error',100); return; }
+
+    const rawKB=Math.round(html.length/1024);
+    driveStatusUI('Stage 2/4 — Encoding '+rawKB+' KB to base64…','ds-uploading',30);
+    await new Promise(r=>setTimeout(r,30));
+    let b64;
+    try {
+      const bytes=new TextEncoder().encode(html);
+      let binary=''; const chunk=8192;
+      for(let i=0;i<bytes.length;i+=chunk)
+        binary+=String.fromCharCode(...bytes.subarray(i,i+chunk));
+      b64=btoa(binary);
+    } catch(e){ driveStatusUI('Encoding failed: '+e.message,'ds-error',100); return; }
+
+    const sizeKB=Math.round(b64.length/1024);
+    driveStatusUI('Stage 3/4 — Uploading '+sizeKB+' KB to Google Drive…','ds-uploading',55);
+    await new Promise(r=>setTimeout(r,30));
+
+    const now=new Date();
+    const ts=now.toLocaleDateString('en-GB')+' '+now.toLocaleTimeString();
+    const period=(ST.config?.start||'')+' → '+(ST.config?.end||'');
+    const rep=ST.reportData.filter(r=>r.status).length;
+    const tot=ST.reportData.length;
+    const rate=tot>0?(rep/tot*100).toFixed(1)+'%':'—';
+
+    const files={'med_reporting.html':'data:text/html;base64,'+b64};
+    const titles={
+      rsTitle:  'NMCP Malaria EPI Reporting Status · '+period,
+      rsPeriod: period,
+      rsRecords:tot.toLocaleString()+' facility-month records',
+      rsRate:   'Overall rate: '+rate,
+    };
+    const body=new URLSearchParams({
+      action:'saveDashboard',
+      files:JSON.stringify(files),
+      ts, period,
+      titles:JSON.stringify(titles),
+    });
+
+    let resp;
+    try { resp=await fetch(DRIVE_GAS,{method:'POST',body}); }
+    catch(netErr){ driveStatusUI('Network error: '+netErr.message,'ds-error',100); return; }
+
+    driveStatusUI('Stage 4/4 — Processing response…','ds-uploading',85);
+    let data;
+    try{ data=await resp.json(); } catch(e){ data={}; }
+
+    if(data.ok){
+      driveStatusUI('✔ Saved to Google Drive · '+period+' · '+tot.toLocaleString()+' records · '+rate,'ds-done',100);
+      try{ window.parent.postMessage({type:'pipeline_done',period,rate,records:tot},'*'); }catch(_){}
+    } else {
+      driveStatusUI('Drive error: '+(data.error||'Unknown — check GAS endpoint'),'ds-error',100);
+    }
+  } finally {
+    ['pushDriveBtn','pushDriveBtnDownloads'].forEach(id=>{
+      const b=document.getElementById(id);
+      if(b){ b.disabled=false; b.textContent='⬆ Push & Update'; }
+    });
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  UI HELPERS
+// ═══════════════════════════════════════════════════════════════════════
+function toggleCollap(head) {
+  const body=head.nextElementSibling;
+  const chev=head.querySelector('.collap-chev');
+  body.classList.toggle('hidden');
+  if(chev) chev.textContent = body.classList.contains('hidden') ? '▶' : '▼';
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const tab=btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+tab).classList.add('active');
+    if(tab==='geomaps') setTimeout(()=>{ rs_buildMonthlyGrid(); attachChiefdomListeners(); },200);
+    if(tab==='tracking') setTimeout(()=>{ trk_render(); },100);
+  });
+});
+
+// Init palette grid on load
+rs_buildPaletteGrid();
+rs_buildMapPaletteGrid();
+rs_updateAnnualLegendBar();
+</script>
+<!-- ── Drive Save Toast — always visible regardless of active tab ── -->
+<div id="driveStatusBar" style="display:none;position:fixed;bottom:24px;right:24px;z-index:9999;max-width:420px;padding:14px 18px;border-radius:10px;font-size:13px;font-weight:700;box-shadow:0 4px 20px rgba(0,0,0,.25);border:2px solid #3b78a8;background:#fff8e1;color:#7d5a00;transition:all .3s;">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span id="driveStatusIcon" style="font-size:18px;">⏳</span>
+    <div style="flex:1;">
+      <div id="driveStatusMsg" style="margin-bottom:4px;"></div>
+      <div id="driveProgressWrap" style="display:none;height:6px;background:rgba(0,0,0,.1);border-radius:4px;overflow:hidden;">
+        <div id="driveProgressFill" style="height:100%;border-radius:4px;transition:width .4s ease;background:#f0a500;width:0%;"></div>
+      </div>
+    </div>
+    <button onclick="document.getElementById('driveStatusBar').style.display='none';" style="background:none;border:none;font-size:16px;cursor:pointer;color:inherit;padding:0 4px;line-height:1;opacity:.6;">✕</button>
+  </div>
+</div>
+
+</body>
+</html>
