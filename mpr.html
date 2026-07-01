@@ -1369,6 +1369,8 @@
 
         /* ---- Standalone overrides (sidebar removed) ---- */
         body { display: block; }
+        /* PDF viewer was offset for the old 260px sidebar; span the full viewport now */
+        .pdf-viewer-modal { left: 0 !important; right: 0 !important; width: 100% !important; }
         .snt-standalone-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 28px 60px; }
         .snt-standalone-header { display: flex; align-items: center; gap: 14px; padding: 18px 0 22px; border-bottom: 2px solid var(--border); margin-bottom: 24px; }
         .snt-standalone-header .badge { background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dk) 100%); color: #fff; font-weight: 700; font-size: 15px; letter-spacing: 1px; padding: 10px 16px; border-radius: 10px; white-space: nowrap; }
