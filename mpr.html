@@ -1418,12 +1418,32 @@
                 </div>
             </div>
 
-            <!-- OUTPUTS PANE -->
+            <!-- OUTPUTS PANE (Retrospective Analysis) -->
             <div id="mprOutputsPane" class="data-pane">
-                <div class="snt-category"><div class="category-header"><span class="category-title">MPR Analysis Presentation 2021-2024</span><span class="category-toggle">▼</span></div><div class="category-content open"><div class="slides-container"><div class="presentation-header">MPR Trend Analysis and Findings</div><div class="iframe-responsive-wrap"><iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSM-5FPuRMlHGsJO8djeq7zsXOehVxLuTxX4oCLzhkwlnMOqKZoV0qaMRoAJPwQvrQ3FCuKFf2XQUc4/pubembed?start=false&loop=false&delayms=3000" frameborder="0" allowfullscreen="true"></iframe></div></div></div></div>
-                <div class="snt-category"><div class="category-header"><span class="category-title">Figures and Visualizations</span><span class="category-toggle">▼</span></div><div class="category-content"><div id="mprFiguresFiles" class="files-grid"></div></div></div>
-                <div class="snt-category"><div class="category-header"><span class="category-title">Summary Tables</span><span class="category-toggle">▼</span></div><div class="category-content"><div id="mprTablesFiles" class="files-grid"></div></div></div>
-                <div class="snt-category"><div class="category-header"><span class="category-title">Model Outputs and Reports</span><span class="category-toggle">▼</span></div><div class="category-content"><div id="mprReportsFiles" class="files-grid"></div></div></div>
+                <div class="mpd-section-header" style="margin-bottom:16px;">
+                    <h2 style="font-size:18px; color:var(--blue); margin-bottom:4px;">Retrospective Analysis</h2>
+                    <p style="font-size:13px; color:var(--muted);">Longitudinal trends, impact evaluations, and historical malaria burden assessments.</p>
+                </div>
+                <div class="sub-tab-nav" id="retroNav">
+                    <button class="sub-tab-btn active" data-retro="output">Output Indicator</button>
+                    <button class="sub-tab-btn" data-retro="outcome">Outcome Indicator</button>
+                    <button class="sub-tab-btn" data-retro="impact">Impact Indicator</button>
+                    <button class="sub-tab-btn" data-retro="inctrend">Incidence Trend</button>
+                    <button class="sub-tab-btn" data-retro="incmaps">Incidence Maps</button>
+                    <button class="sub-tab-btn" data-retro="cases">Cases (All Ages)</button>
+                    <button class="sub-tab-btn" data-retro="under5">Under-5 Comparison</button>
+                    <button class="sub-tab-btn" data-retro="rainfall">Rainfall Analysis</button>
+                    <button class="sub-tab-btn" data-retro="hfchw">Health Facility/CHW Distribution</button>
+                </div>
+                <div id="retroOutputPane" class="data-pane active-pane"><div style="border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);"><iframe src="https://mohamedsillahkanu.github.io/output_indicator/" style="width:100%;min-height:850px;border:none;display:block;" loading="lazy"></iframe></div></div>
+                <div id="retroOutcomePane" class="data-pane"><div style="border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);"><iframe src="https://mohamedsillahkanu.github.io/outcome_indicator/" style="width:100%;min-height:850px;border:none;display:block;" loading="lazy"></iframe></div></div>
+                <div id="retroImpactPane" class="data-pane"><div style="border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);"><iframe src="https://mohamedsillahkanu.github.io/impact_indicators/" style="width:100%;min-height:850px;border:none;display:block;" loading="lazy"></iframe></div></div>
+                <div id="retroIncTrendPane" class="data-pane"><div style="border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);"><iframe src="https://mohamedsillahkanu.github.io/incidence_line_plot/" style="width:100%;min-height:850px;border:none;display:block;" loading="lazy"></iframe></div></div>
+                <div id="retroIncMapsPane" class="data-pane"><div style="border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);"><iframe src="https://mohamedsillahkanu.github.io/incidence-maps/" style="width:100%;min-height:850px;border:none;display:block;" loading="lazy"></iframe></div></div>
+                <div id="retroCasesPane" class="data-pane"><div style="border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);"><iframe src="https://informatics-consultancy-firm.github.io/time-series-analysis-output/" style="width:100%;min-height:850px;border:none;display:block;" loading="lazy"></iframe></div></div>
+                <div id="retroUnder5Pane" class="data-pane"><div style="border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);"><iframe src="https://mohamedsillahkanu.github.io/u5-cases-comparison/" style="width:100%;min-height:850px;border:none;display:block;" loading="lazy"></iframe></div></div>
+                <div id="retroRainfallPane" class="data-pane"><div style="border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);"><iframe src="https://mohamedsillahkanu.github.io/rainfall-analysis/" style="width:100%;min-height:850px;border:none;display:block;" loading="lazy"></iframe></div></div>
+                <div id="retroHfchwPane" class="data-pane"><div style="border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);"><iframe src="https://mohamedsillahkanu.github.io/hf-chw-dist/" style="width:100%;min-height:850px;border:none;display:block;" loading="lazy"></iframe></div></div>
             </div>
 
             <!-- REPORT PANE -->
@@ -1538,44 +1558,6 @@
             });
         }
 
-        // ---- Outputs file lists ----
-        const mprFiguresFiles = [{name:'mpr_trend_analysis_2024.png',size:'480 KB'},{name:'district_mpr_map.pdf',size:'1.2 MB'}];
-        const mprTablesFiles  = [{name:'mpr_summary_tables.xlsx',size:'620 KB'}];
-        const mprReportsFiles = [{name:'annual_mpr_report_2024.pdf',size:'2.5 MB'}];
-
-        function buildSNTFileList(files, containerId) {
-            const c = document.getElementById(containerId);
-            if(!c) return;
-            let html = '';
-            for(let f of files) html += `<div class="file-item"><div class="file-info"><div class="file-name">${f.name}</div><div class="file-meta">${f.size} • <span style="color: #1a8a4a; font-weight: 600;">Ready</span></div></div><button class="btn-download-snt" data-filename="${f.name}">Download</button></div>`;
-            c.innerHTML = html;
-            c.querySelectorAll('.btn-download-snt').forEach(btn => {
-                btn.addEventListener('click', function() { const a = document.createElement('a'); a.href = btn.dataset.filename; a.download = btn.dataset.filename; a.click(); });
-            });
-        }
-        buildSNTFileList(mprFiguresFiles, 'mprFiguresFiles');
-        buildSNTFileList(mprTablesFiles, 'mprTablesFiles');
-        buildSNTFileList(mprReportsFiles, 'mprReportsFiles');
-
-        // ---- Collapsible categories ----
-        document.querySelectorAll('.category-header').forEach(header => {
-            header.addEventListener('click', function() {
-                const panel = this.nextElementSibling;
-                const toggle = this.querySelector('.category-toggle');
-                if(panel.classList.contains('open')) {
-                    panel.classList.remove('open');
-                    toggle.textContent = '▼';
-                } else {
-                    panel.classList.add('open');
-                    toggle.textContent = '▲';
-                    panel.querySelectorAll('iframe[data-src]').forEach(iframe => {
-                        iframe.src = iframe.getAttribute('data-src');
-                        iframe.removeAttribute('data-src');
-                    });
-                }
-            });
-        });
-
         // ---- MPR sub-tab switching ----
         document.querySelectorAll('#mprNav .sub-tab-btn').forEach(btn => {
             btn.addEventListener('click', function() { switchMPR(btn.getAttribute('data-mpr')); });
@@ -1654,6 +1636,34 @@
         refreshMPRInterventionGrids('2024', false);
         refreshMPRStockGrids('2024', true);
         refreshMPRStockGrids('2024', false);
+
+        // ---- Retrospective Analysis sub-tabs (within Outputs) ----
+        (function() {
+            const map = {
+                output:   'retroOutputPane',
+                outcome:  'retroOutcomePane',
+                impact:   'retroImpactPane',
+                inctrend: 'retroIncTrendPane',
+                incmaps:  'retroIncMapsPane',
+                cases:    'retroCasesPane',
+                under5:   'retroUnder5Pane',
+                rainfall: 'retroRainfallPane',
+                hfchw:    'retroHfchwPane'
+            };
+            document.querySelectorAll('#retroNav .sub-tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const key = this.getAttribute('data-retro');
+                    document.querySelectorAll('#retroNav .sub-tab-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    Object.values(map).forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.classList.remove('active-pane');
+                    });
+                    const target = document.getElementById(map[key]);
+                    if (target) target.classList.add('active-pane');
+                });
+            });
+        })();
 
         // ---- Document availability + PDF viewer ----
         const availableDocuments = {
