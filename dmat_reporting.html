@@ -311,7 +311,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans
           <!-- Outputs -->
           <div>
             <div style="font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">4 · Outputs</div>
-            <p>Reporting heatmaps (all facilities · active facilities only), geographic choropleth maps at national / district / chiefdom level, facility-level tracking tree, summary aggregation tables, and downloadable Excel / CSV / R / Python exports.</p>
+            <p>Reporting heatmaps (all facilities · active facilities only), geographic choropleth maps at national / district / chiefdom level, a district map of inactive (never-reported) facility counts, facility-level tracking tree, summary aggregation tables, and downloadable Excel / CSV / R / Python exports. A facility is <b>active</b> if it reported at least once in the selected period, otherwise <b>inactive</b>; reporting rates use active facilities only in the denominator.</p>
           </div>
 
         </div>
@@ -491,6 +491,24 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans
               <button class="btn btn-green btn-sm" onclick="rs_geoDownload('geoChiefdom','chiefdom')">↓ Chiefdom PNG</button>
             </div>
           </div>
+
+          <!-- ── SECTION 3: District Inactive Facilities Map ── -->
+          <div style="background:#a50f15;color:#fff;padding:10px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;justify-content:space-between;">
+            <span>🚫 Inactive Facilities by District — count of facilities that never reported in the selected period</span>
+            <button class="btn btn-gold btn-sm" onclick="rs_geoDownload('geoDistrictInactive','district_inactive')">↓ Download Map (PNG)</button>
+          </div>
+          <div style="padding:14px;background:#fff6f5;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;margin-bottom:16px;">
+            <p style="font-size:12px;color:#7a2a2a;margin-bottom:10px;line-height:1.5;">
+              A facility is <b>inactive</b> if it submitted <b>zero</b> reports across the whole selected period; otherwise it is <b>active</b>.
+              Each district is shaded by its number of inactive facilities and labelled with the district name and that count.
+              Only active facilities are counted in the reporting-rate denominator on the other maps and tables.
+            </p>
+            <div class="map-panel" style="max-width:620px;margin:0 auto;">
+              <div class="map-panel-head" style="background:#a50f15;">DISTRICT — INACTIVE FACILITY COUNT</div>
+              <div class="canvas-wrap" style="cursor:crosshair;"><canvas id="geoDistrictInactive"></canvas></div>
+            </div>
+            <div id="inactiveLegendBar" class="legend-bar" style="margin-top:10px;"></div>
+          </div>
         </div>
 
         <!-- ── TAB: FACILITY TRACKING ── -->
@@ -505,14 +523,30 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans
             <input type="text" class="form-control trk-search" id="trkSearch" placeholder="Search facility, chiefdom, district…" oninput="trk_render()">
             <div style="display:flex;gap:6px;align-items:center;margin-top:18px;">
               <label style="font-size:11px;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:4px;cursor:pointer;">
-                <input type="checkbox" id="trkShowRep" checked onchange="trk_render()"> Show Reported
+                <input type="checkbox" id="trkShowRep" checked onchange="trk_render()"> Show Active
               </label>
               <label style="font-size:11px;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:4px;cursor:pointer;">
-                <input type="checkbox" id="trkShowNrep" checked onchange="trk_render()"> Show Not Reported
+                <input type="checkbox" id="trkShowNrep" checked onchange="trk_render()"> Show Inactive
               </label>
             </div>
             <button class="btn btn-primary btn-sm" onclick="trk_expandAll(true)" style="margin-top:18px;">⊞ Expand All</button>
             <button class="btn btn-outline btn-sm" onclick="trk_expandAll(false)" style="margin-top:18px;">⊟ Collapse All</button>
+          </div>
+
+          <!-- Download facility lists -->
+          <div style="background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;">
+            <div style="font-size:12px;font-weight:700;color:var(--blue-dk);margin-bottom:8px;">
+              ⬇ Download facility lists <span style="font-weight:400;color:var(--muted);">— for the selected year, each row includes district, chiefdom, HF type, status, months reported and reporting rate</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+              <button class="btn btn-green btn-sm" onclick="trk_downloadFacilities('active','xlsx')">● Active — Excel</button>
+              <button class="btn btn-outline btn-sm" onclick="trk_downloadFacilities('active','csv')">Active — CSV</button>
+              <span style="width:1px;height:20px;background:var(--border);margin:0 4px;"></span>
+              <button class="btn btn-sm" style="background:#dc3545;color:#fff;" onclick="trk_downloadFacilities('inactive','xlsx')">○ Inactive — Excel</button>
+              <button class="btn btn-outline btn-sm" onclick="trk_downloadFacilities('inactive','csv')">Inactive — CSV</button>
+              <span style="width:1px;height:20px;background:var(--border);margin:0 4px;"></span>
+              <button class="btn btn-primary btn-sm" onclick="trk_downloadFacilities('all','xlsx')">All (with status) — Excel</button>
+            </div>
           </div>
 
           <!-- Month selector tabs -->
@@ -1048,7 +1082,7 @@ async function rs_startPipeline() {
       `<div class="stat-pill">${nFac} facilities (5 assessed types)</div>`,
       typePills,
       `<div class="stat-pill ok">${nFacActive} active (reported ≥1 month)</div>`,
-      `<div class="stat-pill warn">${nFacNever} never reported</div>`,
+      `<div class="stat-pill warn">${nFacNever} inactive (never reported)</div>`,
       `<div class="stat-pill">${ST.config.periods.length} months · ${start} → ${end}</div>`,
       `<div class="stat-pill ok">${activeRate}% reporting rate (active)</div>`,
       `<div class="stat-pill">${reported.toLocaleString()} reported facility-months</div>`,
@@ -1091,9 +1125,24 @@ let AGG = { natMonthly:{}, natYearly:{}, distMonthly:{}, distYearly:{}, chiefMon
 
 function rs_buildAggregates() {
   AGG = { natMonthly:{}, natYearly:{}, distMonthly:{}, distYearly:{}, chiefMonthly:{}, chiefYearly:{}, facMonthly:{} };
+
+  // ── ACTIVE = facility reported at least once within the selected period ──
+  // Only ACTIVE facilities count toward the reporting-rate denominator below.
+  // Inactive (never-reported) facilities are still kept in facMonthly so they
+  // remain visible in the facility-level detail as "never reported".
+  const activeFacIds = new Set(ST.reportData.filter(r => r.status === 1).map(r => r.ouId));
+
   ST.reportData.forEach(row => {
     const yr = row.Date.slice(0,4), mo = row.Date.slice(5,7);
     const d = row.districtName, c = row.chiefdomName, f = row.hf_uid;
+
+    // Facility monthly — keep ALL facilities (active + inactive)
+    const fMk = `${f}|${row.Date}`;
+    if(!AGG.facMonthly[fMk]) AGG.facMonthly[fMk] = {hf_uid:f,hfType:row.hfType||'',district:d,chiefdom:c,year:yr,month:mo,date:row.Date,status:row.status,active:activeFacIds.has(row.ouId)};
+    else AGG.facMonthly[fMk].status = row.status;
+
+    // ── Rate rollups: ACTIVE facilities only in the denominator ──
+    if (!activeFacIds.has(row.ouId)) return;
 
     // National monthly
     const nMk = row.Date;
@@ -1124,11 +1173,6 @@ function rs_buildAggregates() {
     const cYk = `${c}|${yr}`;
     if(!AGG.chiefYearly[cYk]) AGG.chiefYearly[cYk] = {district:d,chiefdom:c,year:yr,reported:0,total:0};
     AGG.chiefYearly[cYk].reported += row.status; AGG.chiefYearly[cYk].total++;
-
-    // Facility monthly
-    const fMk = `${f}|${row.Date}`;
-    if(!AGG.facMonthly[fMk]) AGG.facMonthly[fMk] = {hf_uid:f,hfType:row.hfType||'',district:d,chiefdom:c,year:yr,month:mo,date:row.Date,status:row.status};
-    else AGG.facMonthly[fMk].status = row.status;
   });
 
   // Compute rate % on each
@@ -1679,6 +1723,197 @@ function drawDistrict() {
   attachMapHover(canvas);
 }
 
+// ═══════════════════════════════════════════════════════════════════
+//  MAP: DISTRICT — INACTIVE FACILITY COUNTS
+//  Inactive = facility that never reported within the selected period.
+//  Choropleth shaded by number of inactive facilities per district;
+//  each district labelled with its name and inactive count.
+// ═══════════════════════════════════════════════════════════════════
+
+// Roll facilities up to district and count active vs inactive.
+function rs_computeInactiveByDistrict() {
+  const fac = {};   // ouId -> {district, active}
+  ST.reportData.forEach(r => {
+    if (!fac[r.ouId]) fac[r.ouId] = { district: r.districtName || 'Unknown', active: false };
+    if (r.status === 1) fac[r.ouId].active = true;
+  });
+  const byDist = {};
+  Object.values(fac).forEach(f => {
+    const d = f.district;
+    if (!byDist[d]) byDist[d] = { total: 0, active: 0, inactive: 0 };
+    byDist[d].total++;
+    if (f.active) byDist[d].active++; else byDist[d].inactive++;
+  });
+  return byDist;
+}
+
+// Sequential red scale — more inactive facilities = deeper red (worse).
+const INACTIVE_PALETTE = ['#fee5d9','#fcae91','#fb6a4a','#de2d26','#a50f15'];
+
+// Build 5 count buckets from 1..max. 0 inactive is handled separately (green).
+function rs_inactiveBreaks(maxCount) {
+  const m = Math.max(maxCount, 5);
+  const step = Math.ceil(m / 5);
+  const breaks = [];
+  for (let i = 0; i < 5; i++) {
+    const lo = i * step + 1;
+    const hi = (i === 4) ? Infinity : (i + 1) * step;
+    breaks.push({ lo, hi, color: INACTIVE_PALETTE[i],
+                  label: hi === Infinity ? `${lo}+` : `${lo}\u2013${hi}` });
+  }
+  return breaks;
+}
+
+function rs_inactiveColor(count, breaks) {
+  if (count === null || count === undefined) return '#cccccc';  // no data
+  if (count === 0) return '#8fce8f';                            // all facilities active
+  for (const b of breaks) { if (count >= b.lo && count <= b.hi) return b.color; }
+  return breaks[breaks.length - 1].color;
+}
+
+function rs_titleCase(s) {
+  return (s || '').split(' ')
+    .map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(' ');
+}
+
+function drawDistrictInactive() {
+  const canvas = document.getElementById('geoDistrictInactive'); if (!canvas) return;
+  sizeCanvas(canvas);
+  const ctx = canvas.getContext('2d'), tf = makeTf(canvas);
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = getMapBg(); ctx.fillRect(0, 0, W, H);
+
+  if (!ST.geoCache.districtGeo) {
+    ctx.fillStyle = '#6c7a89'; ctx.font = '13px Arial'; ctx.textAlign = 'center';
+    ctx.fillText('District GeoJSON unavailable', W/2, H/2); return;
+  }
+
+  const byDist = rs_computeInactiveByDistrict();
+  const lut = {};
+  Object.entries(byDist).forEach(([k, v]) => { lut[k] = v; lut[normName(k)] = v; });
+  const maxInactive = Math.max(0, ...Object.values(byDist).map(v => v.inactive));
+  const breaks = rs_inactiveBreaks(maxInactive);
+  ST._inactiveByDist = byDist;
+  ST._inactiveBreaks = breaks;
+
+  const lookup = shp => lut[shp] || lut[normName(shp)] || null;
+  const lsz = Math.max(8, Math.round(W * .022));
+
+  // Fill districts by inactive count
+  (ST.geoCache.districtGeo.features || []).forEach(f => {
+    const shp = (f.properties['FIRST_DNAM'] || '').trim();
+    const rec = lookup(shp);
+    const cnt = rec ? rec.inactive : null;
+    ctx.fillStyle = rs_inactiveColor(cnt, breaks);
+    const fillOnly = cs => {
+      ctx.beginPath();
+      cs.forEach(ring => ring.forEach((c, i) => {
+        const [x, y] = tf(c); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      }));
+      ctx.closePath(); ctx.fill();
+    };
+    if (f.geometry.type === 'Polygon')      fillOnly(f.geometry.coordinates);
+    if (f.geometry.type === 'MultiPolygon') f.geometry.coordinates.forEach(p => fillOnly(p));
+  });
+
+  // Thick black district borders
+  (ST.geoCache.districtGeo.features || []).forEach(f => {
+    ctx.fillStyle = 'transparent';
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 4.5;
+    drawPoly(ctx, f.geometry, tf);
+  });
+
+  // Labels: district name + inactive count
+  (ST.geoCache.districtGeo.features || []).forEach(f => {
+    const shp = (f.properties['FIRST_DNAM'] || '').trim();
+    const rec = lookup(shp);
+    const cnt = rec ? rec.inactive : null;
+    const cen = centroid(f.geometry); if (!cen) return;
+    const [cx, cy] = tf(cen);
+    geoLabel(ctx, rs_titleCase(shp), cx, cy - lsz * 0.95, lsz);
+    const cntStr = cnt === null ? '\u2014' : String(cnt);
+    ctx.font = `bold ${Math.round(lsz * 1.35)}px Oswald,Arial,sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#1a2e3d';
+    ctx.fillText(cntStr, cx, cy + lsz * 0.95);
+  });
+
+  rs_updateInactiveLegend(breaks, byDist);
+
+  // Hover data
+  canvas._inactiveHits = (ST.geoCache.districtGeo.features || []).map(f => {
+    const shp = (f.properties['FIRST_DNAM'] || '').trim();
+    const rec = lookup(shp);
+    const rings = [];
+    const collect = cs => cs.forEach(ring => rings.push(ring.map(tf)));
+    if (f.geometry.type === 'Polygon')      collect(f.geometry.coordinates);
+    if (f.geometry.type === 'MultiPolygon') f.geometry.coordinates.forEach(p => collect(p));
+    return { name: rs_titleCase(shp), rec, rings };
+  });
+  attachInactiveHover(canvas);
+}
+
+function rs_updateInactiveLegend(breaks, byDist) {
+  const el = document.getElementById('inactiveLegendBar');
+  if (!el) return;
+  const totalInactive = Object.values(byDist).reduce((s, v) => s + v.inactive, 0);
+  const totalFac      = Object.values(byDist).reduce((s, v) => s + v.total, 0);
+  const items = [
+    { color: '#8fce8f', label: '0 (all active)' },
+    ...breaks.map(b => ({ color: b.color, label: b.label })),
+    { color: '#cccccc', label: 'No data' },
+  ];
+  const swatches = items.map(b =>
+    `<div style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#1a2e3d;">
+       <div style="width:16px;height:13px;background:${b.color};border:1px solid rgba(0,0,0,.25);border-radius:2px;"></div>
+       ${b.label}
+     </div>`
+  ).join('');
+  el.innerHTML =
+    `<div style="width:100%;font-size:11px;font-weight:700;color:var(--blue-dk);margin-bottom:6px;">
+       Inactive facilities per district &middot; ${totalInactive.toLocaleString()} inactive of ${totalFac.toLocaleString()} facilities
+     </div>
+     <div style="display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;">${swatches}</div>`;
+}
+
+function attachInactiveHover(canvas) {
+  if (!canvas) return;
+  if (canvas._imoveHandler)  canvas.removeEventListener('mousemove', canvas._imoveHandler);
+  if (canvas._ileaveHandler) canvas.removeEventListener('mouseleave', canvas._ileaveHandler);
+  canvas.style.cursor = 'crosshair';
+
+  canvas._imoveHandler = evt => {
+    const tip = document.getElementById('rsTooltip');
+    const hits = canvas._inactiveHits;
+    if (!hits || !hits.length) { tip.style.display = 'none'; return; }
+    const rect = canvas.getBoundingClientRect();
+    const sx = canvas.width / rect.width, sy = canvas.height / rect.height;
+    const mx = (evt.clientX - rect.left) * sx, my = (evt.clientY - rect.top) * sy;
+    let hit = null;
+    for (const h of hits) {
+      for (const ring of h.rings) { if (pointInRing(mx, my, ring)) { hit = h; break; } }
+      if (hit) break;
+    }
+    if (hit && hit.rec) {
+      const r = hit.rec;
+      tip.style.display = 'block';
+      tip.style.left = (evt.clientX + 16) + 'px';
+      tip.style.top  = (evt.clientY - 12) + 'px';
+      tip.innerHTML =
+        `<strong>${hit.name}</strong><br>` +
+        `Inactive: <b>${r.inactive}</b> of ${r.total} facilities<br>` +
+        `<span style="opacity:.85;">Active: ${r.active}</span><br>` +
+        `<span style="font-size:10px;opacity:.6;">Inactive = never reported in selected period</span>`;
+    } else {
+      tip.style.display = 'none';
+    }
+  };
+  canvas._ileaveHandler = () => { document.getElementById('rsTooltip').style.display = 'none'; };
+  canvas.addEventListener('mousemove', canvas._imoveHandler);
+  canvas.addEventListener('mouseleave', canvas._ileaveHandler);
+}
+
 // ── MAP 3: Chiefdom — choropleth, grey chiefdom borders, thick black district overlay, hover tooltip ──
 function drawChiefdom() {
   const canvas = document.getElementById('geoChiefdom'); if (!canvas) return;
@@ -1835,6 +2070,7 @@ function rs_renderGeoMaps() {
   rs_buildMonthlyGrid();
 
   drawNational(); drawDistrict(); drawChiefdom();
+  try { drawDistrictInactive(); } catch(e){ console.warn('Inactive map:', e); }
   attachChiefdomListeners();
   if (statusEl) {
     const nc = Math.round(Object.keys(ST.geoChiefdomRates).length / 2);
@@ -2372,14 +2608,25 @@ for(ou_id in ou_ids) {
 }
 status_df <- bind_rows(rows)
 
-# Aggregates
-dist_monthly  <- status_df %>% group_by(district,year,month,period) %>%
+# Active = facility reported at least once within the selected period; else inactive.
+active_ids <- status_df %>% group_by(hf_uid) %>%
+  summarise(active = any(status == 1L), .groups = "drop")
+status_df <- status_df %>% left_join(active_ids, by = "hf_uid")
+
+# Inactive facilities per district (count of never-reporting facilities)
+inactive_by_district <- status_df %>% distinct(hf_uid, district, active) %>%
+  group_by(district) %>%
+  summarise(total = n(), active = sum(active), inactive = sum(!active), .groups = "drop")
+
+# Aggregates — ACTIVE facilities only in the denominator
+active_df <- status_df %>% filter(active)
+dist_monthly  <- active_df %>% group_by(district,year,month,period) %>%
   summarise(reported=sum(status),total=n(),.groups="drop") %>% mutate(rate_pct=round(reported/total*100,1))
-dist_yearly   <- status_df %>% group_by(district,year) %>%
+dist_yearly   <- active_df %>% group_by(district,year) %>%
   summarise(reported=sum(status),total=n(),.groups="drop") %>% mutate(rate_pct=round(reported/total*100,1))
-chief_monthly <- status_df %>% group_by(district,chiefdom,year,month,period) %>%
+chief_monthly <- active_df %>% group_by(district,chiefdom,year,month,period) %>%
   summarise(reported=sum(status),total=n(),.groups="drop") %>% mutate(rate_pct=round(reported/total*100,1))
-chief_yearly  <- status_df %>% group_by(district,chiefdom,year) %>%
+chief_yearly  <- active_df %>% group_by(district,chiefdom,year) %>%
   summarise(reported=sum(status),total=n(),.groups="drop") %>% mutate(rate_pct=round(reported/total*100,1))
 
 # Heatmap
@@ -2478,9 +2725,20 @@ for ou_id,ou in hier.items():
                      "status":int(raw_sums.get(ou_id,{}).get(per,0)>0)})
 df = pd.DataFrame(rows)
 
-# Aggregates
+# Active = facility reported at least once within the selected period; else inactive.
+active_ids = df.groupby("hf_uid")["status"].max().rename("active").astype(bool)
+df = df.join(active_ids, on="hf_uid")
+
+# Inactive facilities per district (count of never-reporting facilities)
+_fac = df.drop_duplicates("hf_uid")[["hf_uid","district","active"]]
+inactive_by_district = _fac.groupby("district")["active"].agg(
+    total="count", active="sum").reset_index().assign(
+    inactive=lambda x: x.total - x.active)
+
+# Aggregates — ACTIVE facilities only in the denominator
+active_df = df[df["active"]]
 def agg(grp_cols):
-    return df.groupby(grp_cols)["status"].agg(reported="sum",total="count").reset_index().assign(rate_pct=lambda x:(x.reported/x.total*100).round(1))
+    return active_df.groupby(grp_cols)["status"].agg(reported="sum",total="count").reset_index().assign(rate_pct=lambda x:(x.reported/x.total*100).round(1))
 
 dist_monthly  = agg(["district","year","month","period"])
 dist_yearly   = agg(["district","year"])
@@ -2577,51 +2835,58 @@ function trk_render() {
 
   const month   = TRK.month; // null = full year aggregate
   const q       = (document.getElementById('trkSearch')?.value||'').toLowerCase().trim();
-  const showRep  = document.getElementById('trkShowRep')?.checked !== false;
-  const showNrep = document.getElementById('trkShowNrep')?.checked !== false;
+  const showActive   = document.getElementById('trkShowRep')?.checked !== false;
+  const showInactive = document.getElementById('trkShowNrep')?.checked !== false;
   const tree     = document.getElementById('trkTree');
   if (!tree) return;
 
-  // Build lookup: {ouId → {name, districtName, chiefdomName}}
   const hier = ST.orgHierarchy;
 
-  // Build status map: ouId → { reported: bool, periods: {mm: bool} }
+  // Data-months present for this year, e.g. ['01','02',...]
+  const yearMonths = [...new Set(
+    (ST.config?.periods||[]).filter(p=>p.slice(0,4)===year).map(p=>p.slice(4,6))
+  )].sort();
+  const nMonths = month ? 1 : (yearMonths.length || 1);
+
+  // Status map: ouId → { periods: {mm: 0/1} } for the selected year
   const statusMap = {};
   ST.reportData.forEach(row => {
     if (row.Date.slice(0,4) !== year) return;
     const mo = row.Date.slice(5,7);
     if (!statusMap[row.ouId]) statusMap[row.ouId] = { periods:{} };
-    statusMap[row.ouId].periods[mo] = (statusMap[row.ouId].periods[mo]||0) || row.status;
-    // if any period in month reported, mark as reported
+    if (statusMap[row.ouId].periods[mo] === undefined) statusMap[row.ouId].periods[mo] = 0;
     if (row.status) statusMap[row.ouId].periods[mo] = 1;
   });
 
-  // Determine per-facility status for selected period
-  function facStatus(ouId) {
+  // ACTIVE = facility reported at least once during the selected year.
+  // This is a stable, year-level classification (does not change with the month tab).
+  function facActive(ouId) {
     const s = statusMap[ouId];
-    if (!s) return 0;
+    return !!(s && Object.values(s.periods).some(v=>v));
+  }
+  // Reported facility-months for a facility over the selected period
+  function facReportedMonths(ouId) {
+    const s = statusMap[ouId]; if (!s) return 0;
     if (month) return s.periods[month] ? 1 : 0;
-    // Full year: reported if ANY month reported
-    return Object.values(s.periods).some(v=>v) ? 1 : 0;
+    return Object.values(s.periods).filter(v=>v).length;
   }
 
-  // Group: district → chiefdom → [{ouId, name, status}]
+  // Group: district → chiefdom → [{ouId, name, active}]
   const tree_data = {};
   Object.values(hier).forEach(ou => {
     const d = ou.districtName || 'Unknown District';
     const c = ou.chiefdomName || 'Unknown Chiefdom';
     const name = ou.name || ou.id;
-    // Search filter
     if (q && ![name,d,c].join(' ').toLowerCase().includes(q)) return;
     if (!tree_data[d]) tree_data[d] = {};
     if (!tree_data[d][c]) tree_data[d][c] = [];
-    tree_data[d][c].push({ ouId: ou.id, name, status: facStatus(ou.id) });
+    tree_data[d][c].push({ ouId: ou.id, name, active: facActive(ou.id) });
   });
 
-  // Sort facilities within each chiefdom by status desc (reported first) then name
+  // Sort facilities: active first, then name
   Object.values(tree_data).forEach(chiefs => {
     Object.values(chiefs).forEach(facs => {
-      facs.sort((a,b) => b.status - a.status || a.name.localeCompare(b.name));
+      facs.sort((a,b) => (b.active?1:0)-(a.active?1:0) || a.name.localeCompare(b.name));
     });
   });
 
@@ -2631,15 +2896,27 @@ function trk_render() {
     return;
   }
 
+  // Reporting rate — ACTIVE facilities only in the denominator (facility-month based).
+  // Full year: reported facility-months ÷ (active facilities × data-months).
+  // Single month: reported ÷ active facilities.
+  function groupRate(facs) {
+    const activeFacs = facs.filter(f=>f.active);
+    const denom = activeFacs.length * nMonths;
+    let repFM = 0;
+    activeFacs.forEach(f => { repFM += facReportedMonths(f.ouId); });
+    return denom>0 ? Math.round(repFM/denom*100) : 0;
+  }
+
   tree.innerHTML = '';
   distNames.forEach(dist => {
     const chiefs = tree_data[dist];
     const chiefNames = Object.keys(chiefs).sort();
 
-    // District-level totals
-    let dRep=0, dTotal=0;
-    chiefNames.forEach(c => { chiefs[c].forEach(f => { dTotal++; if(f.status) dRep++; }); });
-    const dRate = dTotal>0 ? Math.round(dRep/dTotal*100) : 0;
+    const allFacs = [];
+    chiefNames.forEach(c => chiefs[c].forEach(f => allFacs.push(f)));
+    const dActive   = allFacs.filter(f=>f.active).length;
+    const dInactive = allFacs.length - dActive;
+    const dRate     = groupRate(allFacs);
 
     const distEl = document.createElement('div');
     distEl.className = 'trk-district';
@@ -2650,10 +2927,10 @@ function trk_render() {
       <span class="trk-dist-name">📍 ${dist}</span>
       <div class="trk-dist-pills">
         <span class="trk-dist-pill">${chiefNames.length} chiefdoms</span>
-        <span class="trk-dist-pill">${dTotal} facilities</span>
-        <span class="trk-dist-pill rep">✓ ${dRep} reported</span>
-        <span class="trk-dist-pill nrep">✗ ${dTotal-dRep} not reported</span>
-        <span class="trk-dist-pill">${dRate}%</span>
+        <span class="trk-dist-pill">${allFacs.length} facilities</span>
+        <span class="trk-dist-pill rep">● ${dActive} active</span>
+        <span class="trk-dist-pill nrep">○ ${dInactive} inactive</span>
+        <span class="trk-dist-pill">${dRate}% rate</span>
       </div>
       <span class="trk-dist-chev">▶</span>`;
 
@@ -2667,9 +2944,9 @@ function trk_render() {
 
     chiefNames.forEach(chief => {
       const facs = chiefs[chief];
-      let cRep = facs.filter(f=>f.status).length;
-      const cTotal = facs.length;
-      const cRate = cTotal>0 ? Math.round(cRep/cTotal*100) : 0;
+      const cActive   = facs.filter(f=>f.active).length;
+      const cInactive = facs.length - cActive;
+      const cRate     = groupRate(facs);
 
       const chiefEl = document.createElement('div');
       chiefEl.className = 'trk-chiefdom';
@@ -2679,10 +2956,10 @@ function trk_render() {
       chiefHead.innerHTML = `
         <span class="trk-chief-name">🏘 ${chief}</span>
         <div class="trk-chief-pills">
-          <span class="trk-chief-pill">${cTotal} facilities</span>
-          <span class="trk-chief-pill rep">✓ ${cRep}</span>
-          <span class="trk-chief-pill nrep">✗ ${cTotal-cRep}</span>
-          <span class="trk-chief-pill" style="background:var(--blue-lt);color:var(--blue);border:1px solid var(--border);">${cRate}%</span>
+          <span class="trk-chief-pill">${facs.length} facilities</span>
+          <span class="trk-chief-pill rep">● ${cActive} active</span>
+          <span class="trk-chief-pill nrep">○ ${cInactive} inactive</span>
+          <span class="trk-chief-pill" style="background:var(--blue-lt);color:var(--blue);border:1px solid var(--border);">${cRate}% rate</span>
         </div>
         <span class="trk-chief-chev">▶</span>`;
 
@@ -2699,29 +2976,28 @@ function trk_render() {
       grid.className = 'trk-fac-grid';
 
       facs.forEach(f => {
-        if (!showRep  && f.status===1) return;
-        if (!showNrep && f.status===0) return;
+        if (!showActive   && f.active)  return;
+        if (!showInactive && !f.active) return;
         const facEl = document.createElement('div');
-        facEl.className = `trk-fac ${f.status ? 'rep' : 'nrep'}`;
+        facEl.className = `trk-fac ${f.active ? 'rep' : 'nrep'}`;
 
-        // Per-month dots if showing full year
-        let dotsHtml = '';
-        if (!month) {
-          const sm = statusMap[f.ouId]?.periods || {};
-          dotsHtml = `<span style="display:flex;gap:2px;margin-left:auto;">` +
-            MONTH_NAMES.map((_,i)=>{
-              const mo = String(i+1).padStart(2,'0');
-              const year_ = year;
-              const period = `${year_}${mo}`;
-              const hasPeriod = (ST.config?.periods||[]).includes(period);
-              if (!hasPeriod) return `<span title="${MONTH_NAMES[i]}" style="width:7px;height:7px;border-radius:50%;background:#ddd;flex-shrink:0;"></span>`;
-              const v = sm[mo];
-              const col = v ? '#28a745' : '#dc3545';
-              return `<span title="${MONTH_NAMES[i]}: ${v?'Reported':'Not reported'}" style="width:7px;height:7px;border-radius:50%;background:${col};flex-shrink:0;"></span>`;
-            }).join('') + `</span>`;
-        }
+        // Per-month dots — always shown; selected month gets a ring
+        const sm = statusMap[f.ouId]?.periods || {};
+        const dotsHtml = `<span style="display:flex;gap:2px;margin-left:auto;">` +
+          MONTH_NAMES.map((_,i)=>{
+            const mo = String(i+1).padStart(2,'0');
+            const period = `${year}${mo}`;
+            const hasPeriod = (ST.config?.periods||[]).includes(period);
+            const sel  = (month === mo);
+            const ring = sel ? 'box-shadow:0 0 0 2px #1f4a6a;' : '';
+            if (!hasPeriod) return `<span title="${MONTH_NAMES[i]}: no data" style="width:7px;height:7px;border-radius:50%;background:#ddd;flex-shrink:0;${ring}"></span>`;
+            const v   = sm[mo];
+            const col = v ? '#28a745' : '#dc3545';
+            return `<span title="${MONTH_NAMES[i]}: ${v?'Reported':'Not reported'}" style="width:7px;height:7px;border-radius:50%;background:${col};flex-shrink:0;${ring}"></span>`;
+          }).join('') + `</span>`;
 
-        facEl.innerHTML = `<div class="trk-fac-dot"></div><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${f.name}">${f.name}</span>${dotsHtml}`;
+        const label = f.active ? 'Active' : 'Inactive';
+        facEl.innerHTML = `<div class="trk-fac-dot"></div><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${f.name} — ${label}">${f.name}</span>${dotsHtml}`;
         grid.appendChild(facEl);
       });
 
@@ -2752,6 +3028,94 @@ function trk_expandAll(open) {
     const chev = b.previousElementSibling?.querySelector('.trk-chief-chev');
     if (chev) chev.textContent = open ? '▼' : '▶';
   });
+}
+
+// ── Build a full facility list (with district & chiefdom) for the selected year ──
+// Active = reported at least once in the year; Inactive = never reported.
+function trk_facilityList() {
+  const year = document.getElementById('trkYear')?.value || TRK.year ||
+               ((ST.config?.periods || []).slice(-1)[0] || '').slice(0, 4);
+  const yearMonths = [...new Set(
+    (ST.config?.periods || []).filter(p => p.slice(0, 4) === year).map(p => p.slice(4, 6))
+  )].sort();
+
+  // ouId → { mm: 0/1 } for the year
+  const sm = {};
+  ST.reportData.forEach(row => {
+    if (row.Date.slice(0, 4) !== year) return;
+    const mo = row.Date.slice(5, 7);
+    if (!sm[row.ouId]) sm[row.ouId] = {};
+    if (sm[row.ouId][mo] === undefined) sm[row.ouId][mo] = 0;
+    if (row.status) sm[row.ouId][mo] = 1;
+  });
+
+  const rows = Object.values(ST.orgHierarchy).map(ou => {
+    const per = sm[ou.id] || {};
+    const monthsReported = Object.values(per).filter(v => v).length;
+    const dataMonths = yearMonths.length;
+    const active = monthsReported > 0;
+    const rate = dataMonths > 0 ? +(monthsReported / dataMonths * 100).toFixed(1) : 0;
+    const rec = {
+      'District':          ou.districtName || '',
+      'Chiefdom':          ou.chiefdomName || '',
+      'Facility':          ou.name || '',
+      'HF Type':           ou.hfType || '',
+      'HF Code':           ou.hfCode || '',
+      'Status':            active ? 'Active' : 'Inactive',
+      'Months Reported':   monthsReported,
+      'Data Months':       dataMonths,
+      'Reporting Rate %':  rate,
+    };
+    // Per-month 1/0 columns (blank where a month has no data)
+    yearMonths.forEach(mo => {
+      const label = `${MONTH_NAMES[parseInt(mo, 10) - 1].slice(0, 3)} ${year}`;
+      rec[label] = per[mo] !== undefined ? per[mo] : '';
+    });
+    return { active, rec };
+  });
+
+  rows.sort((a, b) =>
+    a.rec.District.localeCompare(b.rec.District) ||
+    a.rec.Chiefdom.localeCompare(b.rec.Chiefdom) ||
+    a.rec.Facility.localeCompare(b.rec.Facility));
+
+  return { year, rows };
+}
+
+// which = 'active' | 'inactive' | 'all' ; fmt = 'xlsx' | 'csv'
+function trk_downloadFacilities(which, fmt) {
+  if (!ST.reportData || !ST.reportData.length) {
+    showAlert('Run the pipeline first, then download.', 'warn'); return;
+  }
+  const { year, rows } = trk_facilityList();
+  let sel = rows;
+  if (which === 'active')   sel = rows.filter(r => r.active);
+  if (which === 'inactive') sel = rows.filter(r => !r.active);
+  const data = sel.map(r => r.rec);
+  if (!data.length) { showAlert(`No ${which} facilities for ${year}.`, 'warn'); return; }
+
+  const tag = which === 'active' ? 'ActiveFacilities'
+            : which === 'inactive' ? 'InactiveFacilities'
+            : 'AllFacilities';
+
+  if (fmt === 'xlsx') {
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), tag.slice(0, 31));
+    XLSX.writeFile(wb, `NMCP_${tag}_${year}.xlsx`);
+  } else {
+    const headers = Object.keys(data[0]);
+    const esc = v => {
+      const s = String(v ?? '');
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const csv = headers.join(',') + '\n' +
+      data.map(r => headers.map(h => esc(r[h])).join(',')).join('\n');
+    const a = document.createElement('a');
+    a.download = `NMCP_${tag}_${year}.csv`;
+    a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+    a.click();
+  }
+  showAlert(`Downloaded ${data.length} ${which === 'all' ? '' : which + ' '}facilities for ${year}.`, 'info');
 }
 
 // ═══════════════════════════════════════════════════════════════════
