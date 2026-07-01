@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MPR 2021–2024 | NMDR Sierra Leone</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-<style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>MPR 2021-2024 — Malaria Programme Review | NMDR | ICF-SL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         /* ============================================
            MAIN STYLES (FULLY RESTORED)
@@ -1368,158 +1367,332 @@
         .dqa-fullscreen-close:hover { background: rgba(255,255,255,0.3); transform: scale(1.1); }
         .dqa-fullscreen-body { flex: 1; padding: 28px 32px; overflow-y: auto; }
 
-</style>
+        /* ---- Standalone overrides (sidebar removed) ---- */
+        body { display: block; }
+        .snt-standalone-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 28px 60px; }
+        .snt-standalone-header { display: flex; align-items: center; gap: 14px; padding: 18px 0 22px; border-bottom: 2px solid var(--border); margin-bottom: 24px; }
+        .snt-standalone-header .badge { background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dk) 100%); color: #fff; font-weight: 700; font-size: 15px; letter-spacing: 1px; padding: 10px 16px; border-radius: 10px; white-space: nowrap; }
+        .snt-standalone-header h1 { font-size: 22px; color: var(--blue-dk); font-weight: 700; }
+        .snt-standalone-header p { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    </style>
 </head>
-<body style="background:#f0f5f9;font-family:'Roboto','Segoe UI',sans-serif;padding:20px;">
+<body>
+    <div class="snt-standalone-wrap">
+        <div class="snt-standalone-header">
+            <div class="badge">MPR 2021-2024</div>
+            <div>
+                <h1>Malaria Programme Review</h1>
+                <p>National Malaria Data Repository · NMCP Sierra Leone · ICF-SL</p>
+            </div>
+        </div>
+        <div id="mpr" class="tab-content active">
+            <div class="sub-tab-nav" id="mprNav">
+                <button class="sub-tab-btn active" data-mpr="datasets">Datasets</button>
+                <button class="sub-tab-btn" data-mpr="codes">Codes</button>
+                <button class="sub-tab-btn" data-mpr="outputs">Outputs</button>
+                <button class="sub-tab-btn" data-mpr="report">Report</button>
+            </div>
 
-<div class="hero">
-  <div class="hero-tag">Retrospective Analysis</div>
-  <h1>Malaria Programme Review (MPR) 2021–2024</h1>
-  <p>Sierra Leone NMCP — MPR datasets, codes, outputs and reports.</p>
-</div>
-<div class="sub-tab-nav" id="mprNav">
-  <button class="sub-tab-btn active" data-mpr="datasets">Datasets</button>
-  <button class="sub-tab-btn" data-mpr="codes">Codes</button>
-  <button class="sub-tab-btn" data-mpr="outputs">Outputs</button>
-  <button class="sub-tab-btn" data-mpr="report">Report</button>
-</div>
+            <!-- DATASETS PANE -->
+            <div id="mprDatasetsPane" class="data-pane active-pane">
+                <div class="data-tab-nav">
+                    <button class="mpr-ds-btn active" data-mpr-ds="mpr-raw-hmis">Raw Epi Data</button>
+                    <button class="mpr-ds-btn" data-mpr-ds="mpr-processed-hmis">Processed Epi Data</button>
+                    <button class="mpr-ds-btn" data-mpr-ds="mpr-raw-intervention">Raw Intervention</button>
+                    <button class="mpr-ds-btn" data-mpr-ds="mpr-processed-intervention">Processed Intervention</button>
+                    <button class="mpr-ds-btn" data-mpr-ds="mpr-raw-stock">Raw Stock</button>
+                    <button class="mpr-ds-btn" data-mpr-ds="mpr-processed-stock">Processed Stock</button>
+                </div>
+                <div id="mpr-raw-hmis" class="mpr-ds-pane active-pane"><div class="doc-panel"><div class="doc-header">Raw Epi Data Documentation</div><div class="doc-body"><p><strong>Unprocessed facility-level data</strong> from Sierra Leone's HMIS.</p><div class="guide-note">Use for exploratory analysis and trend verification.</div></div></div><div class="year-selector" id="mprRawYearSelector"></div><div id="mprRawDistrictsGrid" class="district-grid"></div></div>
+                <div id="mpr-processed-hmis" class="mpr-ds-pane"><div class="doc-panel"><div class="doc-header">Processed and Validated Epi Data</div><div class="doc-body"><p><strong>Cleaned and validated routine malaria data</strong> after outlier removal.</p></div></div><div class="year-selector" id="mprCleanYearSelector"></div><div id="mprCleanDistrictsGrid" class="district-grid"></div></div>
+                <div id="mpr-raw-intervention" class="mpr-ds-pane"><div class="doc-panel"><div class="doc-header">Raw Intervention Data</div><div class="doc-body"><p><strong>Unprocessed intervention data</strong> including ITN distribution, IRS campaigns.</p></div></div><div class="year-selector" id="mprRawIntYearSelector"></div><div id="mprRawIntDistrictsGrid" class="district-grid"></div></div>
+                <div id="mpr-processed-intervention" class="mpr-ds-pane"><div class="doc-panel"><div class="doc-header">Processed Intervention Data</div><div class="doc-body"><p><strong>Validated and harmonized intervention data</strong> after quality checks.</p></div></div><div class="year-selector" id="mprProcIntYearSelector"></div><div id="mprProcIntDistrictsGrid" class="district-grid"></div></div>
+                <div id="mpr-raw-stock" class="mpr-ds-pane"><div class="doc-panel"><div class="doc-header">Raw Stock Data</div><div class="doc-body"><p><strong>Unprocessed stock and supply chain data</strong> for malaria commodities.</p></div></div><div class="year-selector" id="mprRawStockYearSelector"></div><div id="mprRawStockDistrictsGrid" class="district-grid"></div></div>
+                <div id="mpr-processed-stock" class="mpr-ds-pane"><div class="doc-panel"><div class="doc-header">Processed Stock Data</div><div class="doc-body"><p><strong>Standardized stock data</strong> with validated consumption rates.</p></div></div><div class="year-selector" id="mprProcStockYearSelector"></div><div id="mprProcStockDistrictsGrid" class="district-grid"></div></div>
+            </div>
 
-<div id="mprDatasetsPane" class="data-pane active-pane">
-  <div class="data-tab-nav">
-    <button class="mpr-ds-btn active" data-mpr-ds="mpr-raw-hmis">Raw Epi Data</button>
-    <button class="mpr-ds-btn" data-mpr-ds="mpr-processed-hmis">Processed Epi Data</button>
-    <button class="mpr-ds-btn" data-mpr-ds="mpr-raw-intervention">Raw Intervention</button>
-    <button class="mpr-ds-btn" data-mpr-ds="mpr-processed-intervention">Processed Intervention</button>
-    <button class="mpr-ds-btn" data-mpr-ds="mpr-raw-stock">Raw Stock</button>
-    <button class="mpr-ds-btn" data-mpr-ds="mpr-processed-stock">Processed Stock</button>
-  </div>
-  <div id="mpr-raw-hmis" class="mpr-ds-pane active-pane"><div class="doc-panel"><div class="doc-header">Raw Epi Data</div><div class="doc-body"><p>Unprocessed facility-level data from Sierra Leone's HMIS.</p></div></div><div class="year-selector" id="mprRawYearSelector"></div><div id="mprRawDistrictsGrid" class="district-grid"></div></div>
-  <div id="mpr-processed-hmis" class="mpr-ds-pane"><div class="doc-panel"><div class="doc-header">Processed Epi Data</div><div class="doc-body"><p>Cleaned and validated routine malaria data after outlier removal.</p></div></div><div class="year-selector" id="mprCleanYearSelector"></div><div id="mprCleanDistrictsGrid" class="district-grid"></div></div>
-  <div id="mpr-raw-intervention" class="mpr-ds-pane"><div class="doc-panel"><div class="doc-header">Raw Intervention Data</div><div class="doc-body"><p>Unprocessed intervention data including ITN distribution, IRS campaigns.</p></div></div><div class="year-selector" id="mprRawIntYearSelector"></div><div id="mprRawIntDistrictsGrid" class="district-grid"></div></div>
-  <div id="mpr-processed-intervention" class="mpr-ds-pane"><div class="doc-panel"><div class="doc-header">Processed Intervention Data</div><div class="doc-body"><p>Validated and harmonized intervention data after quality checks.</p></div></div><div class="year-selector" id="mprProcIntYearSelector"></div><div id="mprProcIntDistrictsGrid" class="district-grid"></div></div>
-  <div id="mpr-raw-stock" class="mpr-ds-pane"><div class="doc-panel"><div class="doc-header">Raw Stock Data</div><div class="doc-body"><p>Unprocessed stock and supply chain data for malaria commodities.</p></div></div><div class="year-selector" id="mprRawStockYearSelector"></div><div id="mprRawStockDistrictsGrid" class="district-grid"></div></div>
-  <div id="mpr-processed-stock" class="mpr-ds-pane"><div class="doc-panel"><div class="doc-header">Processed Stock Data</div><div class="doc-body"><p>Standardized stock data with validated consumption rates.</p></div></div><div class="year-selector" id="mprProcStockYearSelector"></div><div id="mprProcStockDistrictsGrid" class="district-grid"></div></div>
-</div>
+            <!-- CODES PANE -->
+            <div id="mprCodesPane" class="data-pane">
+                <div class="code-repo-iframe-wrapper">
+                    <iframe src="https://mohamedsillahkanu.github.io/Code-Repository2/" title="Malaria Code Repository - ICF-SL" loading="lazy" allow="fullscreen" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                </div>
+            </div>
 
-<div id="mprCodesPane" class="data-pane">
-  <div class="code-repo-iframe-wrapper">
-    <iframe src="https://mohamedsillahkanu.github.io/Code-Repository2/" title="Malaria Code Repository" loading="lazy" allow="fullscreen" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-  </div>
-</div>
+            <!-- OUTPUTS PANE -->
+            <div id="mprOutputsPane" class="data-pane">
+                <div class="snt-category"><div class="category-header"><span class="category-title">MPR Analysis Presentation 2021-2024</span><span class="category-toggle">▼</span></div><div class="category-content open"><div class="slides-container"><div class="presentation-header">MPR Trend Analysis and Findings</div><div class="iframe-responsive-wrap"><iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSM-5FPuRMlHGsJO8djeq7zsXOehVxLuTxX4oCLzhkwlnMOqKZoV0qaMRoAJPwQvrQ3FCuKFf2XQUc4/pubembed?start=false&loop=false&delayms=3000" frameborder="0" allowfullscreen="true"></iframe></div></div></div></div>
+                <div class="snt-category"><div class="category-header"><span class="category-title">Figures and Visualizations</span><span class="category-toggle">▼</span></div><div class="category-content"><div id="mprFiguresFiles" class="files-grid"></div></div></div>
+                <div class="snt-category"><div class="category-header"><span class="category-title">Summary Tables</span><span class="category-toggle">▼</span></div><div class="category-content"><div id="mprTablesFiles" class="files-grid"></div></div></div>
+                <div class="snt-category"><div class="category-header"><span class="category-title">Model Outputs and Reports</span><span class="category-toggle">▼</span></div><div class="category-content"><div id="mprReportsFiles" class="files-grid"></div></div></div>
+            </div>
 
-<div id="mprOutputsPane" class="data-pane">
-  <div class="snt-category"><div class="category-header"><span class="category-title">MPR Analysis Presentation 2021–2024</span><span class="category-toggle">▼</span></div><div class="category-content open"><div class="slides-container"><div class="presentation-header">MPR Trend Analysis and Findings</div><div class="iframe-responsive-wrap"><iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSM-5FPuRMlHGsJO8djeq7zsXOehVxLuTxX4oCLzhkwlnMOqKZoV0qaMRoAJPwQvrQ3FCuKFf2XQUc4/pubembed?start=false&loop=false&delayms=3000" frameborder="0" allowfullscreen="true"></iframe></div></div></div></div>
-  <div class="snt-category"><div class="category-header"><span class="category-title">Figures and Visualizations</span><span class="category-toggle">▼</span></div><div class="category-content"><div id="mprFiguresFiles" class="files-grid"></div></div></div>
-  <div class="snt-category"><div class="category-header"><span class="category-title">Summary Tables</span><span class="category-toggle">▼</span></div><div class="category-content"><div id="mprTablesFiles" class="files-grid"></div></div></div>
-  <div class="snt-category"><div class="category-header"><span class="category-title">Model Outputs and Reports</span><span class="category-toggle">▼</span></div><div class="category-content"><div id="mprReportsFiles" class="files-grid"></div></div></div>
-</div>
+            <!-- REPORT PANE -->
+            <div id="mprReportPane" class="data-pane">
+                <div class="mpd-section-header" style="margin-bottom:20px;">
+                    <h2 style="font-size:18px; color:var(--blue); margin-bottom:4px;">MPR Reports</h2>
+                    <p style="font-size:13px; color:var(--muted);">Malaria Programme Review annual reports and technical documents</p>
+                </div>
+                <div class="document-cards-grid">
+                    <div class="document-card">
+                        <div class="doc-card-header">
+                            <div class="doc-card-title">Annual MPR Report</div>
+                            <div class="doc-card-subtitle">Malaria Programme Review — Sierra Leone NMCP</div>
+                        </div>
+                        <div class="doc-card-body">
+                            <div class="doc-card-filename">mpr.pdf</div>
+                            <div class="doc-action-buttons">
+                                <button class="btn-doc-action btn-download" onclick="downloadDocument('mpr.pdf')">📥 Download</button>
+                                <button class="btn-doc-action btn-open" onclick="openPdfViewer('mpr.pdf', 'Annual MPR Report')">👁️ Open PDF</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="pdfViewerModal" class="pdf-viewer-modal" style="display:none;">
+            <div class="pdf-viewer-container">
+                <div class="pdf-viewer-header">
+                    <h3 id="pdfViewerTitle"></h3>
+                    <button class="pdf-close-btn" onclick="closePdfViewer()">&times;</button>
+                </div>
+                <div class="pdf-viewer-content">
+                    <iframe id="pdfViewerIframe" src="" style="width:100%; height:600px; border:none; border-radius:8px;"></iframe>
+                </div>
+                <div class="pdf-viewer-footer">
+                    <p style="font-size:12px; color:var(--muted); text-align:center;">Right-click to download or print the document</p>
+                </div>
+            </div>
+        </div>
+    <script>
+        /* ============================================================
+           MPR 2021-2024 STANDALONE — extracted from NMDR index.html
+           Malaria Programme Review. Contains only the logic the tab needs.
+           ============================================================ */
 
-<div id="mprReportPane" class="data-pane">
-  <div class="mpd-section-header" style="margin-bottom:20px;">
-    <h2 style="font-size:18px;color:var(--blue);margin-bottom:4px;">MPR Reports</h2>
-    <p style="font-size:13px;color:var(--muted);">Malaria Programme Review annual reports</p>
-  </div>
-  <div class="document-cards-grid">
-    <div class="document-card"><div class="doc-card-header"><div class="doc-card-title">Annual MPR Report</div><div class="doc-card-subtitle">Malaria Programme Review — Sierra Leone NMCP</div></div><div class="doc-card-body"><div class="doc-card-filename">mpr.pdf</div><div class="doc-action-buttons"><button class="btn-doc-action btn-download" onclick="downloadDocument('mpr.pdf')">📥 Download</button><button class="btn-doc-action btn-open" onclick="openPdfViewer('mpr.pdf','Annual MPR Report')">👁️ Open PDF</button></div></div></div>
-  </div>
-</div>
+        // Sierra Leone districts
+        const districts = [
+            {id:1, name:"Bo", region:"Southern Province"},{id:2, name:"Bonthe", region:"Southern Province"},{id:3, name:"Moyamba", region:"Southern Province"},
+            {id:4, name:"Pujehun", region:"Southern Province"},{id:5, name:"Kenema", region:"Eastern Province"},{id:6, name:"Kailahun", region:"Eastern Province"},
+            {id:7, name:"Kono", region:"Eastern Province"},{id:8, name:"Bombali", region:"Northern Province"},{id:9, name:"Falaba", region:"Northern Province"},
+            {id:10, name:"Koinadugu", region:"Northern Province"},{id:11, name:"Tonkolili", region:"Northern Province"},{id:12, name:"Kambia", region:"North West Province"},
+            {id:13, name:"Karene", region:"North West Province"},{id:14, name:"Port Loko", region:"North West Province"},{id:15, name:"Western Area Urban", region:"Western Area"},
+            {id:16, name:"Western Area Rural", region:"Western Area"}
+        ];
 
-<!-- PDF VIEWER MODAL -->
-<div id="pdfViewerModal" class="pdf-viewer-modal" style="display:none;">
-  <div class="pdf-viewer-container">
-    <div class="pdf-viewer-header"><h3 id="pdfViewerTitle"></h3><button class="pdf-close-btn" onclick="closePdfViewer()">&times;</button></div>
-    <div class="pdf-viewer-content"><iframe id="pdfViewerIframe" src="" style="width:100%;height:600px;border:none;border-radius:8px;"></iframe></div>
-    <div class="pdf-viewer-footer"><p style="font-size:12px;color:var(--muted);text-align:center;">Right-click to download or print</p></div>
-  </div>
-</div>
+        // ---- Dataset download helpers ----
+        function generateCSV(district, year, type, category) {
+            let rows = [["month","indicator_value"]];
+            for(let i=1; i<=12; i++) rows.push([year + '-' + (i<10 ? '0'+i : i), 500 + Math.floor(Math.random() * 2000)]);
+            return rows.map(r => r.join(",")).join("\n");
+        }
 
-<script>
+        function downloadFile(district, year, type, category) {
+            const content = generateCSV(district, year, type, category);
+            const baseName = district.name.toLowerCase().replace(/ /g, '_');
+            const suffix = type === 'raw' ? `_${category}_${year}` : `_${category}_processed_${year}`;
+            const filename = baseName + suffix + '.csv';
+            const blob = new Blob([content], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
 
-const districts = [
-  {name:'Bo',region:'Southern'},{name:'Bombali',region:'Northern'},{name:'Bonthe',region:'Southern'},
-  {name:'Falaba',region:'Northern'},{name:'Kailahun',region:'Eastern'},{name:'Kambia',region:'Northern'},
-  {name:'Karene',region:'Northern'},{name:'Kenema',region:'Eastern'},{name:'Koinadugu',region:'Northern'},
-  {name:'Kono',region:'Eastern'},{name:'Moyamba',region:'Southern'},{name:'Port Loko',region:'Northern'},
-  {name:'Pujehun',region:'Southern'},{name:'Tonkolili',region:'Northern'},{name:'Western Area Rural',region:'Western'},
-  {name:'Western Area Urban',region:'Western'}
-];
-function generateCSV(district, year, type, category) {
-  const base = district.name.toLowerCase().replace(/ /g,'_');
-  const suffix = type==='raw'?`_${category}_${year}`:`_${category}_processed_${year}`;
-  return base + suffix + '.csv';
-}
-async function checkFileExists(filename) {
-  try { const r=await fetch(filename,{method:'HEAD'}); return r.ok; } catch { return false; }
-}
-async function renderDistricts(gridId, category, type, currentYear) {
-  const grid = document.getElementById(gridId);
-  if (!grid) return;
-  grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--muted);font-size:13px;">Checking file availability...</div>';
-  const results = await Promise.all(districts.map(d => {
-    const fname=generateCSV(d,currentYear,type,category);
-    return checkFileExists(fname).then(exists=>({district:d,filename:fname,exists}));
-  }));
-  const accentClass=type==='raw'?'raw':'clean';
-  const btnText=type==='raw'?'Download Raw Data':'Download Processed Data';
-  grid.innerHTML=results.map(r=>{
-    const badge=r.exists?'<span class="status-badge status-ready">READY</span>':'<span class="status-badge" style="background:#fdecea;color:#c0392b;">NOT READY</span>';
-    const btn=r.exists?`<button class="btn-download ${accentClass}" data-filename="${r.filename}">${btnText}</button>`:`<button class="btn-download" style="background:var(--border);color:var(--muted);cursor:not-allowed;width:100%;padding:9px;border:none;border-radius:6px;font-weight:600;font-size:11px;" disabled>Not Available</button>`;
-    return `<div class="district-card"><div class="card-accent ${accentClass}"></div><div class="district-body"><div class="district-header"><span class="district-name">${r.district.name}</span>${badge}</div><div class="district-region">${r.district.region}</div><div class="file-info-download"><span style="font-family:monospace;font-size:11px;">${r.filename}</span></div>${btn}</div></div>`;
-  }).join('');
-  grid.querySelectorAll('.btn-download:not([disabled])').forEach(btn=>{
-    btn.addEventListener('click',()=>{const a=document.createElement('a');a.href=btn.dataset.filename;a.download=btn.dataset.filename;a.click();});
-  });
-}
-function buildYearSelector(containerId, currentYear, years, callback) {
-  const c=document.getElementById(containerId); if(!c) return;
-  c.innerHTML=years.map(y=>`<span class="year-pill ${y===currentYear?'active':''}" data-year="${y}">${y}</span>`).join('');
-  c.querySelectorAll('.year-pill').forEach(pill=>{pill.addEventListener('click',function(){callback(this.dataset.year);});});
-}
-function openPdfViewer(filename,title){document.getElementById('pdfViewerTitle').textContent=title;document.getElementById('pdfViewerIframe').src=filename;document.getElementById('pdfViewerModal').style.display='flex';}
-function closePdfViewer(){document.getElementById('pdfViewerModal').style.display='none';document.getElementById('pdfViewerIframe').src='';}
-function downloadDocument(filename){const a=document.createElement('a');a.href=filename;a.download=filename;a.click();}
+        async function checkFileExists(filename) {
+            try {
+                const resp = await fetch(filename, { method: 'HEAD' });
+                return resp.ok;
+            } catch(e) { return false; }
+        }
 
-const MPR_YEARS = ['2021','2022','2023','2024'];
-let mprRawYear='2024', mprCleanYear='2024', mprRawIntYear='2024', mprProcIntYear='2024', mprRawStockYear='2024', mprProcStockYear='2024';
+        async function renderDistricts(gridId, category, type, currentYear) {
+            const grid = document.getElementById(gridId);
+            if(!grid) return;
+            const accentClass = type === 'raw' ? 'raw' : 'clean';
+            const btnText = type === 'raw' ? 'Download Raw Data' : 'Download Processed Data';
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--muted);font-size:13px;">Checking file availability...</div>';
+            const checks = districts.map(d => {
+                const baseName = d.name.toLowerCase().replace(/ /g,'_');
+                const suffix = type === 'raw' ? `_${category}_${currentYear}` : `_${category}_processed_${currentYear}`;
+                const fname = baseName + suffix + '.csv';
+                return checkFileExists(fname).then(exists => ({ district: d, filename: fname, exists: exists }));
+            });
+            const results = await Promise.all(checks);
+            let html = '';
+            for(let i = 0; i < results.length; i++) {
+                const r = results[i];
+                const statusBadge = r.exists ? '<span class="status-badge status-ready">READY</span>' : '<span class="status-badge" style="background:#fdecea;color:#c0392b;">NOT READY</span>';
+                const btnHtml = r.exists ? `<button class="btn-download ${accentClass}" data-idx="${i}" data-year="${currentYear}" data-type="${type}" data-category="${category}">${btnText}</button>` : '<button class="btn-download" style="background:var(--border);color:var(--muted);cursor:not-allowed;width:100%;padding:9px;border:none;border-radius:6px;font-weight:600;font-size:11px;" disabled>Not Available</button>';
+                html += `<div class="district-card"><div class="card-accent ${accentClass}"></div><div class="district-body"><div class="district-header"><span class="district-name">${r.district.name}</span>${statusBadge}</div><div class="district-region">${r.district.region}</div><div class="file-info-download"><span style="font-family:monospace;font-size:11px;">${r.filename}</span></div>${btnHtml}</div></div>`;
+            }
+            grid.innerHTML = html;
+            grid.querySelectorAll('.btn-download:not([disabled])').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const idx = parseInt(btn.getAttribute('data-idx'));
+                    const yr = btn.getAttribute('data-year');
+                    const t = btn.getAttribute('data-type');
+                    const cat = btn.getAttribute('data-category');
+                    downloadFile(districts[idx], yr, t, cat);
+                });
+            });
+        }
 
-function switchMPR(tab) {
-  document.querySelectorAll('#mprNav .sub-tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.data-pane').forEach(p=>p.classList.remove('active-pane'));
-  document.querySelector(`#mprNav [data-mpr="${tab}"]`).classList.add('active');
-  const pane = document.getElementById('mpr' + tab.charAt(0).toUpperCase() + tab.slice(1) + 'Pane');
-  if (pane) pane.classList.add('active-pane');
-}
+        // ---- Outputs file lists ----
+        const mprFiguresFiles = [{name:'mpr_trend_analysis_2024.png',size:'480 KB'},{name:'district_mpr_map.pdf',size:'1.2 MB'}];
+        const mprTablesFiles  = [{name:'mpr_summary_tables.xlsx',size:'620 KB'}];
+        const mprReportsFiles = [{name:'annual_mpr_report_2024.pdf',size:'2.5 MB'}];
 
-function switchMPRds(btn, paneId) {
-  document.querySelectorAll('.mpr-ds-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.mpr-ds-pane').forEach(p=>p.classList.remove('active-pane'));
-  btn.classList.add('active');
-  const pane=document.getElementById(paneId); if(pane) pane.classList.add('active-pane');
-}
+        function buildSNTFileList(files, containerId) {
+            const c = document.getElementById(containerId);
+            if(!c) return;
+            let html = '';
+            for(let f of files) html += `<div class="file-item"><div class="file-info"><div class="file-name">${f.name}</div><div class="file-meta">${f.size} • <span style="color: #1a8a4a; font-weight: 600;">Ready</span></div></div><button class="btn-download-snt" data-filename="${f.name}">Download</button></div>`;
+            c.innerHTML = html;
+            c.querySelectorAll('.btn-download-snt').forEach(btn => {
+                btn.addEventListener('click', function() { const a = document.createElement('a'); a.href = btn.dataset.filename; a.download = btn.dataset.filename; a.click(); });
+            });
+        }
+        buildSNTFileList(mprFiguresFiles, 'mprFiguresFiles');
+        buildSNTFileList(mprTablesFiles, 'mprTablesFiles');
+        buildSNTFileList(mprReportsFiles, 'mprReportsFiles');
 
-document.querySelectorAll('#mprNav .sub-tab-btn').forEach(btn=>{btn.addEventListener('click',function(){switchMPR(this.dataset.mpr);});});
-document.querySelectorAll('.mpr-ds-btn').forEach(btn=>{btn.addEventListener('click',function(){switchMPRds(this,this.dataset.mprDs);});});
-document.querySelectorAll('.category-header').forEach(header=>{
-  header.addEventListener('click',function(){
-    const content=this.nextElementSibling, toggle=this.querySelector('.category-toggle');
-    content.classList.toggle('open'); toggle.textContent=content.classList.contains('open')?'▲':'▼';
-  });
-});
-document.getElementById('pdfViewerModal').addEventListener('click',function(e){if(e.target===this)closePdfViewer();});
+        // ---- Collapsible categories ----
+        document.querySelectorAll('.category-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const panel = this.nextElementSibling;
+                const toggle = this.querySelector('.category-toggle');
+                if(panel.classList.contains('open')) {
+                    panel.classList.remove('open');
+                    toggle.textContent = '▼';
+                } else {
+                    panel.classList.add('open');
+                    toggle.textContent = '▲';
+                    panel.querySelectorAll('iframe[data-src]').forEach(iframe => {
+                        iframe.src = iframe.getAttribute('data-src');
+                        iframe.removeAttribute('data-src');
+                    });
+                }
+            });
+        });
 
-function initMPR() {
-  buildYearSelector('mprRawYearSelector',mprRawYear,MPR_YEARS,y=>{mprRawYear=y;renderDistricts('mprRawDistrictsGrid','hmis','raw',y);buildYearSelector('mprRawYearSelector',y,MPR_YEARS,arguments.callee);});
-  buildYearSelector('mprCleanYearSelector',mprCleanYear,MPR_YEARS,y=>{mprCleanYear=y;renderDistricts('mprCleanDistrictsGrid','hmis','processed',y);buildYearSelector('mprCleanYearSelector',y,MPR_YEARS,arguments.callee);});
-  buildYearSelector('mprRawIntYearSelector',mprRawIntYear,MPR_YEARS,y=>{mprRawIntYear=y;renderDistricts('mprRawIntDistrictsGrid','int','raw',y);buildYearSelector('mprRawIntYearSelector',y,MPR_YEARS,arguments.callee);});
-  buildYearSelector('mprProcIntYearSelector',mprProcIntYear,MPR_YEARS,y=>{mprProcIntYear=y;renderDistricts('mprProcIntDistrictsGrid','int','processed',y);buildYearSelector('mprProcIntYearSelector',y,MPR_YEARS,arguments.callee);});
-  buildYearSelector('mprRawStockYearSelector',mprRawStockYear,MPR_YEARS,y=>{mprRawStockYear=y;renderDistricts('mprRawStockDistrictsGrid','stock','raw',y);buildYearSelector('mprRawStockYearSelector',y,MPR_YEARS,arguments.callee);});
-  buildYearSelector('mprProcStockYearSelector',mprProcStockYear,MPR_YEARS,y=>{mprProcStockYear=y;renderDistricts('mprProcStockDistrictsGrid','stock','processed',y);buildYearSelector('mprProcStockYearSelector',y,MPR_YEARS,arguments.callee);});
-  renderDistricts('mprRawDistrictsGrid','hmis','raw',mprRawYear);
-  renderDistricts('mprCleanDistrictsGrid','hmis','processed',mprCleanYear);
-  ['mprFiguresFiles','mprTablesFiles','mprReportsFiles'].forEach(id=>{
-    const el=document.getElementById(id); if(el) el.innerHTML='<p style="color:var(--muted);font-size:13px;padding:10px;">No files available yet.</p>';
-  });
-}
-initMPR();
-</script>
-</body></html>
+        // ---- MPR sub-tab switching ----
+        document.querySelectorAll('#mprNav .sub-tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() { switchMPR(btn.getAttribute('data-mpr')); });
+        });
+        function switchMPR(tab) {
+            ['mprDatasetsPane','mprCodesPane','mprOutputsPane','mprReportPane'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('active-pane');
+            });
+            const target = document.getElementById('mpr' + tab.charAt(0).toUpperCase() + tab.slice(1) + 'Pane');
+            if (target) target.classList.add('active-pane');
+            document.querySelectorAll('#mprNav .sub-tab-btn').forEach(btn => {
+                if(btn.getAttribute('data-mpr') === tab) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+            if(target) target.querySelectorAll('.category-content.open iframe[data-src]').forEach(iframe => {
+                iframe.src = iframe.getAttribute('data-src');
+                iframe.removeAttribute('data-src');
+            });
+            if (tab === 'datasets') {
+                refreshMPRHMISGrids('2024', true);
+                refreshMPRHMISGrids('2024', false);
+                refreshMPRInterventionGrids('2024', true);
+                refreshMPRInterventionGrids('2024', false);
+                refreshMPRStockGrids('2024', true);
+                refreshMPRStockGrids('2024', false);
+            }
+        }
+
+        // ---- MPR dataset sub-tab switching ----
+        function switchMPRds(btn, paneId) {
+            document.querySelectorAll('#mprDatasetsPane .mpr-ds-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('#mprDatasetsPane .mpr-ds-pane').forEach(p => p.classList.remove('active-pane'));
+            btn.classList.add('active');
+            const target = document.getElementById(paneId);
+            if (target) target.classList.add('active-pane');
+        }
+        document.querySelectorAll('.mpr-ds-btn').forEach(btn => {
+            btn.addEventListener('click', function() { switchMPRds(btn, btn.getAttribute('data-mpr-ds')); });
+        });
+
+        // ---- MPR district grid refresh (year range 2021-2024) ----
+        let mprRawYear = '2024', mprCleanYear = '2024';
+        function buildMPRYearSelector(containerId, currentYear, isRaw, callback) {
+            const container = document.getElementById(containerId);
+            if(!container) return;
+            const years = ['2021','2022','2023','2024'];
+            let html = '';
+            for(let y of years) html += `<span class="year-pill ${currentYear === y ? 'active' : ''}" data-year="${y}">${y}</span>`;
+            container.innerHTML = html;
+            container.querySelectorAll('.year-pill').forEach(pill => {
+                pill.addEventListener('click', function() {
+                    callback(pill.getAttribute('data-year'), isRaw);
+                });
+            });
+        }
+        function refreshMPRHMISGrids(year, isRaw) {
+            if(isRaw) { mprRawYear = year; renderDistricts('mprRawDistrictsGrid', 'hmis', 'raw', mprRawYear); buildMPRYearSelector('mprRawYearSelector', mprRawYear, true, refreshMPRHMISGrids); }
+            else { mprCleanYear = year; renderDistricts('mprCleanDistrictsGrid', 'hmis', 'processed', mprCleanYear); buildMPRYearSelector('mprCleanYearSelector', mprCleanYear, false, refreshMPRHMISGrids); }
+        }
+        let mprRawIntYear = '2024', mprProcIntYear = '2024';
+        function refreshMPRInterventionGrids(year, isRaw) {
+            if(isRaw) { mprRawIntYear = year; renderDistricts('mprRawIntDistrictsGrid', 'int', 'raw', mprRawIntYear); buildMPRYearSelector('mprRawIntYearSelector', mprRawIntYear, true, refreshMPRInterventionGrids); }
+            else { mprProcIntYear = year; renderDistricts('mprProcIntDistrictsGrid', 'int', 'processed', mprProcIntYear); buildMPRYearSelector('mprProcIntYearSelector', mprProcIntYear, false, refreshMPRInterventionGrids); }
+        }
+        let mprRawStockYear = '2024', mprProcStockYear = '2024';
+        function refreshMPRStockGrids(year, isRaw) {
+            if(isRaw) { mprRawStockYear = year; renderDistricts('mprRawStockDistrictsGrid', 'stock', 'raw', mprRawStockYear); buildMPRYearSelector('mprRawStockYearSelector', mprRawStockYear, true, refreshMPRStockGrids); }
+            else { mprProcStockYear = year; renderDistricts('mprProcStockDistrictsGrid', 'stock', 'processed', mprProcStockYear); buildMPRYearSelector('mprProcStockYearSelector', mprProcStockYear, false, refreshMPRStockGrids); }
+        }
+
+        // ---- Initialise MPR grids on load ----
+        refreshMPRHMISGrids('2024', true);
+        refreshMPRHMISGrids('2024', false);
+        refreshMPRInterventionGrids('2024', true);
+        refreshMPRInterventionGrids('2024', false);
+        refreshMPRStockGrids('2024', true);
+        refreshMPRStockGrids('2024', false);
+
+        // ---- Document availability + PDF viewer ----
+        const availableDocuments = {
+            'mpr.pdf': true
+        };
+        function isFileAvailable(filename) {
+            return availableDocuments[filename] === true;
+        }
+        function openPdfViewer(filename, title) {
+            if (isFileAvailable(filename)) {
+                const modal = document.getElementById('pdfViewerModal');
+                const titleEl = document.getElementById('pdfViewerTitle');
+                const iframeEl = document.getElementById('pdfViewerIframe');
+                titleEl.textContent = title;
+                iframeEl.src = './' + filename;
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            } else {
+                alert(`The document "${filename}" is currently unavailable.`);
+            }
+        }
+        function closePdfViewer() {
+            const modal = document.getElementById('pdfViewerModal');
+            const iframeEl = document.getElementById('pdfViewerIframe');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            iframeEl.src = '';
+        }
+        function downloadDocument(filename) {
+            if (isFileAvailable(filename)) {
+                window.location.href = './' + filename;
+            } else {
+                alert(`The document "${filename}" is not currently available.`);
+            }
+        }
+        document.getElementById('pdfViewerModal').addEventListener('click', function(e) {
+            if (e.target === this) { closePdfViewer(); }
+        });
+    </script>
+    </div>
+</body>
+</html>
