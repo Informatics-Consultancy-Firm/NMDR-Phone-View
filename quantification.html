@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NMCP RDT Quantification (Suspected as Proxy) · ICF-SL</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--blue:#2c6793;--blue-dk:#1f4a6a;--blue-lt:#e8f0f7;--white:#fff;--bg:#f0f5f9;--border:#d0dde8;--muted:#6c7a89;--gold:#ffc107;--green:#28a745;--teal:#17a2b8;--red:#dc3545;--purple:#6f42c1;}
+html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);}
+.page-header{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-dk) 100%);color:#fff;padding:20px 28px;box-shadow:0 2px 12px rgba(0,0,0,.18);}
+.header-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.logo-box{background:#fff;border-radius:8px;padding:5px 9px;}
+.logo-box img{width:76px;height:auto;border-radius:4px;}
+.header-text h1{font-size:19px;font-weight:700;letter-spacing:.4px;margin-bottom:2px;}
+.header-text p{font-size:12px;opacity:.85;}
+.page-body{max-width:1200px;margin:0 auto;padding:22px 26px;}
+.card{background:var(--white);border-radius:12px;border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:20px;overflow:hidden;}
+.card-head{padding:13px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border);}
+.card-head h2{font-size:14px;font-weight:700;color:var(--blue-dk);}
+.card-body{padding:18px;}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;}
+.form-control{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;color:#222;background:#fff;transition:border-color .2s;}
+.form-control:focus{outline:none;border-color:var(--blue);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.4px;transition:all .2s;text-transform:uppercase;font-family:inherit;}
+.btn-primary{background:var(--blue);color:#fff;}.btn-primary:hover{background:var(--blue-dk);}
+.btn-gold{background:var(--gold);color:#000;}.btn-gold:hover{background:#e0a800;}
+.btn-green{background:var(--green);color:#fff;}.btn-green:hover{background:#1e7e34;}
+.btn-teal{background:var(--teal);color:#fff;}.btn-teal:hover{background:#138496;}
+.btn-outline{background:#fff;color:var(--blue);border:1.5px solid var(--blue);}.btn-outline:hover{background:var(--blue-lt);}
+.btn-sm{padding:5px 11px;font-size:11px;}
+.run-btn{width:100%;background:linear-gradient(135deg,var(--blue),var(--blue-dk));color:#fff;border:none;padding:14px;border-radius:9px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(44,102,147,.28);transition:transform .2s;font-family:inherit;}
+.run-btn:hover{transform:translateY(-2px);}
+
+/* PROGRESS */
+.pbar-wrap{height:7px;background:#1a1a2e;border-radius:4px;overflow:hidden;margin:8px 0;}
+.pbar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));border-radius:4px;transition:width .3s;}
+.step-list{display:flex;flex-direction:column;gap:4px;max-height:260px;overflow-y:auto;}
+.step-item{display:flex;align-items:flex-start;gap:8px;padding:5px 9px;border-radius:5px;font-size:11px;font-family:'Courier New',monospace;}
+.step-item.pending{background:#1a1a2e;color:#555;}
+.step-item.running{background:#1a2e4a;color:var(--teal);animation:pulse 1.4s ease-in-out infinite;}
+.step-item.done{background:#0a2e0a;color:var(--green);}
+.step-item.error{background:#2e0a0a;color:var(--red);}
+.step-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:2px;}
+.step-item.pending .step-dot{background:#555;}
+.step-item.running .step-dot{background:var(--teal);}
+.step-item.done .step-dot{background:var(--green);}
+.step-item.error .step-dot{background:var(--red);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* RESULTS */
+.stats-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;}
+.stat-pill{background:var(--blue-lt);border:1.5px solid var(--blue);border-radius:20px;padding:4px 13px;font-size:12px;font-weight:700;color:var(--blue);}
+.stat-pill.ok{background:#d4edda;border-color:var(--green);color:#155724;}
+.stat-pill.warn{background:#fff3cd;border-color:var(--gold);color:#856404;}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px;}
+.kpi{border:2px solid var(--border);border-radius:10px;padding:14px 16px;background:linear-gradient(135deg,#fff,var(--blue-lt));}
+.kpi .kpi-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px;}
+.kpi .kpi-val{font-size:24px;font-weight:800;color:var(--blue-dk);line-height:1;}
+.kpi .kpi-sub{font-size:11px;color:var(--muted);margin-top:5px;}
+.kpi.q1{border-color:var(--teal);} .kpi.q2{border-color:var(--green);}
+.kpi.q3{border-color:var(--gold);} .kpi.q4{border-color:var(--purple);}
+
+.alert{padding:10px 14px;border-radius:6px;margin-bottom:10px;font-size:13px;border:1.5px solid;}
+.alert-err{background:#f8d7da;border-color:var(--red);color:#721c24;}
+
+/* CONTROLS */
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px;padding:14px;background:var(--blue-lt);border-radius:9px;border:1px solid var(--border);}
+.ctrl{display:flex;flex-direction:column;gap:4px;}
+.ctrl label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--blue);}
+.ctrl select,.ctrl input{padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;}
+
+/* CHARTS */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.chart-box{border:1px solid var(--border);border-radius:10px;padding:14px;background:#fff;}
+.chart-box h3{font-size:12px;font-weight:700;color:var(--blue-dk);margin-bottom:10px;text-transform:uppercase;letter-spacing:.4px;}
+.chart-box.full{grid-column:1/-1;}
+.chart-canvas-wrap{position:relative;height:280px;}
+@media(max-width:820px){.chart-grid{grid-template-columns:1fr;}}
+
+.data-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);max-height:480px;overflow-y:auto;}
+.data-table{width:100%;border-collapse:collapse;font-size:11px;}
+.data-table thead{background:var(--blue-lt);border-bottom:2px solid var(--border);position:sticky;top:0;z-index:2;}
+.data-table th{padding:8px 10px;text-align:left;font-weight:700;color:var(--blue);white-space:nowrap;cursor:pointer;user-select:none;}
+.data-table th:hover{background:#dce8f2;}
+.data-table td{padding:6px 10px;border-bottom:1px solid var(--border);color:#2c4b62;white-space:nowrap;}
+.data-table td.num{text-align:right;font-variant-numeric:tabular-nums;}
+.data-table tbody tr:hover{background:var(--blue-lt);}
+.data-table tfoot td{background:#eef4fa;font-weight:800;color:var(--blue-dk);border-top:2px solid var(--border);position:sticky;bottom:0;}
+
+.dl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;}
+.dl-card{border:2px solid var(--border);border-radius:10px;overflow:hidden;}
+.dl-card-head{padding:10px 16px;font-size:13px;font-weight:700;color:#fff;}
+.dl-card-body{padding:14px;display:flex;flex-direction:column;gap:8px;}
+
+.tab-bar{display:flex;gap:4px;border-bottom:2px solid var(--border);margin-bottom:18px;flex-wrap:wrap;}
+.tab{padding:9px 18px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-2px;text-transform:uppercase;letter-spacing:.4px;font-family:inherit;}
+.tab.active{color:var(--blue-dk);border-bottom-color:var(--blue);}
+/* METHODOLOGY */
+.method-doc{font-size:13px;color:#2c4b62;line-height:1.7;max-width:900px;}
+.method-doc h3{font-size:14px;color:var(--blue-dk);margin:22px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--blue-lt);text-transform:uppercase;letter-spacing:.4px;}
+.method-doc h3:first-child{margin-top:0;}
+.method-doc p{margin-bottom:10px;}
+.method-config{background:var(--blue-lt);border:1px solid var(--blue);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--blue-dk);margin-bottom:8px;}
+.method-steps{list-style:none;counter-reset:mstep;margin:4px 0 10px;padding:0;}
+.method-steps li{position:relative;padding:9px 12px 9px 42px;margin-bottom:6px;background:#f7fafd;border:1px solid var(--border);border-radius:7px;}
+.method-steps li::before{counter-increment:mstep;content:counter(mstep);position:absolute;left:9px;top:9px;width:23px;height:23px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;}
+.step-eg{margin-top:6px;font-size:11.5px;color:#155724;background:#f0f7f0;border:1px solid #cfe6cf;border-radius:5px;padding:5px 9px;line-height:1.6;}
+.step-eg b{color:#0f5132;}
+.def-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:10px;}
+.def-table th{text-align:left;background:var(--blue);color:#fff;padding:8px 10px;border:1px solid var(--blue-dk);}
+.def-table td{padding:8px 10px;border:1px solid var(--border);vertical-align:top;}
+.def-table td.term{font-weight:700;color:var(--blue-dk);background:#f2f7fb;white-space:nowrap;}
+.def-table tbody tr:hover td{background:#eef4fa;}
+.def-table td.term:hover{background:#e4eef7;}
+.method-eg{background:#f0f7f0;border:1px solid var(--green);border-radius:8px;padding:14px 16px;font-size:12px;line-height:1.9;margin-bottom:8px;}
+.method-eg code{background:#fff;padding:1px 6px;border-radius:4px;border:1px solid var(--border);font-size:12px;}
+.method-eg .eg-res{font-weight:800;color:#155724;}
+.method-note{border-left:3px solid var(--gold);background:#fffdf5;padding:10px 14px;border-radius:0 7px 7px 0;font-size:12px;margin-bottom:8px;}
+.page-footer{background:var(--blue-dk);color:rgba(255,255,255,.8);text-align:center;padding:13px;font-size:11px;margin-top:24px;}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div class="header-row">
+    <div class="logo-box"><img src="https://github.com/mohamedsillahkanu/gdp-dashboard-2/raw/6c7463b0d5c3be150aafae695a4bcbbd8aeb1499/ICF-SL.jpg" alt="ICF-SL"></div>
+    <div class="header-text">
+      <h1>Rapid Diagnostic Test Quantification</h1>
+      <p>Using suspected cases as a proxy · National Malaria Control Programme · Sierra Leone · ICF-SL</p>
+    </div>
+    <div style="margin-left:auto;"><span id="headerPill" style="background:rgba(255,255,255,.15);padding:5px 13px;border-radius:20px;font-size:11px;font-weight:700;">Ready</span></div>
+  </div>
+</div>
+
+<div class="page-body">
+
+<!-- CONFIG -->
+<div id="configScreen">
+  <div class="card">
+    <div class="card-head"><h2>Configure Quantification</h2><button class="btn btn-outline btn-sm" onclick="showMethod('configScreen')">&#128214; View Methodology</button></div>
+    <div class="card-body">
+      <div style="background:var(--blue-lt);border-radius:8px;padding:14px 16px;margin-bottom:18px;font-size:12px;color:var(--blue-dk);line-height:1.7;">
+        <strong>What this tool does:</strong><br>
+        Estimates <strong>Rapid Diagnostic Test (RDT) need</strong> using suspected malaria cases as a proxy: every suspected case is tested, so the suspected caseload approximates the number of tests required. It fetches suspected cases (Facility + Community, all ages combined) per facility per month for the selected years, corrects extreme outliers, then quantifies by quarter for the next year.<br>
+        <strong>Quarters:</strong> Q1 (Jan-Mar) · Q2 (Apr-Jun) · Q3 (Jul-Sep) · Q4 (Oct-Dec)<br>
+        <strong>Quantification basis:</strong> For each facility &amp; quarter, the mean (or median) of all monthly suspected values in that quarter, pooled across the selected years. This is the typical monthly caseload per quarter.<br>
+        <strong>Full details:</strong> open <strong>View Methodology</strong> above for the step-by-step data flow, definitions and a worked example.
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div class="form-group" style="margin:0;">
+          <label>From Year</label>
+          <input type="number" class="form-control" id="cfgFrom" min="2010" max="2100" style="font-size:15px;font-weight:700;color:var(--blue-dk);padding:11px 13px;">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label>To Year</label>
+          <input type="number" class="form-control" id="cfgTo" min="2010" max="2100" style="font-size:15px;font-weight:700;color:var(--blue-dk);padding:11px 13px;">
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:12px;color:var(--blue-dk);">
+        <input type="checkbox" id="cfgWins" checked style="width:16px;height:16px;">
+        <label for="cfgWins" style="cursor:pointer;">Apply 99.75th percentile outlier correction (recommended)</label>
+      </div>
+
+      <div id="cfgError" style="display:none;" class="alert alert-err"></div>
+      <button class="run-btn" onclick="startPipeline()">&#9654; Fetch &amp; Quantify</button>
+    </div>
+  </div>
+</div>
+
+<!-- PIPELINE -->
+<div id="pipelineScreen" style="display:none;">
+  <div class="card">
+    <div class="card-head">
+      <h2>Fetching &amp; Computing</h2>
+      <div style="display:flex;gap:9px;align-items:center;">
+        <span id="pctLabel" style="font-size:13px;font-weight:700;color:var(--blue);">0%</span>
+        <button class="btn btn-outline btn-sm" onclick="showConfig()">&#8592; Back</button>
+      </div>
+    </div>
+    <div class="card-body" style="background:#0d1117;padding:13px;">
+      <div class="pbar-wrap"><div class="pbar-fill" id="pbarFill" style="width:0%"></div></div>
+      <div class="step-list" id="stepList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="resultsSection" style="display:none;">
+  <div class="card">
+    <div class="card-head">
+      <h2>Quantification Results</h2>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-outline btn-sm" onclick="showMethod('resultsSection')">&#128214; Methodology</button>
+        <button class="btn btn-outline btn-sm" onclick="showConfig()">&#8592; New Run</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="stats-row" id="statsRow"></div>
+
+      <!-- CONTROLS -->
+      <div class="controls">
+        <div class="ctrl">
+          <label>Source</label>
+          <select id="fSource" onchange="onControlChange()">
+            <option value="combined">Facility + Community</option>
+            <option value="fac">Facility only</option>
+            <option value="com">Community only</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <label>Method</label>
+          <select id="fMethod" onchange="onControlChange()">
+            <option value="mean">Mean</option>
+            <option value="median">Median</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <label>Quarter Metric</label>
+          <select id="fMetric" onchange="onControlChange()">
+            <option value="monthly">Monthly caseload</option>
+            <option value="quarterly">Quarterly estimate (× 3)</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <label>District</label>
+          <select id="fDist" onchange="onDistrictChange()"><option value="">All districts</option></select>
+        </div>
+        <div class="ctrl">
+          <label>Chiefdom</label>
+          <select id="fChief" onchange="onChiefChange()"><option value="">All chiefdoms</option></select>
+        </div>
+        <div class="ctrl">
+          <label>Facility</label>
+          <select id="fFac" onchange="onControlChange()"><option value="">All facilities</option></select>
+        </div>
+        <div class="ctrl">
+          <label>Facility Type</label>
+          <select id="fType" onchange="onControlChange()"><option value="">All types</option></select>
+        </div>
+        <div class="ctrl" style="flex:1;min-width:150px;">
+          <label>Search</label>
+          <input type="text" id="fSearch" placeholder="Facility / chiefdom / district…" oninput="onControlChange()">
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <div class="tab-bar">
+        <button class="tab active" onclick="switchTab('viz',this)">Overview &amp; Charts</button>
+        <button class="tab" onclick="switchTab('quant',this)">Quantification Table</button>
+        <button class="tab" onclick="switchTab('detail',this)">Quarterly by Year</button>
+        <button class="tab" onclick="switchTab('dl',this)">Downloads</button>
+      </div>
+
+      <!-- TAB: VIZ -->
+      <div id="tab-viz">
+        <div id="quantYearBanner" style="background:linear-gradient(135deg,var(--blue),var(--blue-dk));color:#fff;border-radius:10px;padding:14px 18px;margin-bottom:16px;"></div>
+        <div class="kpi-grid" id="kpiGrid"></div>
+        <div class="chart-grid">
+          <div class="chart-box"><h3 id="chart1Title">Suspected by Quarter</h3><div class="chart-canvas-wrap"><canvas id="chartQuarter"></canvas></div></div>
+          <div class="chart-box"><h3 id="chartYearHead">Quarterly Totals by Year</h3><div class="chart-canvas-wrap"><canvas id="chartYear"></canvas></div></div>
+          <div class="chart-box full"><h3 id="chart3Title">All Districts by Annual Estimate</h3><div class="chart-canvas-wrap" style="height:440px;"><canvas id="chartTop"></canvas></div></div>
+        </div>
+      </div>
+
+      <!-- TAB: QUANT -->
+      <div id="tab-quant" style="display:none;">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px;" id="quantNote"></div>
+        <div class="data-table-wrap">
+          <table class="data-table"><thead id="quantHead"></thead><tbody id="quantBody"></tbody><tfoot id="quantFoot"></tfoot></table>
+        </div>
+      </div>
+
+      <!-- TAB: DETAIL -->
+      <div id="tab-detail" style="display:none;">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Quarterly totals (sum of the 3 months) for each unit and year, on the current source. Use this to inspect year to year variation behind the median or mean.</div>
+        <div class="data-table-wrap">
+          <table class="data-table"><thead id="detailHead"></thead><tbody id="detailBody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- TAB: METHODOLOGY -->
+      <div id="tab-method" style="display:none;">
+        <div class="method-doc">
+          <div class="method-config" id="methodConfig">These definitions apply to every run. Run a quantification to also see the current settings and facility coverage filled in here.</div>
+
+          <h3>1. Purpose</h3>
+          <p>This tool quantifies <strong>Rapid Diagnostic Test (RDT) need</strong> using suspected malaria cases as a proxy. Because every suspected case is tested with an RDT (or microscopy), the number of suspected cases is a close approximation of the number of tests required. The tool estimates the typical suspected caseload per quarter for each district and nationally, from historical monthly reporting, and presents it as the quantification for the coming year.</p>
+
+          <h3>2. How the estimate is built</h3>
+          <p>The example below follows one facility, <strong>Kambia CHC</strong> (Kambia district), for the years 2024 and 2025.</p>
+          <ol class="method-steps">
+            <li><strong>Fetch monthly data.</strong> For every Level-5 facility, pull the monthly suspected malaria counts for each selected year from the DHIS2 HMIS.
+              <div class="step-eg">Example: for Kambia CHC the tool pulls its 12 monthly suspected values for 2024, and again for 2025.</div></li>
+            <li><strong>Combine age categories.</strong> Each data element stores counts by age group; these are summed into a single total. No age breakdown is used in this tool.
+              <div class="step-eg">Example: in Jan 2024 the facility recorded <b>40</b> (0-59m) + <b>30</b> (5-14y) + <b>30</b> (15+y) = <b>100</b> suspected at the facility.</div></li>
+            <li><strong>Combine sources.</strong> Facility and Community counts are added together (or one source is used alone, depending on the Source setting) to give one monthly suspected total per facility.
+              <div class="step-eg">Example: that same January the community (HTR/ETR) reported <b>20</b>, so the Combined monthly total = 100 + 20 = <b>120</b>.</div></li>
+            <li><strong>Correct outliers.</strong> Extreme monthly spikes are capped at the 99.75th percentile per facility per year so a single reporting error does not distort the estimate. Zeros stay zero and missing months stay missing.
+              <div class="step-eg">Example: if Aug 2024 was keyed as <b>2,500</b> (a typo) while the facility usually sees about 150, it is pulled down to the facility's cap for that year (say <b>320</b>). A month recorded as 0 stays 0; a blank month stays blank.</div></li>
+            <li><strong>Assign months to quarters.</strong> Q1 = Jan-Mar, Q2 = Apr-Jun, Q3 = Jul-Sep, Q4 = Oct-Dec.
+              <div class="step-eg">Example: January, February and March 2024 all belong to Q1 2024; the same months of 2025 belong to Q1 2025.</div></li>
+            <li><strong>Pool the monthly values.</strong> For each quarter, gather every monthly value from that quarter across all selected years into one set (for example, Q1 pools all Jan, Feb and Mar values from every year).
+              <div class="step-eg">Example: Q1 for this facility pools Jan/Feb/Mar of both years — 120, 140, 110 (2024) and 160, 130, 150 (2025) → the set <b>{110, 120, 130, 140, 150, 160}</b>.</div></li>
+            <li><strong>Take the central value.</strong> Compute the mean (default) or median of that pooled set. This is the typical monthly caseload for the quarter.
+              <div class="step-eg">Example: the mean of {110,120,130,140,150,160} = <b>135</b>. So a typical Q1 month is 135 suspected cases, i.e. about 135 RDTs per month.</div></li>
+            <li><strong>Scale to a quarter.</strong> Quarterly estimate = typical monthly caseload &times; 3 months.
+              <div class="step-eg">Example: Q1 quarterly estimate = 135 &times; 3 = <b>405</b> RDTs.</div></li>
+            <li><strong>Annual estimate.</strong> Sum of the four quarterly estimates.
+              <div class="step-eg">Example: if Q1 = 405, Q2 = 360, Q3 = 300, Q4 = 330, the annual estimate = <b>1,395</b> RDTs for this facility for the coming year.</div></li>
+            <li><strong>Aggregate.</strong> For District and National views, facility monthly totals are summed first, then steps 5 to 9 are applied to the combined series.
+              <div class="step-eg">Example: to get the Kambia district figure, every facility's monthly totals in Kambia are added month by month, then steps 5 to 9 are run on that district series. National does the same across all facilities.</div></li>
+          </ol>
+
+          <h3>3. Data elements used</h3>
+          <p>Suspected malaria is pulled from two DHIS2 data elements, each broken into three age category option combos. This tool <strong>sums the three age categories</strong> into one total per data element (no age split is reported), then combines the two sources.</p>
+          <table class="def-table">
+            <thead><tr><th>Source</th><th>Data element (DHIS2 UID)</th><th>Age category option combos (UID)</th><th>How used</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="term">Facility<br>suspected</td>
+                <td>Suspected (Facility)<br><code>FJafyE1kzs4</code></td>
+                <td>0-59m <code>m5T8uBNB8aN</code><br>5-14y <code>j7j6iaknOFn</code><br>15+y <code>zK1aiw8zFac</code></td>
+                <td>Three age combos summed &rarr; <strong>Facility total</strong> per facility per month.</td>
+              </tr>
+              <tr>
+                <td class="term">Community<br>suspected<br>(HTR / ETR)</td>
+                <td>Suspected (Community)<br><code>wfaQBIVQxWo</code></td>
+                <td>02-59m <code>NtjMVmRfvHH</code><br>5-14y <code>qDXW7WMLT99</code><br>15+y <code>mdjRPpvLKdu</code></td>
+                <td>Three age combos summed &rarr; <strong>Community total</strong>, rolled up from CHW / community units to the parent facility.</td>
+              </tr>
+              <tr>
+                <td class="term">Combined</td>
+                <td colspan="2">Facility total + Community total</td>
+                <td>The default source. Facility only and Community only are also selectable.</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-size:12px;color:var(--muted);">Data is retrieved from the DHIS2 analytics endpoint per year for all 12 months at organisation unit <code>LEVEL-5</code>. Hierarchy levels: District = Level 2, Chiefdom = Level 4, Facility (PHU) = Level 5. Community and CHW units below Level 5 are mapped up to their Level-5 parent facility.</p>
+
+          <h3>4. Facility coverage</h3>
+          <div id="methodCoverage"><p style="font-size:12px;color:var(--muted);">Facility coverage numbers (registry total, active, non-reporting, in view) appear here after you run a quantification.</p></div>
+          <p style="font-size:12px;color:var(--muted);">Only standard health facility types are counted (Hospital, Clinic, CHC, CHP, MCHP). Active means the facility reported at least one suspected value (Facility or Community) in the selected years. Facilities with no report in the selected years are counted in the registry total but do not contribute to the estimate.</p>
+
+          <h3>5. Parameters and terms</h3>
+          <table class="def-table">
+            <thead><tr><th>Parameter</th><th>Definition</th></tr></thead>
+            <tbody>
+              <tr><td class="term">Year range (From / To)</td><td>The calendar years fetched and pooled together. Defaults to the last two complete years.</td></tr>
+              <tr><td class="term">Reporting period</td><td>One calendar month of reported data in DHIS2.</td></tr>
+              <tr><td class="term">Suspected malaria case</td><td>A person examined or tested for malaria. All age groups are combined in this tool.</td></tr>
+              <tr><td class="term">Source: Facility</td><td>Suspected cases recorded at the health facility (DHIS2 data element <code>FJafyE1kzs4</code>).</td></tr>
+              <tr><td class="term">Source: Community</td><td>Suspected cases reported through community structures (HTR / ETR, data element <code>wfaQBIVQxWo</code>), rolled up to the parent facility.</td></tr>
+              <tr><td class="term">Source setting</td><td>Which counts are used: Facility + Community (default), Facility only, or Community only.</td></tr>
+              <tr><td class="term">Level-5 org unit</td><td>The health facility level in the DHIS2 hierarchy. District is Level 2, chiefdom is Level 4, facility is Level 5.</td></tr>
+              <tr><td class="term">Data element</td><td>The DHIS2 field that stores the suspected counts.</td></tr>
+              <tr><td class="term">Category option combo</td><td>The age-group splits stored under each data element. This tool sums them, so no age category is shown.</td></tr>
+              <tr><td class="term">Outlier correction</td><td>Winsorization: capping abnormally high monthly values so one data-entry spike does not inflate the estimate. Toggled on the setup screen.</td></tr>
+              <tr><td class="term">99.75th percentile (upper bound)</td><td>The cap level. Any monthly value above the 99.75th percentile for that facility, that year, that field is pulled down to the cap. Applied per facility per year. Zeros and missing values are left unchanged.</td></tr>
+              <tr><td class="term">Quarter (Q1 to Q4)</td><td>A three-month block. Q1 Jan-Mar, Q2 Apr-Jun, Q3 Jul-Sep, Q4 Oct-Dec.</td></tr>
+              <tr><td class="term">Pooled monthly values</td><td>For one quarter, all the monthly values from that quarter across every selected year, gathered into a single set.</td></tr>
+              <tr><td class="term">Method</td><td>The central value used: Median or Mean.</td></tr>
+              <tr><td class="term">Median</td><td>The middle value of the pooled monthly values. Robust to occasional spikes, and the default.</td></tr>
+              <tr><td class="term">Mean</td><td>The arithmetic average of the pooled monthly values.</td></tr>
+              <tr><td class="term">Monthly caseload</td><td>The median or mean of the pooled monthly values, i.e. the typical monthly suspected count for that quarter. Shown when Quarter Metric is set to monthly.</td></tr>
+              <tr><td class="term">Quarterly estimate (&times; 3)</td><td>The monthly caseload multiplied by 3 to represent a full three-month quarter. Shown when Quarter Metric is set to quarterly.</td></tr>
+              <tr><td class="term">Annual estimate</td><td>The sum of the four quarterly estimates for a unit.</td></tr>
+              <tr><td class="term">Aggregation level</td><td>District (facilities summed within each district) or National (all facilities in scope summed). Facility totals are summed before the quarterly method is applied.</td></tr>
+              <tr><td class="term">Months (n)</td><td>The number of monthly data points that fed the estimate for that unit. A quick data-completeness check.</td></tr>
+              <tr><td class="term">Filters</td><td>District, Chiefdom, Facility, Facility type and free-text search restrict which facilities are included before anything is computed.</td></tr>
+            </tbody>
+          </table>
+
+          <h3>6. Worked example</h3>
+          <div class="method-eg">
+            One facility, source Facility + Community, method Median, years 2024 and 2025.<br>
+            Q1 monthly suspected values &mdash; 2024: Jan <code>120</code>, Feb <code>140</code>, Mar <code>110</code>; 2025: Jan <code>160</code>, Feb <code>130</code>, Mar <code>150</code>.<br>
+            Pooled Q1 set: <code>110, 120, 130, 140, 150, 160</code>.<br>
+            <span class="eg-res">Median (typical Q1 month) = (130 + 140) / 2 = 135.</span><br>
+            <span class="eg-res">Q1 quarterly estimate = 135 &times; 3 = 405.</span><br>
+            Repeat for Q2, Q3 and Q4, then <span class="eg-res">Annual estimate = Q1 + Q2 + Q3 + Q4 estimates.</span><br>
+            If Mean were selected instead: mean of the same set = 135 as well here, but the two methods differ whenever the values are skewed by a high or low month.
+          </div>
+
+          <h3>7. Assumptions and notes</h3>
+          <div class="method-note">Missing months are excluded from the pool rather than counted as zero, so reporting gaps do not drag the estimate down.</div>
+          <div class="method-note">With two years selected, each quarter pools up to six monthly values. Adding more years produces a more stable median or mean.</div>
+          <div class="method-note">Median is the default because malaria surveillance data often contain occasional spikes. Use Mean when a straight average is preferred, for example for very stable, high-volume facilities.</div>
+          <div class="method-note">The same definitions and steps are written to the Method sheet of the Excel download, and reproduced in the R and Python scripts.</div>
+
+          <h3>8. Technical steps (data flow)</h3>
+          <p>This is the exact sequence the tool runs each time you click Fetch &amp; Quantify. The example follows a run for years 2024 and 2025 (quantification for 2026).</p>
+          <ol class="method-steps">
+            <li><strong>Read the inputs.</strong> Take From Year, To Year and the outlier setting, and build the year list. Example: 2024 to 2025 gives the years [2024, 2025]. The target year is the last year + 1, so 2026.</li>
+            <li><strong>Fetch the facility registry.</strong> Fetch all Level-5 organisation units and, for each one, read its id, name, and its District (Level 2) and Chiefdom (Level 4) parents. Keep the standard facility types only (Hospital, Clinic, CHC, CHP, MCHP). This gives the registry total. Any smaller unit below Level 5 is linked to its Level-5 parent so community reports can roll up.</li>
+            <li><strong>Fetch the monthly data, one request per year.</strong> For each year, fetch the suspected values for all 12 months at Level 5, asking for the six data value combinations (data element and age category):
+              <div style="margin-top:6px;font-family:'Courier New',monospace;font-size:11px;background:#0d1117;color:#8fd0ff;padding:8px 10px;border-radius:6px;line-height:1.6;">
+              dx = FJafyE1kzs4.m5T8uBNB8aN ; FJafyE1kzs4.j7j6iaknOFn ; FJafyE1kzs4.zK1aiw8zFac ;<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wfaQBIVQxWo.NtjMVmRfvHH ; wfaQBIVQxWo.qDXW7WMLT99 ; wfaQBIVQxWo.mdjRPpvLKdu<br>
+              pe = 202401 ; 202402 ; … ; 202412 &nbsp;(then again 202501 … 202512)<br>
+              ou = LEVEL-5
+              </div>
+              Each returned record is: data value, month, facility. Zero and empty values are dropped, and the facility is mapped to its Level-5 parent if needed.</li>
+            <li><strong>Correct outliers</strong> (if the setting is on). For every facility, year and each of the six values on its own, cap any month above the 99.75th percentile of that year. A 0 stays 0 and a missing month stays missing.</li>
+            <li><strong>Build monthly totals.</strong> For each facility, year and month, add the three facility age groups into a Facility total and the three community age groups into a Community total. A facility that has at least one value in the selected years is counted as active.</li>
+            <li><strong>Apply the source.</strong> Use Facility only, Community only, or Combined (Facility + Community, the default).</li>
+            <li><strong>Pool by quarter.</strong> Put each month in its quarter and gather all monthly values for that quarter across the years into one set. Example, facility X, Q1: Jan, Feb, Mar of 2024 and of 2025 = up to 6 values.</li>
+            <li><strong>Take the central value.</strong> Compute the mean (default) or median of that pooled set. This is the typical monthly caseload for the quarter.</li>
+            <li><strong>Scale to the estimate.</strong> Quarterly estimate = typical monthly caseload &times; 3. Annual estimate = Q1 + Q2 + Q3 + Q4. This annual figure is the quantification for 2026.</li>
+            <li><strong>Aggregate.</strong> For District and National, add the facility monthly series together first, then repeat steps 7 to 9 on the combined series.</li>
+            <li><strong>Show and export.</strong> Fill the KPIs, charts and tables, and build the Excel and CSV files with the Facility, Community and Combined sheets.</li>
+          </ol>
+
+          <div class="method-eg">
+            <strong>Worked example through the whole flow &mdash; facility X, Combined, Mean, 2024 and 2025:</strong><br>
+            Step 3 returns the monthly suspected values. After adding facility + community age groups (steps 5 and 6), facility X has:<br>
+            2024 Q1 months: Jan <code>120</code>, Feb <code>140</code>, Mar <code>110</code><br>
+            2025 Q1 months: Jan <code>160</code>, Feb <code>130</code>, Mar <code>150</code><br>
+            Step 7 pools Q1: <code>110, 120, 130, 140, 150, 160</code>.<br>
+            <span class="eg-res">Step 8 mean = 135 (typical Q1 month).</span><br>
+            <span class="eg-res">Step 9 Q1 quarterly estimate = 135 &times; 3 = 405.</span><br>
+            Repeat for Q2, Q3, Q4, then annual estimate = sum of the four = the 2026 quantification for facility X. Step 10 adds facility X into its district and national totals.
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: DOWNLOADS -->
+      <div id="tab-dl" style="display:none;">
+        <div class="dl-grid">
+          <div class="dl-card">
+            <div class="dl-card-head" style="background:var(--blue);">Quantification Workbook</div>
+            <div class="dl-card-body">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Full Excel with separate <strong>Facility</strong>, <strong>Community</strong> and <strong>Combined</strong> sheets (by district and by facility), plus quarterly-by-year and monthly data. Titled for the quantification year.</div>
+              <button class="btn btn-primary" onclick="downloadExcel()">↓ Excel (all sheets)</button>
+            </div>
+          </div>
+          <div class="dl-card">
+            <div class="dl-card-head" style="background:#1a5c3a;">CSV by Source</div>
+            <div class="dl-card-body">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">One CSV per source at your current aggregation (district or national). Honours filters and method.</div>
+              <button class="btn btn-green" onclick="downloadSourceCSV('combined')">↓ Combined CSV</button>
+              <button class="btn btn-outline" onclick="downloadSourceCSV('fac')">↓ Facility CSV</button>
+              <button class="btn btn-outline" onclick="downloadSourceCSV('com')">↓ Community CSV</button>
+              <button class="btn btn-outline" onclick="downloadDetailCSV()">↓ Quarterly-by-Year CSV</button>
+            </div>
+          </div>
+          <div class="dl-card">
+            <div class="dl-card-head" style="background:#1a3a5c;">Reproducible Code</div>
+            <div class="dl-card-body">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">R and Python scripts reproducing the exact fetch, outlier correction and quarterly-median quantification.</div>
+              <button class="btn btn-outline" onclick="downloadR()">↓ R Script (.R)</button>
+              <button class="btn btn-outline" onclick="downloadPy()">↓ Python Script (.py)</button>
+            </div>
+          </div>
+          <div class="dl-card">
+            <div class="dl-card-head" style="background:#7c3d1a;">This Tool</div>
+            <div class="dl-card-body">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Save a standalone copy of this quantification tool as a single HTML file.</div>
+              <button class="btn btn-gold" onclick="downloadToolHTML()">↓ Download Tool (.html)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- METHODOLOGY SCREEN (viewable before or after a run) -->
+<div id="methodScreen" style="display:none;">
+  <div class="card">
+    <div class="card-head">
+      <h2>Methodology &mdash; RDT Quantification using suspected cases as a proxy</h2>
+      <button class="btn btn-outline btn-sm" onclick="closeMethod()">&#8592; Back</button>
+    </div>
+    <div class="card-body" id="methodHost"></div>
+  </div>
+</div>
+
+</div>
+<div class="page-footer">National Malaria Control Programme (NMCP) · Ministry of Health, Sierra Leone &nbsp;|&nbsp; ICF-SL</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  CONSTANTS
+// ═══════════════════════════════════════════════════════════════
+const PROXY    = 'https://script.google.com/macros/s/AKfycbyRXc68PYSmDSCYPakAS8Gc9R00kRjmsMYoDujPYMItyquXfwMAJUtRqXLiDlNWbSfDQQ/exec';
+const BASE_URL = 'https://sl.dhis2.org/hmis23';
+const AUTH     = 'Basic ' + btoa('musa-sillahkanu:Navigator/2024!');
+const L_PHU=5, L_DIST=2, L_CHIEF=4;
+const MONTH_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const QUARTERS=[
+  {key:'Q1',label:'Q1 (Jan-Mar)',short:'Q1',months:[0,1,2]},
+  {key:'Q2',label:'Q2 (Apr-Jun)',short:'Q2',months:[3,4,5]},
+  {key:'Q3',label:'Q3 (Jul-Sep)',short:'Q3',months:[6,7,8]},
+  {key:'Q4',label:'Q4 (Oct-Dec)',short:'Q4',months:[9,10,11]},
+];
+const Q_COLORS=['#17a2b8','#28a745','#ffc107','#6f42c1'];
+
+// Suspected data elements (age COCs summed to a total — no age breakdown shown)
+const AGE_COC_IDS = ['m5T8uBNB8aN','j7j6iaknOFn','zK1aiw8zFac'];
+const COM_COC_IDS = ['NtjMVmRfvHH','qDXW7WMLT99','mdjRPpvLKdu'];
+const FAC_SUSP = 'FJafyE1kzs4';
+const COM_SUSP = 'wfaQBIVQxWo';
+const ALL_DX = [
+  ...AGE_COC_IDS.map(c=>({dxStr:`${FAC_SUSP}.${c}`, field:`fac_${c}`, group:'fac'})),
+  ...COM_COC_IDS.map(c=>({dxStr:`${COM_SUSP}.${c}`, field:`com_${c}`, group:'com'})),
+];
+const DX_MAP={};ALL_DX.forEach(d=>{DX_MAP[d.dxStr]=d;});
+const DX_PARAM=[...new Set(ALL_DX.map(d=>d.dxStr))].join(';');
+
+// ── State ─────────────────────────────────────────────────────
+let ST={years:[],useWins:true,ouHierarchy:{},facilities:[],sort:{col:null,dir:1}};
+let CHARTS={quarter:null,year:null,top:null};
+
+// Defaults: last 2 full years
+(function(){
+  const cy=new Date().getFullYear();
+  document.getElementById('cfgTo').value  = cy-1;
+  document.getElementById('cfgFrom').value= cy-2;
+})();
+
+// ═══════════════════════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════════════════════
+async function dhis2(path,retries=3){
+  const url=BASE_URL+path;
+  const pUrl=PROXY+'?url='+encodeURIComponent(url)+'&Authorization='+encodeURIComponent(AUTH);
+  let lastErr;
+  for(let a=1;a<=retries;a++){
+    try{const r=await fetch(pUrl);if(!r.ok)throw new Error('HTTP '+r.status);return await r.json();}
+    catch(e){lastErr=e;if(a<retries)await sleep(1200*Math.pow(2,a-1));}
+  }
+  throw new Error('DHIS2 failed: '+(lastErr?.message||'network'));
+}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function getHFType(n){
+  const u=(n||'').toUpperCase(),pts=u.trim().split(/\s+/),suf=pts[pts.length-1]||'';
+  if(suf==='HOSPITAL')return 'Hospital';if(suf==='MCHP')return 'MCHP';
+  if(suf==='CHC')return 'CHC';if(suf==='CHP')return 'CHP';
+  const cs=['CLINIC','CLINNIC','CLINNC','CLIMIC','CLINC','CLINIK','CLENIC','CLINCC','CLIN'];
+  if(cs.includes(suf)||cs.some(c=>u.includes(c)))return 'Clinic';
+  if(u.includes('HOSPITAL'))return 'Hospital';if(u.includes('MCHP'))return 'MCHP';
+  if(u.includes('CHC'))return 'CHC';if(u.includes('CHP'))return 'CHP';
+  return 'Other';
+}
+function setPill(t,bg){const el=document.getElementById('headerPill');el.textContent=t;el.style.background=bg||'rgba(255,255,255,.15)';}
+function setProgress(p){document.getElementById('pbarFill').style.width=p+'%';document.getElementById('pctLabel').textContent=Math.round(p)+'%';}
+const stepEls={};let _sn=0;
+function addStep(id,txt){_sn++;const d=document.createElement('div');d.className='step-item pending';d.id='st_'+id;d.innerHTML=`<div class="step-dot"></div><span>Step ${_sn} — ${txt}</span>`;document.getElementById('stepList').appendChild(d);stepEls[id]=d;}
+function setStep(id,status,msg){const el=stepEls[id];if(!el)return;el.className='step-item '+status;const pre={running:'',done:'✓ ',error:'✗ '}[status]||'';const sp=el.querySelector('span');sp.textContent=pre+(msg||sp.textContent.replace(/^[✓✗] /,''));}
+function fmt(v){return v===null||v===undefined||isNaN(v)?'':Math.round(v).toLocaleString();}
+function nextYear(){return ST.years.length? ST.years[ST.years.length-1]+1 : '';}
+
+function percentile(arr,p){
+  if(!arr.length)return 0;
+  const s=[...arr].sort((a,b)=>a-b),idx=(p/100)*(s.length-1),lo=Math.floor(idx),hi=Math.ceil(idx);
+  return lo===hi?s[lo]:s[lo]+(idx-lo)*(s[hi]-s[lo]);
+}
+function winsorizeUpper(vals){
+  const reported=vals.filter(v=>v!==null&&v!==undefined&&v>0);
+  if(reported.length<2)return vals;
+  const hi=percentile(reported,99.75);
+  return vals.map(v=>{ if(v===null||v===undefined)return null; if(v===0)return 0; return v>hi?hi:v; });
+}
+function median(a){
+  const x=a.filter(v=>v!==null&&v!==undefined&&!isNaN(v)).sort((p,q)=>p-q);
+  if(!x.length)return null;
+  const m=Math.floor(x.length/2);
+  return x.length%2? x[m] : (x[m-1]+x[m])/2;
+}
+function mean(a){
+  const x=a.filter(v=>v!==null&&v!==undefined&&!isNaN(v));
+  if(!x.length)return null;
+  return x.reduce((s,v)=>s+v,0)/x.length;
+}
+function central(a,method){ return method==='mean'? mean(a) : median(a); }
+
+// ═══════════════════════════════════════════════════════════════
+//  PIPELINE
+// ═══════════════════════════════════════════════════════════════
+function showConfig(){
+  document.getElementById('configScreen').style.display='block';
+  document.getElementById('pipelineScreen').style.display='none';
+  document.getElementById('resultsSection').style.display='none';
+  document.getElementById('methodScreen').style.display='none';
+}
+let METHOD_RETURN='configScreen';
+function showMethod(ret){
+  METHOD_RETURN=ret||'configScreen';
+  document.getElementById('configScreen').style.display='none';
+  document.getElementById('pipelineScreen').style.display='none';
+  document.getElementById('resultsSection').style.display='none';
+  document.getElementById('methodScreen').style.display='block';
+  window.scrollTo(0,0);
+  // Refresh the dynamic settings/coverage lines if a run has happened
+  if(ST.years&&ST.years.length){ try{ renderMethod(computeAll()); }catch(e){} }
+}
+function closeMethod(){
+  document.getElementById('methodScreen').style.display='none';
+  document.getElementById(METHOD_RETURN).style.display='block';
+  window.scrollTo(0,0);
+}
+// Move the methodology content out of the results tab into the standalone screen
+(function relocateMethodology(){
+  function move(){
+    const host=document.getElementById('methodHost');
+    const src=document.getElementById('tab-method');
+    if(host&&src){ const doc=src.querySelector('.method-doc'); if(doc) host.appendChild(doc); src.remove(); }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',move); else move();
+})();
+
+async function startPipeline(){
+  const from=parseInt(document.getElementById('cfgFrom').value);
+  const to=parseInt(document.getElementById('cfgTo').value);
+  const errEl=document.getElementById('cfgError');
+  errEl.style.display='none';
+  if(!from||!to){errEl.textContent='Please enter both From Year and To Year.';errEl.style.display='block';return;}
+  if(from>to){errEl.textContent='From Year must be on or before To Year.';errEl.style.display='block';return;}
+  if(to-from>9){errEl.textContent='Please limit the range to 10 years or fewer.';errEl.style.display='block';return;}
+
+  const years=[];for(let y=from;y<=to;y++)years.push(y);
+  ST.years=years;
+  ST.useWins=document.getElementById('cfgWins').checked;
+  ST.ouHierarchy={};ST.facilities=[];
+
+  document.getElementById('configScreen').style.display='none';
+  document.getElementById('pipelineScreen').style.display='block';
+  document.getElementById('resultsSection').style.display='none';
+  document.getElementById('stepList').innerHTML='';
+  Object.keys(stepEls).forEach(k=>delete stepEls[k]);
+  _sn=0;setProgress(2);setPill('Running…','rgba(255,193,7,.5)');
+
+  addStep('s_ou',   'Fetch Level-5 facility registry with hierarchy');
+  addStep('s_fetch',`Fetch suspected malaria — ${from} to ${to} · ${years.length} year(s) · Facility + Community`);
+  addStep('s_wins', 'Correct outliers — upper bound 99.75th pct per facility per year');
+  addStep('s_build','Build facility monthly totals');
+
+  try{
+    // S1: Org Units
+    setStep('s_ou','running');setProgress(5);
+    const ouResp=await dhis2('/api/organisationUnits.json?level='+L_PHU+'&fields=id,displayName,level,ancestors[id,displayName,level]&paging=false&pageSize=50000');
+    const VALID=['Hospital','Clinic','CHC','CHP','MCHP'];
+    let skip=0; const childToL5={};
+    (ouResp.organisationUnits||[]).forEach(ou=>{
+      const anc=(ou.ancestors||[]).sort((a,b)=>a.level-b.level);
+      const dist=anc.find(a=>a.level===L_DIST);
+      const chief=anc.find(a=>a.level===L_CHIEF);
+      const l5Anc=anc.find(a=>a.level===L_PHU);
+      if(ou.level===L_PHU){
+        const t=getHFType(ou.displayName);
+        if(!VALID.includes(t)){skip++;return;}
+        ST.ouHierarchy[ou.id]={id:ou.id,name:ou.displayName,hfType:t,
+          districtName:dist?dist.displayName:'',chiefdomName:chief?chief.displayName:''};
+      } else if(ou.level>L_PHU&&l5Anc){ childToL5[ou.id]=l5Anc.id; }
+    });
+    ST.totalFacilities=Object.keys(ST.ouHierarchy).length;
+    ST.excludedTypes=skip;
+    setStep('s_ou','done',`${Object.keys(ST.ouHierarchy).length} facilities · ${Object.keys(childToL5).length} sub-facility mappings (${skip} excluded)`);
+    setProgress(12);await sleep(30);
+
+    // S2: Fetch analytics per year (full 12 months)
+    setStep('s_fetch','running');
+    const rawSlots={}; let totalRows=0;
+    for(let ci=0;ci<ST.years.length;ci++){
+      const yr=ST.years[ci];
+      setStep('s_fetch','running',`Year ${yr} (${ci+1}/${ST.years.length})`);
+      const pe=Array.from({length:12},(_,i)=>`${yr}${String(i+1).padStart(2,'0')}`).join(';');
+      const resp=await dhis2('/api/analytics.json?dimension=dx:'+DX_PARAM+'&dimension=pe:'+pe+'&dimension=ou:LEVEL-'+L_PHU+'&displayProperty=NAME&paging=false&ignoreLimit=true');
+      (resp.rows||[]).forEach(row=>{
+        const[dxStr,period,ouId,rawVal]=row;
+        const val=parseFloat(rawVal)||0;if(!val)return;
+        const map=DX_MAP[dxStr];if(!map)return;
+        const effectiveId=childToL5[ouId]||ouId;
+        const ou=ST.ouHierarchy[effectiveId];if(!ou)return;
+        const yr2=parseInt(period.slice(0,4));
+        const mo=parseInt(period.slice(4,6))-1;
+        if(!rawSlots[effectiveId])rawSlots[effectiveId]={};
+        if(!rawSlots[effectiveId][yr2])rawSlots[effectiveId][yr2]=Array.from({length:12},()=>{const s={};ALL_DX.forEach(d=>{s[d.field]=null;});return s;});
+        const slot=rawSlots[effectiveId][yr2][mo];
+        if(slot[map.field]===null)slot[map.field]=0;
+        slot[map.field]+=val; totalRows++;
+      });
+      setProgress(12+Math.round((ci+1)/ST.years.length*45));
+      await sleep(30);
+    }
+    setStep('s_fetch','done',`${totalRows.toLocaleString()} data points fetched`);
+    setProgress(58);await sleep(30);
+
+    // S3: Winsorise each field per facility per year, then S4 sum COCs to fac/com monthly totals
+    setStep('s_wins','running');
+    let winCount=0;
+    Object.keys(rawSlots).forEach(ouId=>{
+      ST.years.forEach(yr=>{
+        const months=rawSlots[ouId][yr];if(!months)return;
+        if(ST.useWins){
+          ALL_DX.forEach(dx=>{
+            const vals=months.map(m=>m[dx.field]);
+            const w=winsorizeUpper(vals);
+            vals.forEach((v,i)=>{ if(v!==null&&w[i]!==null&&Math.abs(v-w[i])>0.001){winCount++;months[i][dx.field]=w[i];} });
+          });
+        }
+      });
+    });
+    setStep('s_wins','done', ST.useWins? `${winCount} monthly values corrected` : 'Skipped (correction disabled)');
+    setProgress(75);await sleep(30);
+
+    // S4: Build facility objects with monthly fac/com totals per year
+    setStep('s_build','running');
+    ST.facilities=[];
+    Object.keys(rawSlots).forEach(ouId=>{
+      const ou=ST.ouHierarchy[ouId];if(!ou)return;
+      const data={}; let hasAny=false;
+      ST.years.forEach(yr=>{
+        const months=rawSlots[ouId][yr];if(!months)return;
+        const fac=Array(12).fill(null), com=Array(12).fill(null);
+        months.forEach((m,i)=>{
+          const fv=AGE_COC_IDS.map(c=>m[`fac_${c}`]); const cv=COM_COC_IDS.map(c=>m[`com_${c}`]);
+          if(fv.some(x=>x!==null)){fac[i]=fv.reduce((s,x)=>s+(x||0),0);hasAny=true;}
+          if(cv.some(x=>x!==null)){com[i]=cv.reduce((s,x)=>s+(x||0),0);hasAny=true;}
+        });
+        data[yr]={fac,com};
+      });
+      if(hasAny) ST.facilities.push({ou_id:ouId,facility:ou.name,hfType:ou.hfType,chiefdom:ou.chiefdomName,district:ou.districtName,data});
+    });
+    setStep('s_build','done',`${ST.facilities.length.toLocaleString()} facilities with data`);
+    setProgress(92);await sleep(30);
+
+    document.getElementById('pipelineScreen').style.display='none';
+    document.getElementById('resultsSection').style.display='block';
+    initFilters();
+    onControlChange();
+    setProgress(100);setPill('Done ✓','rgba(40,167,69,.55)');
+
+  }catch(err){
+    console.error(err);
+    document.getElementById('pipelineScreen').style.display='block';
+    Object.keys(stepEls).forEach(k=>{if(stepEls[k]?.classList.contains('running'))stepEls[k].className='step-item error';});
+    const e=document.createElement('div');
+    e.style.cssText='margin-top:12px;padding:12px;background:#2e0a0a;border-radius:6px;color:#ef9a9a;font-size:12px;line-height:1.6;';
+    e.innerHTML=`<strong>✗ Error</strong><br>${err.message}<br><br><button onclick="startPipeline()" style="background:#1f4a6a;color:#fff;border:none;padding:7px 16px;border-radius:6px;cursor:pointer;font-weight:700;">↺ Retry</button>`;
+    document.getElementById('stepList').appendChild(e);
+    setPill('Error','rgba(220,53,69,.5)');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  COMPUTE
+// ═══════════════════════════════════════════════════════════════
+function monthlySeries(d,source){
+  return Array.from({length:12},(_,i)=>{
+    const f=d.fac[i], c=d.com[i];
+    if(source==='fac')return f;
+    if(source==='com')return c;
+    if(f===null&&c===null)return null;
+    return (f||0)+(c||0);
+  });
+}
+function getFilters(){
+  return {
+    dist:document.getElementById('fDist').value,
+    chief:document.getElementById('fChief').value,
+    fac:document.getElementById('fFac').value,
+    type:document.getElementById('fType').value,
+    q:(document.getElementById('fSearch').value||'').toLowerCase(),
+  };
+}
+function filteredFacilities(){
+  const f=getFilters();
+  return ST.facilities.filter(x=>{
+    if(f.dist&&x.district!==f.dist)return false;
+    if(f.chief&&x.chiefdom!==f.chief)return false;
+    if(f.fac&&x.facility!==f.fac)return false;
+    if(f.type&&x.hfType!==f.type)return false;
+    if(f.q&&!(`${x.facility} ${x.chiefdom} ${x.district} ${x.hfType}`.toLowerCase().includes(f.q)))return false;
+    return true;
+  });
+}
+// Build grouped units at the requested aggregation level
+function buildUnits(aggLevel,source){
+  const facs=filteredFacilities();
+  if(aggLevel==='facility'){
+    return facs.map(x=>({key:x.ou_id,district:x.district,chiefdom:x.chiefdom,facility:x.facility,hfType:x.hfType,data:x.data}));
+  }
+  const groups={};
+  facs.forEach(x=>{
+    let key,meta;
+    if(aggLevel==='chiefdom'){key=x.district+' | '+x.chiefdom;meta={district:x.district,chiefdom:x.chiefdom,facility:'',hfType:''};}
+    else if(aggLevel==='district'){key=x.district;meta={district:x.district,chiefdom:'',facility:'',hfType:''};}
+    else {key='National';meta={district:'National',chiefdom:'',facility:'',hfType:''};}
+    if(!groups[key]){groups[key]={key,...meta,data:{}};ST.years.forEach(yr=>{groups[key].data[yr]={fac:Array(12).fill(null),com:Array(12).fill(null)};});}
+    ST.years.forEach(yr=>{
+      const src=x.data[yr];if(!src)return;
+      const tgt=groups[key].data[yr];
+      for(let i=0;i<12;i++){
+        if(src.fac[i]!==null)tgt.fac[i]=(tgt.fac[i]===null?0:tgt.fac[i])+src.fac[i];
+        if(src.com[i]!==null)tgt.com[i]=(tgt.com[i]===null?0:tgt.com[i])+src.com[i];
+      }
+    });
+  });
+  return Object.values(groups);
+}
+// For a unit: quarter central value (of monthly values pooled across years), quarterly totals per year
+function quantifyUnit(unit,source,method){
+  const qMedian=[], qByYear={}; // qMedian holds the chosen central value (median or mean); qByYear[yr]=[4 quarter totals]
+  ST.years.forEach(yr=>{qByYear[yr]=[null,null,null,null];});
+  let nMonths=0;
+  QUARTERS.forEach((Q,qi)=>{
+    const pool=[];
+    ST.years.forEach(yr=>{
+      const d=unit.data[yr];if(!d)return;
+      const m=monthlySeries(d,source);
+      let qt=null,any=false;
+      Q.months.forEach(mi=>{ const v=m[mi]; if(v!==null&&v!==undefined){pool.push(v);qt=(qt===null?0:qt)+v;any=true;nMonths++;} });
+      qByYear[yr][qi]=any?qt:null;
+    });
+    qMedian[qi]=central(pool,method);
+  });
+  const qEstimate=qMedian.map(v=>v===null?null:v*3);
+  const annual=qEstimate.reduce((s,v)=>s+(v||0),0);
+  return {...unit, qMedian, qEstimate, qByYear, annual, nMonths};
+}
+function computeAll(){
+  const aggLevel='district';
+  const source=document.getElementById('fSource').value;
+  const method=document.getElementById('fMethod').value;
+  const units=buildUnits(aggLevel,source).map(u=>quantifyUnit(u,source,method));
+  return {aggLevel,source,method,units};
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════════════════════════════
+function onControlChange(){
+  const R=computeAll();
+  renderStats(R); renderKPIs(R); renderCharts(R); renderQuant(R); renderDetail(R); renderMethod(R);
+}
+function populateChiefdoms(){
+  const dist=document.getElementById('fDist').value;
+  const chiefs=[...new Set(ST.facilities.filter(x=>!dist||x.district===dist).map(x=>x.chiefdom).filter(Boolean))].sort();
+  document.getElementById('fChief').innerHTML='<option value="">All chiefdoms</option>'+chiefs.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+function populateFacilities(){
+  const dist=document.getElementById('fDist').value;
+  const chief=document.getElementById('fChief').value;
+  const facs=[...new Set(ST.facilities.filter(x=>(!dist||x.district===dist)&&(!chief||x.chiefdom===chief)).map(x=>x.facility).filter(Boolean))].sort();
+  document.getElementById('fFac').innerHTML='<option value="">All facilities</option>'+facs.map(f=>`<option value="${f}">${f}</option>`).join('');
+}
+function onDistrictChange(){ populateChiefdoms(); populateFacilities(); onControlChange(); }
+function onChiefChange(){ populateFacilities(); onControlChange(); }
+function initFilters(){
+  const dists=[...new Set(ST.facilities.map(x=>x.district).filter(Boolean))].sort();
+  document.getElementById('fDist').innerHTML='<option value="">All districts</option>'+dists.map(d=>`<option value="${d}">${d}</option>`).join('');
+  populateChiefdoms();
+  populateFacilities();
+  const types=[...new Set(ST.facilities.map(x=>x.hfType).filter(Boolean))].sort();
+  document.getElementById('fType').innerHTML='<option value="">All types</option>'+types.map(t=>`<option value="${t}">${t}</option>`).join('');
+}
+function renderStats(R){
+  const inScope=filteredFacilities().length;
+  const total=ST.totalFacilities||0;
+  const active=ST.facilities.length;
+  const activePct=total?(active/total*100).toFixed(1):0;
+  const yrs=ST.years;
+  const totAnnual=R.units.reduce((s,u)=>s+(u.annual||0),0);
+  const srcTxt={combined:'Facility + Community',fac:'Facility only',com:'Community only'}[R.source];
+  document.getElementById('statsRow').innerHTML=[
+    `<div class="stat-pill ok" style="background:#004080;border-color:#004080;color:#fff;">Quantification for ${nextYear()}</div>`,
+    `<div class="stat-pill ok">Based on ${yrs[0]} to ${yrs[yrs.length-1]} · ${yrs.length} year(s)</div>`,
+    `<div class="stat-pill">Total facilities (registry): ${total.toLocaleString()}</div>`,
+    `<div class="stat-pill ok">Active (≥1 report): ${active.toLocaleString()} · ${activePct}%</div>`,
+    `<div class="stat-pill">In current view: ${inScope.toLocaleString()}</div>`,
+    `<div class="stat-pill">Source: ${srcTxt}</div>`,
+    `<div class="stat-pill">By district: ${R.units.length} of 16</div>`,
+    `<div class="stat-pill ok">Total annual estimate: ${fmt(totAnnual)} suspected</div>`,
+    ST.useWins?`<div class="stat-pill warn">Outlier correction ON (99.75th pct)</div>`:`<div class="stat-pill">Outlier correction OFF</div>`,
+  ].join('');
+}
+function renderKPIs(R){
+  const metric=document.getElementById('fMetric').value;
+  const mLbl=R.method==='mean'?'mean':'median';
+  const cls=['q1','q2','q3','q4'];
+  const annual=R.units.reduce((s,u)=>s+(u.annual||0),0);
+  let html='';
+  if(metric==='monthly'){
+    // 12 monthly cards: sum across districts of the central value of each calendar month over the years
+    const monthTot=Array(12).fill(0);
+    R.units.forEach(u=>{
+      for(let m=0;m<12;m++){
+        const vals=[];
+        ST.years.forEach(yr=>{const d=u.data[yr];if(!d)return;const ms=monthlySeries(d,R.source);if(ms[m]!==null&&ms[m]!==undefined)vals.push(ms[m]);});
+        const cv=central(vals,R.method);
+        if(cv!==null)monthTot[m]+=cv;
+      }
+    });
+    html=MONTH_NAMES.map((mn,i)=>`
+      <div class="kpi ${cls[Math.floor(i/3)]}">
+        <div class="kpi-label">${mn}</div>
+        <div class="kpi-val">${fmt(monthTot[i])}</div>
+        <div class="kpi-sub">${mLbl} RDTs / month</div>
+      </div>`).join('');
+    html+=`<div class="kpi"><div class="kpi-label">Annual Estimate</div><div class="kpi-val">${fmt(annual)}</div><div class="kpi-sub">quarterly method total</div></div>`;
+  } else {
+    // 4 quarter cards — main number is the quarterly estimate (mean per month × 3)
+    const qTot=[0,0,0,0];
+    R.units.forEach(u=>u.qMedian.forEach((v,i)=>{qTot[i]+=(v||0);}));
+    html=QUARTERS.map((Q,i)=>`
+      <div class="kpi ${cls[i]}">
+        <div class="kpi-label">${Q.label}</div>
+        <div class="kpi-val">${fmt(qTot[i]*3)}</div>
+        <div class="kpi-sub">${mLbl} ${fmt(qTot[i])}/month &times; 3 months</div>
+      </div>`).join('');
+    html+=`<div class="kpi"><div class="kpi-label">Annual Estimate</div><div class="kpi-val">${fmt(annual)}</div><div class="kpi-sub">sum of quarterly estimates</div></div>`;
+  }
+  document.getElementById('kpiGrid').innerHTML=html;
+  const srcTxt={combined:'Facility + Community',fac:'Facility only',com:'Community only'}[R.source];
+  document.getElementById('quantYearBanner').innerHTML=
+    `<div style="font-size:12px;text-transform:uppercase;letter-spacing:.6px;opacity:.85;">RDT Quantification · suspected cases as proxy</div>
+     <div style="font-size:26px;font-weight:800;margin:2px 0;">RDT Quantification for ${nextYear()}</div>
+     <div style="font-size:12px;opacity:.9;">Based on ${ST.years[0]} to ${ST.years[ST.years.length-1]} (${ST.years.length} year${ST.years.length>1?'s':''}) · ${srcTxt} · ${R.method==='mean'?'Mean':'Median'} method · ${ST.useWins?'outlier-corrected':'raw values'}</div>`;
+}
+
+function destroyChart(k){if(CHARTS[k]){CHARTS[k].destroy();CHARTS[k]=null;}}
+function renderCharts(R){
+  const metric=document.getElementById('fMetric').value;
+  const mult=metric==='quarterly'?3:1;
+  const mWord=R.method==='mean'?'Mean':'Median';
+  const isMonthly=(metric==='monthly');
+
+  destroyChart('quarter'); destroyChart('year');
+
+  if(isMonthly){
+    // ── MONTHLY VIEW ──────────────────────────────────────────
+    // Chart 1: mean/median of each calendar month across the selected years, summed across units
+    document.getElementById('chart1Title').textContent=`${mWord} Monthly Suspected Cases (per month, over ${ST.years.length} years)`;
+    const monthTot=Array(12).fill(0);
+    R.units.forEach(u=>{
+      for(let m=0;m<12;m++){
+        const vals=[];
+        ST.years.forEach(yr=>{const d=u.data[yr];if(!d)return;const ms=monthlySeries(d,R.source);if(ms[m]!==null&&ms[m]!==undefined)vals.push(ms[m]);});
+        const cv=central(vals,R.method);
+        if(cv!==null)monthTot[m]+=cv;
+      }
+    });
+    CHARTS.quarter=new Chart(document.getElementById('chartQuarter'),{
+      type:'bar',
+      data:{labels:MONTH_NAMES,datasets:[{label:`${mWord} monthly`,data:monthTot.map(Math.round),backgroundColor:MONTH_NAMES.map((_,i)=>Q_COLORS[Math.floor(i/3)]),borderRadius:5}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}
+    });
+
+    // Chart 2: monthly total by year (sum across units of each month, per year)
+    const byYearM=ST.years.map(yr=>{const arr=Array(12).fill(0);R.units.forEach(u=>{const d=u.data[yr];if(!d)return;const ms=monthlySeries(d,R.source);for(let m=0;m<12;m++){if(ms[m]!==null)arr[m]+=ms[m];}});return arr;});
+    CHARTS.year=new Chart(document.getElementById('chartYear'),{
+      type:'line',
+      data:{labels:MONTH_NAMES,datasets:ST.years.map((yr,yi)=>({
+        label:String(yr),data:byYearM[yi].map(Math.round),
+        borderColor:`hsl(${205+yi*30},60%,45%)`,backgroundColor:`hsl(${205+yi*30},60%,45%)`,tension:.3,fill:false,pointRadius:3}))},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}
+    });
+    document.getElementById('chartYearHead').textContent='Monthly Suspected by Year';
+  } else {
+    // ── QUARTERLY VIEW ────────────────────────────────────────
+    document.getElementById('chart1Title').textContent=`Quarterly Estimate (${mWord} monthly × 3)`;
+    const qTot=[0,0,0,0];
+    R.units.forEach(u=>u.qMedian.forEach((v,i)=>{qTot[i]+=(v||0)*mult;}));
+    CHARTS.quarter=new Chart(document.getElementById('chartQuarter'),{
+      type:'bar',
+      data:{labels:QUARTERS.map(q=>q.label),datasets:[{label:'Quarterly estimate',data:qTot.map(Math.round),backgroundColor:Q_COLORS,borderRadius:6}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}
+    });
+
+    const byYear=ST.years.map(yr=>{const arr=[0,0,0,0];R.units.forEach(u=>{u.qByYear[yr]?.forEach((v,i)=>{arr[i]+=(v||0);});});return arr;});
+    CHARTS.year=new Chart(document.getElementById('chartYear'),{
+      type:'bar',
+      data:{labels:QUARTERS.map(q=>q.short),datasets:ST.years.map((yr,yi)=>({
+        label:String(yr),data:byYear[yi].map(Math.round),
+        backgroundColor:`hsl(${205+yi*25},55%,${45+yi*8}%)`,borderRadius:4}))},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}
+    });
+    document.getElementById('chartYearHead').textContent='Quarterly Totals by Year';
+  }
+
+  // Chart 3: all districts by annual estimate (honours filters)
+  const distUnits=buildUnits('district',R.source).map(u=>quantifyUnit(u,R.source,R.method));
+  const top=distUnits.sort((a,b)=>b.annual-a.annual).reverse();
+  document.getElementById('chart3Title').textContent=`All Districts by Annual Estimate (${top.length})`;
+  destroyChart('top');
+  CHARTS.top=new Chart(document.getElementById('chartTop'),{
+    type:'bar',
+    data:{labels:top.map(u=>u.district),datasets:[{label:'Annual estimate',data:top.map(u=>Math.round(u.annual)),backgroundColor:'#2c6793',borderRadius:4}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}
+  });
+}
+
+function unitCols(aggLevel){
+  if(aggLevel==='facility')return ['District','Chiefdom','Facility','Type'];
+  if(aggLevel==='chiefdom')return ['District','Chiefdom'];
+  if(aggLevel==='district')return ['District'];
+  return ['Scope'];
+}
+function unitVals(u,aggLevel){
+  if(aggLevel==='facility')return [u.district,u.chiefdom,u.facility,u.hfType];
+  if(aggLevel==='chiefdom')return [u.district,u.chiefdom];
+  if(aggLevel==='district')return [u.district];
+  return ['National'];
+}
+function renderQuant(R){
+  const metric=document.getElementById('fMetric').value;
+  const mult=metric==='quarterly'?3:1;
+  const mWord=R.method==='mean'?'mean':'median';
+  const metricLbl=metric==='quarterly'?`quarterly estimate (${mWord} × 3)`:`${mWord} monthly caseload`;
+  document.getElementById('quantNote').innerHTML=`Quarter columns show the <strong>${metricLbl}</strong>. Annual estimate = sum of the four quarterly estimates (${mWord} monthly × 3). ${ST.years.length===2?`<em>With 2 years the ${mWord} of the pooled monthly values is used; add more years for a more robust ${mWord}.</em>`:''}`;
+
+  const cols=unitCols(R.aggLevel);
+  const qHdr=QUARTERS.map(q=>q.label);
+  const head=[...cols,...qHdr,'Annual Est.','Months (n)'];
+  document.getElementById('quantHead').innerHTML='<tr>'+head.map((h,i)=>`<th onclick="sortQuant(${i})">${h}</th>`).join('')+'</tr>';
+
+  // sort
+  let units=[...R.units];
+  if(ST.sort.col!==null){
+    const c=ST.sort.col, base=cols.length;
+    units.sort((a,b)=>{
+      let av,bv;
+      if(c<base){av=unitVals(a,R.aggLevel)[c];bv=unitVals(b,R.aggLevel)[c];return ST.sort.dir*String(av).localeCompare(String(bv));}
+      else if(c<base+4){const qi=c-base;av=(a.qMedian[qi]||0)*mult;bv=(b.qMedian[qi]||0)*mult;}
+      else if(c===base+4){av=a.annual;bv=b.annual;}
+      else {av=a.nMonths;bv=b.nMonths;}
+      return ST.sort.dir*(av-bv);
+    });
+  } else {
+    units.sort((a,b)=>b.annual-a.annual);
+  }
+
+  document.getElementById('quantBody').innerHTML=units.map(u=>{
+    const uv=unitVals(u,R.aggLevel).map(v=>`<td>${v||''}</td>`).join('');
+    const qv=u.qMedian.map(v=>`<td class="num">${v===null?'':fmt(v*mult)}</td>`).join('');
+    return `<tr>${uv}${qv}<td class="num"><strong>${fmt(u.annual)}</strong></td><td class="num">${u.nMonths}</td></tr>`;
+  }).join('');
+
+  // footer totals
+  const qTot=[0,0,0,0];let ann=0;
+  units.forEach(u=>{u.qMedian.forEach((v,i)=>qTot[i]+=(v||0)*mult);ann+=u.annual;});
+  const pad=cols.length;
+  document.getElementById('quantFoot').innerHTML=`<tr><td colspan="${pad}">TOTAL (${units.length} units)</td>${qTot.map(v=>`<td class="num">${fmt(v)}</td>`).join('')}<td class="num">${fmt(ann)}</td><td></td></tr>`;
+}
+function sortQuant(col){
+  if(ST.sort.col===col)ST.sort.dir*=-1; else {ST.sort.col=col;ST.sort.dir=1;}
+  onControlChange();
+}
+function renderDetail(R){
+  const cols=unitCols(R.aggLevel);
+  const yrQ=[];
+  ST.years.forEach(yr=>QUARTERS.forEach(q=>yrQ.push(`${yr} ${q.short}`)));
+  const head=[...cols,...yrQ,...ST.years.map(y=>`${y} Total`)];
+  document.getElementById('detailHead').innerHTML='<tr>'+head.map(h=>`<th>${h}</th>`).join('')+'</tr>';
+  const units=[...R.units].sort((a,b)=>b.annual-a.annual);
+  document.getElementById('detailBody').innerHTML=units.map(u=>{
+    const uv=unitVals(u,R.aggLevel).map(v=>`<td>${v||''}</td>`).join('');
+    let cells='';
+    ST.years.forEach(yr=>{QUARTERS.forEach((q,qi)=>{const v=u.qByYear[yr][qi];cells+=`<td class="num">${v===null?'':fmt(v)}</td>`;});});
+    const totals=ST.years.map(yr=>{const t=u.qByYear[yr].reduce((s,v)=>s+(v||0),0);const any=u.qByYear[yr].some(v=>v!==null);return `<td class="num"><strong>${any?fmt(t):''}</strong></td>`;}).join('');
+    return `<tr>${uv}${cells}${totals}</tr>`;
+  }).join('');
+}
+
+function switchTab(name,btn){
+  ['viz','quant','detail','dl'].forEach(t=>document.getElementById('tab-'+t).style.display=t===name?'block':'none');
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function renderMethod(R){
+  const srcTxt={combined:'Facility + Community',fac:'Facility only',com:'Community only'}[R.source];
+  const mWord=R.method==='mean'?'Mean':'Median';
+  const metric=document.getElementById('fMetric').value;
+  const metricTxt=metric==='quarterly'?'Quarterly estimate (× 3)':`${mWord} monthly caseload`;
+  const yrs=ST.years;
+  document.getElementById('methodConfig').innerHTML=
+    `<strong>Current settings:</strong> Years ${yrs[0]} to ${yrs[yrs.length-1]} (${yrs.length}) · Source: ${srcTxt} · Method: ${mWord} · Quarter metric: ${metricTxt} · View: by district (national = the TOTAL row) · Outlier correction: ${ST.useWins?'ON (99.75th percentile)':'OFF'}. The definitions below explain each of these.`;
+  const total=ST.totalFacilities||0, active=ST.facilities.length, inactive=Math.max(0,total-active);
+  const pct=total?(active/total*100).toFixed(1):0;
+  const cov=document.getElementById('methodCoverage');
+  if(cov) cov.innerHTML=
+    `<table class="def-table"><tbody>
+       <tr><td class="term">Total facilities (registry)</td><td>${total.toLocaleString()} standard Level-5 health facilities in the DHIS2 org unit registry${ST.excludedTypes?` (${ST.excludedTypes.toLocaleString()} non-standard units excluded)`:''}.</td></tr>
+       <tr><td class="term">Active facilities</td><td>${active.toLocaleString()} reported at least one suspected value in ${yrs[0]} to ${yrs[yrs.length-1]} (${pct}% of the registry). These drive the quantification.</td></tr>
+       <tr><td class="term">Non-reporting facilities</td><td>${inactive.toLocaleString()} had no suspected report in the selected years.</td></tr>
+       <tr><td class="term">In current view</td><td>${filteredFacilities().length.toLocaleString()} active facilities remain after the district, chiefdom, facility, type and search filters.</td></tr>
+     </tbody></table>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  DOWNLOADS
+// ═══════════════════════════════════════════════════════════════
+function quantMatrix(R){
+  const metric=document.getElementById('fMetric').value;const mult=metric==='quarterly'?3:1;
+  const mAbbr=R.method==='mean'?'mean/mo':'med/mo';
+  const cols=unitCols(R.aggLevel);
+  const head=[...cols,...QUARTERS.map(q=>q.label+(mult===3?' est.':' '+mAbbr)),'Annual Estimate','Months n'];
+  const rows=[...R.units].sort((a,b)=>b.annual-a.annual).map(u=>[
+    ...unitVals(u,R.aggLevel),
+    ...u.qMedian.map(v=>v===null?'':Math.round(v*mult)),
+    Math.round(u.annual), u.nMonths
+  ]);
+  return [head,...rows];
+}
+function detailMatrix(R){
+  const cols=unitCols(R.aggLevel);
+  const head=[...cols];
+  ST.years.forEach(yr=>QUARTERS.forEach(q=>head.push(`${yr} ${q.short}`)));
+  ST.years.forEach(y=>head.push(`${y} Total`));
+  const rows=[...R.units].sort((a,b)=>b.annual-a.annual).map(u=>{
+    const r=[...unitVals(u,R.aggLevel)];
+    ST.years.forEach(yr=>QUARTERS.forEach((q,qi)=>{const v=u.qByYear[yr][qi];r.push(v===null?'':Math.round(v));}));
+    ST.years.forEach(yr=>{const any=u.qByYear[yr].some(v=>v!==null);r.push(any?Math.round(u.qByYear[yr].reduce((s,v)=>s+(v||0),0)):'');});
+    return r;
+  });
+  return [head,...rows];
+}
+function monthlyMatrix(source){
+  const head=['District','Chiefdom','Facility','Type','Year',...MONTH_NAMES,'Year Total'];
+  const rows=[];
+  ST.facilities.forEach(x=>{
+    ST.years.forEach(yr=>{
+      const d=x.data[yr];if(!d)return;
+      const m=monthlySeries(d,source);if(m.every(v=>v===null))return;
+      rows.push([x.district,x.chiefdom,x.facility,x.hfType,yr,...m.map(v=>v===null?'':Math.round(v)),Math.round(m.reduce((s,v)=>s+(v||0),0))]);
+    });
+  });
+  return [head,...rows];
+}
+function levelSummary(aggLevel,source,method){
+  const units=buildUnits(aggLevel,source).map(u=>quantifyUnit(u,source,method));
+  const cols=unitCols(aggLevel);
+  const mAbbr=method==='mean'?'mean/mo':'med/mo';
+  const head=[...cols,...QUARTERS.map(q=>q.short+' '+mAbbr),...QUARTERS.map(q=>q.short+' est.'),'Annual Estimate'];
+  const rows=units.sort((a,b)=>b.annual-a.annual).map(u=>[
+    ...unitVals(u,aggLevel),
+    ...u.qMedian.map(v=>v===null?'':Math.round(v)),
+    ...u.qEstimate.map(v=>v===null?'':Math.round(v)),
+    Math.round(u.annual)
+  ]);
+  return [head,...rows];
+}
+// One quantification sheet for a given source, at the current aggregation level, with a title
+function sourceSheetMatrix(aggLevel,source,method){
+  const m=levelSummary(aggLevel,source,method);
+  const srcName={combined:'Facility + Community',fac:'Facility',com:'Community'}[source];
+  const title=[`RDT Quantification (suspected as proxy) for ${nextYear()} — ${srcName} — by ${aggLevel} — ${method==='mean'?'Mean':'Median'} method`];
+  const basis=[`Based on years ${ST.years.join(', ')} · ${ST.useWins?'outlier-corrected (99.75th pct)':'raw values'} · quarterly estimate = monthly × 3 · annual = sum of quarters`];
+  return [title, basis, [], ...m];
+}
+function downloadExcel(){
+  const R=computeAll();
+  const aggLevel=R.aggLevel; const method=R.method; const mWord=method==='mean'?'Mean':'Median';
+  const qy=nextYear(); const tag=`${ST.years[0]}_${ST.years[ST.years.length-1]}`;
+  const wb=XLSX.utils.book_new();
+  // Three source sheets, at the current aggregation level
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix(aggLevel,'fac',method)),'Facility');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix(aggLevel,'com',method)),'Community');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix(aggLevel,'combined',method)),'Combined');
+  // Same three at facility level for distribution planning
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix('facility','fac',method)),'Facility (by HF)');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix('facility','com',method)),'Community (by HF)');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix('facility','combined',method)),'Combined (by HF)');
+  // Detail + raw monthly
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(detailMatrix(R)),'Quarterly by Year');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(monthlyMatrix('combined')),'Monthly Data (Combined)');
+  const notes=[
+    ['NMCP Sierra Leone — RDT Quantification (suspected cases as proxy)'],
+    ['Quantification for',qy],
+    ['Generated',new Date().toISOString()],
+    ['Based on years',ST.years.join(', ')],
+    ['Method',mWord],
+    ['Outlier correction',ST.useWins?'Upper bound 99.75th pct per facility per year':'None'],
+    [''],
+    ['Facility coverage'],
+    ['Total facilities (registry)',ST.totalFacilities||0],
+    ['Active (>=1 report in years)',ST.facilities.length],
+    ['Non-reporting facilities',Math.max(0,(ST.totalFacilities||0)-ST.facilities.length)],
+    [''],
+    ['Data elements used'],
+    ['Facility suspected','FJafyE1kzs4 (age combos m5T8uBNB8aN 0-59m, j7j6iaknOFn 5-14y, zK1aiw8zFac 15+y) summed'],
+    ['Community suspected (HTR/ETR)','wfaQBIVQxWo (age combos NtjMVmRfvHH 02-59m, qDXW7WMLT99 5-14y, mdjRPpvLKdu 15+y) summed'],
+    ['Combined','Facility total + Community total'],
+    ['Org unit levels','District = L2, Chiefdom = L4, Facility (PHU) = L5; sub-facility units rolled up to L5'],
+    [''],
+    ['Sheets'],
+    ['Facility / Community / Combined','Quantification by '+aggLevel+' for each data source'],
+    ['... (by HF)','The same three sources, one row per health facility'],
+    ['Quarterly by Year','Quarter totals for each year, current on-screen source'],
+    ['Monthly Data (Combined)','Raw monthly suspected per facility (Facility + Community)'],
+    [''],
+    ['Definitions'],
+    ['Quarters','Q1 Jan-Mar, Q2 Apr-Jun, Q3 Jul-Sep, Q4 Oct-Dec'],
+    [mWord+' monthly',mWord+' of all monthly suspected values in that quarter, pooled across the selected years'],
+    ['Quarterly estimate',mWord+' monthly × 3'],
+    ['Annual estimate','Sum of the four quarterly estimates → the quantification for '+qy],
+  ];
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(notes),'Method');
+  XLSX.writeFile(wb,`NMCP_RDT_Quantification_for_${qy}_(from_${tag}).xlsx`);
+}
+function toCSV(mtx){return mtx.map(r=>r.map(c=>`"${c??''}"`).join(',')).join('\n');}
+function dlText(content,fname,mime){const a=document.createElement('a');a.download=fname;a.href='data:'+(mime||'text/plain')+';charset=utf-8,'+encodeURIComponent(content);a.click();}
+function downloadSourceCSV(source){
+  const R=computeAll();
+  dlText(toCSV(sourceSheetMatrix(R.aggLevel,source,R.method)),`NMCP_Quantification_for_${nextYear()}_${source}_${R.aggLevel}.csv`,'text/csv');
+}
+function downloadQuantCSV(){const R=computeAll();dlText(toCSV(quantMatrix(R)),`NMCP_Quantification_for_${nextYear()}_${R.aggLevel}.csv`,'text/csv');}
+function downloadDetailCSV(){const R=computeAll();dlText(toCSV(detailMatrix(R)),`NMCP_Quarterly_by_Year_${R.aggLevel}_${ST.years[0]}_${ST.years[ST.years.length-1]}.csv`,'text/csv');}
+
+function downloadR(){
+  const from=ST.years[0],to=ST.years[ST.years.length-1];
+  dlText(`# NMCP Sierra Leone — Suspected Malaria Quantification (quarterly median)
+# Years: ${from}-${to} | ICF-SL
+# Total suspected = Facility + Community (age COCs summed). No age breakdown.
+# Outlier: upper bound 99.75th pct per facility per year. Quarterly quantification = median of monthly values pooled across years.
+
+library(httr); library(jsonlite); library(dplyr); library(tidyr)
+BASE_URL <- "https://sl.dhis2.org/hmis23"
+USER <- "your_username"; PASS <- "your_password"; auth <- authenticate(USER, PASS)
+
+FAC <- "${FAC_SUSP}"; COM <- "${COM_SUSP}"
+AGE <- c(${AGE_COC_IDS.map(c=>`"${c}"`).join(',')}); COMC <- c(${COM_COC_IDS.map(c=>`"${c}"`).join(',')})
+dx <- c(paste0(FAC,".",AGE), paste0(COM,".",COMC)); dx_str <- paste(dx, collapse=";")
+
+# Org units level 5
+ou <- content(GET(paste0(BASE_URL,"/api/organisationUnits.json?level=5&fields=id,displayName,ancestors[id,displayName,level]&paging=false&pageSize=50000"),auth),"parsed")$organisationUnits
+hf_type <- function(n){s<-tail(strsplit(toupper(trimws(n)),"\\\\s+")[[1]],1)
+  if(s=="HOSPITAL")"Hospital" else if(s=="MCHP")"MCHP" else if(s=="CHC")"CHC" else if(s=="CHP")"CHP" else if(grepl("CLINIC",s))"Clinic" else "Other"}
+oud <- bind_rows(lapply(ou,function(o){a<-o\$ancestors
+  data.frame(ou_id=o\$id,facility=o\$displayName,hf_type=hf_type(o\$displayName),
+    district=({d<-Filter(function(x)x\$level==2,a);if(length(d))d[[1]]\$displayName else ""}),
+    chiefdom=({c<-Filter(function(x)x\$level==4,a);if(length(c))c[[1]]\$displayName else ""}),stringsAsFactors=FALSE)}))
+oud <- oud[oud\$hf_type %in% c("Hospital","Clinic","CHC","CHP","MCHP"),]
+
+# Fetch per year
+raw <- list()
+for(yr in ${from}:${to}){
+  pe <- paste0(yr,sprintf("%02d",1:12),collapse=";")
+  d <- content(GET(paste0(BASE_URL,"/api/analytics.json?dimension=dx:",dx_str,"&dimension=pe:",pe,"&dimension=ou:LEVEL-5&paging=false&ignoreLimit=true"),auth),"parsed")
+  raw <- c(raw, lapply(d\$rows,function(r)data.frame(dx=r[[1]],period=r[[2]],ou_id=r[[3]],value=as.numeric(r[[4]]),stringsAsFactors=FALSE)))
+}
+df <- bind_rows(raw); df <- df[df\$value>0,]
+df\$de <- sub("\\\\..*","",df\$dx)
+df\$year <- as.integer(substr(df\$period,1,4)); df\$month <- as.integer(substr(df\$period,5,6))
+
+# Winsorise upper 99.75 per facility/year/dx
+wins <- function(x){r<-x[!is.na(x)&x>0];if(length(r)<2)return(x);hi<-quantile(r,0.9975);ifelse(!is.na(x)&x>hi,hi,x)}
+df <- df |> group_by(ou_id,year,dx) |> mutate(value=wins(value)) |> ungroup()
+
+# Monthly total suspected per facility (Facility + Community)
+mt <- df |> group_by(ou_id,year,month) |> summarise(total=sum(value),.groups="drop")
+mt <- left_join(mt, oud, by="ou_id")
+mt\$quarter <- paste0("Q",ceiling(mt\$month/3))
+
+# Quarterly median = median of monthly values pooled across years
+quant <- mt |> group_by(district,chiefdom,facility,hf_type,quarter) |>
+  summarise(median_monthly=median(total,na.rm=TRUE),.groups="drop") |>
+  mutate(quarterly_estimate=median_monthly*3)
+annual <- quant |> group_by(district,chiefdom,facility,hf_type) |>
+  summarise(annual_estimate=sum(quarterly_estimate),.groups="drop")
+
+write.csv(quant, paste0("NMCP_Quantification_quarter_${from}_${to}.csv"), row.names=FALSE)
+write.csv(annual, paste0("NMCP_Quantification_annual_${from}_${to}.csv"), row.names=FALSE)
+cat("Done.\\n")
+`,`NMCP_Suspected_Quantification_${from}_${to}.R`);
+}
+
+function downloadPy(){
+  const from=ST.years[0],to=ST.years[ST.years.length-1];
+  dlText(`# NMCP Sierra Leone — Suspected Malaria Quantification (quarterly median)
+# Years: ${from}-${to} | ICF-SL
+# Total suspected = Facility + Community (age COCs summed). No age breakdown.
+# Outlier: upper bound 99.75th pct per facility/year. Quarterly quantification = median of monthly values pooled across years.
+
+import requests, pandas as pd, numpy as np
+from requests.auth import HTTPBasicAuth
+BASE="https://sl.dhis2.org/hmis23"; auth=HTTPBasicAuth("your_username","your_password")
+
+FAC="${FAC_SUSP}"; COM="${COM_SUSP}"
+AGE=[${AGE_COC_IDS.map(c=>`"${c}"`).join(',')}]; COMC=[${COM_COC_IDS.map(c=>`"${c}"`).join(',')}]
+dx=[f"{FAC}.{c}" for c in AGE]+[f"{COM}.{c}" for c in COMC]; dx_str=";".join(dx)
+
+ou=requests.get(BASE+"/api/organisationUnits.json?level=5&fields=id,displayName,ancestors[id,displayName,level]&paging=false&pageSize=50000",auth=auth).json()["organisationUnits"]
+def hf(n):
+    s=n.upper().strip().split()[-1] if n.strip() else ""
+    return {"HOSPITAL":"Hospital","MCHP":"MCHP","CHC":"CHC","CHP":"CHP"}.get(s,"Clinic" if "CLINIC" in s else "Other")
+def anc(o,l):
+    return next((a["displayName"] for a in o.get("ancestors",[]) if a["level"]==l),"")
+oud=pd.DataFrame([{"ou_id":o["id"],"facility":o["displayName"],"hf_type":hf(o["displayName"]),
+    "district":anc(o,2),"chiefdom":anc(o,4)} for o in ou])
+oud=oud[oud["hf_type"].isin(["Hospital","Clinic","CHC","CHP","MCHP"])]
+
+rows=[]
+for yr in range(${from},${to}+1):
+    pe=";".join(f"{yr}{m:02d}" for m in range(1,13))
+    d=requests.get(BASE+f"/api/analytics.json?dimension=dx:{dx_str}&dimension=pe:{pe}&dimension=ou:LEVEL-5&paging=false&ignoreLimit=true",auth=auth).json()
+    rows+=[{"dx":r[0],"period":r[1],"ou_id":r[2],"value":float(r[3])} for r in d.get("rows",[])]
+df=pd.DataFrame(rows); df=df[df["value"]>0]
+df["year"]=df["period"].str[:4].astype(int); df["month"]=df["period"].str[4:].astype(int)
+
+def wins(g):
+    r=g[g>0].dropna();  return g if len(r)<2 else g.clip(upper=np.percentile(r,99.75))
+df["value"]=df.groupby(["ou_id","year","dx"])["value"].transform(wins)
+
+mt=df.groupby(["ou_id","year","month"])["value"].sum().reset_index(name="total")
+mt=mt.merge(oud,on="ou_id",how="left")
+mt["quarter"]="Q"+np.ceil(mt["month"]/3).astype(int).astype(str)
+
+quant=mt.groupby(["district","chiefdom","facility","hf_type","quarter"])["total"].median().reset_index(name="median_monthly")
+quant["quarterly_estimate"]=quant["median_monthly"]*3
+annual=quant.groupby(["district","chiefdom","facility","hf_type"])["quarterly_estimate"].sum().reset_index(name="annual_estimate")
+
+quant.to_csv(f"NMCP_Quantification_quarter_${from}_${to}.csv",index=False)
+annual.to_csv(f"NMCP_Quantification_annual_${from}_${to}.csv",index=False)
+print("Done.")
+`,`NMCP_Suspected_Quantification_${from}_${to}.py`);
+}
+
+function downloadToolHTML(){
+  const blob=new Blob(['<!DOCTYPE html>\n'+document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='nmcp_rdt_quantification_v1.html';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
+</script>
+</body>
+</html>
