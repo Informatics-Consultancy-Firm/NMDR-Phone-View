@@ -228,6 +228,18 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
           </select>
         </div>
         <div class="ctrl">
+          <label>Buffer</label>
+          <select id="fBuffer" onchange="onControlChange()">
+            <option value="0">None (0%)</option>
+            <option value="5">5%</option>
+            <option value="10">10%</option>
+            <option value="12.5">12.5%</option>
+            <option value="15">15%</option>
+            <option value="20">20%</option>
+            <option value="25">25%</option>
+          </select>
+        </div>
+        <div class="ctrl">
           <label>District</label>
           <select id="fDist" onchange="onDistrictChange()"><option value="">All districts</option></select>
         </div>
@@ -370,6 +382,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
               <tr><td class="term">Monthly caseload</td><td>The median or mean of the pooled monthly values, i.e. the typical monthly suspected count for that quarter. Shown when Quarter Metric is set to monthly.</td></tr>
               <tr><td class="term">Quarterly estimate (&times; 3)</td><td>The monthly caseload multiplied by 3 to represent a full three-month quarter. Shown when Quarter Metric is set to quarterly.</td></tr>
               <tr><td class="term">Annual estimate</td><td>The sum of the four quarterly estimates for a unit.</td></tr>
+              <tr><td class="term">Buffer</td><td>An optional safety margin (5% to 25%) added on top of every estimate to cover demand variation, wastage and stock-outs. Selecting a buffer multiplies all monthly, quarterly and annual figures by (1 + buffer). For example, a 10% buffer turns an annual estimate of 1,000 into 1,100. Historical actuals (the by-year and monthly-data views) are never buffered.</td></tr>
               <tr><td class="term">Aggregation level</td><td>District (facilities summed within each district) or National (all facilities in scope summed). Facility totals are summed before the quarterly method is applied.</td></tr>
               <tr><td class="term">Months (n)</td><td>The number of monthly data points that fed the estimate for that unit. A quick data-completeness check.</td></tr>
               <tr><td class="term">Filters</td><td>District, Chiefdom, Facility, Facility type and free-text search restrict which facilities are included before anything is computed.</td></tr>
@@ -807,8 +820,9 @@ function buildUnits(aggLevel,source){
   return Object.values(groups);
 }
 // For a unit: quarter central value (of monthly values pooled across years), quarterly totals per year
-function quantifyUnit(unit,source,method){
-  const qMedian=[], qByYear={}; // qMedian holds the chosen central value (median or mean); qByYear[yr]=[4 quarter totals]
+function quantifyUnit(unit,source,method,buf){
+  buf=buf||1;
+  const qMedian=[], qByYear={}; // qMedian = per-month need (central value × buffer); qByYear = raw actual quarter totals
   ST.years.forEach(yr=>{qByYear[yr]=[null,null,null,null];});
   let nMonths=0;
   QUARTERS.forEach((Q,qi)=>{
@@ -820,18 +834,22 @@ function quantifyUnit(unit,source,method){
       Q.months.forEach(mi=>{ const v=m[mi]; if(v!==null&&v!==undefined){pool.push(v);qt=(qt===null?0:qt)+v;any=true;nMonths++;} });
       qByYear[yr][qi]=any?qt:null;
     });
-    qMedian[qi]=central(pool,method);
+    const c=central(pool,method);
+    qMedian[qi]=c===null?null:c*buf;
   });
   const qEstimate=qMedian.map(v=>v===null?null:v*3);
   const annual=qEstimate.reduce((s,v)=>s+(v||0),0);
   return {...unit, qMedian, qEstimate, qByYear, annual, nMonths};
 }
+function bufMult(){ const b=parseFloat(document.getElementById('fBuffer').value)||0; return 1+b/100; }
+function bufPct(){ return parseFloat(document.getElementById('fBuffer').value)||0; }
 function computeAll(){
   const aggLevel='district';
   const source=document.getElementById('fSource').value;
   const method=document.getElementById('fMethod').value;
-  const units=buildUnits(aggLevel,source).map(u=>quantifyUnit(u,source,method));
-  return {aggLevel,source,method,units};
+  const buf=bufMult(), buffer=bufPct();
+  const units=buildUnits(aggLevel,source).map(u=>quantifyUnit(u,source,method,buf));
+  return {aggLevel,source,method,buf,buffer,units};
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -878,7 +896,8 @@ function renderStats(R){
     `<div class="stat-pill">In current view: ${inScope.toLocaleString()}</div>`,
     `<div class="stat-pill">Source: ${srcTxt}</div>`,
     `<div class="stat-pill">By district: ${R.units.length} of 16</div>`,
-    `<div class="stat-pill ok">Total annual estimate: ${fmt(totAnnual)} suspected</div>`,
+    `<div class="stat-pill ok">Total annual estimate: ${fmt(totAnnual)} RDTs</div>`,
+    R.buffer?`<div class="stat-pill warn">Buffer: +${R.buffer}% included</div>`:`<div class="stat-pill">Buffer: none</div>`,
     ST.useWins?`<div class="stat-pill warn">Outlier correction ON (99.75th pct)</div>`:`<div class="stat-pill">Outlier correction OFF</div>`,
   ].join('');
 }
@@ -896,14 +915,14 @@ function renderKPIs(R){
         const vals=[];
         ST.years.forEach(yr=>{const d=u.data[yr];if(!d)return;const ms=monthlySeries(d,R.source);if(ms[m]!==null&&ms[m]!==undefined)vals.push(ms[m]);});
         const cv=central(vals,R.method);
-        if(cv!==null)monthTot[m]+=cv;
+        if(cv!==null)monthTot[m]+=cv*R.buf;
       }
     });
     html=MONTH_NAMES.map((mn,i)=>`
       <div class="kpi ${cls[Math.floor(i/3)]}">
         <div class="kpi-label">${mn}</div>
         <div class="kpi-val">${fmt(monthTot[i])}</div>
-        <div class="kpi-sub">${mLbl} RDTs / month</div>
+        <div class="kpi-sub">RDTs / month${R.buffer?` · incl. ${R.buffer}% buffer`:` · ${mLbl}`}</div>
       </div>`).join('');
     html+=`<div class="kpi"><div class="kpi-label">Annual Estimate</div><div class="kpi-val">${fmt(annual)}</div><div class="kpi-sub">quarterly method total</div></div>`;
   } else {
@@ -914,7 +933,7 @@ function renderKPIs(R){
       <div class="kpi ${cls[i]}">
         <div class="kpi-label">${Q.label}</div>
         <div class="kpi-val">${fmt(qTot[i]*3)}</div>
-        <div class="kpi-sub">${mLbl} ${fmt(qTot[i])}/month &times; 3 months</div>
+        <div class="kpi-sub">${fmt(qTot[i])}/month &times; 3 months${R.buffer?` · incl. ${R.buffer}% buffer`:` · ${mLbl}`}</div>
       </div>`).join('');
     html+=`<div class="kpi"><div class="kpi-label">Annual Estimate</div><div class="kpi-val">${fmt(annual)}</div><div class="kpi-sub">sum of quarterly estimates</div></div>`;
   }
@@ -923,7 +942,7 @@ function renderKPIs(R){
   document.getElementById('quantYearBanner').innerHTML=
     `<div style="font-size:12px;text-transform:uppercase;letter-spacing:.6px;opacity:.85;">RDT Quantification · suspected cases as proxy</div>
      <div style="font-size:26px;font-weight:800;margin:2px 0;">RDT Quantification for ${nextYear()}</div>
-     <div style="font-size:12px;opacity:.9;">Based on ${ST.years[0]} to ${ST.years[ST.years.length-1]} (${ST.years.length} year${ST.years.length>1?'s':''}) · ${srcTxt} · ${R.method==='mean'?'Mean':'Median'} method · ${ST.useWins?'outlier-corrected':'raw values'}</div>`;
+     <div style="font-size:12px;opacity:.9;">Based on ${ST.years[0]} to ${ST.years[ST.years.length-1]} (${ST.years.length} year${ST.years.length>1?'s':''}) · ${srcTxt} · ${R.method==='mean'?'Mean':'Median'} method · ${ST.useWins?'outlier-corrected':'raw values'}${R.buffer?` · +${R.buffer}% buffer`:''}</div>`;
 }
 
 function destroyChart(k){if(CHARTS[k]){CHARTS[k].destroy();CHARTS[k]=null;}}
@@ -945,7 +964,7 @@ function renderCharts(R){
         const vals=[];
         ST.years.forEach(yr=>{const d=u.data[yr];if(!d)return;const ms=monthlySeries(d,R.source);if(ms[m]!==null&&ms[m]!==undefined)vals.push(ms[m]);});
         const cv=central(vals,R.method);
-        if(cv!==null)monthTot[m]+=cv;
+        if(cv!==null)monthTot[m]+=cv*R.buf;
       }
     });
     CHARTS.quarter=new Chart(document.getElementById('chartQuarter'),{
@@ -987,7 +1006,7 @@ function renderCharts(R){
   }
 
   // Chart 3: all districts by annual estimate (honours filters)
-  const distUnits=buildUnits('district',R.source).map(u=>quantifyUnit(u,R.source,R.method));
+  const distUnits=buildUnits('district',R.source).map(u=>quantifyUnit(u,R.source,R.method,R.buf));
   const top=distUnits.sort((a,b)=>b.annual-a.annual).reverse();
   document.getElementById('chart3Title').textContent=`All Districts by Annual Estimate (${top.length})`;
   destroyChart('top');
@@ -1015,7 +1034,7 @@ function renderQuant(R){
   const mult=metric==='quarterly'?3:1;
   const mWord=R.method==='mean'?'mean':'median';
   const metricLbl=metric==='quarterly'?`quarterly estimate (${mWord} × 3)`:`${mWord} monthly caseload`;
-  document.getElementById('quantNote').innerHTML=`Quarter columns show the <strong>${metricLbl}</strong>. Annual estimate = sum of the four quarterly estimates (${mWord} monthly × 3). ${ST.years.length===2?`<em>With 2 years the ${mWord} of the pooled monthly values is used; add more years for a more robust ${mWord}.</em>`:''}`;
+  document.getElementById('quantNote').innerHTML=`Quarter columns show the <strong>${metricLbl}</strong>. Annual estimate = sum of the four quarterly estimates (${mWord} monthly × 3). ${R.buffer?`<strong>A ${R.buffer}% buffer is included in every value shown.</strong> `:''}${ST.years.length===2?`<em>With 2 years the ${mWord} of the pooled monthly values is used; add more years for a more robust ${mWord}.</em>`:''}`;
 
   const cols=unitCols(R.aggLevel);
   const qHdr=QUARTERS.map(q=>q.label);
@@ -1082,7 +1101,7 @@ function renderMethod(R){
   const metricTxt=metric==='quarterly'?'Quarterly estimate (× 3)':`${mWord} monthly caseload`;
   const yrs=ST.years;
   document.getElementById('methodConfig').innerHTML=
-    `<strong>Current settings:</strong> Years ${yrs[0]} to ${yrs[yrs.length-1]} (${yrs.length}) · Source: ${srcTxt} · Method: ${mWord} · Quarter metric: ${metricTxt} · View: by district (national = the TOTAL row) · Outlier correction: ${ST.useWins?'ON (99.75th percentile)':'OFF'}. The definitions below explain each of these.`;
+    `<strong>Current settings:</strong> Years ${yrs[0]} to ${yrs[yrs.length-1]} (${yrs.length}) · Source: ${srcTxt} · Method: ${mWord} · Quarter metric: ${metricTxt} · Buffer: ${R.buffer?('+'+R.buffer+'%'):'none'} · View: by district (national = the TOTAL row) · Outlier correction: ${ST.useWins?'ON (99.75th percentile)':'OFF'}. The definitions below explain each of these.`;
   const total=ST.totalFacilities||0, active=ST.facilities.length, inactive=Math.max(0,total-active);
   const pct=total?(active/total*100).toFixed(1):0;
   const cov=document.getElementById('methodCoverage');
@@ -1135,11 +1154,12 @@ function monthlyMatrix(source){
   });
   return [head,...rows];
 }
-function levelSummary(aggLevel,source,method){
-  const units=buildUnits(aggLevel,source).map(u=>quantifyUnit(u,source,method));
+function levelSummary(aggLevel,source,method,buf){
+  buf=buf||1;
+  const units=buildUnits(aggLevel,source).map(u=>quantifyUnit(u,source,method,buf));
   const cols=unitCols(aggLevel);
-  const mAbbr=method==='mean'?'mean/mo':'med/mo';
-  const head=[...cols,...QUARTERS.map(q=>q.short+' '+mAbbr),...QUARTERS.map(q=>q.short+' est.'),'Annual Estimate'];
+  const nAbbr=buf>1?'need/mo':(method==='mean'?'mean/mo':'med/mo');
+  const head=[...cols,...QUARTERS.map(q=>q.short+' '+nAbbr),...QUARTERS.map(q=>q.short+' est.'),'Annual Estimate'];
   const rows=units.sort((a,b)=>b.annual-a.annual).map(u=>[
     ...unitVals(u,aggLevel),
     ...u.qMedian.map(v=>v===null?'':Math.round(v)),
@@ -1149,26 +1169,28 @@ function levelSummary(aggLevel,source,method){
   return [head,...rows];
 }
 // One quantification sheet for a given source, at the current aggregation level, with a title
-function sourceSheetMatrix(aggLevel,source,method){
-  const m=levelSummary(aggLevel,source,method);
+function sourceSheetMatrix(aggLevel,source,method,buf){
+  buf=buf||1;
+  const m=levelSummary(aggLevel,source,method,buf);
   const srcName={combined:'Facility + Community',fac:'Facility',com:'Community'}[source];
-  const title=[`RDT Quantification (suspected as proxy) for ${nextYear()} — ${srcName} — by ${aggLevel} — ${method==='mean'?'Mean':'Median'} method`];
-  const basis=[`Based on years ${ST.years.join(', ')} · ${ST.useWins?'outlier-corrected (99.75th pct)':'raw values'} · quarterly estimate = monthly × 3 · annual = sum of quarters`];
+  const bp=Math.round((buf-1)*1000)/10;
+  const title=[`RDT Quantification (suspected as proxy) for ${nextYear()} — ${srcName} — by ${aggLevel} — ${method==='mean'?'Mean':'Median'} method${bp?' — incl. '+bp+'% buffer':''}`];
+  const basis=[`Based on years ${ST.years.join(', ')} · ${ST.useWins?'outlier-corrected (99.75th pct)':'raw values'} · quarterly estimate = monthly × 3${bp?' × '+(1+bp/100)+' buffer':''} · annual = sum of quarters`];
   return [title, basis, [], ...m];
 }
 function downloadExcel(){
   const R=computeAll();
   const aggLevel=R.aggLevel; const method=R.method; const mWord=method==='mean'?'Mean':'Median';
   const qy=nextYear(); const tag=`${ST.years[0]}_${ST.years[ST.years.length-1]}`;
-  const wb=XLSX.utils.book_new();
+  const wb=XLSX.utils.book_new(); const buf=R.buf;
   // Three source sheets, at the current aggregation level
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix(aggLevel,'fac',method)),'Facility');
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix(aggLevel,'com',method)),'Community');
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix(aggLevel,'combined',method)),'Combined');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix(aggLevel,'fac',method,buf)),'Facility');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix(aggLevel,'com',method,buf)),'Community');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix(aggLevel,'combined',method,buf)),'Combined');
   // Same three at facility level for distribution planning
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix('facility','fac',method)),'Facility (by HF)');
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix('facility','com',method)),'Community (by HF)');
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix('facility','combined',method)),'Combined (by HF)');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix('facility','fac',method,buf)),'Facility (by HF)');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix('facility','com',method,buf)),'Community (by HF)');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix('facility','combined',method,buf)),'Combined (by HF)');
   // Detail + raw monthly
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(detailMatrix(R)),'Quarterly by Year');
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(monthlyMatrix('combined')),'Monthly Data (Combined)');
@@ -1178,6 +1200,7 @@ function downloadExcel(){
     ['Generated',new Date().toISOString()],
     ['Based on years',ST.years.join(', ')],
     ['Method',mWord],
+    ['Buffer applied',R.buffer? R.buffer+'% added to all estimates':'None'],
     ['Outlier correction',ST.useWins?'Upper bound 99.75th pct per facility per year':'None'],
     [''],
     ['Facility coverage'],
