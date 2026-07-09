@@ -231,6 +231,15 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
           </select>
         </div>
         <div class="ctrl">
+          <label>Age group</label>
+          <select id="fAge" onchange="onControlChange()">
+            <option value="all">All ages</option>
+            <option value="u5">&lt;5y</option>
+            <option value="age5_14">5-14y</option>
+            <option value="age15p">15+y</option>
+          </select>
+        </div>
+        <div class="ctrl">
           <label>Quarter Metric</label>
           <select id="fMetric" onchange="onControlChange()">
             <option value="monthly">Monthly caseload</option>
@@ -501,6 +510,8 @@ const Q_COLORS=['#17a2b8','#28a745','#ffc107','#6f42c1'];
 // Children (Category Option Combos) only — never parent Data Element totals.
 const FAC_AGE = ['m5T8uBNB8aN','j7j6iaknOFn','zK1aiw8zFac'];   // 0-59m, 5-14y, 15+y (HF01)
 const COM_AGE = ['NtjMVmRfvHH','qDXW7WMLT99','mdjRPpvLKdu'];   // 02-59m, 5-14y, 15+y (HF04)
+const AGE_KEYS = ['u5','age5_14','age15p'];                    // <5y, 5-14y, 15+y (index-aligned to FAC_AGE/COM_AGE)
+const AGE_LABEL = {all:'All ages', u5:'<5y', age5_14:'5-14y', age15p:'15+y'};
 // Component data elements. A positive test feeds BOTH confirmed and tested.
 const COMPONENTS = [
   {de:'Sz13vbo2Qwh', level:'fac', test:'micro', roles:['confirmed','tested'], name:'Microscopy positive'},
@@ -515,21 +526,32 @@ const COMPONENTS = [
   {de:'Imkks0HAl7E', level:'com', test:null,    roles:['treated'],           name:'ACT HTR >24h'},
 ];
 const ALL_DX = [];
-COMPONENTS.forEach(cp=>{ (cp.level==='fac'?FAC_AGE:COM_AGE).forEach(coc=>
-  ALL_DX.push({dxStr:`${cp.de}.${coc}`, field:`${cp.de}_${coc}`, level:cp.level, test:cp.test, roles:cp.roles})); });
+COMPONENTS.forEach(cp=>{ const ages=(cp.level==='fac'?FAC_AGE:COM_AGE);
+  ages.forEach((coc,gi)=> ALL_DX.push({dxStr:`${cp.de}.${coc}`, field:`${cp.de}_${coc}`, level:cp.level, test:cp.test, roles:cp.roles, group:AGE_KEYS[gi]})); });
 const DX_MAP={};ALL_DX.forEach(d=>{DX_MAP[d.dxStr]=d;});
 const DX_PARAM=[...new Set(ALL_DX.map(d=>d.dxStr))].join(';');
-function sumMeasure(month, level, role, test){
+function sumMeasure(month, level, role, test, age){
   let any=false, s=0;
   ALL_DX.forEach(d=>{
     if(d.level!==level || !d.roles.includes(role))return;
     if(role!=='treated' && test && d.test!==test)return;
+    if(age && age!=='all' && d.group!==age)return;
     const v=month[d.field]; if(v!==null&&v!==undefined){s+=v;any=true;}
   });
   return any? s : null;
 }
 function addN(a,b){ if(a===null&&b===null)return null; return (a||0)+(b||0); }
 function curTest(){ const el=document.getElementById('fTest'); return el? el.value : 'all'; }
+function curAge(){ const el=document.getElementById('fAge'); return el? el.value : 'all'; }
+const AGE10=['conf_rdt_fac','conf_micro_fac','test_rdt_fac','test_micro_fac','treat_fac','conf_rdt_com','conf_micro_com','test_rdt_com','test_micro_com','treat_com'];
+// resolve data[yr] ({u5,age5_14,age15p}) to a single 10-array object for the chosen age (or the sum for 'all')
+function ageData(d,age){
+  if(!d)return null;
+  if(age && age!=='all') return d[age];
+  const out={};
+  AGE10.forEach(k=>{ out[k]=Array.from({length:12},(_,i)=>{ let any=false,s=0; ['u5','age5_14','age15p'].forEach(g=>{const v=d[g]?d[g][k][i]:null; if(v!==null&&v!==undefined){s+=v;any=true;}}); return any?s:null; }); });
+  return out;
+}
 // adjusted confirmed from component monthly values
 function adjConfirmed(conf,test,treat){
   if(conf===null&&test===null&&treat===null)return null;
@@ -778,18 +800,22 @@ async function startPipeline(){
       ST.years.forEach(yr=>{
         const months=rawSlots[ouId][yr];if(!months)return;
         const mk=()=>Array(12).fill(null);
-        const A={conf_rdt_fac:mk(),conf_micro_fac:mk(),test_rdt_fac:mk(),test_micro_fac:mk(),treat_fac:mk(),
-                 conf_rdt_com:mk(),conf_micro_com:mk(),test_rdt_com:mk(),test_micro_com:mk(),treat_com:mk()};
-        months.forEach((m,i)=>{
-          A.conf_rdt_fac[i]=sumMeasure(m,'fac','confirmed','rdt');   A.conf_micro_fac[i]=sumMeasure(m,'fac','confirmed','micro');
-          A.test_rdt_fac[i]=sumMeasure(m,'fac','tested','rdt');      A.test_micro_fac[i]=sumMeasure(m,'fac','tested','micro');
-          A.treat_fac[i]=sumMeasure(m,'fac','treated',null);
-          A.conf_rdt_com[i]=sumMeasure(m,'com','confirmed','rdt');   A.conf_micro_com[i]=sumMeasure(m,'com','confirmed','micro');
-          A.test_rdt_com[i]=sumMeasure(m,'com','tested','rdt');      A.test_micro_com[i]=sumMeasure(m,'com','tested','micro');
-          A.treat_com[i]=sumMeasure(m,'com','treated',null);
-          if(Object.values(A).some(arr=>arr[i]!==null))hasAny=true;
+        const byAge={};
+        AGE_KEYS.forEach(g=>{
+          const A={conf_rdt_fac:mk(),conf_micro_fac:mk(),test_rdt_fac:mk(),test_micro_fac:mk(),treat_fac:mk(),
+                   conf_rdt_com:mk(),conf_micro_com:mk(),test_rdt_com:mk(),test_micro_com:mk(),treat_com:mk()};
+          months.forEach((m,i)=>{
+            A.conf_rdt_fac[i]=sumMeasure(m,'fac','confirmed','rdt',g);   A.conf_micro_fac[i]=sumMeasure(m,'fac','confirmed','micro',g);
+            A.test_rdt_fac[i]=sumMeasure(m,'fac','tested','rdt',g);      A.test_micro_fac[i]=sumMeasure(m,'fac','tested','micro',g);
+            A.treat_fac[i]=sumMeasure(m,'fac','treated',null,g);
+            A.conf_rdt_com[i]=sumMeasure(m,'com','confirmed','rdt',g);   A.conf_micro_com[i]=sumMeasure(m,'com','confirmed','micro',g);
+            A.test_rdt_com[i]=sumMeasure(m,'com','tested','rdt',g);      A.test_micro_com[i]=sumMeasure(m,'com','tested','micro',g);
+            A.treat_com[i]=sumMeasure(m,'com','treated',null,g);
+            if(Object.values(A).some(arr=>arr[i]!==null))hasAny=true;
+          });
+          byAge[g]=A;
         });
-        data[yr]=A;
+        data[yr]=byAge;
       });
       if(hasAny) ST.facilities.push({ou_id:ouId,facility:ou.name,hfType:ou.hfType,chiefdom:ou.chiefdomName,district:ou.districtName,data});
     });
@@ -820,24 +846,27 @@ async function startPipeline(){
 // ═══════════════════════════════════════════════════════════════
 //  COMPUTE
 // ═══════════════════════════════════════════════════════════════
-function pickLvl(d,base,source,i){
-  const f=d[base+'_fac']?d[base+'_fac'][i]:null, c=d[base+'_com']?d[base+'_com'][i]:null;
+function pickLvl(A,base,source,i){
+  const f=A[base+'_fac']?A[base+'_fac'][i]:null, c=A[base+'_com']?A[base+'_com'][i]:null;
   if(source==='fac')return f; if(source==='com')return c; return addN(f,c);
 }
-function confMonth(d,source,test,i){
-  if(test==='rdt')return pickLvl(d,'conf_rdt',source,i);
-  if(test==='micro')return pickLvl(d,'conf_micro',source,i);
-  return addN(pickLvl(d,'conf_rdt',source,i),pickLvl(d,'conf_micro',source,i));
+function confAt(A,source,test,i){
+  if(test==='rdt')return pickLvl(A,'conf_rdt',source,i);
+  if(test==='micro')return pickLvl(A,'conf_micro',source,i);
+  return addN(pickLvl(A,'conf_rdt',source,i),pickLvl(A,'conf_micro',source,i));
 }
-function testMonth(d,source,test,i){
-  if(test==='rdt')return pickLvl(d,'test_rdt',source,i);
-  if(test==='micro')return pickLvl(d,'test_micro',source,i);
-  return addN(pickLvl(d,'test_rdt',source,i),pickLvl(d,'test_micro',source,i));
+function testAt(A,source,test,i){
+  if(test==='rdt')return pickLvl(A,'test_rdt',source,i);
+  if(test==='micro')return pickLvl(A,'test_micro',source,i);
+  return addN(pickLvl(A,'test_rdt',source,i),pickLvl(A,'test_micro',source,i));
 }
+// confMonth keeps its signature (used by charts): resolves current age internally
+function confMonth(d,source,test,i){ return confAt(ageData(d,curAge()),source,test,i); }
 function monthlySeries(d,source,test){
-  // returns the ADJUSTED CONFIRMED monthly series = ACT/treatment need
+  // returns the ADJUSTED CONFIRMED monthly series = ACT/treatment need (for the selected age group)
   test=test||curTest();
-  return Array.from({length:12},(_,i)=>adjConfirmed(confMonth(d,source,test,i),testMonth(d,source,test,i),pickLvl(d,'treat',source,i)));
+  const A=ageData(d,curAge());
+  return Array.from({length:12},(_,i)=>adjConfirmed(confAt(A,source,test,i),testAt(A,source,test,i),pickLvl(A,'treat',source,i)));
 }
 function getFilters(){
   return {
@@ -871,12 +900,14 @@ function buildUnits(aggLevel,source){
     if(aggLevel==='chiefdom'){key=x.district+' | '+x.chiefdom;meta={district:x.district,chiefdom:x.chiefdom,facility:'',hfType:''};}
     else if(aggLevel==='district'){key=x.district;meta={district:x.district,chiefdom:'',facility:'',hfType:''};}
     else {key='National';meta={district:'National',chiefdom:'',facility:'',hfType:''};}
-    if(!groups[key]){groups[key]={key,...meta,data:{}};ST.years.forEach(yr=>{const mk=()=>Array(12).fill(null);groups[key].data[yr]={conf_rdt_fac:mk(),conf_micro_fac:mk(),test_rdt_fac:mk(),test_micro_fac:mk(),treat_fac:mk(),conf_rdt_com:mk(),conf_micro_com:mk(),test_rdt_com:mk(),test_micro_com:mk(),treat_com:mk()};});}
+    if(!groups[key]){groups[key]={key,...meta,data:{}};ST.years.forEach(yr=>{const mk=()=>Array(12).fill(null);const blank=()=>({conf_rdt_fac:mk(),conf_micro_fac:mk(),test_rdt_fac:mk(),test_micro_fac:mk(),treat_fac:mk(),conf_rdt_com:mk(),conf_micro_com:mk(),test_rdt_com:mk(),test_micro_com:mk(),treat_com:mk()});groups[key].data[yr]={u5:blank(),age5_14:blank(),age15p:blank()};});}
     ST.years.forEach(yr=>{
       const src=x.data[yr];if(!src)return;
       const tgt=groups[key].data[yr];
-      ['conf_rdt_fac','conf_micro_fac','test_rdt_fac','test_micro_fac','treat_fac','conf_rdt_com','conf_micro_com','test_rdt_com','test_micro_com','treat_com'].forEach(k=>{
-        for(let i=0;i<12;i++){ if(src[k][i]!==null)tgt[k][i]=(tgt[k][i]===null?0:tgt[k][i])+src[k][i]; }
+      AGE_KEYS.forEach(g=>{ const S=src[g],T=tgt[g]; if(!S||!T)return;
+        ['conf_rdt_fac','conf_micro_fac','test_rdt_fac','test_micro_fac','treat_fac','conf_rdt_com','conf_micro_com','test_rdt_com','test_micro_com','treat_com'].forEach(k=>{
+          for(let i=0;i<12;i++){ if(S[k][i]!==null)T[k][i]=(T[k][i]===null?0:T[k][i])+S[k][i]; }
+        });
       });
     });
   });
@@ -911,9 +942,9 @@ function computeAll(){
   const source=document.getElementById('fSource').value;
   const method=document.getElementById('fMethod').value;
   const buf=bufMult(), buffer=bufPct();
-  const test=curTest();
+  const test=curTest(); const age=curAge();
   const units=buildUnits(aggLevel,source).map(u=>quantifyUnit(u,source,method,buf));
-  return {aggLevel,source,method,buf,buffer,units,test};
+  return {aggLevel,source,method,buf,buffer,units,test,age};
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -955,10 +986,11 @@ function renderTestMix(R){
     const ddy=dy[dn]||(dy[dn]={});
     yrs.forEach(yr=>{
       const d=x.data[yr]; if(!d)return;
+      const A=ageData(d,curAge());
       const cell=ddy[yr]||(ddy[yr]={rdt:0,micro:0});
       const ny=natY[yr];
       for(let i=0;i<12;i++){
-        const rf=d.test_rdt_fac[i]||0, mf=d.test_micro_fac[i]||0, rc=d.test_rdt_com[i]||0, mc=d.test_micro_com[i]||0;
+        const rf=A.test_rdt_fac[i]||0, mf=A.test_micro_fac[i]||0, rc=A.test_rdt_com[i]||0, mc=A.test_micro_com[i]||0;
         ny.rf+=rf; ny.mf+=mf; ny.rc+=rc; ny.mc+=mc;
         cell.rdt+=rf+rc; cell.micro+=mf+mc;
         yrAgg[yr].rdt+=rf+rc; yrAgg[yr].micro+=mf+mc;
@@ -1027,6 +1059,7 @@ function renderStats(R){
     `<div class="stat-pill">In current view: ${inScope.toLocaleString()}</div>`,
     `<div class="stat-pill">Source: ${srcTxt}</div>`,
     `<div class="stat-pill">Test: ${({all:'RDT + Microscopy',rdt:'RDT only',micro:'Microscopy only'}[R.test||'all'])}</div>`,
+    `<div class="stat-pill">Age: ${AGE_LABEL[R.age||'all']}</div>`,
     `<div class="stat-pill">By district: ${R.units.length} of 16</div>`,
     `<div class="stat-pill ok">Total annual estimate: ${fmt(totAnnual)} ACT courses</div>`,
     R.buffer?`<div class="stat-pill warn">Buffer: +${R.buffer}% included</div>`:`<div class="stat-pill">Buffer: none</div>`,
@@ -1071,11 +1104,11 @@ function renderKPIs(R){
   }
   document.getElementById('kpiGrid').innerHTML=html;
   const srcTxt={combined:'Facility + Community',fac:'Facility only',com:'Community only'}[R.source];
-  const testTxt={all:'RDT + Microscopy',rdt:'RDT',micro:'Microscopy'}[R.test||'all'];
+  const testTxt={all:'RDT + Microscopy',rdt:'RDT',micro:'Microscopy'}[R.test||'all']; const ageTxt=AGE_LABEL[R.age||'all'];
   document.getElementById('quantYearBanner').innerHTML=
     `<div style="font-size:12px;text-transform:uppercase;letter-spacing:.6px;opacity:.85;">Typical-year ACT demand · mean/median of observed years · confirmed method (TPR-adjusted)</div>
      <div style="font-size:26px;font-weight:800;margin:2px 0;">ACT Treatment Demand Profile</div>
-     <div style="font-size:12px;opacity:.9;">Based on ${ST.years[0]} to ${ST.years[ST.years.length-1]} (${ST.years.length} year${ST.years.length>1?'s':''}) · ${srcTxt} · ${testTxt} tests · ${R.method==='mean'?'Mean':'Median'} method · ${ST.useWins?'outlier-corrected':'raw values'}${R.buffer?` · +${R.buffer}% buffer`:''}</div>`;
+     <div style="font-size:12px;opacity:.9;">Based on ${ST.years[0]} to ${ST.years[ST.years.length-1]} (${ST.years.length} year${ST.years.length>1?'s':''}) · ${srcTxt} · ${testTxt} tests · ${ageTxt} · ${R.method==='mean'?'Mean':'Median'} method · ${ST.useWins?'outlier-corrected':'raw values'}${R.buffer?` · +${R.buffer}% buffer`:''}</div>`;
 }
 
 function destroyChart(k){if(CHARTS[k]){CHARTS[k].destroy();CHARTS[k]=null;}}
@@ -1106,16 +1139,21 @@ function renderCharts(R){
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}
     });
 
-    // Chart 2: monthly total by year (sum across units of each month, per year)
+    // Chart 2: monthly total by year — adjusted (solid) vs confirmed (dashed)
+    const _test=curTest();
     const byYearM=ST.years.map(yr=>{const arr=Array(12).fill(0);R.units.forEach(u=>{const d=u.data[yr];if(!d)return;const ms=monthlySeries(d,R.source);for(let m=0;m<12;m++){if(ms[m]!==null)arr[m]+=ms[m];}});return arr;});
+    const byYearC=ST.years.map(yr=>{const arr=Array(12).fill(0);R.units.forEach(u=>{const d=u.data[yr];if(!d)return;for(let m=0;m<12;m++){const c=confMonth(d,R.source,_test,m);if(c!==null)arr[m]+=c;}});return arr;});
+    const yrDS=[];
+    ST.years.forEach((yr,yi)=>{const col=`hsl(${205+yi*30},60%,45%)`;
+      yrDS.push({label:yr+' adjusted',data:byYearM[yi].map(Math.round),borderColor:col,backgroundColor:col,tension:.3,fill:false,pointRadius:2,borderWidth:2.2});
+      yrDS.push({label:yr+' confirmed',data:byYearC[yi].map(Math.round),borderColor:col,backgroundColor:col,tension:.3,fill:false,pointRadius:0,borderWidth:1.5,borderDash:[5,4]});
+    });
     CHARTS.year=new Chart(document.getElementById('chartYear'),{
       type:'line',
-      data:{labels:MONTH_NAMES,datasets:ST.years.map((yr,yi)=>({
-        label:String(yr),data:byYearM[yi].map(Math.round),
-        borderColor:`hsl(${205+yi*30},60%,45%)`,backgroundColor:`hsl(${205+yi*30},60%,45%)`,tension:.3,fill:false,pointRadius:3}))},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}
+      data:{labels:MONTH_NAMES,datasets:yrDS},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:16,font:{size:10}}},tooltip:{mode:'index',intersect:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}
     });
-    document.getElementById('chartYearHead').textContent='Monthly Adjusted Confirmed by Year';
+    document.getElementById('chartYearHead').textContent='Monthly by Year — Confirmed (dashed) vs Adjusted (solid)';
   } else {
     // ── QUARTERLY VIEW ────────────────────────────────────────
     document.getElementById('chart1Title').textContent=`Quarterly Estimate (${mWord} monthly × 3)`;
