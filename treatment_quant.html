@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NMCP Treatment (ACT) Quantification — Confirmed Method · ICF-SL</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--blue:#2c6793;--blue-dk:#1f4a6a;--blue-lt:#e8f0f7;--white:#fff;--bg:#f0f5f9;--border:#d0dde8;--muted:#6c7a89;--gold:#ffc107;--green:#28a745;--teal:#17a2b8;--red:#dc3545;--purple:#6f42c1;}
+html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);}
+.page-header{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-dk) 100%);color:#fff;padding:20px 28px;box-shadow:0 2px 12px rgba(0,0,0,.18);}
+.header-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.logo-box{background:#fff;border-radius:8px;padding:5px 9px;}
+.logo-box img{width:76px;height:auto;border-radius:4px;}
+.header-text h1{font-size:19px;font-weight:700;letter-spacing:.4px;margin-bottom:2px;}
+.header-text p{font-size:12px;opacity:.85;}
+.page-body{max-width:1200px;margin:0 auto;padding:22px 26px;}
+.card{background:var(--white);border-radius:12px;border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:20px;overflow:hidden;}
+.card-head{padding:13px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border);}
+.card-head h2{font-size:14px;font-weight:700;color:var(--blue-dk);}
+.card-body{padding:18px;}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;}
+.form-control{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;color:#222;background:#fff;transition:border-color .2s;}
+.form-control:focus{outline:none;border-color:var(--blue);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.4px;transition:all .2s;text-transform:uppercase;font-family:inherit;}
+.btn-primary{background:var(--blue);color:#fff;}.btn-primary:hover{background:var(--blue-dk);}
+.btn-gold{background:var(--gold);color:#000;}.btn-gold:hover{background:#e0a800;}
+.btn-green{background:var(--green);color:#fff;}.btn-green:hover{background:#1e7e34;}
+.btn-teal{background:var(--teal);color:#fff;}.btn-teal:hover{background:#138496;}
+.btn-outline{background:#fff;color:var(--blue);border:1.5px solid var(--blue);}.btn-outline:hover{background:var(--blue-lt);}
+.btn-sm{padding:5px 11px;font-size:11px;}
+.run-btn{width:100%;background:linear-gradient(135deg,var(--blue),var(--blue-dk));color:#fff;border:none;padding:14px;border-radius:9px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(44,102,147,.28);transition:transform .2s;font-family:inherit;}
+.run-btn:hover{transform:translateY(-2px);}
+
+/* PROGRESS */
+.pbar-wrap{height:7px;background:#1a1a2e;border-radius:4px;overflow:hidden;margin:8px 0;}
+.pbar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));border-radius:4px;transition:width .3s;}
+.step-list{display:flex;flex-direction:column;gap:4px;max-height:260px;overflow-y:auto;}
+.step-item{display:flex;align-items:flex-start;gap:8px;padding:5px 9px;border-radius:5px;font-size:11px;font-family:'Courier New',monospace;}
+.step-item.pending{background:#1a1a2e;color:#555;}
+.step-item.running{background:#1a2e4a;color:var(--teal);animation:pulse 1.4s ease-in-out infinite;}
+.step-item.done{background:#0a2e0a;color:var(--green);}
+.step-item.error{background:#2e0a0a;color:var(--red);}
+.step-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:2px;}
+.step-item.pending .step-dot{background:#555;}
+.step-item.running .step-dot{background:var(--teal);}
+.step-item.done .step-dot{background:var(--green);}
+.step-item.error .step-dot{background:var(--red);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* RESULTS */
+.stats-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;}
+.stat-pill{background:var(--blue-lt);border:1.5px solid var(--blue);border-radius:20px;padding:4px 13px;font-size:12px;font-weight:700;color:var(--blue);}
+.stat-pill.ok{background:#d4edda;border-color:var(--green);color:#155724;}
+.stat-pill.warn{background:#fff3cd;border-color:var(--gold);color:#856404;}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px;}
+.kpi{border:2px solid var(--border);border-radius:10px;padding:14px 16px;background:linear-gradient(135deg,#fff,var(--blue-lt));}
+.kpi .kpi-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px;}
+.kpi .kpi-val{font-size:24px;font-weight:800;color:var(--blue-dk);line-height:1;}
+.kpi .kpi-sub{font-size:11px;color:var(--muted);margin-top:5px;}
+.kpi.q1{border-color:var(--teal);} .kpi.q2{border-color:var(--green);}
+.kpi.q3{border-color:var(--gold);} .kpi.q4{border-color:var(--purple);}
+
+.alert{padding:10px 14px;border-radius:6px;margin-bottom:10px;font-size:13px;border:1.5px solid;}
+.alert-err{background:#f8d7da;border-color:var(--red);color:#721c24;}
+
+/* CONTROLS */
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px;padding:14px;background:var(--blue-lt);border-radius:9px;border:1px solid var(--border);}
+.ctrl{display:flex;flex-direction:column;gap:4px;}
+.ctrl label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--blue);}
+.ctrl select,.ctrl input{padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;}
+
+/* CHARTS */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.chart-box{border:1px solid var(--border);border-radius:10px;padding:14px;background:#fff;}
+.chart-box h3{font-size:12px;font-weight:700;color:var(--blue-dk);margin-bottom:10px;text-transform:uppercase;letter-spacing:.4px;}
+.chart-box.full{grid-column:1/-1;}
+.chart-canvas-wrap{position:relative;height:280px;}
+@media(max-width:820px){.chart-grid{grid-template-columns:1fr;}}
+
+.data-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);max-height:480px;overflow-y:auto;}
+.data-table{width:100%;border-collapse:collapse;font-size:11px;}
+.data-table thead{background:var(--blue-lt);border-bottom:2px solid var(--border);position:sticky;top:0;z-index:2;}
+.data-table th{padding:8px 10px;text-align:left;font-weight:700;color:var(--blue);white-space:nowrap;cursor:pointer;user-select:none;}
+.data-table th:hover{background:#dce8f2;}
+.data-table td{padding:6px 10px;border-bottom:1px solid var(--border);color:#2c4b62;white-space:nowrap;}
+.data-table td.num{text-align:right;font-variant-numeric:tabular-nums;}
+.data-table tbody tr:hover{background:var(--blue-lt);}
+.data-table tfoot td{background:#eef4fa;font-weight:800;color:var(--blue-dk);border-top:2px solid var(--border);position:sticky;bottom:0;}
+.data-table.tm th,.data-table.tm td{text-align:left;}
+
+.dl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;}
+.dl-card{border:2px solid var(--border);border-radius:10px;overflow:hidden;}
+.dl-card-head{padding:10px 16px;font-size:13px;font-weight:700;color:#fff;}
+.dl-card-body{padding:14px;display:flex;flex-direction:column;gap:8px;}
+
+.tab-bar{display:flex;gap:4px;border-bottom:2px solid var(--border);margin-bottom:18px;flex-wrap:wrap;}
+.tab{padding:9px 18px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-2px;text-transform:uppercase;letter-spacing:.4px;font-family:inherit;}
+.tab.active{color:var(--blue-dk);border-bottom-color:var(--blue);}
+/* METHODOLOGY */
+.method-doc{font-size:13px;color:#2c4b62;line-height:1.7;max-width:900px;}
+.method-doc h3{font-size:14px;color:var(--blue-dk);margin:22px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--blue-lt);text-transform:uppercase;letter-spacing:.4px;}
+.method-doc h3:first-child{margin-top:0;}
+.method-doc p{margin-bottom:10px;}
+.method-config{background:var(--blue-lt);border:1px solid var(--blue);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--blue-dk);margin-bottom:8px;}
+.method-steps{list-style:none;counter-reset:mstep;margin:4px 0 10px;padding:0;}
+.method-steps li{position:relative;padding:9px 12px 9px 42px;margin-bottom:6px;background:#f7fafd;border:1px solid var(--border);border-radius:7px;}
+.method-steps li::before{counter-increment:mstep;content:counter(mstep);position:absolute;left:9px;top:9px;width:23px;height:23px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;}
+.step-eg{margin-top:6px;font-size:11.5px;color:#155724;background:#f0f7f0;border:1px solid #cfe6cf;border-radius:5px;padding:5px 9px;line-height:1.6;}
+.step-eg b{color:#0f5132;}
+.def-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:10px;}
+.def-table th{text-align:left;background:var(--blue);color:#fff;padding:8px 10px;border:1px solid var(--blue-dk);}
+.def-table td{padding:8px 10px;border:1px solid var(--border);vertical-align:top;}
+.def-table td.term{font-weight:700;color:var(--blue-dk);background:#f2f7fb;white-space:nowrap;}
+.def-table tbody tr:hover td{background:#eef4fa;}
+.def-table td.term:hover{background:#e4eef7;}
+.method-eg{background:#f0f7f0;border:1px solid var(--green);border-radius:8px;padding:14px 16px;font-size:12px;line-height:1.9;margin-bottom:8px;}
+.method-eg code{background:#fff;padding:1px 6px;border-radius:4px;border:1px solid var(--border);font-size:12px;}
+.method-eg .eg-res{font-weight:800;color:#155724;}
+.method-note{border-left:3px solid var(--gold);background:#fffdf5;padding:10px 14px;border-radius:0 7px 7px 0;font-size:12px;margin-bottom:8px;}
+.page-footer{background:var(--blue-dk);color:rgba(255,255,255,.8);text-align:center;padding:13px;font-size:11px;margin-top:24px;}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div class="header-row">
+    <div class="logo-box"><img src="https://github.com/mohamedsillahkanu/gdp-dashboard-2/raw/6c7463b0d5c3be150aafae695a4bcbbd8aeb1499/ICF-SL.jpg" alt="ICF-SL"></div>
+    <div class="header-text">
+      <h1>Antimalarial Treatment (ACT) Quantification</h1>
+      <p>Using adjusted confirmed cases · confirmed method (TPR-adjusted) · National Malaria Control Programme · Sierra Leone · ICF-SL</p>
+    </div>
+    <div style="margin-left:auto;"><span id="headerPill" style="background:rgba(255,255,255,.15);padding:5px 13px;border-radius:20px;font-size:11px;font-weight:700;">Ready</span></div>
+  </div>
+</div>
+
+<div class="page-body">
+
+<!-- CONFIG -->
+<div id="configScreen">
+  <div class="card">
+    <div class="card-head"><h2>Configure Quantification</h2><button class="btn btn-outline btn-sm" onclick="showMethod('configScreen')">&#128214; View Methodology</button></div>
+    <div class="card-body">
+      <div style="background:var(--blue-lt);border-radius:8px;padding:14px 16px;margin-bottom:18px;font-size:12px;color:var(--blue-dk);line-height:1.7;">
+        <strong>What this tool does:</strong><br>
+        Estimates <strong>antimalarial treatment (ACT) need</strong> using the <strong>confirmed method</strong>. For each facility and month it computes <strong>adjusted confirmed cases</strong> = confirmed + TPR &times; max(treated &minus; confirmed, 0), where TPR = confirmed &divide; tested. This releases the presumptively-treated cases (treated but never lab-confirmed) through the test positivity rate to estimate how many were truly malaria &mdash; the number of ACT courses required. It fetches confirmed, tested and treated (Facility + Community, all ages combined) per facility per month, corrects extreme outliers, then quantifies by quarter for the next year.<br>
+        <strong>Quarters:</strong> Q1 (Jan-Mar) · Q2 (Apr-Jun) · Q3 (Jul-Sep) · Q4 (Oct-Dec)<br>
+        <strong>Quantification basis:</strong> For each facility &amp; quarter, the mean (or median) of all monthly adjusted-confirmed values in that quarter, pooled across the selected years. This is the typical monthly ACT demand per quarter.<br>
+        <strong>Full details:</strong> open <strong>View Methodology</strong> above for the step-by-step data flow, definitions and a worked example.
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div class="form-group" style="margin:0;">
+          <label>From Year</label>
+          <input type="number" class="form-control" id="cfgFrom" min="2010" max="2100" style="font-size:15px;font-weight:700;color:var(--blue-dk);padding:11px 13px;">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label>To Year</label>
+          <input type="number" class="form-control" id="cfgTo" min="2010" max="2100" style="font-size:15px;font-weight:700;color:var(--blue-dk);padding:11px 13px;">
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:12px;color:var(--blue-dk);">
+        <input type="checkbox" id="cfgWins" checked style="width:16px;height:16px;">
+        <label for="cfgWins" style="cursor:pointer;">Apply 99.75th percentile outlier correction (recommended)</label>
+      </div>
+
+      <div id="cfgError" style="display:none;" class="alert alert-err"></div>
+      <button class="run-btn" onclick="startPipeline()">&#9654; Fetch &amp; Quantify</button>
+    </div>
+  </div>
+</div>
+
+<!-- PIPELINE -->
+<div id="pipelineScreen" style="display:none;">
+  <div class="card">
+    <div class="card-head">
+      <h2>Fetching &amp; Computing</h2>
+      <div style="display:flex;gap:9px;align-items:center;">
+        <span id="pctLabel" style="font-size:13px;font-weight:700;color:var(--blue);">0%</span>
+        <button class="btn btn-outline btn-sm" onclick="showConfig()">&#8592; Back</button>
+      </div>
+    </div>
+    <div class="card-body" style="background:#0d1117;padding:13px;">
+      <div class="pbar-wrap"><div class="pbar-fill" id="pbarFill" style="width:0%"></div></div>
+      <div class="step-list" id="stepList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="resultsSection" style="display:none;">
+  <div class="card">
+    <div class="card-head">
+      <h2>Quantification Results</h2>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-outline btn-sm" onclick="showMethod('resultsSection')">&#128214; Methodology</button>
+        <button class="btn btn-outline btn-sm" onclick="showConfig()">&#8592; New Run</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="stats-row" id="statsRow"></div>
+
+      <!-- CONTROLS -->
+      <div class="controls">
+        <div class="ctrl">
+          <label>Source</label>
+          <select id="fSource" onchange="onControlChange()">
+            <option value="combined">Facility + Community</option>
+            <option value="fac">Facility only</option>
+            <option value="com">Community only</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <label>Method</label>
+          <select id="fMethod" onchange="onControlChange()">
+            <option value="mean">Mean</option>
+            <option value="median">Median</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <label>Test</label>
+          <select id="fTest" onchange="onControlChange()">
+            <option value="all">RDT + Microscopy</option>
+            <option value="rdt">RDT only</option>
+            <option value="micro">Microscopy only</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <label>Quarter Metric</label>
+          <select id="fMetric" onchange="onControlChange()">
+            <option value="monthly">Monthly caseload</option>
+            <option value="quarterly">Quarterly estimate (× 3)</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <label>Buffer</label>
+          <select id="fBuffer" onchange="onControlChange()">
+            <option value="0">None (0%)</option>
+            <option value="5">5%</option>
+            <option value="10">10%</option>
+            <option value="12.5">12.5%</option>
+            <option value="15">15%</option>
+            <option value="20">20%</option>
+            <option value="25">25%</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <label>District</label>
+          <select id="fDist" onchange="onDistrictChange()"><option value="">All districts</option></select>
+        </div>
+        <div class="ctrl">
+          <label>Chiefdom</label>
+          <select id="fChief" onchange="onChiefChange()"><option value="">All chiefdoms</option></select>
+        </div>
+        <div class="ctrl">
+          <label>Facility</label>
+          <select id="fFac" onchange="onControlChange()"><option value="">All facilities</option></select>
+        </div>
+        <div class="ctrl">
+          <label>Facility Type</label>
+          <select id="fType" onchange="onControlChange()"><option value="">All types</option></select>
+        </div>
+        <div class="ctrl" style="flex:1;min-width:150px;">
+          <label>Search</label>
+          <input type="text" id="fSearch" placeholder="Facility / chiefdom / district…" oninput="onControlChange()">
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <div class="tab-bar">
+        <button class="tab active" onclick="switchTab('viz',this)">Overview &amp; Charts</button>
+        <button class="tab" onclick="switchTab('quant',this)">Quantification Table</button>
+        <button class="tab" onclick="switchTab('detail',this)">Quarterly by Year</button>
+        <button class="tab" onclick="switchTab('testmix',this)">RDT vs Microscopy</button>
+        <button class="tab" onclick="switchTab('dl',this)">Downloads</button>
+      </div>
+
+      <!-- TAB: VIZ -->
+      <div id="tab-viz">
+        <div id="quantYearBanner" style="background:linear-gradient(135deg,var(--blue),var(--blue-dk));color:#fff;border-radius:10px;padding:14px 18px;margin-bottom:16px;"></div>
+        <div class="kpi-grid" id="kpiGrid"></div>
+        <div class="chart-grid">
+          <div class="chart-box"><h3 id="chart1Title">Adjusted Confirmed by Quarter</h3><div class="chart-canvas-wrap"><canvas id="chartQuarter"></canvas></div></div>
+          <div class="chart-box"><h3 id="chartYearHead">Quarterly Totals by Year</h3><div class="chart-canvas-wrap"><canvas id="chartYear"></canvas></div></div>
+          <div class="chart-box full"><h3 id="chart3Title">All Districts by Annual Estimate</h3><div class="chart-canvas-wrap" style="height:440px;"><canvas id="chartTop"></canvas></div></div>
+        </div>
+      </div>
+
+      <!-- TAB: QUANT -->
+      <div id="tab-quant" style="display:none;">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px;" id="quantNote"></div>
+        <div class="data-table-wrap">
+          <table class="data-table"><thead id="quantHead"></thead><tbody id="quantBody"></tbody><tfoot id="quantFoot"></tfoot></table>
+        </div>
+      </div>
+
+      <!-- TAB: DETAIL -->
+      <div id="tab-detail" style="display:none;">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Quarterly totals (sum of the 3 months) for each unit and year, on the current source. Use this to inspect year to year variation behind the median or mean.</div>
+        <div class="data-table-wrap">
+          <table class="data-table"><thead id="detailHead"></thead><tbody id="detailBody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- TAB: RDT vs MICROSCOPY -->
+      <div id="tab-testmix" style="display:none;">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Total malaria tests performed over the selected years (honours the current filters), split by diagnostic method. Percentages are each method's share of tests within that row. Community HTR/ETR performs RDT only.</div>
+        <h3 style="font-size:13px;color:var(--blue-dk);margin:4px 0 8px;text-transform:uppercase;letter-spacing:.4px;">National summary</h3>
+        <div class="data-table-wrap" style="max-height:none;margin-bottom:20px;"><div id="tmNational"></div></div>
+        <h3 style="font-size:13px;color:var(--blue-dk);margin:4px 0 8px;text-transform:uppercase;letter-spacing:.4px;">By year</h3>
+        <div class="data-table-wrap" style="max-height:none;margin-bottom:20px;"><div id="tmYear"></div></div>
+        <h3 style="font-size:13px;color:var(--blue-dk);margin:4px 0 8px;text-transform:uppercase;letter-spacing:.4px;">By district</h3>
+        <div class="data-table-wrap" style="margin-bottom:20px;"><div id="tmDistrict"></div></div>
+        <h3 style="font-size:13px;color:var(--blue-dk);margin:4px 0 8px;text-transform:uppercase;letter-spacing:.4px;">By district and year</h3>
+        <div class="data-table-wrap"><div id="tmDistrictYear"></div></div>
+      </div>
+
+      <!-- TAB: METHODOLOGY -->
+      <div id="tab-method" style="display:none;">
+        <div class="method-doc">
+          <div class="method-config" id="methodConfig">These definitions apply to every run. Run a quantification to also see the current settings and facility coverage filled in here.</div>
+
+          <h3>1. Purpose</h3>
+          <p>This tool quantifies <strong>antimalarial treatment (ACT) need</strong> using the <strong>confirmed method</strong>. Every confirmed malaria case needs one ACT course, but some patients are treated presumptively without a confirming test. The confirmed method releases those presumptively-treated cases through the facility&rsquo;s test positivity rate (TPR) to estimate how many were truly malaria, giving a fuller picture of treatment demand than raw confirmed counts. The result &mdash; <strong>adjusted confirmed cases</strong> &mdash; is quantified per quarter for each district and nationally, and presented as the ACT quantification for the coming year.</p>
+
+          <h3>2. The adjustment</h3>
+          <div class="method-eg" style="border-color:#2c6793;background:#eef4fa;">
+            <b>TPR</b> = confirmed &divide; tested &nbsp;&middot;&nbsp; <b>presumptive</b> = max(treated &minus; confirmed, 0)<br>
+            <span class="eg-res">adjusted confirmed = confirmed + TPR &times; max(treated &minus; confirmed, 0)</span><br>
+            The presumptively-treated group (treated but never lab-confirmed) is passed through the TPR to estimate how many would have tested positive, then added back to confirmed. When confirmed &ge; treated there is no presumptive group and adjusted confirmed = confirmed.
+          </div>
+
+          <h3>3. How the estimate is built</h3>
+          <p>The example follows one facility, <strong>Kambia CHC</strong>, for 2024 and 2025.</p>
+          <ol class="method-steps">
+            <li><strong>Fetch monthly data.</strong> For every Level-5 facility, pull monthly confirmed, tested and treated counts for each selected year from the DHIS2 HMIS.
+              <div class="step-eg">Example: for Kambia CHC the tool pulls its 12 monthly values for confirmed, tested and treated in 2024, and again in 2025.</div></li>
+            <li><strong>Combine age categories (children only).</strong> Each data element stores counts by age category option combo; the three age combos are summed into one total per measure. No age breakdown is used in this tool.
+              <div class="step-eg">Example: Jan 2024 confirmed = <b>18</b> (0-59m) + <b>12</b> (5-14y) + <b>10</b> (15+y) = <b>40</b>.</div></li>
+            <li><strong>Assemble the three measures.</strong> Confirmed = microscopy-positive + RDT-positive (facility) and RDT-HTR-positive (community). Tested = positives + negatives. Treated = ACT &lt;24h + ACT &gt;24h. Facility and community are added together (or one source alone, per the Source setting).
+              <div class="step-eg">Example (Combined, Jan 2024): confirmed <b>40</b>, tested <b>96</b>, treated <b>60</b>.</div></li>
+            <li><strong>Correct outliers.</strong> Each component is capped at the 99.75th percentile per facility per year so a single reporting spike does not distort the estimate. Zeros stay zero and missing months stay missing.</li>
+            <li><strong>Compute adjusted confirmed per month.</strong> Apply the adjustment to each month&rsquo;s confirmed, tested and treated.
+              <div class="step-eg">Example: TPR = 40/96 = <b>0.417</b>; presumptive = max(60&minus;40,0) = <b>20</b>; adjusted = 40 + 0.417&times;20 = <b>48.3</b> ACT courses for Jan.</div></li>
+            <li><strong>Assign months to quarters.</strong> Q1 Jan-Mar, Q2 Apr-Jun, Q3 Jul-Sep, Q4 Oct-Dec.</li>
+            <li><strong>Pool the monthly values.</strong> For each quarter, gather every monthly adjusted-confirmed value from that quarter across all selected years into one set.</li>
+            <li><strong>Take the central value.</strong> Mean (default) or median of the pooled set &mdash; the typical monthly ACT demand for the quarter.</li>
+            <li><strong>Scale to a quarter.</strong> Quarterly estimate = typical monthly demand &times; 3 months.</li>
+            <li><strong>Annual estimate.</strong> Sum of the four quarterly estimates &mdash; the ACT quantification for the coming year.</li>
+            <li><strong>Aggregate.</strong> For district and national views, facility monthly confirmed/tested/treated series are summed first, then the adjustment and steps 6&ndash;10 are applied to the combined series (so TPR reflects the aggregate).</li>
+          </ol>
+
+          <h3>4. Data elements used</h3>
+          <p>All values are pulled as <strong>child Category Option Combos</strong> (three age groups) and summed &mdash; parent data-element totals are never used.</p>
+          <table class="def-table">
+            <thead><tr><th>Measure</th><th>Facility (HF01)</th><th>Community HTR/ETR (HF04)</th></tr></thead>
+            <tbody>
+              <tr><td class="term">Confirmed</td><td>Microscopy+ <code>Sz13vbo2Qwh</code><br>RDT+ <code>p6zQLDFjSfd</code></td><td>RDT-HTR+ <code>T7xH8GwWpEM</code></td></tr>
+              <tr><td class="term">Tested</td><td>Confirmed + Microscopy&minus; <code>Rijj3Fp9ksg</code> + RDT&minus; <code>mXS2g1AiPsS</code></td><td>Confirmed + RDT-HTR&minus; <code>YWvx4zYdp92</code></td></tr>
+              <tr><td class="term">Treated (ACT)</td><td>ACT &lt;24h <code>wU8EdHifSLa</code><br>ACT &gt;24h <code>XKTCuR0W3YN</code></td><td>ACT-HTR &lt;24h <code>h3zJa6hAgib</code><br>ACT-HTR &gt;24h <code>Imkks0HAl7E</code></td></tr>
+              <tr><td class="term">Age COCs</td><td>0-59m <code>m5T8uBNB8aN</code>, 5-14y <code>j7j6iaknOFn</code>, 15+y <code>zK1aiw8zFac</code></td><td>02-59m <code>NtjMVmRfvHH</code>, 5-14y <code>qDXW7WMLT99</code>, 15+y <code>mdjRPpvLKdu</code></td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:12px;color:var(--muted);">Retrieved from the DHIS2 analytics endpoint per year for all 12 months at <code>LEVEL-5</code>. Hierarchy: District = L2, Chiefdom = L4, Facility (PHU) = L5. Units below L5 roll up to their L5 parent.</p>
+
+          <h3>5. Facility coverage</h3>
+          <div id="methodCoverage"><p style="font-size:12px;color:var(--muted);">Facility coverage numbers appear here after you run a quantification.</p></div>
+          <p style="font-size:12px;color:var(--muted);">Only standard facility types are counted (Hospital, Clinic, CHC, CHP, MCHP). Active means the facility reported at least one confirmed, tested or treated value in the selected years.</p>
+
+          <h3>6. Parameters and terms</h3>
+          <table class="def-table">
+            <thead><tr><th>Parameter</th><th>Definition</th></tr></thead>
+            <tbody>
+              <tr><td class="term">Confirmed</td><td>Laboratory-confirmed malaria (RDT- or microscopy-positive). Every confirmed case requires one ACT course.</td></tr>
+              <tr><td class="term">Tested</td><td>All fever cases given a malaria test (positives + negatives). Denominator of the TPR.</td></tr>
+              <tr><td class="term">Treated</td><td>Cases treated with ACT (&lt;24h + &gt;24h). Includes presumptive treatment given without a confirming test.</td></tr>
+              <tr><td class="term">TPR</td><td>Test positivity rate = confirmed &divide; tested, computed per unit per month at the current aggregation.</td></tr>
+              <tr><td class="term">Presumptive</td><td>max(treated &minus; confirmed, 0): cases treated but not lab-confirmed.</td></tr>
+              <tr><td class="term">Adjusted confirmed</td><td>confirmed + TPR &times; presumptive. The estimated true malaria caseload = ACT need.</td></tr>
+              <tr><td class="term">Source setting</td><td>Facility + Community (default), Facility only, or Community only.</td></tr>
+              <tr><td class="term">Outlier correction</td><td>Winsorization at the 99.75th percentile per facility per year, applied to each component before the adjustment.</td></tr>
+              <tr><td class="term">Quarter (Q1-Q4)</td><td>Q1 Jan-Mar, Q2 Apr-Jun, Q3 Jul-Sep, Q4 Oct-Dec.</td></tr>
+              <tr><td class="term">Method</td><td>Central value of the pooled monthly adjusted-confirmed values: Mean (default) or Median.</td></tr>
+              <tr><td class="term">Quarterly estimate (&times;3)</td><td>Typical monthly ACT demand &times; 3.</td></tr>
+              <tr><td class="term">Annual estimate</td><td>Sum of the four quarterly estimates &mdash; the ACT quantification for the coming year.</td></tr>
+              <tr><td class="term">Buffer</td><td>Optional safety margin (5-25%) multiplying every estimate by (1 + buffer). Historical actuals are never buffered.</td></tr>
+              <tr><td class="term">Aggregation level</td><td>District (facilities summed) or National (all in scope). Component series are summed before the adjustment is applied.</td></tr>
+            </tbody>
+          </table>
+
+          <h3>7. Worked example</h3>
+          <div class="method-eg">
+            One facility, source Facility + Community, method Mean, years 2024 and 2025.<br>
+            Per month the tool has confirmed, tested and treated, and computes adjusted confirmed. Suppose the adjusted-confirmed Q1 months are &mdash; 2024: <code>48</code>, <code>56</code>, <code>44</code>; 2025: <code>64</code>, <code>52</code>, <code>60</code>.<br>
+            Pooled Q1 set: <code>44, 48, 52, 56, 60, 64</code>.<br>
+            <span class="eg-res">Mean (typical Q1 month) = 54 ACT courses.</span><br>
+            <span class="eg-res">Q1 quarterly estimate = 54 &times; 3 = 162.</span><br>
+            Repeat for Q2-Q4, then <span class="eg-res">annual estimate = Q1 + Q2 + Q3 + Q4 = the ACT quantification for the coming year.</span>
+          </div>
+
+          <h3>8. Assumptions and notes</h3>
+          <div class="method-note">Missing months are excluded from the pool rather than counted as zero, so reporting gaps do not drag the estimate down.</div>
+          <div class="method-note">The TPR is computed at the aggregation level being viewed: facility-level for facility rows, district totals for district rows, national totals for the TOTAL row.</div>
+          <div class="method-note">When treated &le; confirmed there is no presumptive uplift and adjusted confirmed equals confirmed.</div>
+          <div class="method-note">One ACT course is assumed per adjusted confirmed case; apply age/weight-band formulation ratios downstream if procuring by pack size.</div>
+          <div class="method-note"><strong>Test selector:</strong> choose RDT + Microscopy (default), RDT only, or Microscopy only. This sets which positives count as confirmed and which tests form the TPR denominator. Treated (ACT) is not recorded by diagnostic method, so in single-method mode the presumptive group (treated − confirmed) is larger; read RDT-only / Microscopy-only results as "adjusted to that method’s positivity". Community HTR/ETR performs RDT only, so Microscopy-only yields no community estimate.</div>
+        </div>
+      </div>
+
+      <!-- TAB: DOWNLOADS -->
+      <div id="tab-dl" style="display:none;">
+        <div class="dl-grid">
+          <div class="dl-card">
+            <div class="dl-card-head" style="background:var(--blue);">Quantification Workbook</div>
+            <div class="dl-card-body">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Full Excel with separate <strong>Facility</strong>, <strong>Community</strong> and <strong>Combined</strong> sheets (by district and by facility), plus quarterly-by-year and monthly data. Titled for the quantification year.</div>
+              <button class="btn btn-primary" onclick="downloadExcel()">↓ Excel (all sheets)</button>
+            </div>
+          </div>
+          <div class="dl-card">
+            <div class="dl-card-head" style="background:#1a5c3a;">CSV by Source</div>
+            <div class="dl-card-body">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">One CSV per source at your current aggregation (district or national). Honours filters and method.</div>
+              <button class="btn btn-green" onclick="downloadSourceCSV('combined')">↓ Combined CSV</button>
+              <button class="btn btn-outline" onclick="downloadSourceCSV('fac')">↓ Facility CSV</button>
+              <button class="btn btn-outline" onclick="downloadSourceCSV('com')">↓ Community CSV</button>
+              <button class="btn btn-outline" onclick="downloadDetailCSV()">↓ Quarterly-by-Year CSV</button>
+            </div>
+          </div>
+          <div class="dl-card">
+            <div class="dl-card-head" style="background:#1a3a5c;">Reproducible Code</div>
+            <div class="dl-card-body">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">R and Python scripts reproducing the exact fetch, outlier correction and quarterly-median quantification.</div>
+              <button class="btn btn-outline" onclick="downloadR()">↓ R Script (.R)</button>
+              <button class="btn btn-outline" onclick="downloadPy()">↓ Python Script (.py)</button>
+            </div>
+          </div>
+          <div class="dl-card">
+            <div class="dl-card-head" style="background:#7c3d1a;">This Tool</div>
+            <div class="dl-card-body">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Save a standalone copy of this quantification tool as a single HTML file.</div>
+              <button class="btn btn-gold" onclick="downloadToolHTML()">↓ Download Tool (.html)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- METHODOLOGY SCREEN (viewable before or after a run) -->
+<div id="methodScreen" style="display:none;">
+  <div class="card">
+    <div class="card-head">
+      <h2>Methodology &mdash; Treatment (ACT) Quantification using the confirmed method</h2>
+      <button class="btn btn-outline btn-sm" onclick="closeMethod()">&#8592; Back</button>
+    </div>
+    <div class="card-body" id="methodHost"></div>
+  </div>
+</div>
+
+</div>
+<div class="page-footer">National Malaria Control Programme (NMCP) · Ministry of Health, Sierra Leone &nbsp;|&nbsp; ICF-SL</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  CONSTANTS
+// ═══════════════════════════════════════════════════════════════
+// ── DHIS2 connection ──────────────────────────────────────────
+// Two fetch modes, auto-detected:
+//   DIRECT : tool is hosted INSIDE DHIS2 (same origin, e.g. an installed app) ->
+//            call /hmis23/api/... directly using the logged-in session cookie.
+//            No proxy, no stored credentials, no CORS.
+//   PROXY  : tool is hosted ELSEWHERE (e.g. GitHub Pages) -> route through the
+//            Apps Script proxy with Basic auth (external access).
+const DHIS2_HOST = 'sl.dhis2.org';
+const DHIS2_CTX  = '/hmis23';                                  // DHIS2 context path
+const BASE_URL   = 'https://' + DHIS2_HOST + DHIS2_CTX;        // absolute base (proxy mode + R/Py)
+const PROXY    = 'https://script.google.com/macros/s/AKfycbyRXc68PYSmDSCYPakAS8Gc9R00kRjmsMYoDujPYMItyquXfwMAJUtRqXLiDlNWbSfDQQ/exec';
+const AUTH     = 'Basic ' + btoa('musa-sillahkanu:Navigator/2024!');
+function autoMode(){ return (location.hostname===DHIS2_HOST) ? 'direct' : 'proxy'; }
+function currentMode(){ return autoMode(); }
+const L_PHU=5, L_DIST=2, L_CHIEF=4;
+const MONTH_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const QUARTERS=[
+  {key:'Q1',label:'Q1 (Jan-Mar)',short:'Q1',months:[0,1,2]},
+  {key:'Q2',label:'Q2 (Apr-Jun)',short:'Q2',months:[3,4,5]},
+  {key:'Q3',label:'Q3 (Jul-Sep)',short:'Q3',months:[6,7,8]},
+  {key:'Q4',label:'Q4 (Oct-Dec)',short:'Q4',months:[9,10,11]},
+];
+const Q_COLORS=['#17a2b8','#28a745','#ffc107','#6f42c1'];
+
+// Confirmed method — treatment (ACT) quantification.
+// adjusted confirmed = confirmed + TPR × max(treated − confirmed, 0);  TPR = confirmed / tested.
+// Children (Category Option Combos) only — never parent Data Element totals.
+const FAC_AGE = ['m5T8uBNB8aN','j7j6iaknOFn','zK1aiw8zFac'];   // 0-59m, 5-14y, 15+y (HF01)
+const COM_AGE = ['NtjMVmRfvHH','qDXW7WMLT99','mdjRPpvLKdu'];   // 02-59m, 5-14y, 15+y (HF04)
+// Component data elements. A positive test feeds BOTH confirmed and tested.
+const COMPONENTS = [
+  {de:'Sz13vbo2Qwh', level:'fac', test:'micro', roles:['confirmed','tested'], name:'Microscopy positive'},
+  {de:'p6zQLDFjSfd', level:'fac', test:'rdt',   roles:['confirmed','tested'], name:'RDT positive'},
+  {de:'Rijj3Fp9ksg', level:'fac', test:'micro', roles:['tested'],            name:'Microscopy negative'},
+  {de:'mXS2g1AiPsS', level:'fac', test:'rdt',   roles:['tested'],            name:'RDT negative'},
+  {de:'wU8EdHifSLa', level:'fac', test:null,    roles:['treated'],           name:'ACT <24h'},
+  {de:'XKTCuR0W3YN', level:'fac', test:null,    roles:['treated'],           name:'ACT >24h'},
+  {de:'T7xH8GwWpEM', level:'com', test:'rdt',   roles:['confirmed','tested'], name:'RDT HTR positive'},
+  {de:'YWvx4zYdp92', level:'com', test:'rdt',   roles:['tested'],            name:'RDT HTR negative'},
+  {de:'h3zJa6hAgib', level:'com', test:null,    roles:['treated'],           name:'ACT HTR <24h'},
+  {de:'Imkks0HAl7E', level:'com', test:null,    roles:['treated'],           name:'ACT HTR >24h'},
+];
+const ALL_DX = [];
+COMPONENTS.forEach(cp=>{ (cp.level==='fac'?FAC_AGE:COM_AGE).forEach(coc=>
+  ALL_DX.push({dxStr:`${cp.de}.${coc}`, field:`${cp.de}_${coc}`, level:cp.level, test:cp.test, roles:cp.roles})); });
+const DX_MAP={};ALL_DX.forEach(d=>{DX_MAP[d.dxStr]=d;});
+const DX_PARAM=[...new Set(ALL_DX.map(d=>d.dxStr))].join(';');
+function sumMeasure(month, level, role, test){
+  let any=false, s=0;
+  ALL_DX.forEach(d=>{
+    if(d.level!==level || !d.roles.includes(role))return;
+    if(role!=='treated' && test && d.test!==test)return;
+    const v=month[d.field]; if(v!==null&&v!==undefined){s+=v;any=true;}
+  });
+  return any? s : null;
+}
+function addN(a,b){ if(a===null&&b===null)return null; return (a||0)+(b||0); }
+function curTest(){ const el=document.getElementById('fTest'); return el? el.value : 'all'; }
+// adjusted confirmed from component monthly values
+function adjConfirmed(conf,test,treat){
+  if(conf===null&&test===null&&treat===null)return null;
+  const c=conf||0,t=test||0,tr=treat||0;
+  const tpr=t>0?c/t:0;
+  return c + tpr*Math.max(tr-c,0);
+}
+
+// ── State ─────────────────────────────────────────────────────
+let ST={years:[],useWins:true,ouHierarchy:{},facilities:[],sort:{col:null,dir:1}};
+let CHARTS={quarter:null,year:null,top:null};
+
+// Defaults: last 2 full years
+(function(){
+  const cy=new Date().getFullYear();
+  document.getElementById('cfgTo').value  = cy-1;
+  document.getElementById('cfgFrom').value= cy-2;
+})();
+
+// ═══════════════════════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════════════════════
+async function dhis2(path,retries=3){
+  const mode=currentMode();
+  let reqUrl, opts;
+  if(mode==='direct'){
+    // same-origin call inside DHIS2 — uses the active login session, no proxy
+    reqUrl = DHIS2_CTX + path;
+    opts   = { credentials:'include', headers:{ 'Accept':'application/json' } };
+  } else {
+    // external — go through the Apps Script proxy with Basic auth
+    reqUrl = PROXY+'?url='+encodeURIComponent(BASE_URL+path)+'&Authorization='+encodeURIComponent(AUTH);
+    opts   = {};
+  }
+  let lastErr;
+  for(let a=1;a<=retries;a++){
+    try{const r=await fetch(reqUrl,opts);if(!r.ok)throw new Error('HTTP '+r.status);return await r.json();}
+    catch(e){lastErr=e;if(a<retries)await sleep(1200*Math.pow(2,a-1));}
+  }
+  throw new Error('DHIS2 failed ('+mode+' mode): '+(lastErr?.message||'network'));
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function getHFType(n){
+  const u=(n||'').toUpperCase(),pts=u.trim().split(/\s+/),suf=pts[pts.length-1]||'';
+  if(suf==='HOSPITAL')return 'Hospital';if(suf==='MCHP')return 'MCHP';
+  if(suf==='CHC')return 'CHC';if(suf==='CHP')return 'CHP';
+  const cs=['CLINIC','CLINNIC','CLINNC','CLIMIC','CLINC','CLINIK','CLENIC','CLINCC','CLIN'];
+  if(cs.includes(suf)||cs.some(c=>u.includes(c)))return 'Clinic';
+  if(u.includes('HOSPITAL'))return 'Hospital';if(u.includes('MCHP'))return 'MCHP';
+  if(u.includes('CHC'))return 'CHC';if(u.includes('CHP'))return 'CHP';
+  return 'Other';
+}
+function setPill(t,bg){const el=document.getElementById('headerPill');el.textContent=t;el.style.background=bg||'rgba(255,255,255,.15)';}
+function setProgress(p){document.getElementById('pbarFill').style.width=p+'%';document.getElementById('pctLabel').textContent=Math.round(p)+'%';}
+const stepEls={};let _sn=0;
+function addStep(id,txt){_sn++;const d=document.createElement('div');d.className='step-item pending';d.id='st_'+id;d.innerHTML=`<div class="step-dot"></div><span>Step ${_sn} — ${txt}</span>`;document.getElementById('stepList').appendChild(d);stepEls[id]=d;}
+function setStep(id,status,msg){const el=stepEls[id];if(!el)return;el.className='step-item '+status;const pre={running:'',done:'✓ ',error:'✗ '}[status]||'';const sp=el.querySelector('span');sp.textContent=pre+(msg||sp.textContent.replace(/^[✓✗] /,''));}
+function fmt(v){return v===null||v===undefined||isNaN(v)?'':Math.round(v).toLocaleString();}
+function nextYear(){return ST.years.length? ST.years[ST.years.length-1]+1 : '';}
+
+function percentile(arr,p){
+  if(!arr.length)return 0;
+  const s=[...arr].sort((a,b)=>a-b),idx=(p/100)*(s.length-1),lo=Math.floor(idx),hi=Math.ceil(idx);
+  return lo===hi?s[lo]:s[lo]+(idx-lo)*(s[hi]-s[lo]);
+}
+function winsorizeUpper(vals){
+  const reported=vals.filter(v=>v!==null&&v!==undefined&&v>0);
+  if(reported.length<2)return vals;
+  const hi=percentile(reported,99.75);
+  return vals.map(v=>{ if(v===null||v===undefined)return null; if(v===0)return 0; return v>hi?hi:v; });
+}
+function median(a){
+  const x=a.filter(v=>v!==null&&v!==undefined&&!isNaN(v)).sort((p,q)=>p-q);
+  if(!x.length)return null;
+  const m=Math.floor(x.length/2);
+  return x.length%2? x[m] : (x[m-1]+x[m])/2;
+}
+function mean(a){
+  const x=a.filter(v=>v!==null&&v!==undefined&&!isNaN(v));
+  if(!x.length)return null;
+  return x.reduce((s,v)=>s+v,0)/x.length;
+}
+function central(a,method){ return method==='mean'? mean(a) : median(a); }
+
+// ═══════════════════════════════════════════════════════════════
+//  PIPELINE
+// ═══════════════════════════════════════════════════════════════
+function showConfig(){
+  document.getElementById('configScreen').style.display='block';
+  document.getElementById('pipelineScreen').style.display='none';
+  document.getElementById('resultsSection').style.display='none';
+  document.getElementById('methodScreen').style.display='none';
+}
+let METHOD_RETURN='configScreen';
+function showMethod(ret){
+  METHOD_RETURN=ret||'configScreen';
+  document.getElementById('configScreen').style.display='none';
+  document.getElementById('pipelineScreen').style.display='none';
+  document.getElementById('resultsSection').style.display='none';
+  document.getElementById('methodScreen').style.display='block';
+  window.scrollTo(0,0);
+  // Refresh the dynamic settings/coverage lines if a run has happened
+  if(ST.years&&ST.years.length){ try{ renderMethod(computeAll()); }catch(e){} }
+}
+function closeMethod(){
+  document.getElementById('methodScreen').style.display='none';
+  document.getElementById(METHOD_RETURN).style.display='block';
+  window.scrollTo(0,0);
+}
+// Move the methodology content out of the results tab into the standalone screen
+(function relocateMethodology(){
+  function move(){
+    const host=document.getElementById('methodHost');
+    const src=document.getElementById('tab-method');
+    if(host&&src){ const doc=src.querySelector('.method-doc'); if(doc) host.appendChild(doc); src.remove(); }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',move); else move();
+})();
+
+async function startPipeline(){
+  const from=parseInt(document.getElementById('cfgFrom').value);
+  const to=parseInt(document.getElementById('cfgTo').value);
+  const errEl=document.getElementById('cfgError');
+  errEl.style.display='none';
+  if(!from||!to){errEl.textContent='Please enter both From Year and To Year.';errEl.style.display='block';return;}
+  if(from>to){errEl.textContent='From Year must be on or before To Year.';errEl.style.display='block';return;}
+  if(to-from>9){errEl.textContent='Please limit the range to 10 years or fewer.';errEl.style.display='block';return;}
+
+  const years=[];for(let y=from;y<=to;y++)years.push(y);
+  ST.years=years;
+  ST.useWins=document.getElementById('cfgWins').checked;
+  ST.ouHierarchy={};ST.facilities=[];
+
+  document.getElementById('configScreen').style.display='none';
+  document.getElementById('pipelineScreen').style.display='block';
+  document.getElementById('resultsSection').style.display='none';
+  document.getElementById('stepList').innerHTML='';
+  Object.keys(stepEls).forEach(k=>delete stepEls[k]);
+  _sn=0;setProgress(2);setPill('Running…','rgba(255,193,7,.5)');
+
+  addStep('s_ou',   'Fetch Level-5 facility registry with hierarchy');
+  addStep('s_fetch',`Fetch confirmed · tested · treated — ${from} to ${to} · ${years.length} year(s) · Facility + Community`);
+  addStep('s_wins', 'Correct outliers — upper bound 99.75th pct per facility per year');
+  addStep('s_build','Build facility monthly totals');
+
+  try{
+    // S1: Org Units
+    setStep('s_ou','running');setProgress(5);
+    const ouResp=await dhis2('/api/organisationUnits.json?level='+L_PHU+'&fields=id,displayName,level,ancestors[id,displayName,level]&paging=false&pageSize=50000');
+    const VALID=['Hospital','Clinic','CHC','CHP','MCHP'];
+    let skip=0; const childToL5={};
+    (ouResp.organisationUnits||[]).forEach(ou=>{
+      const anc=(ou.ancestors||[]).sort((a,b)=>a.level-b.level);
+      const dist=anc.find(a=>a.level===L_DIST);
+      const chief=anc.find(a=>a.level===L_CHIEF);
+      const l5Anc=anc.find(a=>a.level===L_PHU);
+      if(ou.level===L_PHU){
+        const t=getHFType(ou.displayName);
+        if(!VALID.includes(t)){skip++;return;}
+        ST.ouHierarchy[ou.id]={id:ou.id,name:ou.displayName,hfType:t,
+          districtName:dist?dist.displayName:'',chiefdomName:chief?chief.displayName:''};
+      } else if(ou.level>L_PHU&&l5Anc){ childToL5[ou.id]=l5Anc.id; }
+    });
+    ST.totalFacilities=Object.keys(ST.ouHierarchy).length;
+    ST.excludedTypes=skip;
+    setStep('s_ou','done',`${Object.keys(ST.ouHierarchy).length} facilities · ${Object.keys(childToL5).length} sub-facility mappings (${skip} excluded)`);
+    setProgress(12);await sleep(30);
+
+    // S2: Fetch analytics per year (full 12 months)
+    setStep('s_fetch','running',`Fetching ${ST.years.length} year(s) in parallel\u2026`);
+    const rawSlots={}; let totalRows=0; let doneYears=0;
+    const ingest=(rows)=>{ (rows||[]).forEach(row=>{
+        const[dxStr,period,ouId,rawVal]=row;
+        const val=parseFloat(rawVal)||0;if(!val)return;
+        const map=DX_MAP[dxStr];if(!map)return;
+        const effectiveId=childToL5[ouId]||ouId;
+        const ou=ST.ouHierarchy[effectiveId];if(!ou)return;
+        const yr2=parseInt(period.slice(0,4));
+        const mo=parseInt(period.slice(4,6))-1;
+        if(!rawSlots[effectiveId])rawSlots[effectiveId]={};
+        if(!rawSlots[effectiveId][yr2])rawSlots[effectiveId][yr2]=Array.from({length:12},()=>{const s={};ALL_DX.forEach(d=>{s[d.field]=null;});return s;});
+        const slot=rawSlots[effectiveId][yr2][mo];
+        if(slot[map.field]===null)slot[map.field]=0;
+        slot[map.field]+=val; totalRows++;
+      });
+    };
+    const fetchYear=async(yr)=>{
+      const pe=Array.from({length:12},(_,i)=>`${yr}${String(i+1).padStart(2,'0')}`).join(';');
+      // skipMeta=true: the tool maps org units from its own registry, so analytics metadata is not needed (smaller/faster response)
+      const resp=await dhis2('/api/analytics.json?dimension=dx:'+DX_PARAM+'&dimension=pe:'+pe+'&dimension=ou:LEVEL-'+L_PHU+'&skipMeta=true&paging=false&ignoreLimit=true');
+      ingest(resp.rows);
+      doneYears++;
+      setStep('s_fetch','running',`Fetched ${doneYears}/${ST.years.length} year(s)`);
+      setProgress(12+Math.round(doneYears/ST.years.length*45));
+    };
+    // run years concurrently, capped so DHIS2 is not overwhelmed
+    const CONC=4; const queue=[...ST.years];
+    await Promise.all(Array.from({length:Math.min(CONC,queue.length)},async()=>{
+      while(queue.length){ await fetchYear(queue.shift()); }
+    }));
+    setStep('s_fetch','done',`${totalRows.toLocaleString()} data points fetched`);
+    setProgress(58);await sleep(30);
+
+    // S3: Winsorise each field per facility per year, then S4 sum COCs to fac/com monthly totals
+    setStep('s_wins','running');
+    let winCount=0;
+    Object.keys(rawSlots).forEach(ouId=>{
+      ST.years.forEach(yr=>{
+        const months=rawSlots[ouId][yr];if(!months)return;
+        if(ST.useWins){
+          ALL_DX.forEach(dx=>{
+            const vals=months.map(m=>m[dx.field]);
+            const w=winsorizeUpper(vals);
+            vals.forEach((v,i)=>{ if(v!==null&&w[i]!==null&&Math.abs(v-w[i])>0.001){winCount++;months[i][dx.field]=w[i];} });
+          });
+        }
+      });
+    });
+    setStep('s_wins','done', ST.useWins? `${winCount} monthly values corrected` : 'Skipped (correction disabled)');
+    setProgress(75);await sleep(30);
+
+    // S4: Build facility objects with monthly fac/com totals per year
+    setStep('s_build','running');
+    ST.facilities=[];
+    Object.keys(rawSlots).forEach(ouId=>{
+      const ou=ST.ouHierarchy[ouId];if(!ou)return;
+      const data={}; let hasAny=false;
+      ST.years.forEach(yr=>{
+        const months=rawSlots[ouId][yr];if(!months)return;
+        const mk=()=>Array(12).fill(null);
+        const A={conf_rdt_fac:mk(),conf_micro_fac:mk(),test_rdt_fac:mk(),test_micro_fac:mk(),treat_fac:mk(),
+                 conf_rdt_com:mk(),conf_micro_com:mk(),test_rdt_com:mk(),test_micro_com:mk(),treat_com:mk()};
+        months.forEach((m,i)=>{
+          A.conf_rdt_fac[i]=sumMeasure(m,'fac','confirmed','rdt');   A.conf_micro_fac[i]=sumMeasure(m,'fac','confirmed','micro');
+          A.test_rdt_fac[i]=sumMeasure(m,'fac','tested','rdt');      A.test_micro_fac[i]=sumMeasure(m,'fac','tested','micro');
+          A.treat_fac[i]=sumMeasure(m,'fac','treated',null);
+          A.conf_rdt_com[i]=sumMeasure(m,'com','confirmed','rdt');   A.conf_micro_com[i]=sumMeasure(m,'com','confirmed','micro');
+          A.test_rdt_com[i]=sumMeasure(m,'com','tested','rdt');      A.test_micro_com[i]=sumMeasure(m,'com','tested','micro');
+          A.treat_com[i]=sumMeasure(m,'com','treated',null);
+          if(Object.values(A).some(arr=>arr[i]!==null))hasAny=true;
+        });
+        data[yr]=A;
+      });
+      if(hasAny) ST.facilities.push({ou_id:ouId,facility:ou.name,hfType:ou.hfType,chiefdom:ou.chiefdomName,district:ou.districtName,data});
+    });
+    setStep('s_build','done',`${ST.facilities.length.toLocaleString()} facilities with data`);
+    setProgress(92);await sleep(30);
+
+    document.getElementById('pipelineScreen').style.display='none';
+    document.getElementById('resultsSection').style.display='block';
+    initFilters();
+    onControlChange();
+    setProgress(100);setPill('Done ✓','rgba(40,167,69,.55)');
+
+  }catch(err){
+    console.error(err);
+    document.getElementById('pipelineScreen').style.display='block';
+    Object.keys(stepEls).forEach(k=>{if(stepEls[k]?.classList.contains('running'))stepEls[k].className='step-item error';});
+    const e=document.createElement('div');
+    e.style.cssText='margin-top:12px;padding:12px;background:#2e0a0a;border-radius:6px;color:#ef9a9a;font-size:12px;line-height:1.6;';
+    e.innerHTML=`<strong>✗ Error</strong><br>${err.message}<br><br><button onclick="startPipeline()" style="background:#1f4a6a;color:#fff;border:none;padding:7px 16px;border-radius:6px;cursor:pointer;font-weight:700;">↺ Retry</button>`;
+    document.getElementById('stepList').appendChild(e);
+    setPill('Error','rgba(220,53,69,.5)');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  COMPUTE
+// ═══════════════════════════════════════════════════════════════
+function pickLvl(d,base,source,i){
+  const f=d[base+'_fac']?d[base+'_fac'][i]:null, c=d[base+'_com']?d[base+'_com'][i]:null;
+  if(source==='fac')return f; if(source==='com')return c; return addN(f,c);
+}
+function confMonth(d,source,test,i){
+  if(test==='rdt')return pickLvl(d,'conf_rdt',source,i);
+  if(test==='micro')return pickLvl(d,'conf_micro',source,i);
+  return addN(pickLvl(d,'conf_rdt',source,i),pickLvl(d,'conf_micro',source,i));
+}
+function testMonth(d,source,test,i){
+  if(test==='rdt')return pickLvl(d,'test_rdt',source,i);
+  if(test==='micro')return pickLvl(d,'test_micro',source,i);
+  return addN(pickLvl(d,'test_rdt',source,i),pickLvl(d,'test_micro',source,i));
+}
+function monthlySeries(d,source,test){
+  // returns the ADJUSTED CONFIRMED monthly series = ACT/treatment need
+  test=test||curTest();
+  return Array.from({length:12},(_,i)=>adjConfirmed(confMonth(d,source,test,i),testMonth(d,source,test,i),pickLvl(d,'treat',source,i)));
+}
+function getFilters(){
+  return {
+    dist:document.getElementById('fDist').value,
+    chief:document.getElementById('fChief').value,
+    fac:document.getElementById('fFac').value,
+    type:document.getElementById('fType').value,
+    q:(document.getElementById('fSearch').value||'').toLowerCase(),
+  };
+}
+function filteredFacilities(){
+  const f=getFilters();
+  return ST.facilities.filter(x=>{
+    if(f.dist&&x.district!==f.dist)return false;
+    if(f.chief&&x.chiefdom!==f.chief)return false;
+    if(f.fac&&x.facility!==f.fac)return false;
+    if(f.type&&x.hfType!==f.type)return false;
+    if(f.q&&!(`${x.facility} ${x.chiefdom} ${x.district} ${x.hfType}`.toLowerCase().includes(f.q)))return false;
+    return true;
+  });
+}
+// Build grouped units at the requested aggregation level
+function buildUnits(aggLevel,source){
+  const facs=filteredFacilities();
+  if(aggLevel==='facility'){
+    return facs.map(x=>({key:x.ou_id,district:x.district,chiefdom:x.chiefdom,facility:x.facility,hfType:x.hfType,data:x.data}));
+  }
+  const groups={};
+  facs.forEach(x=>{
+    let key,meta;
+    if(aggLevel==='chiefdom'){key=x.district+' | '+x.chiefdom;meta={district:x.district,chiefdom:x.chiefdom,facility:'',hfType:''};}
+    else if(aggLevel==='district'){key=x.district;meta={district:x.district,chiefdom:'',facility:'',hfType:''};}
+    else {key='National';meta={district:'National',chiefdom:'',facility:'',hfType:''};}
+    if(!groups[key]){groups[key]={key,...meta,data:{}};ST.years.forEach(yr=>{const mk=()=>Array(12).fill(null);groups[key].data[yr]={conf_rdt_fac:mk(),conf_micro_fac:mk(),test_rdt_fac:mk(),test_micro_fac:mk(),treat_fac:mk(),conf_rdt_com:mk(),conf_micro_com:mk(),test_rdt_com:mk(),test_micro_com:mk(),treat_com:mk()};});}
+    ST.years.forEach(yr=>{
+      const src=x.data[yr];if(!src)return;
+      const tgt=groups[key].data[yr];
+      ['conf_rdt_fac','conf_micro_fac','test_rdt_fac','test_micro_fac','treat_fac','conf_rdt_com','conf_micro_com','test_rdt_com','test_micro_com','treat_com'].forEach(k=>{
+        for(let i=0;i<12;i++){ if(src[k][i]!==null)tgt[k][i]=(tgt[k][i]===null?0:tgt[k][i])+src[k][i]; }
+      });
+    });
+  });
+  return Object.values(groups);
+}
+// For a unit: quarter central value (of monthly values pooled across years), quarterly totals per year
+function quantifyUnit(unit,source,method,buf){
+  buf=buf||1;
+  const qMedian=[], qByYear={}; // qMedian = per-month need (central value × buffer); qByYear = raw actual quarter totals
+  ST.years.forEach(yr=>{qByYear[yr]=[null,null,null,null];});
+  let nMonths=0;
+  QUARTERS.forEach((Q,qi)=>{
+    const pool=[];
+    ST.years.forEach(yr=>{
+      const d=unit.data[yr];if(!d)return;
+      const m=monthlySeries(d,source);
+      let qt=null,any=false;
+      Q.months.forEach(mi=>{ const v=m[mi]; if(v!==null&&v!==undefined){pool.push(v);qt=(qt===null?0:qt)+v;any=true;nMonths++;} });
+      qByYear[yr][qi]=any?qt:null;
+    });
+    const c=central(pool,method);
+    qMedian[qi]=c===null?null:c*buf;
+  });
+  const qEstimate=qMedian.map(v=>v===null?null:v*3);
+  const annual=qEstimate.reduce((s,v)=>s+(v||0),0);
+  return {...unit, qMedian, qEstimate, qByYear, annual, nMonths};
+}
+function bufMult(){ const b=parseFloat(document.getElementById('fBuffer').value)||0; return 1+b/100; }
+function bufPct(){ return parseFloat(document.getElementById('fBuffer').value)||0; }
+function computeAll(){
+  const aggLevel='district';
+  const source=document.getElementById('fSource').value;
+  const method=document.getElementById('fMethod').value;
+  const buf=bufMult(), buffer=bufPct();
+  const test=curTest();
+  const units=buildUnits(aggLevel,source).map(u=>quantifyUnit(u,source,method,buf));
+  return {aggLevel,source,method,buf,buffer,units,test};
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════════════════════════════
+function onControlChange(){
+  const R=computeAll();
+  renderStats(R); renderKPIs(R); renderTestMix(R); renderCharts(R); renderQuant(R); renderDetail(R); renderMethod(R);
+}
+function populateChiefdoms(){
+  const dist=document.getElementById('fDist').value;
+  const chiefs=[...new Set(ST.facilities.filter(x=>!dist||x.district===dist).map(x=>x.chiefdom).filter(Boolean))].sort();
+  document.getElementById('fChief').innerHTML='<option value="">All chiefdoms</option>'+chiefs.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+function populateFacilities(){
+  const dist=document.getElementById('fDist').value;
+  const chief=document.getElementById('fChief').value;
+  const facs=[...new Set(ST.facilities.filter(x=>(!dist||x.district===dist)&&(!chief||x.chiefdom===chief)).map(x=>x.facility).filter(Boolean))].sort();
+  document.getElementById('fFac').innerHTML='<option value="">All facilities</option>'+facs.map(f=>`<option value="${f}">${f}</option>`).join('');
+}
+function onDistrictChange(){ populateChiefdoms(); populateFacilities(); onControlChange(); }
+function onChiefChange(){ populateFacilities(); onControlChange(); }
+function initFilters(){
+  const dists=[...new Set(ST.facilities.map(x=>x.district).filter(Boolean))].sort();
+  document.getElementById('fDist').innerHTML='<option value="">All districts</option>'+dists.map(d=>`<option value="${d}">${d}</option>`).join('');
+  populateChiefdoms();
+  populateFacilities();
+  const types=[...new Set(ST.facilities.map(x=>x.hfType).filter(Boolean))].sort();
+  document.getElementById('fType').innerHTML='<option value="">All types</option>'+types.map(t=>`<option value="${t}">${t}</option>`).join('');
+}
+function renderTestMix(R){
+  const facs=filteredFacilities();
+  const S={rdt_fac:0,micro_fac:0,rdt_com:0,micro_com:0};
+  const dist={}, dy={};
+  const yrAgg={}; ST.years.forEach(y=>yrAgg[y]={rdt:0,micro:0});
+  facs.forEach(x=>{
+    const dn=x.district||'(unknown)';
+    const dd=dist[dn]||(dist[dn]={rdt:0,micro:0});
+    const ddy=dy[dn]||(dy[dn]={});
+    ST.years.forEach(yr=>{
+      const d=x.data[yr]; if(!d)return;
+      const cell=ddy[yr]||(ddy[yr]={rdt:0,micro:0});
+      for(let i=0;i<12;i++){
+        const rf=d.test_rdt_fac[i]||0, mf=d.test_micro_fac[i]||0, rc=d.test_rdt_com[i]||0, mc=d.test_micro_com[i]||0;
+        S.rdt_fac+=rf; S.micro_fac+=mf; S.rdt_com+=rc; S.micro_com+=mc;
+        dd.rdt+=rf+rc; dd.micro+=mf+mc;
+        yrAgg[yr].rdt+=rf+rc; yrAgg[yr].micro+=mf+mc;
+        cell.rdt+=rf+rc; cell.micro+=mf+mc;
+      }
+    });
+  });
+  const pc=(a,b)=>b>0?(a/b*100).toFixed(1)+'%':'\u2014';
+  const facTot=S.rdt_fac+S.micro_fac, comTot=S.rdt_com+S.micro_com;
+  const rdtTot=S.rdt_fac+S.rdt_com, microTot=S.micro_fac+S.micro_com, grand=facTot+comTot;
+
+  const nat=document.getElementById('tmNational');
+  if(nat) nat.innerHTML=`
+    <table class="data-table tm"><thead><tr><th>Level</th><th>RDT tests</th><th>RDT %</th><th>Microscopy tests</th><th>Microscopy %</th><th>Total tests</th></tr></thead>
+    <tbody>
+      <tr><td>Facility</td><td>${fmt(S.rdt_fac)}</td><td>${pc(S.rdt_fac,facTot)}</td><td>${fmt(S.micro_fac)}</td><td>${pc(S.micro_fac,facTot)}</td><td>${fmt(facTot)}</td></tr>
+      <tr><td>Community (HTR/ETR)</td><td>${fmt(S.rdt_com)}</td><td>${pc(S.rdt_com,comTot)}</td><td>${fmt(S.micro_com)}</td><td>${pc(S.micro_com,comTot)}</td><td>${fmt(comTot)}</td></tr>
+    </tbody>
+    <tfoot><tr><td>National (all)</td><td>${fmt(rdtTot)}</td><td>${pc(rdtTot,grand)}</td><td>${fmt(microTot)}</td><td>${pc(microTot,grand)}</td><td>${fmt(grand)}</td></tr></tfoot>
+    </table>`;
+
+  const yRows=ST.years.map(y=>{const t=yrAgg[y],tot=t.rdt+t.micro;return {y,rdt:t.rdt,micro:t.micro,tot};});
+  const ye=document.getElementById('tmYear');
+  if(ye) ye.innerHTML=`<table class="data-table tm"><thead><tr><th>Year</th><th>RDT tests</th><th>RDT %</th><th>Microscopy tests</th><th>Microscopy %</th><th>Total tests</th></tr></thead><tbody>`
+    +yRows.map(r=>`<tr><td>${r.y}</td><td>${fmt(r.rdt)}</td><td>${pc(r.rdt,r.tot)}</td><td>${fmt(r.micro)}</td><td>${pc(r.micro,r.tot)}</td><td>${fmt(r.tot)}</td></tr>`).join('')
+    +`</tbody><tfoot><tr><td>All years</td><td>${fmt(rdtTot)}</td><td>${pc(rdtTot,grand)}</td><td>${fmt(microTot)}</td><td>${pc(microTot,grand)}</td><td>${fmt(grand)}</td></tr></tfoot></table>`;
+
+  const rows=Object.keys(dist).map(dn=>({dn,rdt:dist[dn].rdt,micro:dist[dn].micro,tot:dist[dn].rdt+dist[dn].micro})).sort((a,b)=>b.tot-a.tot);
+  const de=document.getElementById('tmDistrict');
+  if(de) de.innerHTML=`
+    <table class="data-table tm"><thead><tr><th>District</th><th>RDT tests</th><th>RDT %</th><th>Microscopy tests</th><th>Microscopy %</th><th>Total tests</th></tr></thead>
+    <tbody>
+      ${rows.map(r=>`<tr><td>${r.dn}</td><td>${fmt(r.rdt)}</td><td>${pc(r.rdt,r.tot)}</td><td>${fmt(r.micro)}</td><td>${pc(r.micro,r.tot)}</td><td>${fmt(r.tot)}</td></tr>`).join('')}
+    </tbody>
+    <tfoot><tr><td>National (${rows.length} districts)</td><td>${fmt(rdtTot)}</td><td>${pc(rdtTot,grand)}</td><td>${fmt(microTot)}</td><td>${pc(microTot,grand)}</td><td>${fmt(grand)}</td></tr></tfoot>
+    </table>`;
+
+  const dyRows=rows.map(r=>r.dn).flatMap(dn=>ST.years.filter(y=>dy[dn]&&dy[dn][y]).map(y=>{const c=dy[dn][y],tot=c.rdt+c.micro;return {dn,y,rdt:c.rdt,micro:c.micro,tot};}));
+  const dye=document.getElementById('tmDistrictYear');
+  if(dye) dye.innerHTML=`<table class="data-table tm"><thead><tr><th>District</th><th>Year</th><th>RDT tests</th><th>RDT %</th><th>Microscopy tests</th><th>Microscopy %</th><th>Total tests</th></tr></thead><tbody>`
+    +dyRows.map(r=>`<tr><td>${r.dn}</td><td>${r.y}</td><td>${fmt(r.rdt)}</td><td>${pc(r.rdt,r.tot)}</td><td>${fmt(r.micro)}</td><td>${pc(r.micro,r.tot)}</td><td>${fmt(r.tot)}</td></tr>`).join('')
+    +`</tbody><tfoot><tr><td>All districts</td><td>all</td><td>${fmt(rdtTot)}</td><td>${pc(rdtTot,grand)}</td><td>${fmt(microTot)}</td><td>${pc(microTot,grand)}</td><td>${fmt(grand)}</td></tr></tfoot></table>`;
+}
+function renderStats(R){
+  const inScope=filteredFacilities().length;
+  const total=ST.totalFacilities||0;
+  const active=ST.facilities.length;
+  const activePct=total?(active/total*100).toFixed(1):0;
+  const yrs=ST.years;
+  const totAnnual=R.units.reduce((s,u)=>s+(u.annual||0),0);
+  const srcTxt={combined:'Facility + Community',fac:'Facility only',com:'Community only'}[R.source];
+  document.getElementById('statsRow').innerHTML=[
+    `<div class="stat-pill ok" style="background:#004080;border-color:#004080;color:#fff;">Quantification for ${nextYear()}</div>`,
+    `<div class="stat-pill ok">Based on ${yrs[0]} to ${yrs[yrs.length-1]} · ${yrs.length} year(s)</div>`,
+    `<div class="stat-pill">Total facilities (registry): ${total.toLocaleString()}</div>`,
+    `<div class="stat-pill ok">Active (≥1 report): ${active.toLocaleString()} · ${activePct}%</div>`,
+    `<div class="stat-pill">In current view: ${inScope.toLocaleString()}</div>`,
+    `<div class="stat-pill">Source: ${srcTxt}</div>`,
+    `<div class="stat-pill">Test: ${({all:'RDT + Microscopy',rdt:'RDT only',micro:'Microscopy only'}[R.test||'all'])}</div>`,
+    `<div class="stat-pill">By district: ${R.units.length} of 16</div>`,
+    `<div class="stat-pill ok">Total annual estimate: ${fmt(totAnnual)} ACT courses</div>`,
+    R.buffer?`<div class="stat-pill warn">Buffer: +${R.buffer}% included</div>`:`<div class="stat-pill">Buffer: none</div>`,
+    ST.useWins?`<div class="stat-pill warn">Outlier correction ON (99.75th pct)</div>`:`<div class="stat-pill">Outlier correction OFF</div>`,
+  ].join('');
+}
+function renderKPIs(R){
+  const metric=document.getElementById('fMetric').value;
+  const mLbl=R.method==='mean'?'mean':'median';
+  const cls=['q1','q2','q3','q4'];
+  const annual=R.units.reduce((s,u)=>s+(u.annual||0),0);
+  let html='';
+  if(metric==='monthly'){
+    // 12 monthly cards: sum across districts of the central value of each calendar month over the years
+    const monthTot=Array(12).fill(0);
+    R.units.forEach(u=>{
+      for(let m=0;m<12;m++){
+        const vals=[];
+        ST.years.forEach(yr=>{const d=u.data[yr];if(!d)return;const ms=monthlySeries(d,R.source);if(ms[m]!==null&&ms[m]!==undefined)vals.push(ms[m]);});
+        const cv=central(vals,R.method);
+        if(cv!==null)monthTot[m]+=cv*R.buf;
+      }
+    });
+    html=MONTH_NAMES.map((mn,i)=>`
+      <div class="kpi ${cls[Math.floor(i/3)]}">
+        <div class="kpi-label">${mn}</div>
+        <div class="kpi-val">${fmt(monthTot[i])}</div>
+        <div class="kpi-sub">ACT courses / mo${R.buffer?` · incl. ${R.buffer}% buffer`:` · ${mLbl}`}</div>
+      </div>`).join('');
+    html+=`<div class="kpi"><div class="kpi-label">Annual Estimate</div><div class="kpi-val">${fmt(annual)}</div><div class="kpi-sub">quarterly method total</div></div>`;
+  } else {
+    // 4 quarter cards — main number is the quarterly estimate (mean per month × 3)
+    const qTot=[0,0,0,0];
+    R.units.forEach(u=>u.qMedian.forEach((v,i)=>{qTot[i]+=(v||0);}));
+    html=QUARTERS.map((Q,i)=>`
+      <div class="kpi ${cls[i]}">
+        <div class="kpi-label">${Q.label}</div>
+        <div class="kpi-val">${fmt(qTot[i]*3)}</div>
+        <div class="kpi-sub">${fmt(qTot[i])}/month &times; 3 months${R.buffer?` · incl. ${R.buffer}% buffer`:` · ${mLbl}`}</div>
+      </div>`).join('');
+    html+=`<div class="kpi"><div class="kpi-label">Annual Estimate</div><div class="kpi-val">${fmt(annual)}</div><div class="kpi-sub">sum of quarterly estimates</div></div>`;
+  }
+  document.getElementById('kpiGrid').innerHTML=html;
+  const srcTxt={combined:'Facility + Community',fac:'Facility only',com:'Community only'}[R.source];
+  const testTxt={all:'RDT + Microscopy',rdt:'RDT',micro:'Microscopy'}[R.test||'all'];
+  document.getElementById('quantYearBanner').innerHTML=
+    `<div style="font-size:12px;text-transform:uppercase;letter-spacing:.6px;opacity:.85;">Treatment (ACT) Quantification · confirmed method (TPR-adjusted)</div>
+     <div style="font-size:26px;font-weight:800;margin:2px 0;">ACT Treatment Quantification for ${nextYear()}</div>
+     <div style="font-size:12px;opacity:.9;">Based on ${ST.years[0]} to ${ST.years[ST.years.length-1]} (${ST.years.length} year${ST.years.length>1?'s':''}) · ${srcTxt} · ${testTxt} tests · ${R.method==='mean'?'Mean':'Median'} method · ${ST.useWins?'outlier-corrected':'raw values'}${R.buffer?` · +${R.buffer}% buffer`:''}</div>`;
+}
+
+function destroyChart(k){if(CHARTS[k]){CHARTS[k].destroy();CHARTS[k]=null;}}
+function renderCharts(R){
+  const metric=document.getElementById('fMetric').value;
+  const mult=metric==='quarterly'?3:1;
+  const mWord=R.method==='mean'?'Mean':'Median';
+  const isMonthly=(metric==='monthly');
+
+  destroyChart('quarter'); destroyChart('year');
+
+  if(isMonthly){
+    // ── MONTHLY VIEW ──────────────────────────────────────────
+    // Chart 1: mean/median of each calendar month across the selected years, summed across units
+    document.getElementById('chart1Title').textContent=`${mWord} Monthly Adjusted Confirmed / ACT need (per month, over ${ST.years.length} years)`;
+    const monthTot=Array(12).fill(0);
+    R.units.forEach(u=>{
+      for(let m=0;m<12;m++){
+        const vals=[];
+        ST.years.forEach(yr=>{const d=u.data[yr];if(!d)return;const ms=monthlySeries(d,R.source);if(ms[m]!==null&&ms[m]!==undefined)vals.push(ms[m]);});
+        const cv=central(vals,R.method);
+        if(cv!==null)monthTot[m]+=cv*R.buf;
+      }
+    });
+    CHARTS.quarter=new Chart(document.getElementById('chartQuarter'),{
+      type:'bar',
+      data:{labels:MONTH_NAMES,datasets:[{label:`${mWord} monthly`,data:monthTot.map(Math.round),backgroundColor:MONTH_NAMES.map((_,i)=>Q_COLORS[Math.floor(i/3)]),borderRadius:5}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}
+    });
+
+    // Chart 2: monthly total by year (sum across units of each month, per year)
+    const byYearM=ST.years.map(yr=>{const arr=Array(12).fill(0);R.units.forEach(u=>{const d=u.data[yr];if(!d)return;const ms=monthlySeries(d,R.source);for(let m=0;m<12;m++){if(ms[m]!==null)arr[m]+=ms[m];}});return arr;});
+    CHARTS.year=new Chart(document.getElementById('chartYear'),{
+      type:'line',
+      data:{labels:MONTH_NAMES,datasets:ST.years.map((yr,yi)=>({
+        label:String(yr),data:byYearM[yi].map(Math.round),
+        borderColor:`hsl(${205+yi*30},60%,45%)`,backgroundColor:`hsl(${205+yi*30},60%,45%)`,tension:.3,fill:false,pointRadius:3}))},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}
+    });
+    document.getElementById('chartYearHead').textContent='Monthly Adjusted Confirmed by Year';
+  } else {
+    // ── QUARTERLY VIEW ────────────────────────────────────────
+    document.getElementById('chart1Title').textContent=`Quarterly Estimate (${mWord} monthly × 3)`;
+    const qTot=[0,0,0,0];
+    R.units.forEach(u=>u.qMedian.forEach((v,i)=>{qTot[i]+=(v||0)*mult;}));
+    CHARTS.quarter=new Chart(document.getElementById('chartQuarter'),{
+      type:'bar',
+      data:{labels:QUARTERS.map(q=>q.label),datasets:[{label:'Quarterly estimate',data:qTot.map(Math.round),backgroundColor:Q_COLORS,borderRadius:6}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}
+    });
+
+    const byYear=ST.years.map(yr=>{const arr=[0,0,0,0];R.units.forEach(u=>{u.qByYear[yr]?.forEach((v,i)=>{arr[i]+=(v||0);});});return arr;});
+    CHARTS.year=new Chart(document.getElementById('chartYear'),{
+      type:'bar',
+      data:{labels:QUARTERS.map(q=>q.short),datasets:ST.years.map((yr,yi)=>({
+        label:String(yr),data:byYear[yi].map(Math.round),
+        backgroundColor:`hsl(${205+yi*25},55%,${45+yi*8}%)`,borderRadius:4}))},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}
+    });
+    document.getElementById('chartYearHead').textContent='Quarterly Totals by Year';
+  }
+
+  // Chart 3: all districts by annual estimate (honours filters)
+  const distUnits=buildUnits('district',R.source).map(u=>quantifyUnit(u,R.source,R.method,R.buf));
+  const top=distUnits.sort((a,b)=>b.annual-a.annual).reverse();
+  document.getElementById('chart3Title').textContent=`All Districts by Annual Estimate (${top.length})`;
+  destroyChart('top');
+  CHARTS.top=new Chart(document.getElementById('chartTop'),{
+    type:'bar',
+    data:{labels:top.map(u=>u.district),datasets:[{label:'Annual estimate',data:top.map(u=>Math.round(u.annual)),backgroundColor:'#2c6793',borderRadius:4}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}
+  });
+}
+
+function unitCols(aggLevel){
+  if(aggLevel==='facility')return ['District','Chiefdom','Facility','Type'];
+  if(aggLevel==='chiefdom')return ['District','Chiefdom'];
+  if(aggLevel==='district')return ['District'];
+  return ['Scope'];
+}
+function unitVals(u,aggLevel){
+  if(aggLevel==='facility')return [u.district,u.chiefdom,u.facility,u.hfType];
+  if(aggLevel==='chiefdom')return [u.district,u.chiefdom];
+  if(aggLevel==='district')return [u.district];
+  return ['National'];
+}
+function renderQuant(R){
+  const metric=document.getElementById('fMetric').value;
+  const mult=metric==='quarterly'?3:1;
+  const mWord=R.method==='mean'?'mean':'median';
+  const metricLbl=metric==='quarterly'?`quarterly estimate (${mWord} × 3)`:`${mWord} monthly caseload`;
+  document.getElementById('quantNote').innerHTML=`Quarter columns show the <strong>${metricLbl}</strong>. Annual estimate = sum of the four quarterly estimates (${mWord} monthly × 3). ${R.buffer?`<strong>A ${R.buffer}% buffer is included in every value shown.</strong> `:''}${ST.years.length===2?`<em>With 2 years the ${mWord} of the pooled monthly values is used; add more years for a more robust ${mWord}.</em>`:''}`;
+
+  const cols=unitCols(R.aggLevel);
+  const qHdr=QUARTERS.map(q=>q.label);
+  const head=[...cols,...qHdr,'Annual Est.','Months (n)'];
+  document.getElementById('quantHead').innerHTML='<tr>'+head.map((h,i)=>`<th onclick="sortQuant(${i})">${h}</th>`).join('')+'</tr>';
+
+  // sort
+  let units=[...R.units];
+  if(ST.sort.col!==null){
+    const c=ST.sort.col, base=cols.length;
+    units.sort((a,b)=>{
+      let av,bv;
+      if(c<base){av=unitVals(a,R.aggLevel)[c];bv=unitVals(b,R.aggLevel)[c];return ST.sort.dir*String(av).localeCompare(String(bv));}
+      else if(c<base+4){const qi=c-base;av=(a.qMedian[qi]||0)*mult;bv=(b.qMedian[qi]||0)*mult;}
+      else if(c===base+4){av=a.annual;bv=b.annual;}
+      else {av=a.nMonths;bv=b.nMonths;}
+      return ST.sort.dir*(av-bv);
+    });
+  } else {
+    units.sort((a,b)=>b.annual-a.annual);
+  }
+
+  document.getElementById('quantBody').innerHTML=units.map(u=>{
+    const uv=unitVals(u,R.aggLevel).map(v=>`<td>${v||''}</td>`).join('');
+    const qv=u.qMedian.map(v=>`<td class="num">${v===null?'':fmt(v*mult)}</td>`).join('');
+    return `<tr>${uv}${qv}<td class="num"><strong>${fmt(u.annual)}</strong></td><td class="num">${u.nMonths}</td></tr>`;
+  }).join('');
+
+  // footer totals
+  const qTot=[0,0,0,0];let ann=0;
+  units.forEach(u=>{u.qMedian.forEach((v,i)=>qTot[i]+=(v||0)*mult);ann+=u.annual;});
+  const pad=cols.length;
+  document.getElementById('quantFoot').innerHTML=`<tr><td colspan="${pad}">TOTAL (${units.length} units)</td>${qTot.map(v=>`<td class="num">${fmt(v)}</td>`).join('')}<td class="num">${fmt(ann)}</td><td></td></tr>`;
+}
+function sortQuant(col){
+  if(ST.sort.col===col)ST.sort.dir*=-1; else {ST.sort.col=col;ST.sort.dir=1;}
+  onControlChange();
+}
+function renderDetail(R){
+  const cols=unitCols(R.aggLevel);
+  const yrQ=[];
+  ST.years.forEach(yr=>QUARTERS.forEach(q=>yrQ.push(`${yr} ${q.short}`)));
+  const head=[...cols,...yrQ,...ST.years.map(y=>`${y} Total`)];
+  document.getElementById('detailHead').innerHTML='<tr>'+head.map(h=>`<th>${h}</th>`).join('')+'</tr>';
+  const units=[...R.units].sort((a,b)=>b.annual-a.annual);
+  document.getElementById('detailBody').innerHTML=units.map(u=>{
+    const uv=unitVals(u,R.aggLevel).map(v=>`<td>${v||''}</td>`).join('');
+    let cells='';
+    ST.years.forEach(yr=>{QUARTERS.forEach((q,qi)=>{const v=u.qByYear[yr][qi];cells+=`<td class="num">${v===null?'':fmt(v)}</td>`;});});
+    const totals=ST.years.map(yr=>{const t=u.qByYear[yr].reduce((s,v)=>s+(v||0),0);const any=u.qByYear[yr].some(v=>v!==null);return `<td class="num"><strong>${any?fmt(t):''}</strong></td>`;}).join('');
+    return `<tr>${uv}${cells}${totals}</tr>`;
+  }).join('');
+}
+
+function switchTab(name,btn){
+  ['viz','quant','detail','testmix','dl'].forEach(t=>document.getElementById('tab-'+t).style.display=t===name?'block':'none');
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function renderMethod(R){
+  const srcTxt={combined:'Facility + Community',fac:'Facility only',com:'Community only'}[R.source];
+  const mWord=R.method==='mean'?'Mean':'Median';
+  const metric=document.getElementById('fMetric').value;
+  const metricTxt=metric==='quarterly'?'Quarterly estimate (× 3)':`${mWord} monthly caseload`;
+  const yrs=ST.years;
+  document.getElementById('methodConfig').innerHTML=
+    `<strong>Current settings:</strong> Years ${yrs[0]} to ${yrs[yrs.length-1]} (${yrs.length}) · Source: ${srcTxt} · Method: ${mWord} · Quarter metric: ${metricTxt} · Buffer: ${R.buffer?('+'+R.buffer+'%'):'none'} · View: by district (national = the TOTAL row) · Outlier correction: ${ST.useWins?'ON (99.75th percentile)':'OFF'}. The definitions below explain each of these.`;
+  const total=ST.totalFacilities||0, active=ST.facilities.length, inactive=Math.max(0,total-active);
+  const pct=total?(active/total*100).toFixed(1):0;
+  const cov=document.getElementById('methodCoverage');
+  if(cov) cov.innerHTML=
+    `<table class="def-table"><tbody>
+       <tr><td class="term">Total facilities (registry)</td><td>${total.toLocaleString()} standard Level-5 health facilities in the DHIS2 org unit registry${ST.excludedTypes?` (${ST.excludedTypes.toLocaleString()} non-standard units excluded)`:''}.</td></tr>
+       <tr><td class="term">Active facilities</td><td>${active.toLocaleString()} reported at least one confirmed, tested or treated value in ${yrs[0]} to ${yrs[yrs.length-1]} (${pct}% of the registry). These drive the quantification.</td></tr>
+       <tr><td class="term">Non-reporting facilities</td><td>${inactive.toLocaleString()} had no confirmed, tested or treated report in the selected years.</td></tr>
+       <tr><td class="term">In current view</td><td>${filteredFacilities().length.toLocaleString()} active facilities remain after the district, chiefdom, facility, type and search filters.</td></tr>
+     </tbody></table>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  DOWNLOADS
+// ═══════════════════════════════════════════════════════════════
+function quantMatrix(R){
+  const metric=document.getElementById('fMetric').value;const mult=metric==='quarterly'?3:1;
+  const mAbbr=R.method==='mean'?'mean/mo':'med/mo';
+  const cols=unitCols(R.aggLevel);
+  const head=[...cols,...QUARTERS.map(q=>q.label+(mult===3?' est.':' '+mAbbr)),'Annual Estimate','Months n'];
+  const rows=[...R.units].sort((a,b)=>b.annual-a.annual).map(u=>[
+    ...unitVals(u,R.aggLevel),
+    ...u.qMedian.map(v=>v===null?'':Math.round(v*mult)),
+    Math.round(u.annual), u.nMonths
+  ]);
+  return [head,...rows];
+}
+function detailMatrix(R){
+  const cols=unitCols(R.aggLevel);
+  const head=[...cols];
+  ST.years.forEach(yr=>QUARTERS.forEach(q=>head.push(`${yr} ${q.short}`)));
+  ST.years.forEach(y=>head.push(`${y} Total`));
+  const rows=[...R.units].sort((a,b)=>b.annual-a.annual).map(u=>{
+    const r=[...unitVals(u,R.aggLevel)];
+    ST.years.forEach(yr=>QUARTERS.forEach((q,qi)=>{const v=u.qByYear[yr][qi];r.push(v===null?'':Math.round(v));}));
+    ST.years.forEach(yr=>{const any=u.qByYear[yr].some(v=>v!==null);r.push(any?Math.round(u.qByYear[yr].reduce((s,v)=>s+(v||0),0)):'');});
+    return r;
+  });
+  return [head,...rows];
+}
+function monthlyMatrix(source){
+  const head=['District','Chiefdom','Facility','Type','Year',...MONTH_NAMES,'Year Total'];
+  const rows=[];
+  ST.facilities.forEach(x=>{
+    ST.years.forEach(yr=>{
+      const d=x.data[yr];if(!d)return;
+      const m=monthlySeries(d,source);if(m.every(v=>v===null))return;
+      rows.push([x.district,x.chiefdom,x.facility,x.hfType,yr,...m.map(v=>v===null?'':Math.round(v)),Math.round(m.reduce((s,v)=>s+(v||0),0))]);
+    });
+  });
+  return [head,...rows];
+}
+function levelSummary(aggLevel,source,method,buf){
+  buf=buf||1;
+  const units=buildUnits(aggLevel,source).map(u=>quantifyUnit(u,source,method,buf));
+  const cols=unitCols(aggLevel);
+  const nAbbr=buf>1?'need/mo':(method==='mean'?'mean/mo':'med/mo');
+  const head=[...cols,...QUARTERS.map(q=>q.short+' '+nAbbr),...QUARTERS.map(q=>q.short+' est.'),'Annual Estimate'];
+  const rows=units.sort((a,b)=>b.annual-a.annual).map(u=>[
+    ...unitVals(u,aggLevel),
+    ...u.qMedian.map(v=>v===null?'':Math.round(v)),
+    ...u.qEstimate.map(v=>v===null?'':Math.round(v)),
+    Math.round(u.annual)
+  ]);
+  return [head,...rows];
+}
+// One quantification sheet for a given source, at the current aggregation level, with a title
+function sourceSheetMatrix(aggLevel,source,method,buf){
+  buf=buf||1;
+  const m=levelSummary(aggLevel,source,method,buf);
+  const srcName={combined:'Facility + Community',fac:'Facility',com:'Community'}[source];
+  const bp=Math.round((buf-1)*1000)/10;
+  const title=[`ACT Treatment Quantification (confirmed method) for ${nextYear()} — ${srcName} — by ${aggLevel} — ${method==='mean'?'Mean':'Median'} method${bp?' — incl. '+bp+'% buffer':''}`];
+  const basis=[`Based on years ${ST.years.join(', ')} · ${ST.useWins?'outlier-corrected (99.75th pct)':'raw values'} · quarterly estimate = monthly × 3${bp?' × '+(1+bp/100)+' buffer':''} · annual = sum of quarters`];
+  return [title, basis, [], ...m];
+}
+function downloadExcel(){
+  const R=computeAll();
+  const aggLevel=R.aggLevel; const method=R.method; const mWord=method==='mean'?'Mean':'Median';
+  const qy=nextYear(); const tag=`${ST.years[0]}_${ST.years[ST.years.length-1]}`;
+  const wb=XLSX.utils.book_new(); const buf=R.buf;
+  // Three source sheets, at the current aggregation level
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix(aggLevel,'fac',method,buf)),'Facility');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix(aggLevel,'com',method,buf)),'Community');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix(aggLevel,'combined',method,buf)),'Combined');
+  // Same three at facility level for distribution planning
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix('facility','fac',method,buf)),'Facility (by HF)');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix('facility','com',method,buf)),'Community (by HF)');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sourceSheetMatrix('facility','combined',method,buf)),'Combined (by HF)');
+  // Detail + raw monthly
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(detailMatrix(R)),'Quarterly by Year');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(monthlyMatrix('combined')),'Monthly Data (Combined)');
+  const notes=[
+    ['NMCP Sierra Leone — Treatment (ACT) Quantification (confirmed method, TPR-adjusted)'],
+    ['Quantification for',qy],
+    ['Generated',new Date().toISOString()],
+    ['Based on years',ST.years.join(', ')],
+    ['Method',mWord],
+    ['Buffer applied',R.buffer? R.buffer+'% added to all estimates':'None'],
+    ['Outlier correction',ST.useWins?'Upper bound 99.75th pct per facility per year':'None'],
+    [''],
+    ['Facility coverage'],
+    ['Total facilities (registry)',ST.totalFacilities||0],
+    ['Active (>=1 report in years)',ST.facilities.length],
+    ['Non-reporting facilities',Math.max(0,(ST.totalFacilities||0)-ST.facilities.length)],
+    [''],
+    ['Data elements used (children COCs summed across 0-59m/02-59m, 5-14y, 15+y)'],
+    ['Confirmed','Facility: Sz13vbo2Qwh microscopy+ , p6zQLDFjSfd RDT+ ; Community: T7xH8GwWpEM RDT-HTR+'],
+    ['Tested','Confirmed + negatives: Rijj3Fp9ksg micro- , mXS2g1AiPsS RDT- (fac) ; YWvx4zYdp92 RDT-HTR- (com)'],
+    ['Treated (ACT)','Facility: wU8EdHifSLa <24h , XKTCuR0W3YN >24h ; Community: h3zJa6hAgib <24h , Imkks0HAl7E >24h'],
+    ['Adjusted confirmed','confirmed + (confirmed/tested) x max(treated - confirmed, 0)  — the ACT need'],
+    ['Combined','Facility + Community components summed before the adjustment'],
+    ['Org unit levels','District = L2, Chiefdom = L4, Facility (PHU) = L5; sub-facility units rolled up to L5'],
+    [''],
+    ['Sheets'],
+    ['Facility / Community / Combined','Quantification by '+aggLevel+' for each data source'],
+    ['... (by HF)','The same three sources, one row per health facility'],
+    ['Quarterly by Year','Quarter totals for each year, current on-screen source'],
+    ['Monthly Data (Combined)','Monthly adjusted-confirmed (ACT need) per facility (Facility + Community)'],
+    [''],
+    ['Definitions'],
+    ['Quarters','Q1 Jan-Mar, Q2 Apr-Jun, Q3 Jul-Sep, Q4 Oct-Dec'],
+    [mWord+' monthly',mWord+' of all monthly adjusted-confirmed values in that quarter, pooled across the selected years'],
+    ['Quarterly estimate',mWord+' monthly × 3'],
+    ['Annual estimate','Sum of the four quarterly estimates → the quantification for '+qy],
+  ];
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(notes),'Method');
+  XLSX.writeFile(wb,`NMCP_ACT_Treatment_Quantification_for_${qy}_(from_${tag}).xlsx`);
+}
+function toCSV(mtx){return mtx.map(r=>r.map(c=>`"${c??''}"`).join(',')).join('\n');}
+function dlText(content,fname,mime){const a=document.createElement('a');a.download=fname;a.href='data:'+(mime||'text/plain')+';charset=utf-8,'+encodeURIComponent(content);a.click();}
+function downloadSourceCSV(source){
+  const R=computeAll();
+  dlText(toCSV(sourceSheetMatrix(R.aggLevel,source,R.method)),`NMCP_Quantification_for_${nextYear()}_${source}_${R.aggLevel}.csv`,'text/csv');
+}
+function downloadQuantCSV(){const R=computeAll();dlText(toCSV(quantMatrix(R)),`NMCP_Quantification_for_${nextYear()}_${R.aggLevel}.csv`,'text/csv');}
+function downloadDetailCSV(){const R=computeAll();dlText(toCSV(detailMatrix(R)),`NMCP_Quarterly_by_Year_${R.aggLevel}_${ST.years[0]}_${ST.years[ST.years.length-1]}.csv`,'text/csv');}
+
+function downloadR(){
+  const from=ST.years[0],to=ST.years[ST.years.length-1];
+  dlText(`# NMCP Sierra Leone — ACT Treatment Quantification (confirmed method)
+# Years: ${from}-${to} | ICF-SL
+# adjusted confirmed = confirmed + (confirmed/tested) * pmax(treated - confirmed, 0)   [TPR-adjusted]
+# Confirmed/tested/treated = Facility + Community, child age COCs summed. Outlier: 99.75th pct per facility/year/dx.
+# Quarterly quantification = mean (or median) of monthly adjusted-confirmed pooled across years, x3; annual = sum of quarters.
+
+library(httr); library(jsonlite); library(dplyr); library(tidyr)
+BASE_URL <- "https://sl.dhis2.org/hmis23"
+USER <- "your_username"; PASS <- "your_password"; auth <- authenticate(USER, PASS)
+
+FAC_AGE <- c("m5T8uBNB8aN","j7j6iaknOFn","zK1aiw8zFac")
+COM_AGE <- c("NtjMVmRfvHH","qDXW7WMLT99","mdjRPpvLKdu")
+# component -> role. positives feed confirmed & tested.
+comp <- list(
+  list(de="Sz13vbo2Qwh",lvl="fac",roles=c("confirmed","tested")),
+  list(de="p6zQLDFjSfd",lvl="fac",roles=c("confirmed","tested")),
+  list(de="Rijj3Fp9ksg",lvl="fac",roles=c("tested")),
+  list(de="mXS2g1AiPsS",lvl="fac",roles=c("tested")),
+  list(de="wU8EdHifSLa",lvl="fac",roles=c("treated")),
+  list(de="XKTCuR0W3YN",lvl="fac",roles=c("treated")),
+  list(de="T7xH8GwWpEM",lvl="com",roles=c("confirmed","tested")),
+  list(de="YWvx4zYdp92",lvl="com",roles=c("tested")),
+  list(de="h3zJa6hAgib",lvl="com",roles=c("treated")),
+  list(de="Imkks0HAl7E",lvl="com",roles=c("treated"))
+)
+dx <- unlist(lapply(comp,function(cp){a<-if(cp\$lvl=="fac")FAC_AGE else COM_AGE; paste0(cp\$de,".",a)}))
+dx_str <- paste(unique(dx), collapse=";")
+
+ou <- content(GET(paste0(BASE_URL,"/api/organisationUnits.json?level=5&fields=id,displayName,ancestors[id,displayName,level]&paging=false&pageSize=50000"),auth),"parsed")\$organisationUnits
+hf_type <- function(n){s<-tail(strsplit(toupper(trimws(n)),"\\\\s+")[[1]],1)
+  if(s=="HOSPITAL")"Hospital" else if(s=="MCHP")"MCHP" else if(s=="CHC")"CHC" else if(s=="CHP")"CHP" else if(grepl("CLINIC",s))"Clinic" else "Other"}
+oud <- bind_rows(lapply(ou,function(o){a<-o\$ancestors
+  data.frame(ou_id=o\$id,facility=o\$displayName,hf_type=hf_type(o\$displayName),
+    district=({d<-Filter(function(x)x\$level==2,a);if(length(d))d[[1]]\$displayName else ""}),
+    chiefdom=({c<-Filter(function(x)x\$level==4,a);if(length(c))c[[1]]\$displayName else ""}),stringsAsFactors=FALSE)}))
+oud <- oud[oud\$hf_type %in% c("Hospital","Clinic","CHC","CHP","MCHP"),]
+
+raw <- list()
+for(yr in ${from}:${to}){
+  pe <- paste0(yr,sprintf("%02d",1:12),collapse=";")
+  d <- content(GET(paste0(BASE_URL,"/api/analytics.json?dimension=dx:",dx_str,"&dimension=pe:",pe,"&dimension=ou:LEVEL-5&paging=false&ignoreLimit=true"),auth),"parsed")
+  raw <- c(raw, lapply(d\$rows,function(r)data.frame(dx=r[[1]],period=r[[2]],ou_id=r[[3]],value=as.numeric(r[[4]]),stringsAsFactors=FALSE)))
+}
+df <- bind_rows(raw); df <- df[df\$value>0,]
+df\$de <- sub("\\\\..*","",df\$dx)
+df\$year <- as.integer(substr(df\$period,1,4)); df\$month <- as.integer(substr(df\$period,5,6))
+
+# role membership
+role_de <- function(role) sapply(comp,function(cp) if(role %in% cp\$roles) cp\$de else NA)
+conf_de <- na.omit(role_de("confirmed")); test_de <- na.omit(role_de("tested")); treat_de <- na.omit(role_de("treated"))
+
+# Winsorise upper 99.75 per facility/year/dx
+wins <- function(x){r<-x[!is.na(x)&x>0];if(length(r)<2)return(x);hi<-quantile(r,0.9975);ifelse(!is.na(x)&x>hi,hi,x)}
+df <- df |> group_by(ou_id,year,dx) |> mutate(value=wins(value)) |> ungroup()
+
+# monthly confirmed/tested/treated per facility
+agg <- df |> mutate(role_conf=de %in% conf_de, role_test=de %in% test_de, role_treat=de %in% treat_de) |>
+  group_by(ou_id,year,month) |>
+  summarise(confirmed=sum(value[role_conf]), tested=sum(value[role_test]), treated=sum(value[role_treat]), .groups="drop")
+agg\$tpr <- ifelse(agg\$tested>0, agg\$confirmed/agg\$tested, 0)
+agg\$adjusted <- agg\$confirmed + agg\$tpr*pmax(agg\$treated-agg\$confirmed,0)
+agg <- left_join(agg, oud, by="ou_id"); agg\$quarter <- paste0("Q",ceiling(agg\$month/3))
+
+# Quarterly quantification = mean of monthly adjusted pooled across years (use median() for the median method)
+quant <- agg |> group_by(district,chiefdom,facility,hf_type,quarter) |>
+  summarise(monthly=mean(adjusted,na.rm=TRUE),.groups="drop") |>
+  mutate(quarterly_estimate=monthly*3)
+annual <- quant |> group_by(district,chiefdom,facility,hf_type) |>
+  summarise(annual_estimate=sum(quarterly_estimate),.groups="drop")
+
+write.csv(quant, paste0("NMCP_ACT_Quantification_quarter_${from}_${to}.csv"), row.names=FALSE)
+write.csv(annual, paste0("NMCP_ACT_Quantification_annual_${from}_${to}.csv"), row.names=FALSE)
+cat("Done.\\n")
+`,`NMCP_ACT_Treatment_Quantification_${from}_${to}.R`);
+}
+function downloadPy(){
+  const from=ST.years[0],to=ST.years[ST.years.length-1];
+  dlText(`# NMCP Sierra Leone — ACT Treatment Quantification (confirmed method)
+# Years: ${from}-${to} | ICF-SL
+# adjusted confirmed = confirmed + (confirmed/tested) * max(treated - confirmed, 0)   [TPR-adjusted]
+# Confirmed/tested/treated = Facility + Community, child age COCs summed. Outlier: 99.75th pct per facility/year/dx.
+# Quarterly quantification = mean (or median) of monthly adjusted-confirmed pooled across years, x3; annual = sum of quarters.
+
+import requests, pandas as pd, numpy as np
+from requests.auth import HTTPBasicAuth
+BASE="https://sl.dhis2.org/hmis23"; auth=HTTPBasicAuth("your_username","your_password")
+
+FAC_AGE=["m5T8uBNB8aN","j7j6iaknOFn","zK1aiw8zFac"]
+COM_AGE=["NtjMVmRfvHH","qDXW7WMLT99","mdjRPpvLKdu"]
+COMP=[  # (de, level, roles)
+ ("Sz13vbo2Qwh","fac",{"confirmed","tested"}),("p6zQLDFjSfd","fac",{"confirmed","tested"}),
+ ("Rijj3Fp9ksg","fac",{"tested"}),("mXS2g1AiPsS","fac",{"tested"}),
+ ("wU8EdHifSLa","fac",{"treated"}),("XKTCuR0W3YN","fac",{"treated"}),
+ ("T7xH8GwWpEM","com",{"confirmed","tested"}),("YWvx4zYdp92","com",{"tested"}),
+ ("h3zJa6hAgib","com",{"treated"}),("Imkks0HAl7E","com",{"treated"}),
+]
+dx=[]
+for de,lvl,_ in COMP:
+    dx += [f"{de}.{c}" for c in (FAC_AGE if lvl=="fac" else COM_AGE)]
+dx_str=";".join(dict.fromkeys(dx))
+conf_de={de for de,_,r in COMP if "confirmed" in r}
+test_de={de for de,_,r in COMP if "tested" in r}
+treat_de={de for de,_,r in COMP if "treated" in r}
+
+ou=requests.get(BASE+"/api/organisationUnits.json?level=5&fields=id,displayName,ancestors[id,displayName,level]&paging=false&pageSize=50000",auth=auth).json()["organisationUnits"]
+def hf(n):
+    s=n.upper().strip().split()[-1] if n.strip() else ""
+    return {"HOSPITAL":"Hospital","MCHP":"MCHP","CHC":"CHC","CHP":"CHP"}.get(s,"Clinic" if "CLINIC" in s else "Other")
+def anc(o,l): return next((a["displayName"] for a in o.get("ancestors",[]) if a["level"]==l),"")
+oud=pd.DataFrame([{"ou_id":o["id"],"facility":o["displayName"],"hf_type":hf(o["displayName"]),
+    "district":anc(o,2),"chiefdom":anc(o,4)} for o in ou])
+oud=oud[oud["hf_type"].isin(["Hospital","Clinic","CHC","CHP","MCHP"])]
+
+rows=[]
+for yr in range(${from},${to}+1):
+    pe=";".join(f"{yr}{m:02d}" for m in range(1,13))
+    d=requests.get(BASE+f"/api/analytics.json?dimension=dx:{dx_str}&dimension=pe:{pe}&dimension=ou:LEVEL-5&paging=false&ignoreLimit=true",auth=auth).json()
+    rows+=[{"dx":r[0],"period":r[1],"ou_id":r[2],"value":float(r[3])} for r in d.get("rows",[])]
+df=pd.DataFrame(rows); df=df[df["value"]>0]
+df["de"]=df["dx"].str.split(".").str[0]
+df["year"]=df["period"].str[:4].astype(int); df["month"]=df["period"].str[4:].astype(int)
+
+def wins(g):
+    r=g[g>0].dropna(); return g if len(r)<2 else g.clip(upper=np.percentile(r,99.75))
+df["value"]=df.groupby(["ou_id","year","dx"])["value"].transform(wins)
+
+df["c_conf"]=np.where(df["de"].isin(conf_de),df["value"],0.0)
+df["c_test"]=np.where(df["de"].isin(test_de),df["value"],0.0)
+df["c_treat"]=np.where(df["de"].isin(treat_de),df["value"],0.0)
+agg=df.groupby(["ou_id","year","month"]).agg(confirmed=("c_conf","sum"),tested=("c_test","sum"),treated=("c_treat","sum")).reset_index()
+agg["tpr"]=np.where(agg["tested"]>0,agg["confirmed"]/agg["tested"],0.0)
+agg["adjusted"]=agg["confirmed"]+agg["tpr"]*np.maximum(agg["treated"]-agg["confirmed"],0)
+agg=agg.merge(oud,on="ou_id",how="left")
+agg["quarter"]="Q"+np.ceil(agg["month"]/3).astype(int).astype(str)
+
+# mean of monthly adjusted pooled across years (use .median() for median method)
+quant=agg.groupby(["district","chiefdom","facility","hf_type","quarter"])["adjusted"].mean().reset_index(name="monthly")
+quant["quarterly_estimate"]=quant["monthly"]*3
+annual=quant.groupby(["district","chiefdom","facility","hf_type"])["quarterly_estimate"].sum().reset_index(name="annual_estimate")
+
+quant.to_csv(f"NMCP_ACT_Quantification_quarter_${from}_${to}.csv",index=False)
+annual.to_csv(f"NMCP_ACT_Quantification_annual_${from}_${to}.csv",index=False)
+print("Done.")
+`,`NMCP_ACT_Treatment_Quantification_${from}_${to}.py`);
+}
+function downloadToolHTML(){
+  const blob=new Blob(['<!DOCTYPE html>\n'+document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='nmcp_act_treatment_quantification_v1.html';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
+</script>
+</body>
+</html>
