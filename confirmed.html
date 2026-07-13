@@ -1046,8 +1046,20 @@ async function dhis2(path,retries=3){
   const pUrl=PROXY+'?url='+encodeURIComponent(url)+'&Authorization='+encodeURIComponent(AUTH);
   let lastErr;
   for(let a=1;a<=retries;a++){
-    try{const r=await fetch(pUrl);if(!r.ok)throw new Error('HTTP '+r.status);return await r.json();}
-    catch(e){lastErr=e;if(a<retries)await sleep(1200*Math.pow(2,a-1));}
+    try{
+      // Large analytics batches can be slow — allow up to 3 minutes before giving up.
+      const ctl=new AbortController();
+      const timer=setTimeout(()=>ctl.abort(),180000);
+      const r=await fetch(pUrl,{signal:ctl.signal});
+      clearTimeout(timer);
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      return await r.json();
+    }
+    catch(e){
+      lastErr=e;
+      if(typeof log==='function')log(`  request failed (attempt ${a}/${retries}): ${e.message||e}`,'warn');
+      if(a<retries)await sleep(1200*Math.pow(2,a-1));
+    }
   }
   throw new Error('DHIS2 failed: '+(lastErr?.message||'network'));
 }
@@ -1188,14 +1200,25 @@ async function startPipeline(){
   try{
     // ── S1: Org Units ─────────────────────────────────────────
     setStep('s_ou','running');setProgress(5);
-    // Level 5 = PHU (facility) · Level 6 = CHW / ETR posts (community reporting units)
-    const FIELDS='id,displayName,level,ancestors[id,displayName,level]';
-    const [ouL5,ouL6]=await Promise.all([
-      dhis2(`/api/organisationUnits.json?level=${L_PHU}&fields=${FIELDS}&paging=false&pageSize=50000`),
-      dhis2(`/api/organisationUnits.json?level=${L_COM}&fields=${FIELDS}&paging=false&pageSize=50000`),
-    ]);
-    const ouResp={organisationUnits:[...(ouL5.organisationUnits||[]),...(ouL6.organisationUnits||[])]};
-    log(`Org units fetched — ${(ouL5.organisationUnits||[]).length.toLocaleString()} Level-5 PHUs, ${(ouL6.organisationUnits||[]).length.toLocaleString()} Level-6 CHW/ETR posts`,'info');
+    // Level 5 = PHU (facility). Needs the full hierarchy (district / chiefdom).
+    const ouL5=await dhis2(`/api/organisationUnits.json?level=${L_PHU}`
+      +`&fields=id,displayName,level,ancestors[id,displayName,level]&paging=false&pageSize=50000`);
+    log(`Org units — ${(ouL5.organisationUnits||[]).length.toLocaleString()} Level-5 PHUs`,'info');
+    await tick();
+
+    // Level 6 = CHW / ETR posts. There are many thousands of them, so ONLY the parent
+    // id is requested — pulling full ancestors here makes the response so large that
+    // the request times out. All we need is the Level-5 parent to roll community up to.
+    let ouL6={organisationUnits:[]};
+    try{
+      ouL6=await dhis2(`/api/organisationUnits.json?level=${L_COM}`
+        +`&fields=id,parent[id]&paging=false&pageSize=100000`);
+      log(`Org units — ${(ouL6.organisationUnits||[]).length.toLocaleString()} Level-6 CHW/ETR posts`,'info');
+    }catch(e){
+      log(`Level-6 fetch failed (${e.message||e}) — continuing without community rollup`,'err');
+    }
+    await tick();
+    const ouResp={organisationUnits:(ouL5.organisationUnits||[])};
     const VALID=['Hospital','Clinic','CHC','CHP','MCHP'];
     let skip=0;
     ST.excluded=[];
@@ -1204,7 +1227,6 @@ async function startPipeline(){
       const anc=(ou.ancestors||[]).sort((a,b)=>a.level-b.level);
       const dist=anc.find(a=>a.level===L_DIST);
       const chief=anc.find(a=>a.level===L_CHIEF);
-      const l5Anc=anc.find(a=>a.level===L_PHU);
       if(ou.level===L_PHU){
         const t=getHFType(ou.displayName);
         const rec={ou_id:ou.id,facility:ou.displayName,type:t,
@@ -1216,10 +1238,12 @@ async function startPipeline(){
         if(!VALID.includes(t)){skip++;ST.excluded.push({...rec,reason:'Unrecognised facility type'});return;}
         ST.ouHierarchy[ou.id]={id:ou.id,name:ou.displayName,hfType:t,
           districtName:rec.district,chiefdomName:rec.chiefdom};
-      } else if(ou.level>L_PHU&&l5Anc){
-        // Level-6+ CHW/ETR → map to Level-5 parent (for community data rollup)
-        childToL5[ou.id]=l5Anc.id;
       }
+    });
+    // Level-6 CHW/ETR post -> its Level-5 PHU parent (for community rollup)
+    (ouL6.organisationUnits||[]).forEach(ou=>{
+      const pid=ou.parent&&ou.parent.id;
+      if(pid)childToL5[ou.id]=pid;
     });
     setStep('s_ou','done',`${Object.keys(ST.ouHierarchy).length} facilities included · ${ST.excluded.length} excluded · ${Object.keys(childToL5).length} Level-6 CHW/ETR units rolled up to their PHU`);
     log(`Registry built — ${Object.keys(ST.ouHierarchy).length.toLocaleString()} facilities included`,'ok');
@@ -1295,6 +1319,9 @@ async function startPipeline(){
         if(map.excl&&map.excl.includes(ou.hfType))return;
         if(isL6)ST.comRollup++;
 
+        const yr2=parseInt(period.slice(0,4));
+        const mo=parseInt(period.slice(4,6))-1; // 0-indexed
+
         // ── MICROSCOPY AT A NON-HOSPITAL: skip and record ──
         if(isMicroscopy(map.field) && !MICROSCOPY_TYPES.includes(ou.hfType)){
           const mk=`${effectiveId}|${period}|${map.field}`;
@@ -1310,8 +1337,6 @@ async function startPipeline(){
           ST.micSkipped++; ST.micSkippedVal+=val;
           return; // SKIPPED — never enters rawSlots
         }
-        const yr2=parseInt(period.slice(0,4));
-        const mo=parseInt(period.slice(4,6))-1; // 0-indexed
 
         // ── FORM CUTOVER ──────────────────────────────────────
         // New form data entry starts April 2026.
@@ -1364,6 +1389,15 @@ async function startPipeline(){
       await sleep(30);
     }
     setStep('s_fetch','done',`${totalRows.toLocaleString()} data points fetched`);
+    log(`Fetch complete — ${totalRows.toLocaleString()} values accepted`,'ok');
+    log(`Community rollup — ${(ST.comRollup||0).toLocaleString()} Level-6 CHW/ETR values summed into their PHU`,'hl');
+    if(ST.micSkipped)
+      log(`Microscopy at non-hospital — SKIPPED ${ST.micSkipped.toLocaleString()} record(s) from CHC/CHP/MCHP/Clinic (${ST.micSkippedVal.toLocaleString()} cases). See Microscopy Exceptions.`,'warn');
+    else
+      log('Microscopy — no CHC/CHP/MCHP/Clinic reported it','ok');
+    const _nv=Object.keys(ST.cutViol||{}).length;
+    if(_nv)log(`Form cutover — ${_nv.toLocaleString()} facility-month(s) reported on the wrong form (ignored)`,'warn');
+    await tick();
     setProgress(55);await sleep(30);
 
     // ── S3: Winsorise per facility per year ───────────────────
