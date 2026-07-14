@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>NMCP Malaria Testing Extract · ICF-SL</title>
+<title>NMCP Malaria Treated with ACT Extract · ICF-SL</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -111,7 +111,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
   <div class="header-row">
     <div class="logo-box"><img src="https://github.com/mohamedsillahkanu/gdp-dashboard-2/raw/6c7463b0d5c3be150aafae695a4bcbbd8aeb1499/ICF-SL.jpg" alt="ICF-SL"></div>
     <div class="header-text">
-      <h1>Malaria Testing Data Extract</h1>
+      <h1>Malaria Treated with ACT — Data Extract</h1>
       <p>National Malaria Control Programme · Sierra Leone · ICF-SL</p>
     </div>
     <div style="margin-left:auto;"><span id="headerPill" style="background:rgba(255,255,255,.15);padding:5px 13px;border-radius:20px;font-size:11px;font-weight:700;">Ready</span></div>
@@ -123,7 +123,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
 <!-- CONFIG -->
 <div id="configScreen">
   <div class="card">
-    <div class="card-head"><h2>NMCP Malaria Testing Extract</h2></div>
+    <div class="card-head"><h2>NMCP Malaria Treated with ACT Extract</h2></div>
     <div class="card-body">
 
       <div class="tabbar">
@@ -135,7 +135,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
         <div style="font-size:12px;color:#2c4b62;line-height:1.75;">
 
           <div style="background:var(--blue-lt);border-radius:8px;padding:14px 16px;margin-bottom:18px;">
-            <strong style="color:var(--blue);">Purpose.</strong> This tool extracts monthly malaria testing data (RDT and Microscopy, positive and negative) from DHIS2 for every health facility in Sierra Leone — from the old facility form, the new HF01 facility form and community reporting — cleans it, attaches Public/Private ownership, and produces analysis-ready tables including TPR. Every step below is applied automatically on each run.
+            <strong style="color:var(--blue);">Purpose.</strong> This tool extracts monthly <strong>malaria treated with ACT</strong>, split by timeliness (<strong>within 24 hours</strong> vs <strong>after 24 hours</strong>), from DHIS2 for every health facility in Sierra Leone — from the old facility form, the new HF01 facility form, and community/HTR reporting. It cleans the data, attaches Public/Private ownership, and produces analysis-ready tables including the prompt treatment rate. Every step below is applied automatically on each run.
           </div>
 
           <div class="m-step"><div class="m-num">1</div><div>
@@ -174,31 +174,26 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
             <div class="m-title">Fetch testing data</div>
             Monthly values are pulled from the DHIS2 analytics API for every month in the selected range.
 
-            <div class="m-note" style="border-left:3px solid var(--gold);"><strong>Three sources, two test methods.</strong> Malaria testing comes from an <strong>old facility form</strong>, a <strong>new facility form</strong> (HF01 rollout), and a <strong>community</strong> source. Facility records both <strong>RDT</strong> and <strong>Microscopy</strong>; community records <strong>RDT only</strong> (CHWs do not perform microscopy). Everything maps onto <strong>three age groups</strong>: 0-59m, 05-14y, 15+y.</div>
+            <div class="m-note" style="border-left:3px solid var(--gold);"><strong>Malaria treated with ACT, by timeliness.</strong> Every source records treatment in two buckets — <strong>within 24 hours</strong> and <strong>after 24 hours</strong> of symptom onset. Treatment is captured at the <strong>facility</strong> (old and new forms) and in the <strong>community</strong> (HTR — Hard-To-Reach, i.e. CHW / ETR posts). All of it maps onto <strong>three age groups</strong>: 0-59m, 05-14y, 15+y.</div>
 
             <div class="m-egbox">
               <div class="m-eghead">OLD FACILITY FORM — HF01 Outpatient morbidity <code>ij1VNJwxKCh</code></div>
               <table class="m-tbl">
                 <tr><th>Data element</th><th>UID</th><th>Ages</th></tr>
-                <tr><td>Fever case tested for Malaria (RDT) - Positive</td><td><code>p6zQLDFjSfd</code></td><td>0-59m / 05-14y / 15+y</td></tr>
-                <tr><td>Fever case tested for Malaria (RDT) - Negative</td><td><code>mXS2g1AiPsS</code></td><td>0-59m / 05-14y / 15+y</td></tr>
-                <tr><td>Fever case tested for Malaria (Microscopy) - Negative</td><td><code>Rijj3Fp9ksg</code></td><td>0-59m / 05-14y / 15+y</td></tr>
+                <tr><td>Malaria treated with ACT <b>&lt;24 hours</b></td><td><code>wU8EdHifSLa</code></td><td>0-59m / 05-14y / 15+y</td></tr>
+                <tr><td>Malaria treated with ACT <b>&gt;24 hours</b></td><td><code>XKTCuR0W3YN</code></td><td>0-59m / 05-14y / 15+y</td></tr>
               </table>
               <div class="m-calc" style="margin-top:6px;">Age COCs: 0-59m <code>m5T8uBNB8aN</code> · 05-14y <code>j7j6iaknOFn</code> · 15+y <code>zK1aiw8zFac</code></div>
-              <div class="m-note" style="border-left:3px solid var(--blue);margin-top:6px;"><strong>Microscopy positives on the old form.</strong> The old form does not record microscopy positives in an age-disaggregated, comparable way, so facility microscopy positives are available <strong>from April 2026 onwards</strong> (new form). RDT positives and negatives, and microscopy negatives, are complete throughout.</div>
             </div>
 
             <div class="m-egbox">
               <div class="m-eghead">NEW FACILITY FORM — 2025_HF01 <code>fB66asHJITQ</code></div>
               <table class="m-tbl">
                 <tr><th>Data element</th><th>UID</th></tr>
-                <tr><td>HF01_Fever cases tested for Malaria (RDT) - Positive_Cases</td><td><code>AwLklDAVtvq</code></td></tr>
-                <tr><td>HF01_Fever cases tested for Malaria (RDT) - Negative_Cases</td><td><code>Bn5tLFYdmRD</code></td></tr>
-                <tr><td>HF01_Fever cases tested for Malaria (Microscopy) - Positive_Cases</td><td><code>AMrdoWsiHMa</code></td></tr>
-                <tr><td>HF01_Fever cases tested for Malaria (Microscopy) - Negative_Cases</td><td><code>ofCoyRXAweZ</code></td></tr>
+                <tr><td>HF01_Malaria treated at Facility with ACT <b>&lt; 24hrs</b>_Cases</td><td><code>ht4jvP2ppBI</code></td></tr>
+                <tr><td>HF01_Malaria treated at Facility with ACT <b>&gt; 24hrs</b>_Cases</td><td><code>zV9set4PXcm</code></td></tr>
               </table>
-              <div class="m-note" style="margin-top:6px;">Each is split by <strong>12 age bands × 2 sexes</strong>. Sex is collapsed on summation.</div>
-
+              <div class="m-note" style="margin-top:6px;">Split by <strong>12 age bands × 2 sexes</strong>. Sex is collapsed on summation.</div>
               <div class="m-egsub">Age bands → 0-59m</div>
               <table class="m-tbl">
                 <tr><th>Band</th><th>Male</th><th>Female</th></tr>
@@ -225,11 +220,12 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
             </div>
 
             <div class="m-egbox">
-              <div class="m-eghead">COMMUNITY — HF04 Community Based Services <code>nufVxEfy3Ps</code></div>
+              <div class="m-eghead">COMMUNITY (HTR) — HF04 Community Based Services <code>nufVxEfy3Ps</code></div>
+              <div style="font-size:11.5px;margin-bottom:6px;"><strong>HTR = Hard-To-Reach = community.</strong> These are CHW / ETR posts, not health facilities.</div>
               <table class="m-tbl">
                 <tr><th>Data element</th><th>UID</th></tr>
-                <tr><td>Fever case tested for Malaria (RDT) in HTR - Positive</td><td><code>T7xH8GwWpEM</code></td></tr>
-                <tr><td>Fever case tested for Malaria (RDT) in HTR - Negative</td><td><code>YWvx4zYdp92</code></td></tr>
+                <tr><td>Malaria treated with ACT in HTR <b>&lt;24 hours</b></td><td><code>h3zJa6hAgib</code></td></tr>
+                <tr><td>Malaria treated with ACT in HTR <b>&gt;24 hours</b></td><td><code>Imkks0HAl7E</code></td></tr>
               </table>
               <table class="m-tbl" style="margin-top:6px;">
                 <tr><th>Age group</th><th>COC UID</th></tr>
@@ -237,30 +233,26 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
                 <tr><td>05-14y</td><td><code>qDXW7WMLT99</code></td></tr>
                 <tr><td>15+y</td><td><code>mdjRPpvLKdu</code></td></tr>
               </table>
-              <div class="m-calc" style="margin-top:6px;"><b>RDT only</b> — CHWs do not perform microscopy. The community under-5 band is 2-59 months (neonates are not treated by CHWs) and is <b>treated as 0-59m</b> so facility and community align.</div>
-              <div class="m-note" style="border-left:3px solid var(--blue);margin-top:6px;"><strong>Level-6 rollup.</strong> Community tests are reported by <strong>CHW / ETR posts at Level 6</strong>. Analytics is queried at <strong>LEVEL-5 and LEVEL-6</strong> and every Level-6 value is <strong>rolled up to its Level-5 PHU parent</strong>. Facility forms are never reported at Level 6, so any Level-6 value for a facility data element is ignored.</div>
+              <div class="m-note" style="border-left:3px solid var(--blue);margin-top:6px;"><strong>Level-6 rollup.</strong> HTR treatment is reported by <strong>CHW / ETR posts at Level 6</strong>. Analytics is queried at <strong>LEVEL-5 and LEVEL-6</strong> and every Level-6 value is <strong>rolled up to its Level-5 PHU parent</strong>. Facility forms are never reported at Level 6, so any Level-6 value for a facility data element is ignored.</div>
             </div>
 
             <div class="m-egbox">
               <div class="m-eghead">The computation</div>
               <div class="m-formula">
-                <b>Facility RDT Positive &lt;age&gt;</b> = <span style="color:#dc2626;font-weight:700;">OLD</span> <code>p6zQLDFjSfd</code> + <span style="color:#15803d;font-weight:700;">NEW</span> Σ bands<br>
-                <span class="m-mut">…and likewise for RDT Negative, Microscopy Positive (new form only) and Microscopy Negative.</span><br><br>
-                <b>Tested &lt;age&gt;</b> = Positive + Negative<br>
-                <b>All tests</b> = RDT + Microscopy<br>
-                <b>Overall &lt;age&gt;</b> = at facility + at community<br>
-                <b>TPR</b> = Positive ÷ Tested × 100
+                <b>Treated &lt;age&gt;</b> = ACT &lt;24 hrs &nbsp;+&nbsp; ACT &gt;24 hrs &nbsp; <span class="m-mut">(per source)</span><br>
+                <b>Overall &lt;age&gt;</b> = at facility + at community<br><br>
+                <b>Prompt treatment rate</b> = ACT &lt;24 hrs &nbsp;÷&nbsp; all treated &nbsp;×&nbsp; 100
               </div>
-              <div class="m-calc"><b>18 series</b> are cleaned independently: 4 facility series (RDT/Microscopy × Positive/Negative) and 2 community series (RDT × Positive/Negative), each across 3 age groups. Outlier detection runs on each series separately — positives and negatives are never mixed before cleaning.</div>
+              <div class="m-calc"><b>12 series</b> are cleaned independently: (facility, community) × (&lt;24 hrs, &gt;24 hrs) × 3 age groups. Outlier detection runs on each series separately, so the two timeliness buckets are never mixed before cleaning.</div>
+              <div class="m-note" style="border-left:3px solid #15803d;"><strong>No series break.</strong> Both timeliness buckets exist on the old form <em>and</em> the new form, so treatment is captured identically before and after the April 2026 cutover. The series is directly comparable across the whole period.</div>
 
               <div class="m-egsub">Form cutover — April 2026</div>
               <table class="m-tbl">
                 <tr><th>Source</th><th>Period used</th><th>Ignored</th></tr>
                 <tr><td style="color:#dc2626;font-weight:700;">OLD FACILITY FORM</td><td>Up to and including <b>March 2026</b></td><td class="m-bad">Any value <b>after March 2026</b></td></tr>
                 <tr><td style="color:#15803d;font-weight:700;">NEW FACILITY FORM</td><td>From <b>April 2026</b> onwards</td><td class="m-bad">Any value <b>before April 2026</b></td></tr>
-                <tr><td style="color:#2c6793;font-weight:700;">COMMUNITY (HF04)</td><td><b>All periods</b></td><td class="m-mut">None — separate dataset</td></tr>
+                <tr><td style="color:#2c6793;font-weight:700;">COMMUNITY / HTR (HF04)</td><td><b>All periods</b></td><td class="m-mut">None — separate dataset</td></tr>
               </table>
-              <div class="m-calc" style="margin-top:6px;">The two facility-form windows do not overlap, so a facility-month can never take values from both. Any facility reporting on the wrong form is listed in <b>Form Transition</b> and its values are <b>ignored</b>.</div>
             </div>
 
             <div class="m-egsub">Org unit levels</div>
@@ -381,8 +373,8 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
           <div class="m-step"><div class="m-num">6</div><div>
             <div class="m-title">Classify facilities as Active or Inactive</div>
             <ul class="m-list">
-              <li><strong>Active</strong> — reported at least one test during the selected period.</li>
-              <li><strong>Inactive</strong> — present in the DHIS2 registry but performed no tests at all for the period.</li>
+              <li><strong>Active</strong> — reported at least one ACT treatment during the selected period.</li>
+              <li><strong>Inactive</strong> — present in the DHIS2 registry but reported no ACT treatments at all for the period.</li>
             </ul>
             <div class="m-egbox">
               <div class="m-eghead">Example — why inactive facilities are removed from the denominator</div>
@@ -407,7 +399,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
             <div class="m-egbox">
               <div class="m-eghead">Example — a facility that did not report in June</div>
               <table class="m-tbl">
-                <tr><th>Month</th><th>Tested</th><th>Reported</th></tr>
+                <tr><th>Month</th><th>Treated</th><th>Reported</th></tr>
                 <tr><td>Apr</td><td>103</td><td class="m-good">Yes</td></tr>
                 <tr><td>May</td><td>104</td><td class="m-good">Yes</td></tr>
                 <tr><td><b>Jun</b></td><td class="m-mut">(blank)</td><td class="m-bad"><b>No</b></td></tr>
@@ -442,7 +434,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
               <li><strong>Outlier</strong> — Yes if the original exceeded the bound</li>
               <li><strong>Corrected</strong> — equals Original when clean; equals the facility-year median when replaced</li>
             </ul>
-            Plus derived <strong>Positive / Negative / Tested</strong> per age group, per source, and <strong>TPR</strong>.
+            Plus derived <strong>&lt;24h / &gt;24h / Treated</strong> per age group — at facility, at community and overall — and the <strong>prompt treatment rate</strong>.
             <div class="m-egbox">
               <div class="m-eghead">Example — reading one row (the facility from Step 5, December)</div>
               <table class="m-tbl">
@@ -456,7 +448,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
                 <tr><td>150</td><td>194</td><td>No</td><td>150</td></tr>
               </table>
             </div>
-            Analyses include TPR, RDT vs Microscopy, Public vs Private (bi-annual and yearly), monthly reporting rates, facility activity, excluded facilities, and an ownership reconciliation — all downloadable as CSV or Excel.
+            Analyses include treatment timeliness, the prompt treatment rate, Public vs Private (bi-annual and yearly), monthly reporting rates, facility activity, excluded facilities, and an ownership reconciliation — all downloadable as CSV or Excel.
           </div></div>
 
           <div style="background:#fff8e6;border:1.5px solid var(--gold);border-radius:8px;padding:12px 14px;margin-top:16px;font-size:11.5px;">
@@ -469,10 +461,10 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
       <div class="tabpane" id="cfgExtract">
       <div style="background:var(--blue-lt);border-radius:8px;padding:14px 16px;margin-bottom:18px;font-size:12px;color:var(--blue-dk);line-height:1.7;">
         <strong>What this tool fetches:</strong><br>
-        Malaria testing at Level-5 facility for each month, from the <strong>old facility form</strong>, the <strong>new HF01 facility form</strong>, and <strong>community</strong> — mapped onto three age groups (0-59m, 05-14y, 15+y).<br>
-        <strong>OLD FACILITY:</strong> RDT Pos <code>p6zQLDFjSfd</code> · RDT Neg <code>mXS2g1AiPsS</code> · Mic Neg <code>Rijj3Fp9ksg</code><br>
-        <strong>NEW FACILITY:</strong> RDT Pos <code>AwLklDAVtvq</code> · RDT Neg <code>Bn5tLFYdmRD</code> · Mic Pos <code>AMrdoWsiHMa</code> · Mic Neg <code>ofCoyRXAweZ</code><br>
-        <strong>COMMUNITY:</strong> RDT Pos <code>T7xH8GwWpEM</code> · RDT Neg <code>YWvx4zYdp92</code> (RDT only, all periods)<br>
+        Malaria treated with ACT at Level-5 facility for each month, from the <strong>old facility form</strong>, the <strong>new HF01 facility form</strong>, and <strong>community</strong> — mapped onto three age groups (0-59m, 05-14y, 15+y).<br>
+        <strong>OLD FACILITY:</strong> ACT &lt;24h <code>wU8EdHifSLa</code> · ACT &gt;24h <code>XKTCuR0W3YN</code><br>
+        <strong>NEW FACILITY:</strong> ACT &lt;24h <code>ht4jvP2ppBI</code> · ACT &gt;24h <code>zV9set4PXcm</code><br>
+        <strong>COMMUNITY (HTR):</strong> ACT &lt;24h <code>h3zJa6hAgib</code> · ACT &gt;24h <code>Imkks0HAl7E</code> (all periods)<br>
         <strong>Cutover:</strong> Old facility form up to <strong>March 2026</strong>; new facility form from <strong>April 2026</strong>. Community is unaffected.<br>
         <strong>Age groups:</strong> 0-59m · 05-14y · 15+y<br>
         <strong>Note:</strong> Facility and community are kept as separate series, then combined into an Overall per age group.<br>
@@ -571,7 +563,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
         <div class="dl-card">
           <div class="dl-card-head" style="background:#8a6a00;">Overall Combined</div>
           <div class="dl-card-body">
-            <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Facility <strong>+</strong> Community in one table: every raw series, derived Positive/Negative/Tested per age group, and TPR. The Excel bundles all sheets — Overall, Facility, Community, Outliers, Outlier Summary, Excluded Facilities and Methodology.</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Facility <strong>+</strong> Community in one table: every raw series, plus &lt;24h / &gt;24h / Treated per age group (at facility, at community, overall) and the prompt treatment rate. The Excel bundles all sheets — Overall, Facility, Community, Outliers, Outlier Summary, Excluded Facilities and Methodology.</div>
             <button class="btn btn-gold" onclick="downloadCSV('overall')">↓ Overall CSV</button>
             <button class="btn btn-outline" onclick="downloadExcel('overall')">↓ Overall Excel (all sheets)</button>
           </div>
@@ -634,55 +626,55 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
 
       <div style="border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">1 · Malaria Tests at Facility — by age group</span>
+          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">1 · Treated with ACT at Facility — by age group</span>
           <div style="display:flex;gap:8px;align-items:center;"><button class="btn btn-primary btn-sm" onclick="downloadCmp('fac','csv')">↓ CSV</button></div>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Monthly tests at facility, split by <span style="color:#2c6793;font-weight:700;">0-59m</span>, <span style="color:#e0a800;font-weight:700;">05-14y</span> and <span style="color:#8b5cf6;font-weight:700;">15+y</span>. Old form up to Mar 2026, new HF01 form from Apr 2026 — a clean transition should show no step-change.</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Monthly ACT treatments at facility, split by <span style="color:#2c6793;font-weight:700;">0-59m</span>, <span style="color:#e0a800;font-weight:700;">05-14y</span> and <span style="color:#8b5cf6;font-weight:700;">15+y</span>. Old form up to Mar 2026, new HF01 form from Apr 2026 — a clean transition should show no step-change.</div>
         <div id="cmpFacChart"></div>
         <div class="data-table-wrap" style="margin-top:12px;"><table class="data-table"><thead id="cmpFacHead"></thead><tbody id="cmpFacBody"></tbody></table></div>
       </div>
       <div style="border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">2 · Malaria Tests at Community (CHW / ETR) — by age group</span>
+          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">2 · Treated with ACT at Community / HTR (CHW / ETR) — by age group</span>
           <div style="display:flex;gap:8px;align-items:center;"><button class="btn btn-green btn-sm" onclick="downloadCmp('com','csv')">↓ CSV</button></div>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Monthly tests at community (RDT only), same three age groups, rolled up from Level-6 CHW/ETR posts. The community 02-59m band is treated as 0-59m.</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Monthly ACT treatments at community (HTR = Hard-To-Reach, i.e. CHW / ETR posts), same three age groups, rolled up from Level 6. The community 02-59m band is treated as 0-59m.</div>
         <div id="cmpComChart"></div>
         <div class="data-table-wrap" style="margin-top:12px;"><table class="data-table"><thead id="cmpComHead"></thead><tbody id="cmpComBody"></tbody></table></div>
       </div>
       <div style="border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">3 · All ages — Tests at Facility vs at Community</span>
+          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">3 · All ages — Treated at Facility vs at Community</span>
           <div style="display:flex;gap:8px;align-items:center;"><button class="btn btn-gold btn-sm" onclick="downloadCmp('agg','csv')">↓ CSV</button></div>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Tests summed across age groups. <span style="color:#2c6793;font-weight:700;">At facility</span> against <span style="color:#15803d;font-weight:700;">at community</span>, on the same scale.</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">ACT treatments summed across age groups. <span style="color:#2c6793;font-weight:700;">At facility</span> against <span style="color:#15803d;font-weight:700;">at community</span>, on the same scale.</div>
         <div id="cmpAggChart"></div>
         <div class="data-table-wrap" style="margin-top:12px;"><table class="data-table"><thead id="cmpAggHead"></thead><tbody id="cmpAggBody"></tbody></table></div>
       </div>
       <div style="border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">4 · Facility Testing — RDT vs Microscopy</span>
+          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">4 · Treatment Timeliness — within 24 hrs vs after 24 hrs</span>
           <div style="display:flex;gap:8px;"><button class="btn btn-outline btn-sm" onclick="downloadCmp('test','csv')">↓ CSV</button></div>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Tests performed at facility by method. Microscopy is typically a small share; a sharp change may indicate stock-outs or reporting changes rather than real practice.</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Malaria treated with ACT, split by timeliness. The <span style="color:#15803d;font-weight:700;">green</span> line is treatment <strong>within 24 hours</strong> of onset — the clinically important one.</div>
         <div id="cmpTestChart"></div>
         <div class="data-table-wrap" style="margin-top:12px;"><table class="data-table"><thead id="cmpTestHead"></thead><tbody id="cmpTestBody"></tbody></table></div>
       </div>
       <div style="border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">5 · Test Positivity Rate (TPR) — by age group</span>
+          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">5 · Prompt Treatment Rate — by age group</span>
           <div style="display:flex;gap:8px;"><button class="btn btn-gold btn-sm" onclick="downloadCmp('tpr','csv')">↓ CSV</button></div>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">TPR = Positive ÷ Tested × 100, facility + community combined. Shown per age group with the all-ages line. Under-5 TPR is usually the highest.</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;"><strong>Prompt treatment rate = ACT within 24 hrs ÷ all treated × 100</strong>, facility + community. Shown per age group with the all-ages line. Both timeliness buckets exist on the old <em>and</em> new forms, so this series is <strong>directly comparable across the April 2026 cutover</strong>.</div>
         <div id="cmpTprChart"></div>
         <div class="data-table-wrap" style="margin-top:12px;"><table class="data-table"><thead id="cmpTprHead"></thead><tbody id="cmpTprBody"></tbody></table></div>
       </div>
       <div style="border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">6 · Overall — Tested vs Positive</span>
+          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">6 · Overall Treated with ACT — by age group</span>
           <div style="display:flex;gap:8px;align-items:center;"><button class="btn btn-gold btn-sm" onclick="downloadCmp('ov','csv')">↓ CSV</button></div>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Total malaria tests against confirmed positives, facility + community, all ages. The gap between the two lines is the negative tests.</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Overall malaria treated with ACT (facility + community) by age group, with the all-ages total.</div>
         <div id="cmpOvChart"></div>
         <div class="data-table-wrap" style="margin-top:12px;"><table class="data-table"><thead id="cmpOvHead"></thead><tbody id="cmpOvBody"></tbody></table></div>
       </div>
@@ -691,10 +683,10 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
           <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">7 · By location (District)</span>
           <div style="display:flex;gap:8px;align-items:center;"><select class="form-control" id="cmpLocSrc" style="width:auto;font-size:12px;padding:4px 8px;" onchange="renderComparative()">
-              <option value="all_test_total">Tested — overall</option>
-              <option value="fac_test_total">Tested — at facility</option>
-              <option value="com_test_total">Tested — at community</option>
-              <option value="all_pos_total">Positive — overall</option>
+              <option value="all_tx_total">Treated — overall</option>
+              <option value="fac_tx_total">Treated — at facility</option>
+              <option value="com_tx_total">Treated — at community</option>
+              <option value="all_lt24_total">Treated within 24 hrs</option>
             </select><button class="btn btn-outline btn-sm" onclick="downloadCmp('loc','csv')">↓ CSV</button><button class="btn btn-outline btn-sm" onclick="downloadCmpAll()">↓ Excel (all sheets)</button></div>
         </div>
         <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Total malaria tests per district for the whole period, all ages combined. Bars run <strong>lowest to highest</strong>. Use the selector to plot cases at facility, at community, or overall.</div>
@@ -710,7 +702,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
           <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">Form Transition — Old Form vs New Form (2025_HF01)</span>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Testing is collected on two facility forms (RDT + Microscopy) plus a community source (RDT only). New form data entry starts <strong>April 2026</strong>: the <span style="color:#dc2626;font-weight:700;">old form</span> is used up to March 2026 and the <span style="color:#15803d;font-weight:700;">new form</span> from April 2026. Values outside each form's window are ignored, so the two can never double-count.</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">ACT treatment is collected on two facility forms plus a community (HTR) source, each split into <24 hrs and >24 hrs. New form data entry starts <strong>April 2026</strong>: the <span style="color:#dc2626;font-weight:700;">old form</span> is used up to March 2026 and the <span style="color:#15803d;font-weight:700;">new form</span> from April 2026. Values outside each form's window are ignored, so the two can never double-count.</div>
         <div id="formStats" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
         <div id="cutInfo"></div>
         <div class="data-table-wrap" style="max-height:300px;"><table class="data-table"><thead id="formHead"></thead><tbody id="formBody"></tbody></table></div>
@@ -749,7 +741,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
             <button class="btn btn-outline btn-sm" onclick="downloadActivity('all','xlsx')">↓ Excel</button>
           </div>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">A facility is <strong>Active</strong> if it reported at least one test during the selected period; <strong>Inactive</strong> if it is in the DHIS2 registry but performed no tests at all. Only <strong>active</strong> facilities are used as the denominator in the reporting rates below.</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">A facility is <strong>Active</strong> if it reported at least one ACT treatment during the selected period; <strong>Inactive</strong> if it is in the DHIS2 registry but reported no ACT treatments at all. Only <strong>active</strong> facilities are used as the denominator in the reporting rates below.</div>
         <div id="actStats" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
         <div id="actTables" style="display:flex;gap:14px;flex-wrap:wrap;"></div>
       </div>
@@ -768,7 +760,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
       <!-- Reporting by age group -->
       <div style="border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">Reporting Rate by Age Group — Testing at Facility</span>
+          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">Reporting Rate by Age Group — ACT Treatment at Facility</span>
           <div style="display:flex;gap:8px;"><button class="btn btn-primary btn-sm" onclick="downloadRate('fac','csv')">↓ CSV</button></div>
         </div>
         <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">% of active facility reporters submitting each age group (0-59m · 05-14y · 15+y). A line sitting below the others means that age band is being under-reported.</div>
@@ -777,7 +769,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
       </div>
       <div style="border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">Reporting Rate by Age Group — Testing at Community (CHW / ETR)</span>
+          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">Reporting Rate by Age Group — ACT Treatment at Community / HTR</span>
           <div style="display:flex;gap:8px;"><button class="btn btn-gold btn-sm" onclick="downloadRate('com','csv')">↓ CSV</button></div>
         </div>
         <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">% of active community reporters submitting each age group. Note CHWs do not treat neonates — the community 02-59m band is treated as 0-59m.</div>
@@ -799,7 +791,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
           <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">Reporting Rate by Month — Public vs Private</span>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">% of <strong>active</strong> facilities reporting tests each month, by ownership. Inactive facilities are excluded from the denominator.</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">% of <strong>active</strong> facilities reporting ACT treatments each month, by ownership. Inactive facilities are excluded from the denominator.</div>
         <div id="repOwnChart"></div>
         <div class="data-table-wrap" style="margin-top:12px;"><table class="data-table"><thead id="repOwnHead"></thead><tbody id="repOwnBody"></tbody></table></div>
       </div>
@@ -809,7 +801,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
           <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">Reporting Rate by Month — Health Facility Type</span>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">% of <strong>active</strong> facilities reporting tests each month, by facility type. Denominator = active facilities of that type.</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">% of <strong>active</strong> facilities reporting ACT treatments each month, by facility type. Denominator = active facilities of that type.</div>
         <div id="repTypeChart"></div>
         <div class="data-table-wrap" style="margin-top:12px;"><table class="data-table"><thead id="repTypeHead"></thead><tbody id="repTypeBody"></tbody></table></div>
       </div>
@@ -817,13 +809,13 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
       <!-- Bi-annual -->
       <div style="border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">Malaria Tests: Public vs Private — Bi-annual</span>
+          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">ACT Treatments: Public vs Private — Bi-annual</span>
           <div style="display:flex;gap:8px;">
             <button class="btn btn-primary btn-sm" onclick="downloadBiannual('csv')">↓ CSV</button>
             <button class="btn btn-outline btn-sm" onclick="downloadBiannual('xlsx')">↓ Excel</button>
           </div>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Half-years: <strong>H1 = Jan–Jun</strong>, <strong>H2 = Jul–Dec</strong>. Malaria test totals by ownership, with % Public and % Private.</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Half-years: <strong>H1 = Jan–Jun</strong>, <strong>H2 = Jul–Dec</strong>. ACT treatment totals by ownership, with % Public and % Private.</div>
         <div id="biChart"></div>
         <div class="data-table-wrap" style="margin-top:12px;"><table class="data-table"><thead id="biHead"></thead><tbody id="biBody"></tbody></table></div>
       </div>
@@ -831,13 +823,13 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI',Roboto,Arial,sans-s
       <!-- Yearly -->
       <div style="border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">Malaria Tests: Public vs Private — Yearly</span>
+          <span style="font-size:14px;font-weight:700;color:var(--blue-dk);">ACT Treatments: Public vs Private — Yearly</span>
           <div style="display:flex;gap:8px;">
             <button class="btn btn-primary btn-sm" onclick="downloadYearly('csv')">↓ CSV</button>
             <button class="btn btn-outline btn-sm" onclick="downloadYearly('xlsx')">↓ Excel</button>
           </div>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Malaria test totals by year and ownership, with % Public and % Private.</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">ACT treatment totals by year and ownership, with % Public and % Private.</div>
         <div id="yrChart"></div>
         <div class="data-table-wrap" style="margin-top:12px;"><table class="data-table"><thead id="yrHead"></thead><tbody id="yrBody"></tbody></table></div>
       </div>
@@ -891,32 +883,22 @@ const EXCL_MICRO=['CHP','MCHP'];
 const MONTH_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 // ═══════════════════════════════════════════════════════════════
-//  MALARIA TESTING — RDT + Microscopy, Positive + Negative
+//  MALARIA TREATED WITH ACT — by timeliness (<24 hrs / >24 hrs)
 // ═══════════════════════════════════════════════════════════════
-// OLD facility (HF01 Outpatient morbidity)  ·  NEW facility (2025_HF01)  ·  COMMUNITY (HF04)
 const OLD_FAC_DS='ij1VNJwxKCh', NEW_FAC_DS='fB66asHJITQ', COM_DS='nufVxEfy3Ps';
 
-// OLD facility DEs (age-disaggregated: 0-59m / 05-14y / 15+y)
-const OLD_DE = {
-  rdt_pos:'p6zQLDFjSfd',   // Fever case tested for Malaria (RDT) - Positive
-  rdt_neg:'mXS2g1AiPsS',   // Fever case tested for Malaria (RDT) - Negative
-  mic_neg:'Rijj3Fp9ksg',   // Fever case tested for Malaria (Microscopy) - Negative
-};
-// NOTE: the old form has no age-disaggregated microscopy-positive element,
-// so facility microscopy positives come from the new form only (Apr 2026 onwards).
+// OLD facility form — HF01 Outpatient morbidity
+const OLD_DE = { lt24:'wU8EdHifSLa', gt24:'XKTCuR0W3YN' };
+// NEW facility form — 2025_HF01
+const NEW_DE = { lt24:'ht4jvP2ppBI', gt24:'zV9set4PXcm' };
+// COMMUNITY (HTR) — HF04 Community Based Services. HTR = community.
+const COM_DE = { lt24:'h3zJa6hAgib', gt24:'Imkks0HAl7E' };
 
-// NEW facility DEs (12 age bands x 2 sexes)
-const NEW_DE = {
-  rdt_pos:'AwLklDAVtvq',   // HF01_Fever cases tested for Malaria (RDT) - Positive_Cases
-  rdt_neg:'Bn5tLFYdmRD',   // HF01_Fever cases tested for Malaria (RDT) - Negative_Cases
-  mic_pos:'AMrdoWsiHMa',   // HF01_Fever cases tested for Malaria (Microscopy) - Positive_Cases
-  mic_neg:'ofCoyRXAweZ',   // HF01_Fever cases tested for Malaria (Microscopy) - Negative_Cases
-};
-// COMMUNITY DEs — RDT only (CHWs do not perform microscopy)
-const COM_DE = {
-  rdt_pos:'T7xH8GwWpEM',   // Fever case tested for Malaria (RDT) in HTR - Positive
-  rdt_neg:'YWvx4zYdp92',   // Fever case tested for Malaria (RDT) in HTR - Negative
-};
+// ── TIMELINESS ────────────────────────────────────────────────
+const TIMES = [
+  {k:'lt24', label:'< 24 hrs', short:'<24h'},
+  {k:'gt24', label:'> 24 hrs', short:'>24h'},
+];
 
 // ── THREE AGE GROUPS ──────────────────────────────────────────
 const AGES = [
@@ -928,10 +910,10 @@ const AGE_KEYS  = AGES.map(a=>a.key);
 const AGE_LABEL = {}; AGES.forEach(a=>AGE_LABEL[a.key]=a.label);
 
 const OLD_COC = {u5:'m5T8uBNB8aN', c514:'j7j6iaknOFn', a15:'zK1aiw8zFac'};
-// COMMUNITY 02-59m is TREATED AS 0-59m
+// COMMUNITY (HTR) 02-59m is TREATED AS 0-59m
 const COM_COC = {u5:'NtjMVmRfvHH', c514:'qDXW7WMLT99', a15:'mdjRPpvLKdu'};
 
-// NEW facility age bands -> [Male, Female]. Sex collapsed on summation.
+// NEW facility age bands -> [Male, Female]. Sex is collapsed on summation.
 const NEW_BANDS = {
   u5: {'0-7d':['X1fJr7y51lU','ajwU95HMY2p'], '08-28d':['QVABDpl0H4k','wOsJkGpglpx'],
        '1-5m':['EBG5ZbRgj46','z0s3iTdlbsd'], '06-11m':['KIJHMZSahcW','aCwYAbE3GHL'],
@@ -940,7 +922,7 @@ const NEW_BANDS = {
   a15: {'15-19y':['OzqClEP84wm','vshWQEGCCTp'], '20-44y':['ztWgelWML6b','fLgy2fpBWrb'],
         '45-59y':['zqNF6erLupJ','eaWE8YjN4j0'], '60+y':['hGJdT29m3P6','g2NiIyG3PLj']},
 };
-// DELIBERATELY OMITTED: 1-11m (M QFTvC3ZBlaE / F NonO0cPD8ZS) — overlaps 1-5m + 06-11m.
+// DELIBERATELY OMITTED: 1-11m — overlaps 1-5m + 06-11m.
 const NEW_OMIT = {'1-11m':['QFTvC3ZBlaE','NonO0cPD8ZS']};
 
 // ── FORM CUTOVER — new facility form starts April 2026 ────────
@@ -949,47 +931,39 @@ const OLD_FORM_END   = 202603;
 const NEW_FORM_START = 202604;
 
 // ── OUTPUT VARIABLES ─────────────────────────────────────────
-// 4 facility series (RDT/Mic x Pos/Neg) + 2 community series (RDT only), each x 3 ages.
-const TESTS   = [{k:'rdt',label:'RDT'},{k:'mic',label:'Microscopy'}];
-const RESULTS = [{k:'pos',label:'Positive'},{k:'neg',label:'Negative'}];
+// 12 series: (facility, community) x (<24h, >24h) x 3 age groups
 const SERIES = [
-  ...TESTS.flatMap(t=>RESULTS.map(r=>({src:'fac',test:t.k,res:r.k,
-      label:`Facility ${t.label} ${r.label}`}))),
-  ...RESULTS.map(r=>({src:'com',test:'rdt',res:r.k,
-      label:`Community RDT ${r.label}`})),
+  ...TIMES.map(t=>({src:'fac', time:t.k, label:`Facility ACT ${t.label}`})),
+  ...TIMES.map(t=>({src:'com', time:t.k, label:`Community ACT ${t.label}`})),
 ];
 const ALL_VARS = SERIES.flatMap(x=>AGE_KEYS.map(k=>({
-  field:`${x.src}_${x.test}_${x.res}_${k}`, age:k, ...x,
+  field:`${x.src}_${x.time}_${k}`, age:k, ...x,
   label:`${x.label} ${AGE_LABEL[k]}`})));
 
 // ── FETCH MAP ────────────────────────────────────────────────
 const ALL_DX = [
-  // OLD facility — age-disaggregated
-  ...Object.entries(OLD_DE).flatMap(([tr,de])=>AGE_KEYS.map(k=>({
-    dxStr:`${de}.${OLD_COC[k]}`, field:`fac_${tr}_${k}`, src:'old', band:AGE_LABEL[k]}))),
-  // NEW facility — sex collapsed, bands folded into the three age groups
-  ...Object.entries(NEW_DE).flatMap(([tr,de])=>
-    AGE_KEYS.flatMap(k=>Object.entries(NEW_BANDS[k]).flatMap(([band,[m,f]])=>[
-      {dxStr:`${de}.${m}`, field:`fac_${tr}_${k}`, src:'new', band, sex:'Male'},
-      {dxStr:`${de}.${f}`, field:`fac_${tr}_${k}`, src:'new', band, sex:'Female'},
-    ]))),
-  // COMMUNITY — RDT only, rolled up from Level 6
-  ...Object.entries(COM_DE).flatMap(([tr,de])=>AGE_KEYS.map(k=>({
-    dxStr:`${de}.${COM_COC[k]}`, field:`com_${tr}_${k}`, src:'com', band:AGE_LABEL[k]}))),
+  // OLD facility form
+  ...TIMES.flatMap(t=>AGE_KEYS.map(k=>({
+    dxStr:`${OLD_DE[t.k]}.${OLD_COC[k]}`, field:`fac_${t.k}_${k}`, src:'old', band:AGE_LABEL[k]}))),
+  // NEW facility form — sex collapsed, bands folded into the three age groups
+  ...TIMES.flatMap(t=>AGE_KEYS.flatMap(k=>Object.entries(NEW_BANDS[k]).flatMap(([band,[m,f]])=>[
+    {dxStr:`${NEW_DE[t.k]}.${m}`, field:`fac_${t.k}_${k}`, src:'new', band, sex:'Male'},
+    {dxStr:`${NEW_DE[t.k]}.${f}`, field:`fac_${t.k}_${k}`, src:'new', band, sex:'Female'},
+  ]))),
+  // COMMUNITY (HTR) — rolled up from Level 6
+  ...TIMES.flatMap(t=>AGE_KEYS.map(k=>({
+    dxStr:`${COM_DE[t.k]}.${COM_COC[k]}`, field:`com_${t.k}_${k}`, src:'com', band:AGE_LABEL[k]}))),
 ];
 const DX_MAP={}; ALL_DX.forEach(d=>{DX_MAP[d.dxStr]=d;});
 const DX_PARAM=[...new Set(ALL_DX.map(d=>d.dxStr))].join(';');
 
 let DE_NAMES = {
-  [OLD_DE.rdt_pos]:'Fever case tested for Malaria (RDT) - Positive',
-  [OLD_DE.rdt_neg]:'Fever case tested for Malaria (RDT) - Negative',
-  [OLD_DE.mic_neg]:'Fever case tested for Malaria (Microscopy) - Negative',
-  [NEW_DE.rdt_pos]:'HF01_Fever cases tested for Malaria (RDT) - Positive_Cases',
-  [NEW_DE.rdt_neg]:'HF01_Fever cases tested for Malaria (RDT) - Negative_Cases',
-  [NEW_DE.mic_pos]:'HF01_Fever cases tested for Malaria (Microscopy) - Positive_Cases',
-  [NEW_DE.mic_neg]:'HF01_Fever cases tested for Malaria (Microscopy) - Negative_Cases',
-  [COM_DE.rdt_pos]:'Fever case tested for Malaria (RDT) in HTR - Positive',
-  [COM_DE.rdt_neg]:'Fever case tested for Malaria (RDT) in HTR - Negative',
+  [OLD_DE.lt24]:'Malaria treated with ACT <24 hours',
+  [OLD_DE.gt24]:'Malaria treated with ACT >24 hours',
+  [NEW_DE.lt24]:'HF01_Malaria treated at Facility with ACT < 24hrs_Cases',
+  [NEW_DE.gt24]:'HF01_Malaria treated at Facility with ACT > 24hrs_Cases',
+  [COM_DE.lt24]:'Malaria treated with ACT in HTR <24 hours',
+  [COM_DE.gt24]:'Malaria treated with ACT in HTR >24 hours',
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -1058,8 +1032,20 @@ async function dhis2(path,retries=3){
   const pUrl=PROXY+'?url='+encodeURIComponent(url)+'&Authorization='+encodeURIComponent(AUTH);
   let lastErr;
   for(let a=1;a<=retries;a++){
-    try{const r=await fetch(pUrl);if(!r.ok)throw new Error('HTTP '+r.status);return await r.json();}
-    catch(e){lastErr=e;if(a<retries)await sleep(1200*Math.pow(2,a-1));}
+    try{
+      // Large analytics batches can be slow — allow up to 3 minutes before giving up.
+      const ctl=new AbortController();
+      const timer=setTimeout(()=>ctl.abort(),180000);
+      const r=await fetch(pUrl,{signal:ctl.signal});
+      clearTimeout(timer);
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      return await r.json();
+    }
+    catch(e){
+      lastErr=e;
+      if(typeof log==='function')log(`  request failed (attempt ${a}/${retries}): ${e.message||e}`,'warn');
+      if(a<retries)await sleep(1200*Math.pow(2,a-1));
+    }
   }
   throw new Error('DHIS2 failed: '+(lastErr?.message||'network'));
 }
@@ -1168,7 +1154,7 @@ async function startPipeline(){
   if(!cfgS||!cfgE){errEl.textContent='Please select both Start Month and End Month.';errEl.style.display='block';return;}
   if(cfgS>cfgE){errEl.textContent='Start Month must be on or before End Month.';errEl.style.display='block';return;}
   logReset();
-  log(`Malaria testing (RDT + Microscopy) — ${cfgS} to ${cfgE}`,'hl');
+  log(`Malaria treated with ACT (<24h / >24h) — ${cfgS} to ${cfgE}`,'hl');
   log('Connecting to DHIS2…','info');
   // Derive years and period list from range
   const startYr=parseInt(cfgS.slice(0,4)), endYr=parseInt(cfgE.slice(0,4));
@@ -1193,21 +1179,32 @@ async function startPipeline(){
   _sn=0;setProgress(2);setPill('Running…','rgba(255,193,7,.5)');
 
   addStep('s_ou',   'Fetch Level-5 facility registry with hierarchy');
-  addStep('s_fetch',`Fetch testing — old + new facility forms + community — ${cfgS} → ${cfgE} · ${years.length} year(s)`);
+  addStep('s_fetch',`Fetch ACT treatment — old + new facility forms + community — ${cfgS} → ${cfgE} · ${years.length} year(s)`);
   addStep('s_wins', 'Detect outliers (Q3 + 3.0×IQR) — replace with facility-year median');
   addStep('s_build','Build output rows — facility, community, overall');
 
   try{
     // ── S1: Org Units ─────────────────────────────────────────
     setStep('s_ou','running');setProgress(5);
-    // Level 5 = PHU (facility) · Level 6 = CHW / ETR posts (community reporting units)
-    const FIELDS='id,displayName,level,ancestors[id,displayName,level]';
-    const [ouL5,ouL6]=await Promise.all([
-      dhis2(`/api/organisationUnits.json?level=${L_PHU}&fields=${FIELDS}&paging=false&pageSize=50000`),
-      dhis2(`/api/organisationUnits.json?level=${L_COM}&fields=${FIELDS}&paging=false&pageSize=50000`),
-    ]);
-    const ouResp={organisationUnits:[...(ouL5.organisationUnits||[]),...(ouL6.organisationUnits||[])]};
-    log(`Org units fetched — ${(ouL5.organisationUnits||[]).length.toLocaleString()} Level-5 PHUs, ${(ouL6.organisationUnits||[]).length.toLocaleString()} Level-6 CHW/ETR posts`,'info');
+    // Level 5 = PHU (facility). Needs the full hierarchy (district / chiefdom).
+    const ouL5=await dhis2(`/api/organisationUnits.json?level=${L_PHU}`
+      +`&fields=id,displayName,level,ancestors[id,displayName,level]&paging=false&pageSize=50000`);
+    log(`Org units — ${(ouL5.organisationUnits||[]).length.toLocaleString()} Level-5 PHUs`,'info');
+    await tick();
+
+    // Level 6 = CHW / ETR posts. There are many thousands of them, so ONLY the parent
+    // id is requested — pulling full ancestors here makes the response so large that
+    // the request times out. All we need is the Level-5 parent to roll community up to.
+    let ouL6={organisationUnits:[]};
+    try{
+      ouL6=await dhis2(`/api/organisationUnits.json?level=${L_COM}`
+        +`&fields=id,parent[id]&paging=false&pageSize=100000`);
+      log(`Org units — ${(ouL6.organisationUnits||[]).length.toLocaleString()} Level-6 CHW/ETR posts`,'info');
+    }catch(e){
+      log(`Level-6 fetch failed (${e.message||e}) — continuing without community rollup`,'err');
+    }
+    await tick();
+    const ouResp={organisationUnits:(ouL5.organisationUnits||[])};
     const VALID=['Hospital','Clinic','CHC','CHP','MCHP'];
     let skip=0;
     ST.excluded=[];
@@ -1216,7 +1213,6 @@ async function startPipeline(){
       const anc=(ou.ancestors||[]).sort((a,b)=>a.level-b.level);
       const dist=anc.find(a=>a.level===L_DIST);
       const chief=anc.find(a=>a.level===L_CHIEF);
-      const l5Anc=anc.find(a=>a.level===L_PHU);
       if(ou.level===L_PHU){
         const t=getHFType(ou.displayName);
         const rec={ou_id:ou.id,facility:ou.displayName,type:t,
@@ -1228,10 +1224,12 @@ async function startPipeline(){
         if(!VALID.includes(t)){skip++;ST.excluded.push({...rec,reason:'Unrecognised facility type'});return;}
         ST.ouHierarchy[ou.id]={id:ou.id,name:ou.displayName,hfType:t,
           districtName:rec.district,chiefdomName:rec.chiefdom};
-      } else if(ou.level>L_PHU&&l5Anc){
-        // Level-6+ CHW/ETR → map to Level-5 parent (for community data rollup)
-        childToL5[ou.id]=l5Anc.id;
       }
+    });
+    // Level-6 CHW/ETR post -> its Level-5 PHU parent (for community rollup)
+    (ouL6.organisationUnits||[]).forEach(ou=>{
+      const pid=ou.parent&&ou.parent.id;
+      if(pid)childToL5[ou.id]=pid;
     });
     setStep('s_ou','done',`${Object.keys(ST.ouHierarchy).length} facilities included · ${ST.excluded.length} excluded · ${Object.keys(childToL5).length} Level-6 CHW/ETR units rolled up to their PHU`);
     log(`Registry built — ${Object.keys(ST.ouHierarchy).length.toLocaleString()} facilities included`,'ok');
@@ -1253,7 +1251,7 @@ async function startPipeline(){
 
     // ── S2: Fetch analytics per year ──────────────────────────
     setStep('s_fetch','running');
-    // rawSlots[ouId][yr][mo] = {fac_rdt, fac_micro, com_rdt}
+    // rawSlots[ouId][yr][mo] = one slot per output series
     const rawSlots={};
     ST.cutIgnored={oldAfter:0,newBefore:0};
     ST.cutIgnoredVal={oldAfter:0,newBefore:0};
@@ -1304,8 +1302,10 @@ async function startPipeline(){
         const ou=ST.ouHierarchy[effectiveId];if(!ou)return;
         if(map.excl&&map.excl.includes(ou.hfType))return;
         if(isL6)ST.comRollup++;
+
         const yr2=parseInt(period.slice(0,4));
         const mo=parseInt(period.slice(4,6))-1; // 0-indexed
+
 
         // ── FORM CUTOVER ──────────────────────────────────────
         // New form data entry starts April 2026.
@@ -1358,6 +1358,11 @@ async function startPipeline(){
       await sleep(30);
     }
     setStep('s_fetch','done',`${totalRows.toLocaleString()} data points fetched`);
+    log(`Fetch complete — ${totalRows.toLocaleString()} values accepted`,'ok');
+    log(`Community rollup — ${(ST.comRollup||0).toLocaleString()} Level-6 CHW/ETR values summed into their PHU`,'hl');
+    const _nv=Object.keys(ST.cutViol||{}).length;
+    if(_nv)log(`Form cutover — ${_nv.toLocaleString()} facility-month(s) reported on the wrong form (ignored)`,'warn');
+    await tick();
     setProgress(55);await sleep(30);
 
     // ── S3: Winsorise per facility per year ───────────────────
@@ -1425,7 +1430,7 @@ async function startPipeline(){
     ST.rows=[];
     allOuIds.forEach(ouId=>{
       const ou=ST.ouHierarchy[ouId];if(!ou)return;
-      // Pass 1: does this facility report any tests in the period? (ACTIVE test)
+      // Pass 1: does this facility report any ACT treatment in the period? (ACTIVE test)
       let anyReported=false;
       ST.years.forEach(yr=>{
         const months=rawSlots[ouId][yr];if(!months)return;
@@ -1467,56 +1472,37 @@ async function startPipeline(){
             row[dx.field+'_ub']=(ub!==null&&ub!==undefined)?ub:'';
           });
           // ── Derived per age group ──
-          // Tested = Positive + Negative, per source per test
           AGE_KEYS.forEach(k=>{
-            TESTS.forEach(t=>{
-              const fp=row[`fac_${t.k}_pos_${k}`], fn=row[`fac_${t.k}_neg_${k}`];
-              row[`fac_${t.k}_test_${k}`]=(fp!==null||fn!==null)?((fp||0)+(fn||0)):null;
+            // Treated = <24 hrs + >24 hrs, per source
+            ['fac','com'].forEach(sc=>{
+              const l=row[`${sc}_lt24_${k}`], g=row[`${sc}_gt24_${k}`];
+              row[`${sc}_tx_${k}`]=(l!==null||g!==null)?((l||0)+(g||0)):null;
             });
-            const cp=row[`com_rdt_pos_${k}`], cn=row[`com_rdt_neg_${k}`];
-            row[`com_rdt_test_${k}`]=(cp!==null||cn!==null)?((cp||0)+(cn||0)):null;
-
-            // All tests at facility (RDT + Microscopy)
-            const fpos=TESTS.map(t=>row[`fac_${t.k}_pos_${k}`]);
-            const fneg=TESTS.map(t=>row[`fac_${t.k}_neg_${k}`]);
-            row[`fac_pos_${k}`] =fpos.some(x=>x!==null)?fpos.reduce((a,b)=>a+(b||0),0):null;
-            row[`fac_neg_${k}`] =fneg.some(x=>x!==null)?fneg.reduce((a,b)=>a+(b||0),0):null;
-            row[`fac_test_${k}`]=(row[`fac_pos_${k}`]!==null||row[`fac_neg_${k}`]!==null)
-              ?((row[`fac_pos_${k}`]||0)+(row[`fac_neg_${k}`]||0)):null;
-            // Community (RDT only)
-            row[`com_pos_${k}`] =row[`com_rdt_pos_${k}`];
-            row[`com_neg_${k}`] =row[`com_rdt_neg_${k}`];
-            row[`com_test_${k}`]=row[`com_rdt_test_${k}`];
-            // Overall = facility + community
-            ['pos','neg','test'].forEach(m=>{
+            // Overall = at facility + at community
+            ['lt24','gt24','tx'].forEach(m=>{
               const f=row[`fac_${m}_${k}`], c=row[`com_${m}_${k}`];
               row[`all_${m}_${k}`]=(f!==null||c!==null)?((f||0)+(c||0)):null;
             });
-            // TPR per age group (overall)
-            const tp=row[`all_pos_${k}`], tt=row[`all_test_${k}`];
-            row[`tpr_${k}`]=(tt&&tt>0)?+( (tp||0)/tt*100 ).toFixed(1):null;
+            // Prompt treatment rate = treated within 24 hrs / all treated
+            const l=row[`all_lt24_${k}`], t=row[`all_tx_${k}`];
+            row[`ptr_${k}`]=(t&&t>0)?+((l||0)/t*100).toFixed(1):null;
           });
 
           // ── Totals across age groups ──
           const sumOf=(pre)=>{const v=AGE_KEYS.map(k=>row[`${pre}_${k}`]);
             return v.some(x=>x!==null)?v.reduce((a,b)=>a+(b||0),0):null;};
           ['fac','com','all'].forEach(sc=>{
-            row[`${sc}_pos_total`] =sumOf(`${sc}_pos`);
-            row[`${sc}_neg_total`] =sumOf(`${sc}_neg`);
-            row[`${sc}_test_total`]=sumOf(`${sc}_test`);
+            row[`${sc}_lt24_total`]=sumOf(`${sc}_lt24`);
+            row[`${sc}_gt24_total`]=sumOf(`${sc}_gt24`);
+            row[`${sc}_tx_total`]  =sumOf(`${sc}_tx`);
           });
-          // Per test type at facility
-          TESTS.forEach(t=>{
-            row[`fac_${t.k}_pos_total`] =sumOf(`fac_${t.k}_pos`);
-            row[`fac_${t.k}_neg_total`] =sumOf(`fac_${t.k}_neg`);
-            row[`fac_${t.k}_test_total`]=sumOf(`fac_${t.k}_test`);
-          });
+
           // Headline
-          row.fac_total = row.fac_test_total;
-          row.com_total = row.com_test_total;
-          row.total     = row.all_test_total;
-          row.tpr = (row.all_test_total && row.all_test_total>0)
-            ? +((row.all_pos_total||0)/row.all_test_total*100).toFixed(1) : null;
+          row.fac_total = row.fac_tx_total;
+          row.com_total = row.com_tx_total;
+          row.total     = row.all_tx_total;
+          row.ptr = (row.all_tx_total && row.all_tx_total>0)
+            ? +((row.all_lt24_total||0)/row.all_tx_total*100).toFixed(1) : null;
           row.reported  = row.total!==null?'Yes':'No';
           ST.rows.push(row);
         });
@@ -1538,13 +1524,15 @@ async function startPipeline(){
 
     // ── Summary figures (Facility / Community / Overall) ──
     const sumBy=(fn)=>ST.rows.reduce((a,r)=>a+(fn(r)||0),0);
-    const facTotal = sumBy(r=>r.fac_test_total);
-    const comTotal = sumBy(r=>r.com_test_total);
-    const allTotal = sumBy(r=>r.all_test_total);
-    const facPos   = sumBy(r=>r.fac_pos_total);
-    const comPos   = sumBy(r=>r.com_pos_total);
-    const allPos   = sumBy(r=>r.all_pos_total);
-    const tprAll   = allTotal?(allPos/allTotal*100).toFixed(1):'0.0';
+    const facTotal = sumBy(r=>r.fac_tx_total);
+    const comTotal = sumBy(r=>r.com_tx_total);
+    const allTotal = sumBy(r=>r.all_tx_total);
+    const facLt    = sumBy(r=>r.fac_lt24_total);
+    const comLt    = sumBy(r=>r.com_lt24_total);
+    const allLt    = sumBy(r=>r.all_lt24_total);
+    const ptrAll   = allTotal?(allLt/allTotal*100).toFixed(1):'0.0';
+    const ptrFac   = facTotal?(facLt/facTotal*100).toFixed(1):'0.0';
+    const ptrCom   = comTotal?(comLt/comTotal*100).toFixed(1):'0.0';
     const facRows  = ST.rows.filter(r=>(r.fac_total||0)>0).length;
     const comRows  = ST.rows.filter(r=>(r.com_total||0)>0).length;
     const facFacil = [...new Set(ST.rows.filter(r=>(r.fac_total||0)>0).map(r=>r.ou_id))].length;
@@ -1568,11 +1556,11 @@ async function startPipeline(){
 
     // ── Facility / Community / Overall summary panels ──
     const ageCell=(sc)=>AGE_KEYS.map(k=>{
-      const t=sumBy(r=>r[`${sc}_test_${k}`]), p=sumBy(r=>r[`${sc}_pos_${k}`]);
-      const tpr=t?(p/t*100).toFixed(1):'0.0';
+      const t=sumBy(r=>r[`${sc}_tx_${k}`]), l=sumBy(r=>r[`${sc}_lt24_${k}`]);
+      const ptr=t?(l/t*100).toFixed(1):'0.0';
       return `<tr><td>${AGE_LABEL[k]}</td><td style="text-align:right;font-weight:700;">${t.toLocaleString()}</td>`+
-             `<td style="text-align:right;">${p.toLocaleString()}</td>`+
-             `<td style="text-align:right;font-weight:700;color:#dc2626;">${tpr}%</td></tr>`;
+             `<td style="text-align:right;">${l.toLocaleString()}</td>`+
+             `<td style="text-align:right;font-weight:700;color:#15803d;">${ptr}%</td></tr>`;
     }).join('');
     const outCell=(src)=>ALL_VARS.filter(v=>v.src===src).map(v=>{
       const vs=(ST.varStats||{})[v.field]||{corrected:0,assessed:0};
@@ -1585,8 +1573,8 @@ async function startPipeline(){
         <div style="background:${bg};color:${color};padding:8px 12px;font-size:13px;font-weight:800;">${title}</div>
         <div style="padding:11px 12px;">
           <div style="font-size:22px;font-weight:800;color:${color};line-height:1.2;">${total.toLocaleString()}</div>
-          <div style="font-size:11px;color:var(--muted);margin-bottom:9px;">tested · ${rows.toLocaleString()} facility-months · ${facil.toLocaleString()} facilities</div>
-          <table class="m-tbl"><tr><th>Age group</th><th style="text-align:right;">Tested</th><th style="text-align:right;">Positive</th><th style="text-align:right;">TPR</th></tr>${ageCell(pre)}</table>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:9px;">treated with ACT · ${rows.toLocaleString()} facility-months · ${facil.toLocaleString()} facilities</div>
+          <table class="m-tbl"><tr><th>Age group</th><th style="text-align:right;">Treated</th><th style="text-align:right;">&lt;24h</th><th style="text-align:right;">Prompt %</th></tr>${ageCell(pre)}</table>
           ${src?`<div style="font-size:10.5px;font-weight:800;color:var(--muted);margin:9px 0 3px;">OUTLIERS CORRECTED</div>
           <table class="m-tbl"><tr><th>Age group</th><th style="text-align:right;">Found / Assessed</th><th style="text-align:right;">Rate</th></tr>${outCell(src)}</table>`:''}
           ${note?`<div style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.55;">${note}</div>`:''}
@@ -1599,8 +1587,8 @@ async function startPipeline(){
       ST.rows.forEach(r=>{
         const g=keyFn(r); if(!g)return;
         if(!m[g])m[g]={fac:0,com:0,all:0,pos:0,facs:new Set()};
-        m[g].fac+=r.fac_test_total||0; m[g].com+=r.com_test_total||0;
-        m[g].all+=r.all_test_total||0; m[g].pos+=r.all_pos_total||0;
+        m[g].fac+=r.fac_tx_total||0; m[g].com+=r.com_tx_total||0;
+        m[g].all+=r.all_tx_total||0; m[g].pos+=r.all_lt24_total||0;
         if(r.reported==='Yes')m[g].facs.add(r.ou_id);
       });
       return m;
@@ -1609,7 +1597,6 @@ async function startPipeline(){
       const rows=Object.entries(m).sort((a,b)=>b[1].all-a[1].all).map(([g,v])=>{
         const pf=v.all?(v.fac/v.all*100).toFixed(1):'0.0';
         const pc=v.all?(v.com/v.all*100).toFixed(1):'0.0';
-        const tpr=v.all?(v.pos/v.all*100).toFixed(1):'0.0';
         return `<tr><td>${g}</td><td style="text-align:right;">${v.facs.size.toLocaleString()}</td>`+
           `<td style="text-align:right;color:#2c6793;font-weight:700;">${v.fac.toLocaleString()}</td>`+
           `<td style="text-align:right;color:#2c6793;">${pf}%</td>`+
@@ -1617,19 +1604,19 @@ async function startPipeline(){
           `<td style="text-align:right;color:#15803d;">${pc}%</td>`+
           `<td style="text-align:right;font-weight:800;">${v.all.toLocaleString()}</td>`+
           `<td style="text-align:right;">${v.pos.toLocaleString()}</td>`+
-          `<td style="text-align:right;font-weight:800;color:#dc2626;">${tpr}%</td></tr>`;
+          `<td style="text-align:right;font-weight:800;color:#15803d;">${v.all?(v.pos/v.all*100).toFixed(1):'0.0'}%</td></tr>`;
       }).join('');
       return `<div style="margin-bottom:18px;">
         <div style="font-size:13px;font-weight:700;color:var(--blue-dk);margin-bottom:6px;">${title}</div>
         <div class="data-table-wrap"><table class="data-table">
           <thead><tr><th>${firstCol}</th><th style="text-align:right;">Facilities</th>
-            <th style="text-align:right;color:#2c6793;">Tested at facility</th>
+            <th style="text-align:right;color:#2c6793;">At facility</th>
             <th style="text-align:right;color:#2c6793;">% at facility</th>
-            <th style="text-align:right;color:#15803d;">Tested at community</th>
+            <th style="text-align:right;color:#15803d;">At community</th>
             <th style="text-align:right;color:#15803d;">% at community</th>
-            <th style="text-align:right;">Tested</th>
-            <th style="text-align:right;">Positive</th>
-            <th style="text-align:right;color:#dc2626;">TPR</th></tr></thead>
+            <th style="text-align:right;">Treated</th>
+            <th style="text-align:right;">&lt;24h</th>
+            <th style="text-align:right;color:#15803d;">Prompt %</th></tr></thead>
           <tbody>${rows}</tbody></table></div></div>`;
     };
     // Activity + form transition summary
@@ -1643,19 +1630,19 @@ async function startPipeline(){
          ${nViol?`<div class="stat-pill warn" style="background:#fee2e2;border-color:#dc2626;color:#dc2626;">${nViol.toLocaleString()} form-rule violation(s) ignored</div>`
                 :`<div class="stat-pill ok">No form-rule violations</div>`}
        </div>`+
-      detTable('Malaria Testing by Ownership', byGroup(r=>r.ownership), 'Ownership')+
-      detTable('Malaria Testing by Facility Type', byGroup(r=>r.hfType), 'Facility Type')+
-      detTable('Malaria Testing by District', byGroup(r=>r.district), 'District')+
-      detTable('Malaria Testing by Year', byGroup(r=>r.year), 'Year');
+      detTable('ACT Treatment by Ownership', byGroup(r=>r.ownership), 'Ownership')+
+      detTable('ACT Treatment by Facility Type', byGroup(r=>r.hfType), 'Facility Type')+
+      detTable('ACT Treatment by District', byGroup(r=>r.district), 'District')+
+      detTable('ACT Treatment by Year', byGroup(r=>r.year), 'Year');
 
     document.getElementById('summaryPanels').innerHTML=
-      panel('MALARIA TESTING AT FACILITY','#2c6793','#e8f2fa',facTotal,facRows,facFacil,'fac','fac',
-            `RDT + Microscopy at the health facility. <b>${facPos.toLocaleString()}</b> positive of <b>${facTotal.toLocaleString()}</b> tested.`)+
-      panel('MALARIA TESTING AT COMMUNITY','#15803d','#d4edda',comTotal,comRows,comFacil,'com','com',
-            `RDT only (CHWs do not perform microscopy). <b>${comPos.toLocaleString()}</b> positive of <b>${comTotal.toLocaleString()}</b> tested.<br>${(ST.comRollup||0).toLocaleString()} Level-6 values rolled up. Community 02-59m treated as 0-59m.`)+
-      panel('OVERALL TESTING','#8a6a00','#fff8e6',allTotal,ST.rows.filter(r=>r.reported==='Yes').length,
+      panel('TREATED WITH ACT AT FACILITY','#2c6793','#e8f2fa',facTotal,facRows,facFacil,'fac','fac',
+            `<b>${facLt.toLocaleString()}</b> treated within 24 hrs — <span style="color:#15803d;font-weight:700;">${ptrFac}% prompt</span>.`)+
+      panel('TREATED WITH ACT AT COMMUNITY (HTR)','#15803d','#d4edda',comTotal,comRows,comFacil,'com','com',
+            `HTR = community (CHW / ETR). <b>${comLt.toLocaleString()}</b> treated within 24 hrs — <span style="color:#15803d;font-weight:700;">${ptrCom}% prompt</span>.<br>${(ST.comRollup||0).toLocaleString()} Level-6 values rolled up. Community 02-59m treated as 0-59m.`)+
+      panel('OVERALL TREATED WITH ACT','#8a6a00','#fff8e6',allTotal,ST.rows.filter(r=>r.reported==='Yes').length,
             [...new Set(ST.rows.filter(r=>r.reported==='Yes').map(r=>r.ou_id))].length,'all',null,
-            `Tested = at facility + at community.<br><b>${facTotal.toLocaleString()} + ${comTotal.toLocaleString()} = ${allTotal.toLocaleString()}</b><br><br><span style="font-size:15px;font-weight:800;color:#dc2626;">TPR ${tprAll}%</span> &nbsp;<span style="color:var(--muted);">(${allPos.toLocaleString()} positive ÷ ${allTotal.toLocaleString()} tested)</span>`);
+            `Treated = at facility + at community.<br><b>${facTotal.toLocaleString()} + ${comTotal.toLocaleString()} = ${allTotal.toLocaleString()}</b><br><br><span style="font-size:15px;font-weight:800;color:#15803d;">Prompt treatment ${ptrAll}%</span><br><span style="color:var(--muted);font-size:10.5px;">${allLt.toLocaleString()} treated within 24 hrs ÷ ${allTotal.toLocaleString()} treated</span>`);
 
     buildPreview();
     renderExcluded();
@@ -1668,12 +1655,12 @@ async function startPipeline(){
     renderReconciliation();
     showTab('summary');
     setProgress(100);setPill('Done ✓','rgba(40,167,69,.55)');
-    const gt=ST.rows.reduce((a,r)=>a+(r.all_test_total||0),0);
-    const gp=ST.rows.reduce((a,r)=>a+(r.all_pos_total||0),0);
-    const gf=ST.rows.reduce((a,r)=>a+(r.fac_test_total||0),0);
-    const gc=ST.rows.reduce((a,r)=>a+(r.com_test_total||0),0);
-    log(`Tested — at facility ${gf.toLocaleString()} + at community ${gc.toLocaleString()} = ${gt.toLocaleString()}`,'hl');
-    log(`Positive ${gp.toLocaleString()} · TPR ${gt?(gp/gt*100).toFixed(1):0}%`,'hl');
+    const gt=ST.rows.reduce((a,r)=>a+(r.all_tx_total||0),0);
+    const gf=ST.rows.reduce((a,r)=>a+(r.fac_tx_total||0),0);
+    const gc=ST.rows.reduce((a,r)=>a+(r.com_tx_total||0),0);
+    const gl=ST.rows.reduce((a,r)=>a+(r.all_lt24_total||0),0);
+    log(`Treated with ACT — at facility ${gf.toLocaleString()} + at community ${gc.toLocaleString()} = ${gt.toLocaleString()}`,'hl');
+    log(`Within 24 hrs ${gl.toLocaleString()} · prompt treatment rate ${gt?(gl/gt*100).toFixed(1):0}%`,'hl');
     log('Analyses rendered. Done.','ok');
     logStop();
 
@@ -1697,31 +1684,24 @@ async function startPipeline(){
 // Headers built dynamically after metadata fetch
 function buildHeaders(){
   const base=['District','Chiefdom','Facility','Type','Ownership','Year','Month','Period'];
-  // Raw series block: each of the 19 series gets Original / Upper Bound / Outlier / Corrected
   const rawBlk=(filter)=>ALL_VARS.filter(filter).flatMap(v=>[
     `${v.label} Original`, `${v.label} Upper Bound`, `${v.label} Outlier`, `${v.label} Corrected`]);
-  // Derived block per source: Positive / Negative / Tested per age, plus totals
-  const derBlk=(sc,lbl)=>{
+  const txBlk=(sc,lbl)=>{
     const c=[];
-    AGE_KEYS.forEach(k=>{
-      c.push(`${lbl} Positive ${AGE_LABEL[k]}`,`${lbl} Negative ${AGE_LABEL[k]}`,`${lbl} Tested ${AGE_LABEL[k]}`);
-    });
-    c.push(`${lbl} Positive Total`,`${lbl} Negative Total`,`${lbl} Tested Total`);
+    AGE_KEYS.forEach(k=>c.push(`${lbl} <24h ${AGE_LABEL[k]}`,`${lbl} >24h ${AGE_LABEL[k]}`,`${lbl} Treated ${AGE_LABEL[k]}`));
+    c.push(`${lbl} <24h Total`,`${lbl} >24h Total`,`${lbl} Treated Total`);
     return c;
   };
-  const tprCols=AGE_KEYS.map(k=>`TPR ${AGE_LABEL[k]} (%)`).concat(['TPR Overall (%)']);
-
+  const ptrCols=AGE_KEYS.map(k=>`Prompt Treatment ${AGE_LABEL[k]} (%)`).concat(['Prompt Treatment Overall (%)']);
   return {
-    overall: [...base,
+    overall:[...base,
       ...rawBlk(v=>v.src==='fac'), ...rawBlk(v=>v.src==='com'),
-      ...derBlk('fac','At Facility'), ...derBlk('com','At Community'), ...derBlk('all','Overall'),
-      ...tprCols, 'Reported','Source Form'],
-    facility:[...base,
-      ...rawBlk(v=>v.src==='fac'),
-      ...derBlk('fac','At Facility'), 'Reported','Source Form'],
-    community:[...base,
-      ...rawBlk(v=>v.src==='com'),
-      ...derBlk('com','At Community'), 'Community Reported'],
+      ...txBlk('fac','At Facility'), ...txBlk('com','At Community'), ...txBlk('all','Overall'),
+      ...ptrCols, 'Reported','Source Form'],
+    facility:[...base, ...rawBlk(v=>v.src==='fac'),
+      ...txBlk('fac','At Facility'), 'Reported','Source Form'],
+    community:[...base, ...rawBlk(v=>v.src==='com'),
+      ...txBlk('com','At Community'), 'Community Reported'],
     outliers:['District','Chiefdom','Facility','Type','Ownership','Year','Month','Series','Age Group',
       'Original Value','Corrected Value','Upper Bound (Q3 + 3.0×IQR)','Outlier'],
   };
@@ -1731,10 +1711,10 @@ function getRows(type){
   const base=r=>[r.district,r.chiefdom,r.facility,r.hfType,r.ownership??'',r.year,r.month_name,r.period];
   const rawBlk=(r,filter)=>ALL_VARS.filter(filter).flatMap(v=>[
     r[`${v.field}_orig`]??'', r[`${v.field}_ub`]??'', r[`${v.field}_outlier`]??'No', r[v.field]??'']);
-  const derBlk=(r,sc)=>{
+  const txBlk=(r,sc)=>{
     const c=[];
-    AGE_KEYS.forEach(k=>c.push(r[`${sc}_pos_${k}`]??'', r[`${sc}_neg_${k}`]??'', r[`${sc}_test_${k}`]??''));
-    c.push(r[`${sc}_pos_total`]??'', r[`${sc}_neg_total`]??'', r[`${sc}_test_total`]??'');
+    AGE_KEYS.forEach(k=>c.push(r[`${sc}_lt24_${k}`]??'', r[`${sc}_gt24_${k}`]??'', r[`${sc}_tx_${k}`]??''));
+    c.push(r[`${sc}_lt24_total`]??'', r[`${sc}_gt24_total`]??'', r[`${sc}_tx_total`]??'');
     return c;
   };
 
@@ -1745,19 +1725,18 @@ function getRows(type){
       r.original, r.corrected, r.upperBound, 'Yes']);
   }
   if(type==='community'){
-    return ST.rows.filter(r=>r.com_test_total!==null&&r.com_test_total!==undefined)
-      .map(r=>[...base(r), ...rawBlk(r,v=>v.src==='com'), ...derBlk(r,'com'),
-        (r.com_test_total||0)>0?'Yes':'No']);
+    return ST.rows.filter(r=>r.com_tx_total!==null&&r.com_tx_total!==undefined)
+      .map(r=>[...base(r), ...rawBlk(r,v=>v.src==='com'), ...txBlk(r,'com'),
+        (r.com_tx_total||0)>0?'Yes':'No']);
   }
   if(type==='facility'){
-    return ST.rows.map(r=>[...base(r),
-      ...rawBlk(r,v=>v.src==='fac'),
-      ...derBlk(r,'fac'), r.reported??'', r.src??'']);
+    return ST.rows.map(r=>[...base(r), ...rawBlk(r,v=>v.src==='fac'),
+      ...txBlk(r,'fac'), r.reported??'', r.src??'']);
   }
   return ST.rows.map(r=>[...base(r),
     ...rawBlk(r,v=>v.src==='fac'), ...rawBlk(r,v=>v.src==='com'),
-    ...derBlk(r,'fac'), ...derBlk(r,'com'), ...derBlk(r,'all'),
-    ...AGE_KEYS.map(k=>r[`tpr_${k}`]??''), r.tpr??'',
+    ...txBlk(r,'fac'), ...txBlk(r,'com'), ...txBlk(r,'all'),
+    ...AGE_KEYS.map(k=>r[`ptr_${k}`]??''), r.ptr??'',
     r.reported??'', r.src??'']);
 }
 
@@ -1803,7 +1782,7 @@ function downloadCSV(type){
   const rows=getRows(type);
   const csv=[hdrs.join(','),...rows.map(r=>r.map(c=>`"${c??''}"`).join(','))].join('\n');
   const a=document.createElement('a');
-  a.download=`NMCP_Testing_${type}_${ST.cfgStart}_${ST.cfgEnd}.csv`;
+  a.download=`NMCP_Treated_${type}_${ST.cfgStart}_${ST.cfgEnd}.csv`;
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
   a.click();
 }
@@ -1811,7 +1790,7 @@ function downloadCSV(type){
 // ── Facility Ownership Match Report ──────────────────────────
 function getFacilityReport(scope){
   // Every unique Level-5 facility in the registry (keyed by unique ou_id),
-  // independent of whether it reported tests in the period.
+  // independent of whether it reported ACT treatment in the period.
   const withData=new Set(ST.rows.map(r=>r.ou_id));
   let list=Object.values(ST.ouHierarchy||{}).map(ou=>{
     const ownership=getOwnership(ou.chiefdomName,ou.name,ou.id);
@@ -1837,7 +1816,7 @@ function downloadMatchReport(scope){
   const rows=matchRows(scope);
   const csv=[MATCH_HDR.join(','),...rows.map(r=>r.map(c=>`"${c??''}"`).join(','))].join('\n');
   const a=document.createElement('a');
-  a.download=`NMCP_Testing_Facility_Match_${scope}_${ST.cfgStart}_${ST.cfgEnd}.csv`;
+  a.download=`NMCP_Treated_Facility_Match_${scope}_${ST.cfgStart}_${ST.cfgEnd}.csv`;
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
   a.click();
 }
@@ -1845,7 +1824,7 @@ function downloadMatchExcel(){
   const wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([MATCH_HDR,...matchRows('all')]),'All Facilities');
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([MATCH_HDR,...matchRows('unmatched')]),'Unmatched');
-  XLSX.writeFile(wb,`NMCP_Testing_Facility_Match_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);
+  XLSX.writeFile(wb,`NMCP_Treated_Facility_Match_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);
 }
 
 // ── Ownership reconciliation: Master file vs DHIS2 registry ──
@@ -1930,7 +1909,7 @@ function downloadReconciliation(){
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([H5,...masterOnly.map(x=>[x.district,x.chiefdom,x.facility,x.type,x.ownership])]),'In Master Not in DHIS2');
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['OU ID','District','Chiefdom','Facility','Type'],
     ...dhisOnly.map(x=>[x.ou_id,x.district,x.chiefdom,x.facility,x.type])]),'In DHIS2 Not in Master');
-  XLSX.writeFile(wb,`NMCP_Testing_Ownership_Reconciliation_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);
+  XLSX.writeFile(wb,`NMCP_Treated_Ownership_Reconciliation_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);
 }
 function downloadReconCsv(which){
   const {both,dhisOnly,masterOnly}=getReconciliation();
@@ -1951,7 +1930,7 @@ function downloadReconCsv(which){
     rows=both.map(x=>[x.ou_id,x.district,x.chiefdom,x.facility,x.type,x.ownership]);}
   const csv=[hdr.join(','),...rows.map(r=>r.map(c=>`"${c??''}"`).join(','))].join('\n');
   const a=document.createElement('a');
-  a.download=`NMCP_Testing_${name}_${ST.cfgStart}_${ST.cfgEnd}.csv`;
+  a.download=`NMCP_Treated_${name}_${ST.cfgStart}_${ST.cfgEnd}.csv`;
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.click();
 }
 function renderReconciliation(){
@@ -2035,11 +2014,11 @@ function downloadExcluded(fmt){
       ['FACILITIES INCLUDED',Object.keys(ST.ouHierarchy||{}).length]]),'Summary');
     XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([EXCL_HDR,...rows]),'Excluded Facilities');
     XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(methodologyRows()),'Methodology');
-    XLSX.writeFile(wb,`NMCP_Testing_Excluded_Facilities_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);return;
+    XLSX.writeFile(wb,`NMCP_Treated_Excluded_Facilities_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);return;
   }
   const csv=[EXCL_HDR.join(','),...rows.map(r=>r.map(c=>`"${c??''}"`).join(','))].join('\n');
   const a=document.createElement('a');
-  a.download=`NMCP_Testing_Excluded_Facilities_${ST.cfgStart}_${ST.cfgEnd}.csv`;
+  a.download=`NMCP_Treated_Excluded_Facilities_${ST.cfgStart}_${ST.cfgEnd}.csv`;
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.click();
 }
 function renderExcluded(){
@@ -2062,46 +2041,38 @@ function renderExcluded(){
 // ── Methodology ──────────────────────────────────────────────
 function methodologyRows(){
   return [
-    ['NMCP Malaria Testing Extract (RDT + Microscopy) — Methodology'],[],
+    ['NMCP Malaria Treated with ACT Extract — Methodology'],[],
     ['Period',`${ST.cfgStart||''} to ${ST.cfgEnd||''}`],
     ['Source','DHIS2 HMIS — analytics API, Level-5 (PHU) facilities'],
     [],
-    ['DATA ELEMENTS EXTRACTED — THREE SOURCES, TWO TEST METHODS, THREE AGE GROUPS'],
-    ['OLD FACILITY FORM','HF01 Outpatient morbidity  ·  Dataset UID: ij1VNJwxKCh'],
-    ['  RDT Positive','p6zQLDFjSfd  ·  ages 0-59m m5T8uBNB8aN / 05-14y j7j6iaknOFn / 15+y zK1aiw8zFac'],
-    ['  RDT Negative','mXS2g1AiPsS  ·  same age COCs'],
-    ['  Microscopy Negative','Rijj3Fp9ksg  ·  same age COCs'],
-    ['  Note','The old form does not record microscopy positives in an age-disaggregated, comparable way. Facility microscopy positives are therefore available from April 2026 onwards (new form). RDT positives and negatives, and microscopy negatives, are complete throughout.'],
+    ['DATA ELEMENTS EXTRACTED — MALARIA TREATED WITH ACT (BY TIMELINESS)'],
+    ['OLD FACILITY FORM','HF01 Outpatient morbidity  ·  ij1VNJwxKCh'],
+    ['  ACT <24 hours','wU8EdHifSLa  ·  ages 0-59m m5T8uBNB8aN / 05-14y j7j6iaknOFn / 15+y zK1aiw8zFac'],
+    ['  ACT >24 hours','XKTCuR0W3YN  ·  same age COCs'],
     [],
-    ['NEW FACILITY FORM','2025_HF01 Outpatient Morbidity and Mortality Summary Form  ·  Dataset UID: fB66asHJITQ'],
-    ['  RDT Positive','AwLklDAVtvq'],
-    ['  RDT Negative','Bn5tLFYdmRD'],
-    ['  Microscopy Positive','AMrdoWsiHMa'],
-    ['  Microscopy Negative','ofCoyRXAweZ'],
-    ['  structure','12 age bands x 2 sexes. Sex is collapsed on summation.'],
+    ['NEW FACILITY FORM','2025_HF01  ·  fB66asHJITQ  ·  12 age bands x 2 sexes (sex collapsed on summation)'],
+    ['  ACT < 24hrs','ht4jvP2ppBI'],
+    ['  ACT > 24hrs','zV9set4PXcm'],
     ['  -> 0-59m','0-7d (M X1fJr7y51lU / F ajwU95HMY2p); 08-28d (M QVABDpl0H4k / F wOsJkGpglpx); 1-5m (M EBG5ZbRgj46 / F z0s3iTdlbsd); 06-11m (M KIJHMZSahcW / F aCwYAbE3GHL); 12-59m (M CcMrNXzzVHL / F YHJ1j33ZMs5)'],
     ['  -> 05-14y','05-09y (M eGhQxrBx3sy / F i4MRLwVtIGa); 10-14y (M oZ7YgBgNGRd / F UI2y7qIOkvz)'],
     ['  -> 15+y','15-19y (M OzqClEP84wm / F vshWQEGCCTp); 20-44y (M ztWgelWML6b / F fLgy2fpBWrb); 45-59y (M zqNF6erLupJ / F eaWE8YjN4j0); 60+y (M hGJdT29m3P6 / F g2NiIyG3PLj)'],
     [],
-    ['COMMUNITY','HF04 Community Based Services  ·  Dataset UID: nufVxEfy3Ps  ·  RDT ONLY (CHWs do not perform microscopy)'],
-    ['  RDT Positive','T7xH8GwWpEM  ·  ages 02-59m NtjMVmRfvHH / 05-14y qDXW7WMLT99 / 15+y mdjRPpvLKdu'],
-    ['  RDT Negative','YWvx4zYdp92  ·  same age COCs'],
-    ['  02-59m treated as 0-59m','The community under-5 band is 2-59 months (CHWs do not treat neonates). It is TREATED AS 0-59m so facility and community align on three common age groups.'],
-    ['  LEVEL-6 ROLLUP','Community tests are reported by CHW/ETR posts at LEVEL 6. Analytics is queried at LEVEL-5 and LEVEL-6, and every Level-6 value is rolled up to its Level-5 PHU parent. Facility forms are never reported at Level 6; any Level-6 value for a facility data element is ignored.'],
+    ['COMMUNITY (HTR)','HF04 Community Based Services  ·  nufVxEfy3Ps  ·  HTR = Hard-To-Reach = community (CHW / ETR posts)'],
+    ['  ACT in HTR <24 hours','h3zJa6hAgib  ·  ages 02-59m NtjMVmRfvHH / 05-14y qDXW7WMLT99 / 15+y mdjRPpvLKdu'],
+    ['  ACT in HTR >24 hours','Imkks0HAl7E  ·  same age COCs'],
+    ['  02-59m treated as 0-59m','The community under-5 band is 2-59 months (CHWs do not treat neonates). It is TREATED AS 0-59m so facility and community align.'],
+    ['  LEVEL-6 ROLLUP','HTR treatment is reported by CHW/ETR posts at LEVEL 6. Analytics is queried at LEVEL-5 and LEVEL-6, and every Level-6 value is rolled up to its Level-5 PHU parent.'],
     [],
-    ['COMPUTATION — Facility <age>','OLD facility form + NEW facility form (per the cutover), per test method and result'],
-    ['COMPUTATION — Tested','Tested = Positive + Negative'],
-    ['COMPUTATION — All tests','All tests = RDT + Microscopy'],
-    ['COMPUTATION — Overall','Overall <age> = at facility <age> + at community <age>'],
-    ['COMPUTATION — TPR','TPR = Positive / Tested x 100.'],
-    ['Series cleaned','18 series independently: 4 facility (RDT/Microscopy x Positive/Negative) x 3 ages, 2 community (RDT x Positive/Negative) x 3 ages.'],
+    ['COMPUTATION — Treated <age>','ACT <24 hrs + ACT >24 hrs (per source)'],
+    ['COMPUTATION — Overall <age>','at facility + at community'],
+    ['COMPUTATION — Prompt treatment rate','ACT <24 hrs / all treated x 100'],
+    ['NO SERIES BREAK','Both timeliness buckets exist on the old form AND the new form, so treatment is captured identically before and after the April 2026 cutover. The series is directly comparable across the whole period.'],
+    ['Series cleaned','12 series independently: (facility, community) x (<24 hrs, >24 hrs) x 3 age groups.'],
     [],
     ['FORM CUTOVER — APRIL 2026'],
     ['OLD FACILITY FORM','Used up to and including March 2026. Any value AFTER March 2026 is IGNORED.'],
     ['NEW FACILITY FORM','Used from April 2026 onwards. Any value BEFORE April 2026 is IGNORED.'],
-    ['COMMUNITY','ALL periods. HF04 is a separate dataset, unaffected by the HF01 form change.'],
-    ['Effect','The two facility form windows do not overlap, so a facility-month can never take values from both. Double-counting is impossible by construction.'],
-    ['Verification','Every row carries a Source Form column. The Form Transition analysis lists any facility that reported on the wrong form; those values are IGNORED and shown for follow-up only.'],
+    ['COMMUNITY / HTR','ALL periods. HF04 is a separate dataset, unaffected by the HF01 form change.'],
     ['Org unit levels','Level 5 = PHU (facility, unit of extraction)  ·  Level 6 = CHW/ETR community posts (rolled up to Level 5)  ·  Level 4 = Chiefdom  ·  Level 2 = District'],
     ['Note','Each age group is a separate variable throughout: each gets its own upper bound, outlier flag and correction.'],[],
     ['1. FACILITY REGISTRY'],
@@ -2114,8 +2085,8 @@ function methodologyRows(){
     ['Match order','1) DHIS2 OU ID (exact)  2) Chiefdom (Level 4) + Facility (Level 5)  3) Facility name  4) Unknown'],
     ['Source','NMCP PHU ownership master list'],[],
     ['3. FACILITY ACTIVITY'],
-    ['Active','Reported at least one test during the selected period.'],
-    ['Inactive','Present in the DHIS2 registry but performed no tests at all in the period. Excluded from reporting-rate denominators.'],[],
+    ['Active','Reported at least one ACT treatment during the selected period.'],
+    ['Inactive','Present in the DHIS2 registry but reported no ACT treatments at all in the period. Excluded from reporting-rate denominators.'],[],
     ['4. OUTLIER DETECTION AND CORRECTION'],
     ['Method','IQR (Tukey) outlier fence, applied per facility, per year, per variable (age group).'],
     ['Upper bound','Q3 + 3.0 × IQR, where IQR = Q3 − Q1, computed on reported (non-null, > 0) values.'],
@@ -2125,8 +2096,8 @@ function methodologyRows(){
     ['Why 3.0','Tukey defines 1.5×IQR as "outlier" and 3.0×IQR as "far outlier". 3.0 is used because outliers are REPLACED by the median (a large change), so the fence is kept wide to avoid replacing genuine seasonal malaria peaks.'],
     ['Why the median','The median is robust (unaffected by the outlier itself) and represents the facility\'s typical month for that year, so a corrupted value is replaced by a plausible one rather than by the threshold.'],[],
     ['5. REPORTING RATE'],
-    ['Definition','% of ACTIVE facilities reporting tests in a given month.'],
-    ['Formula','(facilities with testing data that month ÷ active facilities in that group) × 100'],
+    ['Definition','% of ACTIVE facilities reporting ACT treatment in a given month.'],
+    ['Formula','(facilities with ACT treatment data that month ÷ active facilities in that group) × 100'],
     ['Groups','By ownership (Public / Private) and by facility type (CHC, CHP, MCHP, Hospital, Clinic).'],
     ['Note','Inactive facilities are excluded from the denominator, so the rate measures reporting among facilities that actually function.'],[],
     ['6. OUTPUT COLUMNS (per age group)'],
@@ -2135,11 +2106,11 @@ function methodologyRows(){
     ['Upper Bound','The IQR threshold that value was tested against (Q3 + 3.0 × IQR).'],
     ['Outlier','Yes if the original value exceeded the upper bound.'],
     ['Corrected','Value after correction. Equals Original when not an outlier; equals the facility-year MEDIAN (whole number) when an outlier was replaced.'],
-    ['Reported','Yes if the facility reported tests that month; No if the month is a reporting gap.'],
+    ['Reported','Yes if the facility reported ACT treatments that month; No if the month is a reporting gap.'],
     ['Source Form','Which facility form the month came from: Old form (up to March 2026) or New form / 2025_HF01 (from April 2026).'],
     ['Facility Total / Community Total','Sum across the three age groups for that source.'],
     ['Overall <age>','Facility <age> + Community <age> (corrected values).'],
-    ['Tested / TPR','Tested = Positive + Negative. TPR = Positive / Tested x 100.'],[],
+    ['Treated / Prompt rate','Treated = ACT <24 hrs + ACT >24 hrs. Prompt treatment rate = ACT <24 hrs / all treated x 100.'],[],
     ['7. PERIOD GRID'],
     ['Completeness','A row is emitted for every month of the selected range for each active facility, so non-reporting months appear explicitly (Reported = No) rather than being dropped.'],
   ];
@@ -2147,7 +2118,7 @@ function methodologyRows(){
 function downloadMethodology(){
   const wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(methodologyRows()),'Methodology');
-  XLSX.writeFile(wb,`NMCP_Testing_Methodology_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);
+  XLSX.writeFile(wb,`NMCP_Treated_Methodology_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);
 }
 
 // ── Form transition: old vs new form coverage ────────────────
@@ -2195,6 +2166,8 @@ function renderFormCoverage(){
   renderViolations();
 }
 
+
+
 // ── Form rule violations (display only) ──────────────────────
 // Values reported on a form OUTSIDE its own window. They are IGNORED in every
 // calculation, but shown here so the offending facilities can be followed up.
@@ -2219,10 +2192,10 @@ function downloadViolations(fmt){
   const rows=vioRows();
   if(fmt==='xlsx'){const wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([VIO_HDR,...rows]),'Form Rule Violations');
-    XLSX.writeFile(wb,`NMCP_Testing_Form_Rule_Violations_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);return;}
+    XLSX.writeFile(wb,`NMCP_Treated_Form_Rule_Violations_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);return;}
   const csv=[VIO_HDR.join(','),...rows.map(r=>r.map(c=>`"${c??''}"`).join(','))].join('\n');
   const a=document.createElement('a');
-  a.download=`NMCP_Testing_Form_Rule_Violations_${ST.cfgStart}_${ST.cfgEnd}.csv`;
+  a.download=`NMCP_Treated_Form_Rule_Violations_${ST.cfgStart}_${ST.cfgEnd}.csv`;
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.click();
 }
 function renderViolations(){
@@ -2261,7 +2234,7 @@ function renderViolations(){
 }
 
 // ── Active / Inactive facilities ─────────────────────────────
-// A facility is ACTIVE if it reported at least one test in the selected period.
+// A facility is ACTIVE if it reported at least one ACT treatment in the selected period.
 // Inactive = present in the DHIS2 registry but no tests at all for the period.
 function getActivity(){
   const activeIds=new Set(ST.rows.filter(r=>r.reported==='Yes').map(r=>r.ou_id));
@@ -2302,11 +2275,11 @@ function downloadActivity(scope,fmt){
           ((active.length/(active.length+inactive.length))*100).toFixed(1)]]),'Summary');
     XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([ACT_HDR,...actRows('active')]),'Active');
     XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([ACT_HDR,...actRows('inactive')]),'Inactive');
-    XLSX.writeFile(wb,`NMCP_Testing_Facility_Activity_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);return;}
+    XLSX.writeFile(wb,`NMCP_Treated_Facility_Activity_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);return;}
   const rows=actRows(scope);
   const csv=[ACT_HDR.join(','),...rows.map(r=>r.map(c=>`"${c??''}"`).join(','))].join('\n');
   const a=document.createElement('a');
-  a.download=`NMCP_Testing_Facility_${scope}_${ST.cfgStart}_${ST.cfgEnd}.csv`;
+  a.download=`NMCP_Treated_Facility_${scope}_${ST.cfgStart}_${ST.cfgEnd}.csv`;
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.click();
 }
 function renderActivity(){
@@ -2413,8 +2386,8 @@ function repRows(dim){
 function getSourceActivity(){
   const facA=new Set(), comA=new Set(), allA=new Set();
   ST.rows.forEach(r=>{
-    if((r.fac_test_total||0)>0)facA.add(r.ou_id);
-    if((r.com_test_total||0)>0)comA.add(r.ou_id);
+    if((r.fac_tx_total||0)>0)facA.add(r.ou_id);
+    if((r.com_tx_total||0)>0)comA.add(r.ou_id);
     if(r.reported==='Yes')allA.add(r.ou_id);
   });
   return {fac:facA.size, com:comA.size, all:allA.size, facSet:facA, comSet:comA, allSet:allA};
@@ -2427,8 +2400,8 @@ function getReportingSource(){
     if(!per[p])per[p]={period:p,year:r.year,month:r.month,
       label:`${MONTH_NAMES[r.month-1]} ${r.year}`,fac:new Set(),com:new Set(),all:new Set()};
     const a=per[p];
-    if((r.fac_test_total||0)>0)a.fac.add(r.ou_id);
-    if((r.com_test_total||0)>0)a.com.add(r.ou_id);
+    if((r.fac_tx_total||0)>0)a.fac.add(r.ou_id);
+    if((r.com_tx_total||0)>0)a.com.add(r.ou_id);
     if(r.reported==='Yes')a.all.add(r.ou_id);
   });
   const periods=Object.values(per).sort((a,b)=>a.period.localeCompare(b.period));
@@ -2439,7 +2412,7 @@ function getReportingSource(){
 function getReportingAge(src){   // src = 'fac' | 'com' | 'all'
   const actIds=new Set();
   ST.rows.forEach(r=>{
-    const t = src==='fac'?r.fac_test_total : src==='com'?r.com_test_total : r.all_test_total;
+    const t = src==='fac'?r.fac_tx_total : src==='com'?r.com_tx_total : r.all_tx_total;
     if((t||0)>0)actIds.add(r.ou_id);
   });
   const per={};
@@ -2448,7 +2421,7 @@ function getReportingAge(src){   // src = 'fac' | 'com' | 'all'
     if(!per[p])per[p]={period:p,year:r.year,month:r.month,
       label:`${MONTH_NAMES[r.month-1]} ${r.year}`,ages:{}};
     AGE_KEYS.forEach(k=>{
-      const v=r[`${src}_test_${k}`];
+      const v=r[`${src}_tx_${k}`];
       if(v!==null&&v!==undefined&&v>0){
         if(!per[p].ages[k])per[p].ages[k]=new Set();
         per[p].ages[k].add(r.ou_id);
@@ -2521,7 +2494,7 @@ function renderReporting(){
     const {hdr,rows,periods,keys,denom,get}=rateRows('source');
     document.getElementById('repSrcChart').innerHTML=
       renderRateChart(periods,keys,denom,(p,k,d)=>d>0?(get(p,k)/d*100):0,SRC_COLORS,
-        {title:'Reporting Rate — Testing at Facility vs at Community', subtitle:'% of active reporters for each source (separate denominators)',
+        {title:'Reporting Rate — ACT Treatment at Facility vs at Community', subtitle:'% of active reporters for each source (separate denominators)',
          xlab:'Month', ylab:'Reporting rate (%)'});
     document.getElementById('repSrcHead').innerHTML=`<tr>${hdr.map(h=>`<th>${h}</th>`).join('')}</tr>`;
     document.getElementById('repSrcBody').innerHTML=rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('');
@@ -2531,7 +2504,7 @@ function renderReporting(){
     const {hdr,rows,periods,keys,denom,get}=rateRows(src);
     document.getElementById(id+'Chart').innerHTML=
       renderRateChart(periods,keys,denom,(p,k,d)=>d>0?(get(p,k)/d*100):0,null,
-        {title:`Reporting Rate by Age Group — Testing ${lab}`, subtitle:'% of active reporters submitting each age group',
+        {title:`Reporting Rate by Age Group — ACT Treatment ${lab}`, subtitle:'% of active reporters submitting each age group',
          xlab:'Month', ylab:'Reporting rate (%)'});
     document.getElementById(id+'Head').innerHTML=`<tr>${hdr.map(h=>`<th>${h}</th>`).join('')}</tr>`;
     document.getElementById(id+'Body').innerHTML=rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('');
@@ -2552,10 +2525,10 @@ function downloadRate(view,fmt){
   const nm={source:'Facility_vs_Community',fac:'Facility_by_Age',com:'Community_by_Age',all:'Overall_by_Age'}[view];
   if(fmt==='xlsx'){const wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([hdr,...rows]),'Reporting Rate');
-    XLSX.writeFile(wb,`NMCP_Testing_Reporting_${nm}_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);return;}
+    XLSX.writeFile(wb,`NMCP_Treated_Reporting_${nm}_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);return;}
   const csv=[hdr.join(','),...rows.map(r=>r.map(c=>`"${c??''}"`).join(','))].join('\n');
   const a=document.createElement('a');
-  a.download=`NMCP_Testing_Reporting_${nm}_${ST.cfgStart}_${ST.cfgEnd}.csv`;
+  a.download=`NMCP_Treated_Reporting_${nm}_${ST.cfgStart}_${ST.cfgEnd}.csv`;
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.click();
 }
 function downloadRateAll(){
@@ -2563,7 +2536,7 @@ function downloadRateAll(){
   [['source','Facility vs Community'],['fac','Facility by Age'],['com','Community by Age'],['all','Overall by Age']]
     .forEach(([v,sheet])=>{const {hdr,rows}=rateRows(v);
       XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([hdr,...rows]),sheet);});
-  XLSX.writeFile(wb,`NMCP_Testing_ReportingRates_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);
+  XLSX.writeFile(wb,`NMCP_Treated_ReportingRates_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);
 }
 
 // ── COMPARATIVE ANALYSIS — absolute case counts over time ────
@@ -2601,7 +2574,7 @@ function renderAbsChart(periods, series, opts){
     s+=`<line x1="${pad.l}" y1="${yy}" x2="${W-pad.r}" y2="${yy}" stroke="#e2ebf3"/>`;
     s+=`<text x="${pad.l-8}" y="${yy+4}" text-anchor="end" font-size="10" fill="#6c7a89">${_fmtN(val)}</text>`;}
   // Axis labels
-  s+=`<text transform="rotate(-90 16 ${pad.t+plotH/2})" x="16" y="${pad.t+plotH/2}" text-anchor="middle" font-size="11" font-weight="700" fill="#2c4b62">${opts.ylab||'Malaria tests'}</text>`;
+  s+=`<text transform="rotate(-90 16 ${pad.t+plotH/2})" x="16" y="${pad.t+plotH/2}" text-anchor="middle" font-size="11" font-weight="700" fill="#2c4b62">${opts.ylab||'Treated with ACT'}</text>`;
   s+=`<text x="${pad.l+plotW/2}" y="${H-32}" text-anchor="middle" font-size="11" font-weight="700" fill="#2c4b62">${opts.xlab||'Month'}</text>`;
   series.forEach(ser=>{
     const pts=ser.values.map((v,i)=>`${x(i)},${y(v)}`);
@@ -2717,93 +2690,101 @@ function cmpBuild(){
   const idx={}; periods.forEach((p,i)=>idx[p.period]=i);
   const blank=()=>new Array(periods.length).fill(0);
 
-  // 1 & 2 — TESTED by age group, per source
+  // 1 & 2 — TREATED by age group, per source
   const bySrcAge=(pre)=>AGE_KEYS.map(k=>{
     const vals=blank();
-    ST.rows.forEach(r=>{ vals[idx[r.period]] += (r[`${pre}_test_${k}`]||0); });
+    ST.rows.forEach(r=>{ vals[idx[r.period]] += (r[`${pre}_tx_${k}`]||0); });
     return {name:AGE_LABEL[k], color:CMP_AGE_COLORS[AGE_LABEL[k]], values:vals};
   });
-  // TPR over time, by age group (overall)
-  const tprAge=AGE_KEYS.map(k=>{
-    const pos=blank(), tst=blank();
-    ST.rows.forEach(r=>{ pos[idx[r.period]]+=(r[`all_pos_${k}`]||0); tst[idx[r.period]]+=(r[`all_test_${k}`]||0); });
-    return {name:AGE_LABEL[k], color:CMP_AGE_COLORS[AGE_LABEL[k]],
-            values:tst.map((t,i)=>t>0?+(pos[i]/t*100).toFixed(1):0)};
-  });
-  {
-    const pos=blank(), tst=blank();
-    ST.rows.forEach(r=>{ pos[idx[r.period]]+=(r.all_pos_total||0); tst[idx[r.period]]+=(r.all_test_total||0); });
-    tprAge.push({name:'All ages', color:'#dc2626', values:tst.map((t,i)=>t>0?+(pos[i]/t*100).toFixed(1):0)});
-  }
-  // RDT vs Microscopy (facility), tested
-  const byTest=TESTS.map((t,i)=>{
-    const vals=blank();
-    ST.rows.forEach(r=>{ vals[idx[r.period]] += (r[`fac_${t.k}_test_total`]||0); });
-    return {name:t.label, color:i===0?'#2c6793':'#8b5cf6', values:vals};
-  });
 
-  // 3 — all ages aggregated: Facility vs Community vs Overall
-  const agg=[['At facility','fac_test_total'],['At community','com_test_total']].map(([nm,f])=>{
+  // 3 — all ages: at facility vs at community
+  const agg=[['At facility','fac_tx_total'],['At community','com_tx_total']].map(([nm,f])=>{
     const vals=blank();
     ST.rows.forEach(r=>{ vals[idx[r.period]] += (r[f]||0); });
     return {name:nm, color:CMP_SRC_COLORS[nm], values:vals};
   });
 
-  // Overall — tested vs positive
-  const ovAge=[
-    {name:'Tested',   color:'#2c6793', values:blank()},
-    {name:'Positive', color:'#dc2626', values:blank()},
+  // 4 — timeliness: within 24 hrs vs after 24 hrs
+  const byTime=[
+    {name:'Treated < 24 hrs', color:'#15803d', values:blank()},
+    {name:'Treated > 24 hrs', color:'#dc2626', values:blank()},
   ];
-  ST.rows.forEach(r=>{ ovAge[0].values[idx[r.period]] += (r.all_test_total||0);
-                       ovAge[1].values[idx[r.period]] += (r.all_pos_total||0); });
+  ST.rows.forEach(r=>{
+    byTime[0].values[idx[r.period]] += (r.all_lt24_total||0);
+    byTime[1].values[idx[r.period]] += (r.all_gt24_total||0);
+  });
 
-  // 4 — all ages, by LOCATION (district), for the selected source
-  // 5 — all ages, total per DISTRICT for the selected source (lowest -> highest)
-  const src=(document.getElementById('cmpLocSrc')||{}).value||'all_test_total';
+  // 5 — prompt treatment rate, by age group
+  const ptrAge=AGE_KEYS.map(k=>{
+    const lt=blank(), tx=blank();
+    ST.rows.forEach(r=>{ lt[idx[r.period]]+=(r[`all_lt24_${k}`]||0); tx[idx[r.period]]+=(r[`all_tx_${k}`]||0); });
+    return {name:AGE_LABEL[k], color:CMP_AGE_COLORS[AGE_LABEL[k]],
+            values:tx.map((t,i)=>t>0?+(lt[i]/t*100).toFixed(1):0)};
+  });
+  {
+    const lt=blank(), tx=blank();
+    ST.rows.forEach(r=>{ lt[idx[r.period]]+=(r.all_lt24_total||0); tx[idx[r.period]]+=(r.all_tx_total||0); });
+    ptrAge.push({name:'All ages', color:'#15803d', values:tx.map((t,i)=>t>0?+(lt[i]/t*100).toFixed(1):0)});
+  }
+
+  // 6 — overall treated by age group
+  const ovAge=AGE_KEYS.map(k=>{
+    const vals=blank();
+    ST.rows.forEach(r=>{ vals[idx[r.period]] += (r[`all_tx_${k}`]||0); });
+    return {name:AGE_LABEL[k], color:CMP_AGE_COLORS[AGE_LABEL[k]], values:vals};
+  });
+  {
+    const t=blank();
+    ST.rows.forEach(r=>{ t[idx[r.period]] += (r.all_tx_total||0); });
+    ovAge.push({name:'All ages', color:'#8a6a00', values:t});
+  }
+
+  // 7 — by district: TOTAL for the period, lowest -> highest
+  const src=(document.getElementById('cmpLocSrc')||{}).value||'all_tx_total';
   const totals={};
-  ST.rows.forEach(r=>{ if(!r.district)return; totals[r.district]=(totals[r.district]||0)+(r[src]||0); });
-  const byLoc=Object.entries(totals)
-    .map(([name,value])=>({name,value}))
-    .sort((a,b)=>a.value-b.value);   // ascending: lowest at the top
+  ST.rows.forEach(r=>{ totals[r.district]=(totals[r.district]||0)+(r[src]||0); });
+  const byLoc=Object.entries(totals).filter(([d])=>d)
+    .sort((a,b)=>a[1]-b[1])
+    .map(([d,v],i)=>({name:d, value:v, color:CMP_PALETTE[i%CMP_PALETTE.length]}));
 
-  return {periods, facAge:bySrcAge('fac'), comAge:bySrcAge('com'), agg, ovAge, tprAge, byTest, byLoc, locSrc:src};
+  return {periods, facAge:bySrcAge('fac'), comAge:bySrcAge('com'), agg, byTime, ptrAge, ovAge, byLoc, locSrc:src};
 }
 let CMP=null;
 function renderComparative(){
   CMP=cmpBuild();
-  const srcSel=(document.getElementById('cmpLocSrc')||{}).value||'total';
-  const srcLab={all_test_total:'(Overall)',fac_test_total:'at Facility',com_test_total:'at Community',all_pos_total:'(Positive)'}[srcSel]||'(Overall)';
+  const srcSel=(document.getElementById('cmpLocSrc')||{}).value||'all_tx_total';
+  const srcLab={all_tx_total:'(Overall)',fac_tx_total:'at Facility',com_tx_total:'at Community',all_lt24_total:'(within 24 hrs)'}[srcSel]||'(Overall)';
   paintCmp('cmpFac', CMP.periods, CMP.facAge,
-    {title:'Malaria Tests at Facility — by Age Group', subtitle:'RDT + Microscopy · Old form to Mar 2026 · New HF01 form from Apr 2026',
-     xlab:'Month', ylab:'Tests at facility'});
+    {title:'Treated with ACT at Facility — by Age Group', subtitle:'Old form to Mar 2026 · New HF01 form from Apr 2026',
+     xlab:'Month', ylab:'Treated at facility'});
   paintCmp('cmpCom', CMP.periods, CMP.comAge,
-    {title:'Malaria Tests at Community — by Age Group', subtitle:'RDT only · CHW / ETR, rolled up from Level-6 posts to their PHU',
-     xlab:'Month', ylab:'Tests at community'});
+    {title:'Treated with ACT at Community (HTR) — by Age Group', subtitle:'CHW / ETR, rolled up from Level-6 posts to their PHU',
+     xlab:'Month', ylab:'Treated at community'});
   paintCmp('cmpAgg', CMP.periods, CMP.agg,
-    {title:'All Ages — Tests at Facility vs at Community', subtitle:'Age groups summed, both sources on the same scale',
-     xlab:'Month', ylab:'Malaria tests'});
-  paintCmp('cmpTest', CMP.periods, CMP.byTest,
-    {title:'Facility Testing — RDT vs Microscopy', subtitle:'Tests performed by method',
-     xlab:'Month', ylab:'Malaria tests'});
+    {title:'All Ages — Treated at Facility vs at Community', subtitle:'Age groups summed, both sources on the same scale',
+     xlab:'Month', ylab:'Treated with ACT'});
+  paintCmp('cmpTest', CMP.periods, CMP.byTime,
+    {title:'Treatment Timeliness — Within 24 hrs vs After 24 hrs', subtitle:'Facility + community · the green line is prompt treatment',
+     xlab:'Month', ylab:'Treated with ACT'});
   paintCmp('cmpOv',  CMP.periods, CMP.ovAge,
-    {title:'Overall — Tested vs Positive', subtitle:'Facility + community, all ages',
-     xlab:'Month', ylab:'Malaria tests'});
-  document.getElementById('cmpTprChart').innerHTML=renderAbsChart(CMP.periods,CMP.tprAge,
-    {title:'Test Positivity Rate (TPR) — by Age Group', subtitle:'Positive ÷ Tested × 100 · facility + community',
-     xlab:'Month', ylab:'TPR (%)'});
+    {title:'Overall Treated with ACT — by Age Group', subtitle:'Facility + community',
+     xlab:'Month', ylab:'Treated with ACT'});
+  document.getElementById('cmpTprChart').innerHTML=renderAbsChart(CMP.periods,CMP.ptrAge,
+    {title:'Prompt Treatment Rate — by Age Group', subtitle:'Treated within 24 hrs ÷ all treated × 100 · facility + community',
+     xlab:'Month', ylab:'Prompt treatment rate (%)'});
   {
-    const {hdr,rows}=cmpTable(CMP.periods,CMP.tprAge);
+    const {hdr,rows}=cmpTable(CMP.periods,CMP.ptrAge);
     document.getElementById('cmpTprHead').innerHTML=`<tr>${hdr.slice(0,-1).map(h=>`<th>${h}</th>`).join('')}</tr>`;
     document.getElementById('cmpTprBody').innerHTML=rows.map(r=>
       `<tr>${r.slice(0,-1).map((c,i)=>`<td${i?' style="text-align:right;"':''}>${typeof c==='number'?c.toFixed(1)+'%':c}</td>`).join('')}</tr>`).join('');
   }
-  const locColor={total:'#8a6a00',fac_total:'#2c6793',com_total:'#15803d'}[srcSel];
+  const locColor={all_tx_total:'#8a6a00',fac_tx_total:'#2c6793',com_tx_total:'#15803d',all_lt24_total:'#15803d'}[srcSel];
   document.getElementById('cmpLocChart').innerHTML=renderHBar(CMP.byLoc,
-    {title:`Malaria Tests ${srcLab} — by District`,
+    {title:`Malaria Treated with ACT ${srcLab} — by District`,
      subtitle:'All ages combined, whole period · districts ordered lowest to highest',
      xlab:'Malaria tests', ylab:'District', color:locColor});
   document.getElementById('cmpLocHead').innerHTML=
-    `<tr><th>District</th><th style="text-align:right;">Malaria tests</th><th style="text-align:right;">% of total</th></tr>`;
+    `<tr><th>District</th><th style="text-align:right;">Treated with ACT</th><th style="text-align:right;">% of total</th></tr>`;
   const locTot=CMP.byLoc.reduce((a,d)=>a+d.value,0);
   document.getElementById('cmpLocBody').innerHTML=[...CMP.byLoc].reverse().map(d=>
     `<tr><td>${d.name}</td><td style="text-align:right;font-weight:700;">${d.value.toLocaleString()}</td>`+
@@ -2817,37 +2798,37 @@ function downloadCmp(which,fmt){
     const rows=[...c.byLoc].reverse().map(d=>[d.name,d.value,tot?(d.value/tot*100).toFixed(1):'0.0']);
     if(fmt==='xlsx'){const wb=XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([hdr,...rows]),'By District');
-      XLSX.writeFile(wb,`NMCP_Testing_ByDistrict_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);return;}
+      XLSX.writeFile(wb,`NMCP_Treated_ByDistrict_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);return;}
     const csv=[hdr.join(','),...rows.map(r=>r.map(x=>`"${x??''}"`).join(','))].join('\n');
     const a=document.createElement('a');
-    a.download=`NMCP_Testing_ByDistrict_${ST.cfgStart}_${ST.cfgEnd}.csv`;
+    a.download=`NMCP_Treated_ByDistrict_${ST.cfgStart}_${ST.cfgEnd}.csv`;
     a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.click();return;
   }
-  const set={fac:['Tested at Facility by Age',c.facAge],com:['Tested at Community by Age',c.comAge],
-             agg:['Facility vs Community',c.agg],ov:['Tested vs Positive',c.ovAge],
-             test:['RDT vs Microscopy',c.byTest],tpr:['TPR by Age',c.tprAge]}[which];
+  const set={fac:['Treated at Facility by Age',c.facAge],com:['Treated at Community by Age',c.comAge],
+             agg:['Facility vs Community',c.agg],ov:['Overall by Age',c.ovAge],
+             test:['Timeliness 24h',c.byTime],tpr:['Prompt Treatment Rate',c.ptrAge]}[which];
   const {hdr,rows}=cmpTable(c.periods,set[1]);
   if(fmt==='xlsx'){const wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([hdr,...rows]),set[0].slice(0,30));
-    XLSX.writeFile(wb,`NMCP_Testing_TimeSeries_${which}_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);return;}
+    XLSX.writeFile(wb,`NMCP_Treated_TimeSeries_${which}_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);return;}
   const csv=[hdr.join(','),...rows.map(r=>r.map(x=>`"${x??''}"`).join(','))].join('\n');
   const a=document.createElement('a');
-  a.download=`NMCP_Testing_TimeSeries_${which}_${ST.cfgStart}_${ST.cfgEnd}.csv`;
+  a.download=`NMCP_Treated_TimeSeries_${which}_${ST.cfgStart}_${ST.cfgEnd}.csv`;
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.click();
 }
 function downloadCmpAll(){
   const c=CMP||cmpBuild();
   const wb=XLSX.utils.book_new();
-  [['Tested at Facility by Age',c.facAge],['Tested at Community by Age',c.comAge],
-   ['Facility vs Community',c.agg],['RDT vs Microscopy',c.byTest],
-   ['Tested vs Positive',c.ovAge],['TPR by Age',c.tprAge]].forEach(([nm,ser])=>{
+  [['Treated at Facility by Age',c.facAge],['Treated at Community by Age',c.comAge],
+   ['Facility vs Community',c.agg],['Timeliness 24h',c.byTime],
+   ['Overall by Age',c.ovAge],['Prompt Treatment Rate',c.ptrAge]].forEach(([nm,ser])=>{
     const {hdr,rows}=cmpTable(c.periods,ser);
     XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([hdr,...rows]),nm.slice(0,30));
   });
   const lt=c.byLoc.reduce((a,d)=>a+d.value,0);
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['District','Fever Suspected Cases','% of Total'],
     ...[...c.byLoc].reverse().map(d=>[d.name,d.value,lt?(d.value/lt*100).toFixed(1):'0.0'])]),'By District');
-  XLSX.writeFile(wb,`NMCP_Testing_TimeSeries_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);
+  XLSX.writeFile(wb,`NMCP_Treated_TimeSeries_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);
 }
 
 // ── Bi-annual analysis: Public vs Private ───────────────────
@@ -2859,7 +2840,7 @@ function getBiannual(){
     const key=r.year+'-H'+half;
     if(!agg[key])agg[key]={year:r.year,half,Public:0,Private:0,Unknown:0,total:0,
       facPub:new Set(),facPri:new Set(),facUnk:new Set()};
-    const a=agg[key], v=r.all_test_total||0, o=r.ownership||'Unknown';
+    const a=agg[key], v=r.all_tx_total||0, o=r.ownership||'Unknown';
     a[o]=(a[o]||0)+v; a.total+=v;
     if(o==='Public')a.facPub.add(r.ou_id);
     else if(o==='Private')a.facPri.add(r.ou_id);
@@ -2873,16 +2854,16 @@ function getBiannual(){
     facPublic:a.facPub.size, facPrivate:a.facPri.size, facUnknown:a.facUnk.size
   }));
 }
-const BI_HDR=['Period','Year','Half','Public Tests','Private Tests','Total Tests','% Public','% Private','Public Active','Private Active'];
+const BI_HDR=['Period','Year','Half','Public Treated','Private Treated','Total Treated','% Public','% Private','Public Active','Private Active'];
 function biRows(){return getBiannual().map(d=>[d.period,d.year,'H'+d.half,d.public,d.private,d.total,d.pctPublic.toFixed(1),d.pctPrivate.toFixed(1),d.facPublic,d.facPrivate]);}
 function downloadBiannual(fmt){
   const rows=biRows();
   if(fmt==='xlsx'){const wb=XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([BI_HDR,...rows]),'Tests Public vs Private');
-    XLSX.writeFile(wb,`NMCP_Testing_PubPriv_Biannual_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);return;}
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([BI_HDR,...rows]),'Treated Public vs Private');
+    XLSX.writeFile(wb,`NMCP_Treated_PubPriv_Biannual_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);return;}
   const csv=[BI_HDR.join(','),...rows.map(r=>r.map(c=>`"${c??''}"`).join(','))].join('\n');
   const a=document.createElement('a');
-  a.download=`NMCP_Testing_PubPriv_Biannual_${ST.cfgStart}_${ST.cfgEnd}.csv`;
+  a.download=`NMCP_Treated_PubPriv_Biannual_${ST.cfgStart}_${ST.cfgEnd}.csv`;
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.click();
 }
 function _biFmtK(n){return n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(0)+'k':''+Math.round(n);}
@@ -2905,7 +2886,7 @@ function renderBiannualChart(data,opts){
   for(let i=0;i<=5;i++){const val=niceMax*i/5, yy=y(val);
     s+=`<line x1="${pad.l}" y1="${yy}" x2="${W-pad.r}" y2="${yy}" stroke="#e2ebf3"/>`;
     s+=`<text x="${pad.l-8}" y="${yy+4}" text-anchor="end" font-size="10" fill="#6c7a89">${_biFmtK(val)}</text>`;}
-  s+=`<text transform="rotate(-90 16 ${pad.t+plotH/2})" x="16" y="${pad.t+plotH/2}" text-anchor="middle" font-size="11" font-weight="700" fill="#2c4b62">${opts.ylab||'Malaria tests'}</text>`;
+  s+=`<text transform="rotate(-90 16 ${pad.t+plotH/2})" x="16" y="${pad.t+plotH/2}" text-anchor="middle" font-size="11" font-weight="700" fill="#2c4b62">${opts.ylab||'Treated with ACT'}</text>`;
   s+=`<text x="${pad.l+plotW/2}" y="${H-26}" text-anchor="middle" font-size="11" font-weight="700" fill="#2c4b62">${opts.xlab||'Period'}</text>`;
   data.forEach((d,i)=>{
     const gx=pad.l+i*groupW+groupW/2;
@@ -2930,8 +2911,8 @@ function renderBiannual(){
     `<td><strong>${d.total.toLocaleString()}</strong></td>`+
     `<td>${d.pctPublic.toFixed(1)}%</td><td>${d.pctPrivate.toFixed(1)}%</td><td>${d.facPublic}</td><td>${d.facPrivate}</td></tr>`).join('');
   document.getElementById('biChart').innerHTML=renderBiannualChart(data,
-    {title:'Malaria Tests — Public vs Private (Bi-annual)', subtitle:'H1 = Jan–Jun · H2 = Jul–Dec',
-     xlab:'Half-year', ylab:'Malaria tests'});
+    {title:'ACT Treatments — Public vs Private (Bi-annual)', subtitle:'H1 = Jan–Jun · H2 = Jul–Dec',
+     xlab:'Half-year', ylab:'Treated with ACT'});
 }
 
 // ── Yearly analysis: Public vs Private ──────────────────────
@@ -2941,7 +2922,7 @@ function getYearly(){
     const key=r.year;
     if(!agg[key])agg[key]={year:r.year,Public:0,Private:0,Unknown:0,total:0,
       facPub:new Set(),facPri:new Set(),facUnk:new Set()};
-    const a=agg[key], v=r.all_test_total||0, o=r.ownership||'Unknown';
+    const a=agg[key], v=r.all_tx_total||0, o=r.ownership||'Unknown';
     a[o]=(a[o]||0)+v; a.total+=v;
     if(o==='Public')a.facPub.add(r.ou_id);
     else if(o==='Private')a.facPri.add(r.ou_id);
@@ -2955,16 +2936,16 @@ function getYearly(){
     facPublic:a.facPub.size, facPrivate:a.facPri.size, facUnknown:a.facUnk.size
   }));
 }
-const YR_HDR=['Year','Public Tests','Private Tests','Total Tests','% Public','% Private','Public Active','Private Active'];
+const YR_HDR=['Year','Public Treated','Private Treated','Total Treated','% Public','% Private','Public Active','Private Active'];
 function yrRows(){return getYearly().map(d=>[d.year,d.public,d.private,d.total,d.pctPublic.toFixed(1),d.pctPrivate.toFixed(1),d.facPublic,d.facPrivate]);}
 function downloadYearly(fmt){
   const rows=yrRows();
   if(fmt==='xlsx'){const wb=XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([YR_HDR,...rows]),'Tests Public vs Private (Yearly)');
-    XLSX.writeFile(wb,`NMCP_Testing_PubPriv_Yearly_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);return;}
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([YR_HDR,...rows]),'Treated Public vs Private (Yearly)');
+    XLSX.writeFile(wb,`NMCP_Treated_PubPriv_Yearly_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);return;}
   const csv=[YR_HDR.join(','),...rows.map(r=>r.map(c=>`"${c??''}"`).join(','))].join('\n');
   const a=document.createElement('a');
-  a.download=`NMCP_Testing_PubPriv_Yearly_${ST.cfgStart}_${ST.cfgEnd}.csv`;
+  a.download=`NMCP_Treated_PubPriv_Yearly_${ST.cfgStart}_${ST.cfgEnd}.csv`;
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.click();
 }
 function renderYearly(){
@@ -2977,8 +2958,8 @@ function renderYearly(){
     `<td>${d.pctPublic.toFixed(1)}%</td><td>${d.pctPrivate.toFixed(1)}%</td>`+
     `<td>${d.facPublic}</td><td>${d.facPrivate}</td></tr>`).join('');
   document.getElementById('yrChart').innerHTML=renderBiannualChart(data,
-    {title:'Malaria Tests — Public vs Private (Yearly)', subtitle:'Totals by year and facility ownership',
-     xlab:'Year', ylab:'Malaria tests'});
+    {title:'ACT Treatments — Public vs Private (Yearly)', subtitle:'Totals by year and facility ownership',
+     xlab:'Year', ylab:'Treated with ACT'});
 }
 
 const OUT_SUMMARY_HDR=['Series','Age Group','Outliers Found','Data Points Assessed','Outlier %'];
@@ -3009,28 +2990,22 @@ function downloadExcel(type){
     if(type==='outliers')
       XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([OUT_SUMMARY_HDR,...getOutlierSummary()]),'Outlier Summary');
   }
-  XLSX.writeFile(wb,`NMCP_Testing_${type}_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);
+  XLSX.writeFile(wb,`NMCP_Treated_${type}_${ST.cfgStart}_${ST.cfgEnd}.xlsx`);
 }
 
 function triggerDL(content,fname){const a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(content);a.download=fname;a.click();}
 
 function downloadR(){
   const s=ST.cfgStart||'2025-01',e=ST.cfgEnd||'2026-12';
-  triggerDL(`# NMCP Sierra Leone — Malaria Testing Extract (RDT + Microscopy)
+  triggerDL(`# NMCP Sierra Leone — Malaria Treated with ACT (by timeliness)
 # Period: ${s} to ${e} | ICF-SL
-# Mirrors the tool: 3 sources, 2 test methods, 3 age groups, Level-6 rollup,
-# April-2026 cutover, IQR(3.0) outlier detection with median replacement, TPR.
 library(httr); library(jsonlite); library(dplyr); library(tidyr)
-
-BASE_URL <- "https://sl.dhis2.org/hmis23"
-auth     <- authenticate("USERNAME","PASSWORD")
+BASE_URL <- "https://sl.dhis2.org/hmis23"; auth <- authenticate("USERNAME","PASSWORD")
 
 # ── Data elements ────────────────────────────────────────────
-OLD <- c(rdt_pos="p6zQLDFjSfd", rdt_neg="mXS2g1AiPsS", mic_neg="Rijj3Fp9ksg")
-# NOTE: the old form has no age-disaggregated microscopy-positive element.
-NEW <- c(rdt_pos="AwLklDAVtvq", rdt_neg="Bn5tLFYdmRD",
-         mic_pos="AMrdoWsiHMa", mic_neg="ofCoyRXAweZ")
-COM <- c(rdt_pos="T7xH8GwWpEM", rdt_neg="YWvx4zYdp92")            # RDT only
+OLD <- c(lt24="wU8EdHifSLa", gt24="XKTCuR0W3YN")   # old facility (HF01 Outpatient morbidity)
+NEW <- c(lt24="ht4jvP2ppBI", gt24="zV9set4PXcm")   # new facility (2025_HF01)
+COM <- c(lt24="h3zJa6hAgib", gt24="Imkks0HAl7E")   # community / HTR (HF04)
 
 OLD_COC <- c(u5="m5T8uBNB8aN", c514="j7j6iaknOFn", a15="zK1aiw8zFac")
 COM_COC <- c(u5="NtjMVmRfvHH", c514="qDXW7WMLT99", a15="mdjRPpvLKdu")  # 02-59m AS 0-59m
@@ -3042,65 +3017,58 @@ NEW_MAP <- rbind(   # 1-11m OMITTED (overlaps 1-5m + 06-11m)
                               "zqNF6erLupJ","eaWE8YjN4j0","hGJdT29m3P6","g2NiIyG3PLj"), stringsAsFactors=FALSE))
 
 dx_map <- bind_rows(
-  bind_rows(lapply(names(OLD), function(tr) data.frame(
-    dx=paste0(OLD[[tr]],".",OLD_COC), field=paste0("fac_",tr,"_",names(OLD_COC)), src="old", stringsAsFactors=FALSE))),
-  bind_rows(lapply(names(NEW), function(tr) data.frame(
-    dx=paste0(NEW[[tr]],".",NEW_MAP$coc), field=paste0("fac_",tr,"_",NEW_MAP$age), src="new", stringsAsFactors=FALSE))),
-  bind_rows(lapply(names(COM), function(tr) data.frame(
-    dx=paste0(COM[[tr]],".",COM_COC), field=paste0("com_",tr,"_",names(COM_COC)), src="com", stringsAsFactors=FALSE))))
-dx_str <- paste(unique(dx_map$dx), collapse=";")
+  bind_rows(lapply(names(OLD), function(t) data.frame(
+    dx=paste0(OLD[[t]],".",OLD_COC), field=paste0("fac_",t,"_",names(OLD_COC)), src="old", stringsAsFactors=FALSE))),
+  bind_rows(lapply(names(NEW), function(t) data.frame(
+    dx=paste0(NEW[[t]],".",NEW_MAP$coc), field=paste0("fac_",t,"_",NEW_MAP$age), src="new", stringsAsFactors=FALSE))),
+  bind_rows(lapply(names(COM), function(t) data.frame(
+    dx=paste0(COM[[t]],".",COM_COC), field=paste0("com_",t,"_",names(COM_COC)), src="com", stringsAsFactors=FALSE))))
 
-# ── 1. Org units: Level 5 (PHU) + Level 6 (CHW/ETR) ──────────
+# ── 1. Org units: Level 5 (PHU) + Level 6 (CHW/ETR = HTR) ────
 FIELDS <- "id,displayName,level,ancestors[id,displayName,level]"
 ou5 <- fromJSON(content(GET(paste0(BASE_URL,"/api/organisationUnits.json?level=5&fields=",FIELDS,"&paging=false"),auth),"text"),simplifyVector=FALSE)$organisationUnits
-ou6 <- fromJSON(content(GET(paste0(BASE_URL,"/api/organisationUnits.json?level=6&fields=",FIELDS,"&paging=false"),auth),"text"),simplifyVector=FALSE)$organisationUnits
-
+ou6 <- fromJSON(content(GET(paste0(BASE_URL,"/api/organisationUnits.json?level=6&fields=id,parent[id]&paging=false"),auth),"text"),simplifyVector=FALSE)$organisationUnits
 get_hf_type <- function(n){ u<-toupper(n)
   if(grepl("LABORATOR",u)||grepl("MARIE\\\\s*STOPES",u)) return("EXCLUDE")
-  if(grepl("HOSPITAL$",u)) "Hospital" else if(grepl("MCHP$",u)) "MCHP"
-  else if(grepl("CHC$",u)) "CHC" else if(grepl("CHP$",u)) "CHP"
-  else if(grepl("CLINIC|CLIMIC|NURSING HOME|HOME$",u)) "Clinic" else "Other" }
-
-ou_df <- bind_rows(lapply(ou5, function(o){
+  if(grepl("HOSPITAL$",u))"Hospital" else if(grepl("MCHP$",u))"MCHP" else if(grepl("CHC$",u))"CHC"
+  else if(grepl("CHP$",u))"CHP" else if(grepl("CLINIC|CLIMIC|NURSING HOME|HOME$",u))"Clinic" else "Other" }
+ou_df <- bind_rows(lapply(ou5,function(o){
   anc<-o$ancestors[order(sapply(o$ancestors,function(a)a$level))]
   d<-Filter(function(a)a$level==2,anc); c4<-Filter(function(a)a$level==4,anc)
-  data.frame(ou_id=o$id, facility=o$displayName, hf_type=get_hf_type(o$displayName),
+  data.frame(ou_id=o$id,facility=o$displayName,hf_type=get_hf_type(o$displayName),
     district=if(length(d))d[[1]]$displayName else "",
-    chiefdom=if(length(c4))c4[[1]]$displayName else "", stringsAsFactors=FALSE) }))
+    chiefdom=if(length(c4))c4[[1]]$displayName else "",stringsAsFactors=FALSE)}))
 ou_df <- ou_df[ou_df$hf_type %in% c("Hospital","Clinic","CHC","CHP","MCHP"),]
-child_to_l5 <- setNames(
-  sapply(ou6,function(o){p<-Filter(function(a)a$level==5,o$ancestors); if(length(p))p[[1]]$id else NA}),
-  sapply(ou6,function(o)o$id))
+child_to_l5 <- setNames(sapply(ou6,function(o) o$parent$id), sapply(ou6,function(o) o$id))
 
-# ── 2. Fetch at LEVEL-5 and LEVEL-6 ──────────────────────────
+# ── 2. Fetch in BATCHES at LEVEL-5 and LEVEL-6 ──────────────
+dx_all <- unique(dx_map$dx); chunks <- split(dx_all, ceiling(seq_along(dx_all)/12))
 years <- as.integer(substr(s,1,4)):as.integer(substr(e,1,4))
-raw <- bind_rows(lapply(years, function(yr){
-  pe <- paste0(yr, sprintf("%02d",1:12)); pe <- pe[pe>=gsub("-","",s) & pe<=gsub("-","",e)]
+raw <- bind_rows(lapply(years,function(yr){
+  pe <- paste0(yr,sprintf("%02d",1:12)); pe <- pe[pe>=gsub("-","",s) & pe<=gsub("-","",e)]
   if(!length(pe)) return(NULL)
-  url <- paste0(BASE_URL,"/api/analytics.json?dimension=dx:",dx_str,
-                "&dimension=pe:",paste(pe,collapse=";"),
-                "&dimension=ou:LEVEL-5;LEVEL-6&paging=false&ignoreLimit=true")
-  rows <- fromJSON(content(GET(url,auth),"text"))$rows
-  if(is.null(rows)||!length(rows)) return(NULL)
-  data.frame(dx=rows[,1],period=rows[,2],ou_raw=rows[,3],value=as.numeric(rows[,4]),stringsAsFactors=FALSE)}))
+  bind_rows(lapply(chunks,function(ch){
+    url <- paste0(BASE_URL,"/api/analytics.json?dimension=dx:",paste(ch,collapse=";"),
+                  "&dimension=pe:",paste(pe,collapse=";"),
+                  "&dimension=ou:LEVEL-5;LEVEL-6&paging=false&ignoreLimit=true")
+    rw <- fromJSON(content(GET(url,auth),"text"))$rows
+    if(is.null(rw)||!length(rw)) return(NULL)
+    data.frame(dx=rw[,1],period=rw[,2],ou_raw=rw[,3],value=as.numeric(rw[,4]),stringsAsFactors=FALSE)}))}))
 
 raw <- raw %>% left_join(dx_map,by="dx") %>% filter(!is.na(field), value>0) %>%
-  mutate(is_l6 = ou_raw %in% names(child_to_l5),
-         ou_id = ifelse(is_l6, child_to_l5[ou_raw], ou_raw)) %>%
-  filter(!(is_l6 & src!="com")) %>%           # facility DEs never reported at Level 6
+  mutate(is_l6=ou_raw %in% names(child_to_l5), ou_id=ifelse(is_l6, child_to_l5[ou_raw], ou_raw)) %>%
+  filter(!(is_l6 & src!="com")) %>%          # facility forms are never reported at Level 6
   filter(ou_id %in% ou_df$ou_id)
 
 # ── 3. FORM CUTOVER — new facility form starts April 2026 ────
 raw <- raw %>% mutate(p=as.integer(period),
   violation=(src=="old" & p>202603) | (src=="new" & p<202604))
-violations <- raw %>% filter(violation)     # ignored, kept for follow-up
-raw        <- raw %>% filter(!violation)
+violations <- raw %>% filter(violation); raw <- raw %>% filter(!violation)
 
-# ── 4. Collapse to the series (sex collapsed) ────────────────
 raw <- raw %>% mutate(year=as.integer(substr(period,1,4)), month=as.integer(substr(period,5,6))) %>%
   group_by(ou_id,year,month,field) %>% summarise(value=sum(value), .groups="drop")
 
-# ── 5. Outliers — IQR bound, replace with year median ────────
+# ── 4. Outliers — IQR bound, replace with year median ───────
 iqr_upper <- function(x){ r<-x[!is.na(x)&x>0]; if(length(r)<4) return(NA_real_)
   q<-quantile(r,c(.25,.75),na.rm=TRUE,type=7); unname(q[2]+3.0*(q[2]-q[1])) }
 med_of <- function(x){ r<-x[!is.na(x)&x>0]; if(!length(r)) return(NA_real_); round(median(r)) }
@@ -3109,132 +3077,114 @@ raw <- raw %>% group_by(ou_id,year,field) %>%
          outlier=ifelse(!is.na(upper_bound)&value_orig>upper_bound,"Yes","No"),
          value=ifelse(outlier=="Yes",year_median,value_orig)) %>% ungroup()
 
-# ── 6. Wide + derived (Tested, TPR) ─────────────────────────
+# ── 5. Wide + derived (Treated, Prompt treatment rate) ──────
 wide <- raw %>% select(ou_id,year,month,field,value) %>%
   pivot_wider(names_from=field, values_from=value, values_fill=0)
 for(a in c("u5","c514","a15")){
-  for(f in c(paste0("fac_rdt_pos_",a),paste0("fac_rdt_neg_",a),paste0("fac_mic_pos_",a),paste0("fac_mic_neg_",a),
-             paste0("com_rdt_pos_",a),paste0("com_rdt_neg_",a)))
+  for(f in c(paste0("fac_lt24_",a),paste0("fac_gt24_",a),paste0("com_lt24_",a),paste0("com_gt24_",a)))
     if(!f %in% names(wide)) wide[[f]] <- 0
-  wide[[paste0("fac_pos_",a)]]  <- wide[[paste0("fac_rdt_pos_",a)]] + wide[[paste0("fac_mic_pos_",a)]]
-  wide[[paste0("fac_neg_",a)]]  <- wide[[paste0("fac_rdt_neg_",a)]] + wide[[paste0("fac_mic_neg_",a)]]
-  wide[[paste0("fac_test_",a)]] <- wide[[paste0("fac_pos_",a)]] + wide[[paste0("fac_neg_",a)]]
-  wide[[paste0("com_pos_",a)]]  <- wide[[paste0("com_rdt_pos_",a)]]
-  wide[[paste0("com_neg_",a)]]  <- wide[[paste0("com_rdt_neg_",a)]]
-  wide[[paste0("com_test_",a)]] <- wide[[paste0("com_pos_",a)]] + wide[[paste0("com_neg_",a)]]
-  wide[[paste0("all_pos_",a)]]  <- wide[[paste0("fac_pos_",a)]] + wide[[paste0("com_pos_",a)]]
-  wide[[paste0("all_test_",a)]] <- wide[[paste0("fac_test_",a)]] + wide[[paste0("com_test_",a)]]
-  wide[[paste0("tpr_",a)]] <- ifelse(wide[[paste0("all_test_",a)]]>0,
-    round(wide[[paste0("all_pos_",a)]]/wide[[paste0("all_test_",a)]]*100,1), NA)
+  wide[[paste0("fac_tx_",a)]]   <- wide[[paste0("fac_lt24_",a)]] + wide[[paste0("fac_gt24_",a)]]
+  wide[[paste0("com_tx_",a)]]   <- wide[[paste0("com_lt24_",a)]] + wide[[paste0("com_gt24_",a)]]
+  wide[[paste0("all_lt24_",a)]] <- wide[[paste0("fac_lt24_",a)]] + wide[[paste0("com_lt24_",a)]]
+  wide[[paste0("all_tx_",a)]]   <- wide[[paste0("fac_tx_",a)]]   + wide[[paste0("com_tx_",a)]]
+  wide[[paste0("ptr_",a)]] <- ifelse(wide[[paste0("all_tx_",a)]]>0,
+    round(wide[[paste0("all_lt24_",a)]]/wide[[paste0("all_tx_",a)]]*100,1), NA)
 }
 wide <- wide %>% mutate(
-  all_pos_total  = all_pos_u5 + all_pos_c514 + all_pos_a15,
-  all_test_total = all_test_u5 + all_test_c514 + all_test_a15,
-  tpr = ifelse(all_test_total>0, round(all_pos_total/all_test_total*100,1), NA)) %>%
-  left_join(ou_df, by="ou_id")
-# NOTE: facility microscopy positives come from the new form only (Apr 2026 onwards).
-# RDT positives/negatives and microscopy negatives are complete throughout.
+  treated_total = all_tx_u5 + all_tx_c514 + all_tx_a15,
+  lt24_total    = all_lt24_u5 + all_lt24_c514 + all_lt24_a15,
+  prompt_rate   = ifelse(treated_total>0, round(lt24_total/treated_total*100,1), NA)
+) %>% left_join(ou_df, by="ou_id")
 
-write.csv(wide,       paste0("NMCP_Testing_",s,"_",e,".csv"), row.names=FALSE)
-write.csv(violations, paste0("NMCP_Testing_FormViolations_",s,"_",e,".csv"), row.names=FALSE)
+write.csv(wide,       paste0("NMCP_Treated_",s,"_",e,".csv"), row.names=FALSE)
+write.csv(violations, paste0("NMCP_Treated_FormViolations_",s,"_",e,".csv"), row.names=FALSE)
 cat("Done. Files saved.\\n")
-`,`NMCP_Testing_${s}_${e}.R`);
+`,`NMCP_Treated_${s}_${e}.R`);
 }
 
 function downloadPy(){
   const s=ST.cfgStart||'2025-01',e=ST.cfgEnd||'2026-12';
-  triggerDL(`# NMCP Sierra Leone — Malaria Testing Extract (RDT + Microscopy)
+  triggerDL(`# NMCP Sierra Leone — Malaria Treated with ACT (by timeliness)
 # Period: ${s} to ${e} | ICF-SL
-# Mirrors the tool: 3 sources, 2 test methods, 3 age groups, Level-6 rollup,
-# April-2026 cutover, IQR(3.0) outlier detection with median replacement, TPR.
 import requests, pandas as pd, numpy as np, re
-
-BASE_URL = "https://sl.dhis2.org/hmis23"
-AUTH     = ("USERNAME","PASSWORD")
+BASE_URL="https://sl.dhis2.org/hmis23"; AUTH=("USERNAME","PASSWORD")
 
 # ── Data elements ────────────────────────────────────────────
-OLD = {"rdt_pos":"p6zQLDFjSfd","rdt_neg":"mXS2g1AiPsS","mic_neg":"Rijj3Fp9ksg"}
-# NOTE: the old form has no age-disaggregated microscopy-positive element.
-NEW = {"rdt_pos":"AwLklDAVtvq","rdt_neg":"Bn5tLFYdmRD",
-       "mic_pos":"AMrdoWsiHMa","mic_neg":"ofCoyRXAweZ"}
-COM = {"rdt_pos":"T7xH8GwWpEM","rdt_neg":"YWvx4zYdp92"}        # RDT only
+OLD={"lt24":"wU8EdHifSLa","gt24":"XKTCuR0W3YN"}   # old facility (HF01 Outpatient morbidity)
+NEW={"lt24":"ht4jvP2ppBI","gt24":"zV9set4PXcm"}   # new facility (2025_HF01)
+COM={"lt24":"h3zJa6hAgib","gt24":"Imkks0HAl7E"}   # community / HTR (HF04)
 
-OLD_COC = {"u5":"m5T8uBNB8aN","c514":"j7j6iaknOFn","a15":"zK1aiw8zFac"}
-COM_COC = {"u5":"NtjMVmRfvHH","c514":"qDXW7WMLT99","a15":"mdjRPpvLKdu"}  # 02-59m AS 0-59m
-NEW_MAP = {   # 1-11m OMITTED (overlaps 1-5m + 06-11m)
+OLD_COC={"u5":"m5T8uBNB8aN","c514":"j7j6iaknOFn","a15":"zK1aiw8zFac"}
+COM_COC={"u5":"NtjMVmRfvHH","c514":"qDXW7WMLT99","a15":"mdjRPpvLKdu"}   # 02-59m AS 0-59m
+NEW_MAP={  # 1-11m OMITTED (overlaps 1-5m + 06-11m)
  "u5":  ["X1fJr7y51lU","ajwU95HMY2p","QVABDpl0H4k","wOsJkGpglpx","EBG5ZbRgj46",
          "z0s3iTdlbsd","KIJHMZSahcW","aCwYAbE3GHL","CcMrNXzzVHL","YHJ1j33ZMs5"],
  "c514":["eGhQxrBx3sy","i4MRLwVtIGa","oZ7YgBgNGRd","UI2y7qIOkvz"],
  "a15": ["OzqClEP84wm","vshWQEGCCTp","ztWgelWML6b","fLgy2fpBWrb",
          "zqNF6erLupJ","eaWE8YjN4j0","hGJdT29m3P6","g2NiIyG3PLj"],
 }
-dx_map = {}
-for tr,de in OLD.items():
-    for a,c in OLD_COC.items(): dx_map[f"{de}.{c}"] = (f"fac_{tr}_{a}", "old")
-for tr,de in NEW.items():
+dx_map={}
+for t,de in OLD.items():
+    for a,c in OLD_COC.items(): dx_map[f"{de}.{c}"]=(f"fac_{t}_{a}","old")
+for t,de in NEW.items():
     for a,cs in NEW_MAP.items():
-        for c in cs: dx_map[f"{de}.{c}"] = (f"fac_{tr}_{a}", "new")
-for tr,de in COM.items():
-    for a,c in COM_COC.items(): dx_map[f"{de}.{c}"] = (f"com_{tr}_{a}", "com")
-dx_str = ";".join(dx_map)
+        for c in cs: dx_map[f"{de}.{c}"]=(f"fac_{t}_{a}","new")
+for t,de in COM.items():
+    for a,c in COM_COC.items(): dx_map[f"{de}.{c}"]=(f"com_{t}_{a}","com")
 
-# ── 1. Org units: Level 5 (PHU) + Level 6 (CHW/ETR) ──────────
-F = "id,displayName,level,ancestors[id,displayName,level]"
-ou5 = requests.get(f"{BASE_URL}/api/organisationUnits.json?level=5&fields={F}&paging=false", auth=AUTH).json()["organisationUnits"]
-ou6 = requests.get(f"{BASE_URL}/api/organisationUnits.json?level=6&fields={F}&paging=false", auth=AUTH).json()["organisationUnits"]
-
+# ── 1. Org units: Level 5 (PHU) + Level 6 (CHW/ETR = HTR) ────
+F="id,displayName,level,ancestors[id,displayName,level]"
+ou5=requests.get(f"{BASE_URL}/api/organisationUnits.json?level=5&fields={F}&paging=false",auth=AUTH).json()["organisationUnits"]
+ou6=requests.get(f"{BASE_URL}/api/organisationUnits.json?level=6&fields=id,parent[id]&paging=false",auth=AUTH).json()["organisationUnits"]
 def hf_type(n):
     u=n.upper()
     if "LABORATOR" in u or re.search(r"MARIE\\\\s*STOPES",u): return "EXCLUDE"
     if u.endswith("HOSPITAL"): return "Hospital"
     if u.endswith("MCHP"): return "MCHP"
-    if u.endswith("CHC"):  return "CHC"
-    if u.endswith("CHP"):  return "CHP"
+    if u.endswith("CHC"): return "CHC"
+    if u.endswith("CHP"): return "CHP"
     if "CLINIC" in u or "CLIMIC" in u or "NURSING HOME" in u or u.endswith("HOME"): return "Clinic"
     return "Other"
 def anc(o,lv):
     for a in o.get("ancestors",[]):
         if a["level"]==lv: return a
     return None
+ou_df=pd.DataFrame([{"ou_id":o["id"],"facility":o["displayName"],"hf_type":hf_type(o["displayName"]),
+  "district":(anc(o,2) or {}).get("displayName",""),"chiefdom":(anc(o,4) or {}).get("displayName","")} for o in ou5])
+ou_df=ou_df[ou_df.hf_type.isin(["Hospital","Clinic","CHC","CHP","MCHP"])]
+child_to_l5={o["id"]:(o.get("parent") or {}).get("id") for o in ou6}
 
-ou_df = pd.DataFrame([{"ou_id":o["id"],"facility":o["displayName"],"hf_type":hf_type(o["displayName"]),
-    "district":(anc(o,2) or {}).get("displayName",""),
-    "chiefdom":(anc(o,4) or {}).get("displayName","")} for o in ou5])
-ou_df = ou_df[ou_df.hf_type.isin(["Hospital","Clinic","CHC","CHP","MCHP"])]
-child_to_l5 = {o["id"]:(anc(o,5) or {}).get("id") for o in ou6}
-
-# ── 2. Fetch at LEVEL-5 and LEVEL-6 ──────────────────────────
+# ── 2. Fetch in BATCHES at LEVEL-5 and LEVEL-6 ──────────────
+dx_all=list(dx_map); chunks=[dx_all[i:i+12] for i in range(0,len(dx_all),12)]
 frames=[]
 for yr in range(int("${s}"[:4]), int("${e}"[:4])+1):
     pe=[f"{yr}{m:02d}" for m in range(1,13)]
     pe=[p for p in pe if "${s}".replace("-","") <= p <= "${e}".replace("-","")]
     if not pe: continue
-    url=(f"{BASE_URL}/api/analytics.json?dimension=dx:{dx_str}"
-         f"&dimension=pe:{';'.join(pe)}&dimension=ou:LEVEL-5;LEVEL-6&paging=false&ignoreLimit=true")
-    rows=requests.get(url,auth=AUTH).json().get("rows",[])
-    if rows: frames.append(pd.DataFrame(rows,columns=["dx","period","ou_raw","value"]))
+    for ch in chunks:
+        url=(f"{BASE_URL}/api/analytics.json?dimension=dx:{';'.join(ch)}"
+             f"&dimension=pe:{';'.join(pe)}&dimension=ou:LEVEL-5;LEVEL-6&paging=false&ignoreLimit=true")
+        rows=requests.get(url,auth=AUTH).json().get("rows",[])
+        if rows: frames.append(pd.DataFrame(rows,columns=["dx","period","ou_raw","value"]))
 raw=pd.concat(frames,ignore_index=True)
-raw["value"]=pd.to_numeric(raw["value"],errors="coerce")
-raw=raw[raw.value>0]
+raw["value"]=pd.to_numeric(raw["value"],errors="coerce"); raw=raw[raw.value>0]
 raw["field"]=raw.dx.map(lambda d: dx_map.get(d,(None,None))[0])
 raw["src"]  =raw.dx.map(lambda d: dx_map.get(d,(None,None))[1])
 raw=raw.dropna(subset=["field"])
 raw["is_l6"]=raw.ou_raw.isin(child_to_l5)
 raw["ou_id"]=np.where(raw.is_l6, raw.ou_raw.map(child_to_l5), raw.ou_raw)
-raw=raw[~(raw.is_l6 & (raw.src!="com"))]          # facility DEs never at Level 6
+raw=raw[~(raw.is_l6 & (raw.src!="com"))]     # facility forms never at Level 6
 raw=raw[raw.ou_id.isin(ou_df.ou_id)]
 
 # ── 3. FORM CUTOVER — new facility form starts April 2026 ────
 p=raw.period.astype(int)
 viol=((raw.src=="old")&(p>202603)) | ((raw.src=="new")&(p<202604))
-violations=raw[viol].copy()      # ignored, kept for follow-up
-raw=raw[~viol].copy()
+violations=raw[viol].copy(); raw=raw[~viol].copy()
 
-# ── 4. Collapse to the series (sex collapsed) ────────────────
 raw["year"]=raw.period.str[:4].astype(int); raw["month"]=raw.period.str[4:6].astype(int)
 raw=raw.groupby(["ou_id","year","month","field"],as_index=False)["value"].sum()
 
-# ── 5. Outliers — IQR bound, replace with year median ────────
+# ── 4. Outliers — IQR bound, replace with year median ───────
 def iqr_upper(x):
     r=x[x>0].dropna()
     if len(r)<4: return np.nan
@@ -3250,39 +3200,32 @@ is_out=raw.upper_bound.notna() & (raw.value_orig>raw.upper_bound)
 raw["outlier"]=np.where(is_out,"Yes","No")
 raw["value"]=np.where(is_out, raw.year_median, raw.value_orig)
 
-# ── 6. Wide + derived (Tested, TPR) ─────────────────────────
+# ── 5. Wide + derived (Treated, Prompt treatment rate) ──────
 wide=raw.pivot_table(index=["ou_id","year","month"],columns="field",values="value",fill_value=0).reset_index()
 for a in ["u5","c514","a15"]:
-    for f in [f"fac_rdt_pos_{a}",f"fac_rdt_neg_{a}",f"fac_mic_pos_{a}",f"fac_mic_neg_{a}",
-              f"com_rdt_pos_{a}",f"com_rdt_neg_{a}"]:
+    for f in [f"fac_lt24_{a}",f"fac_gt24_{a}",f"com_lt24_{a}",f"com_gt24_{a}"]:
         if f not in wide: wide[f]=0
-    wide[f"fac_pos_{a}"]  = wide[f"fac_rdt_pos_{a}"] + wide[f"fac_mic_pos_{a}"]
-    wide[f"fac_neg_{a}"]  = wide[f"fac_rdt_neg_{a}"] + wide[f"fac_mic_neg_{a}"]
-    wide[f"fac_test_{a}"] = wide[f"fac_pos_{a}"] + wide[f"fac_neg_{a}"]
-    wide[f"com_pos_{a}"]  = wide[f"com_rdt_pos_{a}"]
-    wide[f"com_neg_{a}"]  = wide[f"com_rdt_neg_{a}"]
-    wide[f"com_test_{a}"] = wide[f"com_pos_{a}"] + wide[f"com_neg_{a}"]
-    wide[f"all_pos_{a}"]  = wide[f"fac_pos_{a}"] + wide[f"com_pos_{a}"]
-    wide[f"all_test_{a}"] = wide[f"fac_test_{a}"] + wide[f"com_test_{a}"]
-    wide[f"tpr_{a}"] = np.where(wide[f"all_test_{a}"]>0,
-        (wide[f"all_pos_{a}"]/wide[f"all_test_{a}"]*100).round(1), np.nan)
-wide["all_pos_total"]  = wide[[f"all_pos_{a}"  for a in ["u5","c514","a15"]]].sum(axis=1)
-wide["all_test_total"] = wide[[f"all_test_{a}" for a in ["u5","c514","a15"]]].sum(axis=1)
-wide["tpr"] = np.where(wide.all_test_total>0,
-    (wide.all_pos_total/wide.all_test_total*100).round(1), np.nan)
-wide = wide.merge(ou_df, on="ou_id", how="left")
-# NOTE: facility microscopy positives come from the new form only (Apr 2026 onwards).
-# RDT positives/negatives and microscopy negatives are complete throughout.
+    wide[f"fac_tx_{a}"]   = wide[f"fac_lt24_{a}"] + wide[f"fac_gt24_{a}"]
+    wide[f"com_tx_{a}"]   = wide[f"com_lt24_{a}"] + wide[f"com_gt24_{a}"]
+    wide[f"all_lt24_{a}"] = wide[f"fac_lt24_{a}"] + wide[f"com_lt24_{a}"]
+    wide[f"all_tx_{a}"]   = wide[f"fac_tx_{a}"]   + wide[f"com_tx_{a}"]
+    wide[f"ptr_{a}"] = np.where(wide[f"all_tx_{a}"]>0,
+        (wide[f"all_lt24_{a}"]/wide[f"all_tx_{a}"]*100).round(1), np.nan)
+wide["treated_total"]=wide[[f"all_tx_{a}"   for a in ["u5","c514","a15"]]].sum(axis=1)
+wide["lt24_total"]   =wide[[f"all_lt24_{a}" for a in ["u5","c514","a15"]]].sum(axis=1)
+wide["prompt_rate"]  =np.where(wide.treated_total>0,
+    (wide.lt24_total/wide.treated_total*100).round(1), np.nan)
+wide=wide.merge(ou_df,on="ou_id",how="left")
 
-wide.to_csv(f"NMCP_Testing_${s}_${e}.csv", index=False)
-violations.to_csv(f"NMCP_Testing_FormViolations_${s}_${e}.csv", index=False)
+wide.to_csv(f"NMCP_Treated_${s}_${e}.csv", index=False)
+violations.to_csv(f"NMCP_Treated_FormViolations_${s}_${e}.csv", index=False)
 print("Done. Files saved.")
-`,`NMCP_Testing_${s}_${e}.py`);
+`,`NMCP_Treated_${s}_${e}.py`);
 }
 
 function downloadToolHTML(){
   const blob=new Blob(['<!DOCTYPE html>\n'+document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});
-  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='nmcp_testing_v1.html';
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='nmcp_treated_v1.html';
   document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(()=>URL.revokeObjectURL(url),2000);
 }
 </script>
