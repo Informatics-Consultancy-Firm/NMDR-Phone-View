@@ -49,13 +49,13 @@
     if (SUPPRESS_BROWSER_BANNER) e.preventDefault();
     installEvent = e;
     console.log(LOG, 'app can be installed');
-    showInstall(true);
+    showInstall();
   });
 
   window.addEventListener('appinstalled', function () {
     installEvent = null;
     console.log(LOG, 'app installed');
-    showInstall(false);
+    if (INSTALL_BTN) INSTALL_BTN.style.display = 'none';
     toast('NMDR installed. You can now open it from your home screen.');
   });
 
@@ -88,7 +88,7 @@
     INSTALL_BTN = document.getElementById('nmdrInstall');
     if (INSTALL_BTN) {
       INSTALL_BTN.addEventListener('click', runInstall);
-      showInstall(!!installEvent);   // the event may have fired before this ran
+      showInstall();
     }
 
     injectStyles();
@@ -234,20 +234,37 @@
            window.navigator.standalone === true;
   }
 
-  function showInstall(on) {
+  /* The button is always visible unless the portal is already running as an
+     installed app. It used to wait for beforeinstallprompt, but that event
+     never fires when the app is already installed on the device or when any
+     install criterion fails, so the button simply never appeared. */
+  function showInstall() {
     if (!INSTALL_BTN) return;
-    INSTALL_BTN.style.display = (on && !standalone()) ? 'flex' : 'none';
+    INSTALL_BTN.style.display = standalone() ? 'none' : 'flex';
+  }
+
+  function iOS() {
+    var ua = navigator.userAgent || '';
+    return /iPad|iPhone|iPod/.test(ua) ||
+           (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);  // iPadOS
   }
 
   function runInstall() {
     if (!installEvent) {
-      toast('This browser has not offered an install yet. On iPhone or iPad use Share then Add to Home Screen. On Chrome look for the install icon in the address bar.');
+      // No prompt to show. Either the app is already installed, the browser
+      // does not support prompting, or the criteria are not met. Tell the user
+      // how to install by hand on their platform.
+      toast(iOS()
+        ? 'On iPhone and iPad, tap the Share button then Add to Home Screen.'
+        : 'Use the browser menu and choose Install app, or Add to Home screen. If it is missing, NMDR is probably installed already.');
       return;
     }
     installEvent.prompt();
     installEvent.userChoice.then(function (res) {
       console.log(LOG, 'install choice:', res && res.outcome);
-      if (res && res.outcome === 'accepted') showInstall(false);
+      if (res && res.outcome === 'accepted' && INSTALL_BTN) {
+        INSTALL_BTN.style.display = 'none';
+      }
       installEvent = null;
     }).catch(function (e) {
       console.warn(LOG, 'install prompt failed', e);
