@@ -1,101 +1,173 @@
-// ============================================================
-//  National Malaria Data Repository (NMDR) · Service Worker
-//  BUMP THIS VERSION every time you upload new files:
-const CACHE_VERSION = 'nmdr-v1';
-// ============================================================
+/* NMDR Portal service worker
+   Offline first. Pages are served from cache so the portal opens with no
+   network. New versions arrive only when the user presses Update.
 
-// App shell — cached at install so the portal opens offline.
-const APP_FILES = [
+   Edit PRECACHE below to match the files sitting beside index.html.
+*/
+
+const APP_VERSION   = 'nmdr-2026-07-25b';
+const SHELL_CACHE   = 'nmdr-shell-' + APP_VERSION;
+const RUNTIME_CACHE = 'nmdr-runtime';
+
+/* Files fetched and stored the moment the portal is first opened. */
+const PRECACHE = [
   './',
   './index.html',
-  './offline.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png',
-  './icon-maskable-512.png',
-  './apple-touch-icon.png',
-  // images used on the welcome screen
+  './nmdr-offline.js',
   './mohlogo.png',
   './nmdr_info.png',
+  './sbd.html',
+  './mocm_phu.html',
+  './mocm_hospital.html',
+  './warehouse.html'
 ];
 
-// Google Fonts stylesheet (font files cache at runtime on first load).
-const CDN_FILES = [
-  'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap',
+/* Cross origin hosts whose files are safe to keep for offline use.
+   Everything else cross origin (DHIS2, Apps Script) always goes to the
+   network and is never stored. */
+const CACHEABLE_HOSTS = [
+  'fonts.googleapis.com',
+  'fonts.gstatic.com',
+  'cdn.jsdelivr.net',
+  'cdnjs.cloudflare.com',
+  'unpkg.com'
 ];
 
-// NEVER cache — always go to the live network.
-// (Google Apps Script backend + the embedded Google Slides + any DHIS2 host.)
-const NEVER_CACHE = ['script.google.com', 'docs.google.com', 'googleusercontent.com'];
+/* ---------------------------------------------------------------- install */
 
-// External origins allowed to be cached at runtime (fonts only).
-const CACHE_EXTERNAL = ['fonts.googleapis.com', 'fonts.gstatic.com'];
+self.addEventListener('install', event => {
+  event.waitUntil((async () => {
+    const cache = await caches.open(SHELL_CACHE);
+    // One at a time so a single missing file cannot fail the whole install.
+    for (const url of PRECACHE) {
+      try {
+        const res = await fetch(new Request(url, { cache: 'reload' }));
+        if (res.ok) await cache.put(url, res);
+      } catch (e) { /* file not present yet, runtime caching will pick it up */ }
+    }
+  })());
+});
 
-function toAbs(url){ return url.startsWith('http') ? url : new URL(url, self.location.href).href; }
+/* --------------------------------------------------------------- activate */
 
-async function cacheOne(cache, url){
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    const names = await caches.keys();
+    await Promise.all(
+      names
+        .filter(n => n.startsWith('nmdr-shell-') && n !== SHELL_CACHE)
+        .map(n => caches.delete(n))
+    );
+    await self.clients.claim();
+  })());
+});
+
+/* ------------------------------------------------------------------ fetch */
+
+self.addEventListener('fetch', event => {
+  const req = event.request;
+  if (req.method !== 'GET') return;
+
+  const url = new URL(req.url);
+  const sameOrigin = url.origin === self.location.origin;
+
+  if (!sameOrigin && !CACHEABLE_HOSTS.includes(url.hostname)) {
+    return; // DHIS2, Apps Script and any other API: straight to the network
+  }
+
+  event.respondWith(cacheFirst(req, sameOrigin));
+});
+
+async function cacheFirst(req, sameOrigin) {
+  const shell = await caches.open(SHELL_CACHE);
+  const hit = await shell.match(req, { ignoreSearch: sameOrigin });
+  if (hit) return hit;
+
+  const runtime = await caches.open(RUNTIME_CACHE);
+  const runtimeHit = await runtime.match(req);
+  if (runtimeHit) return runtimeHit;
+
   try {
-    const req = new Request(url, { cache: 'reload' });
     const res = await fetch(req);
-    if (res && (res.status === 200 || res.type === 'opaque')) await cache.put(req, res);
-  } catch (e) { console.warn('[SW] skipped', url, e.message); }
+    if (res && (res.ok || res.type === 'opaque')) {
+      runtime.put(req, res.clone());
+    }
+    return res;
+  } catch (e) {
+    if (req.mode === 'navigate') {
+      const fallback = await shell.match('./index.html');
+      if (fallback) return fallback;
+    }
+    return new Response(
+      'Offline and this file has not been saved to the device yet.',
+      { status: 503, headers: { 'Content-Type': 'text/plain' } }
+    );
+  }
 }
 
-// ── INSTALL ──
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_VERSION).then(async cache => {
-      await Promise.all([...APP_FILES, ...CDN_FILES].map(u => cacheOne(cache, toAbs(u))));
-      return self.skipWaiting();
-    })
-  );
-});
+/* --------------------------------------------------------------- messages */
 
-// ── ACTIVATE ──
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== CACHE_VERSION).map(k => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
-});
-
-// ── FETCH: cache-first, then network (and cache same-origin pages as visited) ──
-self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
-  const url = event.request.url;
-
-  // Live backend / embeds always hit the network.
-  if (NEVER_CACHE.some(p => url.includes(p))) return;
-
-  const isExternal = !url.startsWith(self.location.origin);
-  const isAllowed = CACHE_EXTERNAL.some(o => new URL(url).hostname.includes(o));
-  if (isExternal && !isAllowed) return; // ignore other externals (don't cache)
-
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request)
-        .then(r => {
-          // cache same-origin files (sub-pages, images) as they're first opened
-          if (r && (r.status === 200 || r.type === 'opaque')) {
-            const copy = r.clone();
-            caches.open(CACHE_VERSION).then(c => c.put(event.request, copy));
-          }
-          return r;
-        })
-        .catch(() => {
-          if (event.request.mode === 'navigate')
-            return caches.match(toAbs('./offline.html')) || caches.match(toAbs('./index.html'));
-          return new Response('', { status: 503 });
-        });
-    })
-  );
-});
-
-// ── MESSAGES ──
 self.addEventListener('message', event => {
-  if (!event.data) return;
-  if (event.data.type === 'SKIP_WAITING') self.skipWaiting();
-  if (event.data.type === 'CLEAR_CACHE') caches.delete(CACHE_VERSION);
+  const data = event.data || {};
+  const reply = msg => {
+    if (event.ports && event.ports[0]) event.ports[0].postMessage(msg);
+  };
+
+  if (data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+    return;
+  }
+
+  if (data.type === 'GET_VERSION') {
+    reply({ type: 'VERSION', version: APP_VERSION });
+    return;
+  }
+
+  if (data.type === 'REFRESH_CONTENT') {
+    // Always reply, including on failure, or the page waits for the timeout.
+    event.waitUntil(
+      refreshContent().then(reply, function (err) {
+        reply({ type: 'REFRESH_DONE', updated: 0, failed: [], error: String(err && err.message || err) });
+      })
+    );
+  }
 });
+
+/* Re-download every same origin file already held, plus the precache list,
+   bypassing the browser HTTP cache. This is what the Update button runs. */
+async function refreshContent() {
+  const shell   = await caches.open(SHELL_CACHE);
+  const runtime = await caches.open(RUNTIME_CACHE);
+
+  const targets = new Map(); // url -> cache holding it
+
+  for (const url of PRECACHE) {
+    targets.set(new URL(url, self.location).href, shell);
+  }
+  for (const cache of [shell, runtime]) {
+    for (const req of await cache.keys()) {
+      if (new URL(req.url).origin === self.location.origin) {
+        targets.set(req.url, cache);
+      }
+    }
+  }
+
+  let updated = 0;
+  const failed = [];
+
+  for (const [url, cache] of targets) {
+    try {
+      const res = await fetch(new Request(url, { cache: 'reload' }));
+      if (res.ok) {
+        await cache.put(url, res);
+        updated++;
+      } else {
+        failed.push(url + ' (' + res.status + ')');
+      }
+    } catch (e) {
+      failed.push(url);
+    }
+  }
+
+  return { type: 'REFRESH_DONE', updated, failed, version: APP_VERSION };
+}
