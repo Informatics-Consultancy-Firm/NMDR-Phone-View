@@ -1,4 +1,4 @@
-<!DOCTYPE html>    
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1250,6 +1250,7 @@ function verifyPassword() {
     var errEl = document.getElementById('passwordError');
     var ok    = (selectedRole === 'admin') ? (user === 'admin' && pw === 'admin') : (pw === rolePasswords[selectedRole]);
     if (ok) {
+        saveSession(selectedRole);
         enableTabsForRole(selectedRole);
     } else {
         errEl.textContent   = 'Incorrect credentials. Access denied.';
@@ -1260,6 +1261,33 @@ function verifyPassword() {
 
 document.getElementById('submitRolePassword').addEventListener('click', verifyPassword);
 document.getElementById('rolePassword').addEventListener('keypress', function(e){ if(e.key==='Enter') verifyPassword(); });
+
+/* SESSION
+   The signed in role is remembered so a reload, a closed tab, or the Update
+   button does not send the user back to the login screen. Only Logout clears
+   it. Wrapped in try/catch because storage can be blocked in private mode,
+   in which case the portal simply falls back to asking for the password. */
+var NMDR_SESSION_KEY = 'nmdrRole';
+
+function saveSession(role) {
+    try { localStorage.setItem(NMDR_SESSION_KEY, role); } catch (e) {}
+}
+
+function clearSession() {
+    try { localStorage.removeItem(NMDR_SESSION_KEY); } catch (e) {}
+}
+
+function restoreSession() {
+    var role = null;
+    try { role = localStorage.getItem(NMDR_SESSION_KEY); } catch (e) {}
+    if (!role || !roleAccess[role]) return false;
+    selectedRole    = role;
+    currentUserRole = role;
+    enableTabsForRole(role);
+    return true;
+}
+
+restoreSession();
 
 /* DASHBOARD ENDPOINT + DQA LOADER */
 const DV_GAS = 'https://script.google.com/macros/s/AKfycbyTprTce5ft5gxSwY7jOku2GNeKMG8V-X1BrY0jB3QDPyuVWXwFPNr_CH80BRfcLcwD/exec';
@@ -1470,6 +1498,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer(
 
 /* LOGOUT */
 document.getElementById('logoutBtn').addEventListener('click',function(){
+    clearSession();
     currentUserRole=null;selectedRole=null;meDqaLoaded=false;
     document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active');});
     document.getElementById('welcome').classList.add('active');
