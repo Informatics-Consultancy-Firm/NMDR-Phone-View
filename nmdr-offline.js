@@ -17,7 +17,8 @@
   var UPDATED_FLAG = 'nmdrJustUpdated';
   var LAST_UPDATE  = 'nmdrLastUpdate';
 
-  var STATUS_EL, BTN;
+  var STATUS_EL, BTN, INSTALL_BTN;
+  var installEvent = null;
   var busy    = false;
   var blocked = null;   // why updates cannot run at all
   var regErr  = null;   // registration threw
@@ -33,6 +34,30 @@
   }
 
   console.log(LOG, blocked ? 'unavailable: ' + blocked : 'supported');
+
+  /* Set this to true to hide Chrome's own install banner and rely only on the
+     sidebar Install button. Left false so the browser keeps offering to
+     install by itself, which is what field users are used to seeing. */
+  var SUPPRESS_BROWSER_BANNER = false;
+
+  /* Must be registered immediately, not on DOMContentLoaded. The browser fires
+     this once, early, and the reference is needed for the sidebar button.
+     Note: calling preventDefault() here is what stops Chrome's own banner on
+     Android, so it is deliberately NOT called by default. Saving the event
+     without cancelling it still allows prompt() later. */
+  window.addEventListener('beforeinstallprompt', function (e) {
+    if (SUPPRESS_BROWSER_BANNER) e.preventDefault();
+    installEvent = e;
+    console.log(LOG, 'app can be installed');
+    showInstall(true);
+  });
+
+  window.addEventListener('appinstalled', function () {
+    installEvent = null;
+    console.log(LOG, 'app installed');
+    showInstall(false);
+    toast('NMDR installed. You can now open it from your home screen.');
+  });
 
   /* ------------------------------------------------------------- register */
 
@@ -59,8 +84,15 @@
     BTN = document.getElementById('nmdrUpdate') || buildFloatingButton();
     STATUS_EL = document.getElementById('nmdrUpdateStatus') || BTN;
     BTN.addEventListener('click', runUpdate);
+
+    INSTALL_BTN = document.getElementById('nmdrInstall');
+    if (INSTALL_BTN) {
+      INSTALL_BTN.addEventListener('click', runInstall);
+      showInstall(!!installEvent);   // the event may have fired before this ran
+    }
+
     injectStyles();
-    console.log(LOG, 'button wired');
+    console.log(LOG, 'button wired' + (standalone() ? ', running as an installed app' : ''));
 
     // Confirm the previous press worked, now that the reload has happened.
     if (get(UPDATED_FLAG)) {
@@ -192,6 +224,33 @@
         clearTimeout(timer);
         reject(e);
       }
+    });
+  }
+
+  /* -------------------------------------------------------------- install */
+
+  function standalone() {
+    return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+           window.navigator.standalone === true;
+  }
+
+  function showInstall(on) {
+    if (!INSTALL_BTN) return;
+    INSTALL_BTN.style.display = (on && !standalone()) ? 'flex' : 'none';
+  }
+
+  function runInstall() {
+    if (!installEvent) {
+      toast('This browser has not offered an install yet. On iPhone or iPad use Share then Add to Home Screen. On Chrome look for the install icon in the address bar.');
+      return;
+    }
+    installEvent.prompt();
+    installEvent.userChoice.then(function (res) {
+      console.log(LOG, 'install choice:', res && res.outcome);
+      if (res && res.outcome === 'accepted') showInstall(false);
+      installEvent = null;
+    }).catch(function (e) {
+      console.warn(LOG, 'install prompt failed', e);
     });
   }
 

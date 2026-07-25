@@ -5,7 +5,7 @@
    Edit PRECACHE below to match the files sitting beside index.html.
 */
 
-const APP_VERSION   = 'nmdr-2026-07-25b';
+const APP_VERSION   = 'nmdr-2026-07-25c';
 const SHELL_CACHE   = 'nmdr-shell-' + APP_VERSION;
 const RUNTIME_CACHE = 'nmdr-runtime';
 
@@ -14,8 +14,15 @@ const PRECACHE = [
   './',
   './index.html',
   './nmdr-offline.js',
+  './manifest.json',
   './mohlogo.png',
   './nmdr_info.png',
+  './icon-192.png',
+  './icon-512.png',
+  './icon-192-maskable.png',
+  './icon-512-maskable.png',
+  './apple-touch-icon.png',
+  './favicon-32.png',
   './sbd.html',
   './mocm_phu.html',
   './mocm_hospital.html',
