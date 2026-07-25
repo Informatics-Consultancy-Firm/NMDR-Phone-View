@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>Warehouse Assessment for ITN Mass Campaign 2027 | NMCP Sierra Leone</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+:root {
+  --blue:#3b78a8; --blue-dark:#2b5f8a; --blue-light:#4a8dbf; --soft-bg:#e7f3ff;
+  --white:#fff; --gold:#ffc107; --gold6:#e0a800;
+  --green:#28a745; --orange:#fd7e14; --red:#dc3545;
+  --bg:#f0f2f5; --border:#e0e6ed; --text-dark:#1a2c3e; --text-light:#6c7a8a;
+}
+body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-dark); font-size:15px; line-height:1.55; margin:0; }
+
+.tab-nav { display:flex; background:var(--blue-dark); position:sticky; top:0; z-index:200; box-shadow:0 2px 8px rgba(0,0,0,.2); }
+.tab-btn { flex:1; padding:15px 8px; color:rgba(255,255,255,.65); font-weight:700; font-size:14px; border:none; background:none; cursor:pointer; border-bottom:3px solid transparent; }
+.tab-btn.active { color:#fff; border-bottom:3px solid var(--gold); background:rgba(255,255,255,.08); }
+.tab-page { display:none; padding-bottom:40px; }
+.tab-page.active { display:block; }
+
+.page-header { background:linear-gradient(135deg,var(--blue-dark) 0%,var(--blue) 60%,var(--blue-light) 100%); color:#fff; text-align:center; padding:18px 16px; }
+.header-logos { display:flex; justify-content:center; gap:16px; margin-bottom:12px; flex-wrap:wrap; }
+.header-logo { height:52px; width:auto; background:#fff; padding:5px 10px; border-radius:10px; }
+.header-org { font-size:10px; font-weight:600; letter-spacing:.7px; margin-bottom:5px; opacity:.9; }
+.header-title { font-size:18px; font-weight:800; letter-spacing:.8px; text-transform:uppercase; color:var(--gold); }
+.header-sub { font-size:11px; font-weight:500; opacity:.85; margin-top:4px; }
+.form-title { background:linear-gradient(90deg,var(--blue-dark),var(--blue)); color:#fff; padding:12px 16px; font-weight:700; font-size:13.5px; border-left:4px solid var(--gold); }
+.purpose { background:#fff; border-bottom:1px solid var(--border); padding:14px 16px; font-size:12.5px; color:var(--text-light); line-height:1.55; }
+
+.section-header { background:var(--soft-bg); color:var(--blue-dark); padding:13px 16px; font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:.4px; border-left:4px solid var(--blue); display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.section-max { background:var(--blue-dark); color:#fff; border-radius:20px; padding:3px 11px; font-size:11px; font-weight:700; white-space:nowrap; }
+.section-card { background:#fff; border-bottom:1px solid var(--border); padding:16px; }
+.guidance { background:#f5f7f9; border:1px solid var(--border); border-left:4px solid var(--gold); border-radius:0 10px 10px 0; padding:11px 13px; font-size:12.5px; color:var(--text-dark); line-height:1.5; margin-bottom:16px; }
+.guidance b { color:var(--blue-dark); }
+
+.form-input, .form-select, .form-textarea { width:100%; padding:13px 14px; border:1.5px solid var(--border); border-radius:12px; font-size:15px; font-family:inherit; background:#fff; color:var(--text-dark); }
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color:var(--blue); outline:none; box-shadow:0 0 0 3px rgba(59,120,168,.12); }
+.form-textarea { min-height:88px; font-size:14px; resize:vertical; }
+.question-row { margin-bottom:18px; }
+.question-row:last-child { margin-bottom:0; }
+.question-text { font-weight:600; font-size:14.5px; margin-bottom:9px; }
+.required-star { color:var(--red); margin-left:4px; font-size:12px; }
+.hint { font-size:12px; color:var(--text-light); margin:-4px 0 8px; }
+
+/* measurement grid */
+.dim-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:9px; }
+.dim-grid label { font-size:11px; font-weight:700; color:var(--text-light); text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:4px; }
+.calc-row { display:flex; justify-content:space-between; align-items:center; background:var(--soft-bg); border-radius:12px; padding:12px 14px; margin-top:12px; }
+.calc-label { font-size:12px; font-weight:700; color:var(--blue-dark); text-transform:uppercase; letter-spacing:.4px; }
+.calc-val { font-size:18px; font-weight:800; color:var(--blue-dark); }
+
+/* scored criterion */
+.crit { border:1.5px solid var(--border); border-radius:14px; padding:13px; margin-bottom:12px; background:#fff; }
+.crit.full { border-color:#bfe3c9; background:#f6fdf8; }
+.crit.part { border-color:#ffe0b2; background:#fffdf6; }
+.crit.zero { border-color:#f3c9c4; background:#fff8f7; }
+.crit-head { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px; }
+.crit-text { font-weight:600; font-size:14.5px; flex:1; }
+.crit-max { background:#eef2f6; color:var(--blue-dark); border-radius:20px; padding:3px 10px; font-size:11px; font-weight:700; white-space:nowrap; }
+.score-line { display:flex; align-items:center; gap:10px; }
+.score-input { width:96px; padding:11px; border:1.5px solid var(--border); border-radius:10px; text-align:center; font-family:inherit; font-size:16px; font-weight:700; }
+.score-of { font-size:13px; color:var(--text-light); font-weight:600; }
+.score-bar { flex:1; height:8px; background:var(--border); border-radius:10px; overflow:hidden; }
+.score-fill { height:100%; border-radius:10px; background:var(--green); width:0%; transition:width .2s; }
+.crit-comment { margin-top:10px; }
+.score-input.bad { border-color:var(--red); background:#fff7f6; color:var(--red); }
+.score-err { display:none; color:var(--red); font-size:12.5px; font-weight:700; margin-top:8px; }
+.score-err.show { display:block; animation:errShake .3s; }
+@keyframes errShake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+
+.total-row { display:flex; justify-content:space-between; align-items:center; background:var(--soft-bg); padding:12px 16px; border-top:2px solid var(--border); }
+.total-label { font-size:12px; font-weight:700; color:var(--blue-dark); text-transform:uppercase; letter-spacing:.4px; }
+.total-badge { font-size:14px; font-weight:800; padding:5px 14px; border-radius:20px; color:#fff; background:var(--blue-dark); }
+
+/* running total bar */
+.runbar { position:sticky; bottom:0; margin-top:auto; z-index:150; background:#fff; border-top:2px solid var(--border); box-shadow:0 -3px 14px rgba(26,44,62,.09); padding:10px 16px; display:flex; align-items:center; gap:12px; }
+.runbar .rl { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--text-light); }
+.runbar .rv { font-size:20px; font-weight:800; color:var(--blue-dark); }
+.band { border-radius:20px; padding:5px 12px; font-size:11.5px; font-weight:800; color:#fff; white-space:nowrap; }
+.band.b1 { background:var(--green); }
+.band.b2 { background:#5cb85c; }
+.band.b3 { background:var(--orange); }
+.band.b4 { background:var(--red); }
+.band.b0 { background:#9aa7b4; }
+
+.options-group-vertical { display:flex; flex-direction:column; gap:9px; margin-top:5px; }
+.radio-option { display:flex; align-items:center; gap:12px; background:#fff; padding:13px 16px; border-radius:12px; border:1.5px solid var(--border); cursor:pointer; font-weight:500; font-size:14.5px; min-height:48px; }
+.radio-option input { width:19px; height:19px; accent-color:var(--blue); cursor:pointer; margin:0; flex-shrink:0; }
+.radio-option.selected { background:var(--blue); border-color:var(--blue); color:#fff; }
+.radio-option.selected input { accent-color:#fff; }
+
+.btn-submit { width:100%; padding:16px; background:var(--green); color:#fff; border:none; border-radius:14px; font-weight:700; font-size:15.5px; cursor:pointer; margin:20px 0; }
+.submit-wrap { padding:0 16px; }
+
+/* summary */
+.summary-header { background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:#fff; padding:20px 16px; }
+.summary-header h2 { font-size:18px; font-weight:800; color:var(--gold); }
+.summary-header p { font-size:12px; opacity:.9; margin-top:4px; }
+.summary-refresh { background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3); color:#fff; border-radius:20px; padding:9px 18px; font-weight:600; font-size:12.5px; cursor:pointer; margin-top:11px; }
+.verdict { margin:12px; border-radius:16px; padding:22px 18px; text-align:center; color:#fff; }
+.verdict .vscore { font-size:44px; font-weight:800; line-height:1; }
+.verdict .vof { font-size:13px; opacity:.9; margin-top:2px; }
+.verdict .vband { font-size:16px; font-weight:800; margin-top:10px; letter-spacing:.3px; }
+.verdict .vname { font-size:13px; opacity:.92; margin-top:6px; }
+.summary-section { margin:12px; background:#fff; border-radius:14px; border:1px solid var(--border); overflow:hidden; }
+.summary-section-title { background:var(--blue-dark); color:#fff; padding:12px 14px; font-weight:700; font-size:13px; }
+.summary-item { padding:11px 14px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; gap:10px; }
+.summary-item:last-child { border-bottom:none; }
+.summary-label { font-weight:700; color:var(--blue); font-size:10.5px; text-transform:uppercase; }
+.summary-value { font-size:13px; text-align:right; flex:1; }
+.sheet { width:100%; border-collapse:collapse; font-size:13px; }
+.sheet th { background:var(--soft-bg); color:var(--blue-dark); padding:10px 12px; text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.4px; }
+.sheet td { padding:10px 12px; border-bottom:1px solid var(--border); }
+.sheet tr:last-child td { border-bottom:none; }
+.sheet td.n { text-align:right; font-variant-numeric:tabular-nums; }
+.sheet tr.tot td { font-weight:800; background:#f7f9fc; }
+.pctpill { display:inline-block; border-radius:20px; padding:2px 9px; font-size:11.5px; font-weight:700; }
+.pctpill.ok { background:#e8f6ec; color:#1a7a3c; }
+.pctpill.mid { background:#fff4e5; color:#8a5300; }
+.pctpill.low { background:#fdeceb; color:#a32620; }
+.impr { padding:12px 14px; font-size:13px; white-space:pre-wrap; line-height:1.55; }
+
+.modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:1000; align-items:center; justify-content:center; padding:20px; }
+.modal-content { background:#fff; border-radius:20px; max-width:500px; width:100%; }
+.modal-header { background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:#fff; padding:16px 20px; font-weight:700; display:flex; justify-content:space-between; }
+.modal-header button { background:none; border:none; color:#fff; font-size:24px; cursor:pointer; }
+.modal-body { padding:20px; font-size:14px; }
+.modal-footer { padding:16px 20px; border-top:1px solid var(--border); display:flex; gap:12px; }
+.btn-cancel { flex:1; padding:12px; background:#f0f2f5; border:1px solid var(--border); border-radius:40px; font-weight:600; cursor:pointer; }
+.btn-confirm { flex:1; padding:12px; background:var(--green); color:#fff; border:none; border-radius:40px; font-weight:600; cursor:pointer; }
+.no-data { text-align:center; padding:40px; color:var(--text-light); }
+
+/* ==================== PHONE SHELL (same as the MOCM portal) ==================== */
+html, body { height:100%; }
+body { display:flex; align-items:center; justify-content:center; padding:22px 14px;
+       background:linear-gradient(160deg,#eef2f6 0%,#e4ebf2 100%); }
+.stage { display:flex; flex-direction:column; align-items:center; gap:14px; max-width:100%; }
+.phone { width:390px; max-width:94vw; height:820px; max-height:88vh; background:#0e2740;
+         border-radius:44px; padding:11px; box-shadow:0 26px 60px rgba(14,39,64,.34); }
+.screen { position:relative; width:100%; height:100%; background:var(--bg); border-radius:34px;
+          overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; }
+@media(max-width:820px){ .phone{ height:86vh; } }
+@media(max-width:640px){
+  body { padding:0; align-items:stretch; }
+  .stage { gap:0; width:100%; }
+  .phone { width:100%; max-width:none; height:100vh; height:100dvh; max-height:none;
+           padding:0; border-radius:0; box-shadow:none; background:var(--bg); }
+  .screen { border-radius:0; }
+}
+@media(min-width:641px) and (max-height:780px){ .phone{ height:95vh; max-height:none; } }
+
+/* overlays sit inside the phone, not over the whole page */
+.modal { position:absolute; border-radius:34px; }
+#lgOverlay { position:absolute !important; border-radius:34px; }
+@media(max-width:640px){ .modal, #lgOverlay { border-radius:0; } }
+
+.miss input, .miss textarea, .miss select { border-color:var(--red) !important; box-shadow:0 0 0 3px rgba(220,53,69,.15) !important; }
+.section-card.miss { box-shadow:inset 0 0 0 2px var(--red); }
+</style>
+</head>
+<body>
+
+<div class="stage"><div class="phone"><div class="screen">
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('entry')">📋 ASSESSMENT</button>
+  <button class="tab-btn" onclick="switchTab('summary')">📊 SCORE SHEET</button>
+</div>
+
+<div class="tab-page active" id="tab-entry">
+  <div class="page-header">
+    <div class="header-logos">
+      <img src="ICF-SL.jpg" class="header-logo" alt="ICF-SL" onerror="this.style.display='none'">
+      <img src="NMCP.png" class="header-logo" alt="NMCP" onerror="this.style.display='none'">
+    </div>
+    <div class="header-org">National Malaria Control Programme, Ministry of Health, Sierra Leone</div>
+    <div class="header-title">Warehouse Assessment</div>
+    <div class="header-sub">ITN Mass Campaign 2027 · Warehouse Selection Checklist</div>
+  </div>
+  <div class="form-title">WAREHOUSE ASSESSMENT CHECKLIST FOR ITN MASS CAMPAIGN 2027</div>
+  <div class="purpose">
+    To assess, compare and select the most suitable warehouse in each district for storing
+    Insecticide Treated Nets for about seven months before distribution. judged on infrastructure,
+    storage conditions, security, accessibility, safety and operational readiness. Total 100 points.
+  </div>
+
+  <!-- 1. WAREHOUSE IDENTIFICATION -->
+  <div class="section-header"><span>1. Warehouse Identification</span></div>
+  <div class="section-card">
+    <div class="question-row"><div class="question-text">Name of warehouse owner <span class="required-star">*</span></div>
+      <input class="form-input" id="ownerName" type="text" placeholder="Full name"></div>
+    <div class="question-row"><div class="question-text">Phone number of the owner (9 digits) <span class="required-star">*</span></div>
+      <div class="hint">Exactly 9 digits, digits only. For example 099177283.</div>
+      <input class="form-input" id="ownerPhone" type="tel" inputmode="numeric" maxlength="9" placeholder="099177283"
+        oninput="phoneInput(this)">
+      <div class="score-err" id="phoneErr"></div></div>
+    <div class="question-row"><div class="question-text">Email of the owner</div>
+      <div class="hint">Leave blank if the owner has no email address.</div>
+      <input class="form-input" id="ownerEmail" type="email" placeholder="name@example.com"></div>
+    <div class="question-row"><div class="question-text">District <span class="required-star">*</span></div>
+      <select class="form-select" id="whDistrict"><option value="">Select district...</option></select></div>
+    <div class="question-row"><div class="question-text">Warehouse address <span class="required-star">*</span></div>
+      <input class="form-input" id="whAddress" type="text" placeholder="Street or area and nearest landmark"></div>
+    <div class="question-row"><div class="question-text">Assessor name <span class="required-star">*</span></div>
+      <input class="form-input" id="assessorName" type="text" placeholder="Full name"></div>
+    <div class="question-row"><div class="question-text">Assessment date <span class="required-star">*</span></div>
+      <input class="form-input" id="assessDate" type="date"></div>
+  </div>
+
+  <!-- 2. MEASUREMENTS -->
+  <div class="section-header"><span>2. Warehouse Capacity Measurements</span></div>
+  <div class="section-card">
+    <div class="question-row">
+      <div class="question-text">Warehouse dimensions in metres <span class="required-star">*</span></div>
+      <div class="dim-grid">
+        <div><label>Length (m)</label><input class="form-input" id="dimL" type="number" min="0" step="0.1" placeholder="0" oninput="recalc()"></div>
+        <div><label>Width (m)</label><input class="form-input" id="dimW" type="number" min="0" step="0.1" placeholder="0" oninput="recalc()"></div>
+        <div><label>Height (m)</label><input class="form-input" id="dimH" type="number" min="0" step="0.1" placeholder="0" oninput="recalc()"></div>
+      </div>
+      <div class="calc-row"><span class="calc-label">Total floor area</span><span class="calc-val" id="calcArea">0 m²</span></div>
+      <div class="calc-row"><span class="calc-label">Storage volume</span><span class="calc-val" id="calcVol">0 m³</span></div>
+    </div>
+    <div class="question-row"><div class="question-text">Estimated bale capacity of the warehouse <span class="required-star">*</span></div>
+      <div class="hint">Number of ITN bales the warehouse can hold, stacked to a safe height.</div>
+      <input class="form-input" id="baleCap" type="number" min="0" placeholder="0" oninput="recalc()"></div>
+    <div class="question-row"><div class="question-text">Planned ITN quantity for this district, in bales <span class="required-star">*</span></div>
+      <input class="form-input" id="balePlan" type="number" min="0" placeholder="0" oninput="recalc()"></div>
+    <div class="calc-row"><span class="calc-label">Plan against capacity</span><span class="calc-val" id="calcFit">0%</span></div>
+  </div>
+
+  <!-- SCORED SECTIONS BUILT HERE -->
+  <div id="scored"></div>
+
+  <!-- OUTCOME -->
+  <div class="section-header"><span>9. Assessment Outcome</span><span class="section-max" id="outTotal">0 / 100</span></div>
+  <div class="section-card">
+    <div class="question-row">
+      <div class="question-text">Score band</div>
+      <div class="calc-row"><span class="calc-label">Automatic</span><span class="band b0" id="outBand">Not scored yet</span></div>
+      <div class="hint" style="margin-top:8px;">85 to 100 Highly Recommended · 70 to 84 Recommended · 50 to 69 Suitable After Corrective Actions · below 50 Not Suitable</div>
+    </div>
+    <div class="question-row">
+      <div class="question-text">Assessor recommendation <span class="required-star">*</span></div>
+      <div class="options-group-vertical" id="grp_rec">
+        <label class="radio-option"><input type="radio" name="rec" value="Approve Warehouse" onchange="setRec(this)"> Approve Warehouse</label>
+        <label class="radio-option"><input type="radio" name="rec" value="Approve Subject to Improvements" onchange="setRec(this)"> Approve Subject to Improvements</label>
+        <label class="radio-option"><input type="radio" name="rec" value="Reject Warehouse" onchange="setRec(this)"> Reject Warehouse</label>
+      </div>
+    </div>
+    <div class="question-row">
+      <div class="question-text">Key improvements required <span class="required-star">*</span></div>
+      <div class="hint">What must change before ITNs can be stored here. Enter &ldquo;None&rdquo; if nothing is required.</div>
+      <textarea class="form-textarea" id="improvements" rows="5" placeholder="1) ...&#10;2) ...&#10;3) ..."></textarea>
+    </div>
+  </div>
+
+  <!-- 10. GPS -->
+  <div class="section-header"><span>10. GPS Coordinates</span><span class="section-max" id="gpsBadge">Waiting</span></div>
+  <div class="section-card" id="gpsCard">
+    <div class="guidance"><b>Captured automatically:</b> the location is taken when the form opens. Stand at the main door of the warehouse. Tap Recapture if you have moved, or if the accuracy reading is poor. The assessment cannot be saved until a location is captured.</div>
+    <div class="calc-row"><span class="calc-label">Latitude</span><span class="calc-val" id="gpsLat">&mdash;</span></div>
+    <div class="calc-row"><span class="calc-label">Longitude</span><span class="calc-val" id="gpsLon">&mdash;</span></div>
+    <div class="calc-row"><span class="calc-label">Accuracy</span><span class="calc-val" id="gpsAcc">&mdash;</span></div>
+    <div class="hint" id="gpsMsg" style="margin:12px 0 0;">Waiting for the location.</div>
+    <button class="summary-refresh" onclick="captureGPS()" style="background:var(--blue-dark);border:none;margin-top:10px;">📍 Recapture location</button>
+  </div>
+
+  <div class="submit-wrap"><button class="btn-submit" onclick="submitForm()">✓ SAVE &amp; VIEW SCORE SHEET</button></div>
+
+  <div class="runbar">
+    <div><div class="rl">Running score</div><div class="rv" id="runScore">0 / 100</div></div>
+    <div style="margin-left:auto;"><span class="band b0" id="runBand">Not scored yet</span></div>
+  </div>
+</div>
+
+<div class="tab-page" id="tab-summary">
+  <div class="summary-header"><h2>WAREHOUSE ASSESSMENT SCORE SHEET</h2><p id="sum_date">No assessment saved yet</p>
+    <button class="summary-refresh" onclick="renderSummary()">🔄 Refresh</button></div>
+  <div id="summary-content"><div class="no-data">Complete the assessment and tap "Save &amp; View Score Sheet".</div></div>
+</div>
+
+<div id="confirmModal" class="modal"><div class="modal-content">
+  <div class="modal-header"><span>Confirm Assessment</span><button onclick="closeModal()">×</button></div>
+  <div class="modal-body">Save this warehouse assessment? You can still edit it afterwards.</div>
+  <div class="modal-footer"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-confirm" onclick="doSubmit()">Save &amp; View Score Sheet</button></div>
+</div></div>
+
+</div></div></div>
+
+<script>
+// ==================== REFERENCE DATA ====================
+const DISTRICTS = ["Bo","Bombali","Bonthe","Falaba","Kailahun","Kambia","Karene","Kenema",
+  "Koinadugu","Kono","Moyamba","Port Loko","Pujehun","Tonkolili","Western Area Rural","Western Area Urban"];
+
+// The six scored sections, exactly as in the checklist. Max points in brackets.
+const SECTIONS = [
+  { id:"cap", n:3, title:"Warehouse Capacity and Space", max:25,
+    guidance:"Score on storage capacity against the district ITN allocation, floor space available, expansion or overflow space, and space for receiving and dispatch.",
+    items:[
+      { k:"cap1", t:"Storage capacity adequate for district ITN allocation", max:10 },
+      { k:"cap2", t:"Sufficient floor space available", max:5 },
+      { k:"cap3", t:"Availability of expansion / overflow space", max:3 },
+      { k:"cap4", t:"Adequate space for receiving and dispatch operations", max:4 },
+      { k:"cap5", t:"Adequate aisle spacing for movement and stock inspection", max:3 }
+    ]},
+  { id:"str", n:4, title:"Warehouse Structure and Condition", max:20,
+    guidance:"Score on the structure of the building, whether the roof is leak proof, floor condition, walls, ventilation and lighting.",
+    items:[
+      { k:"str1", t:"Building structurally sound", max:5 },
+      { k:"str2", t:"Roof leak proof", max:5 },
+      { k:"str3", t:"Floor condition suitable (concrete, level, dry)", max:4 },
+      { k:"str4", t:"Walls in good condition", max:2 },
+      { k:"str5", t:"Adequate ventilation", max:2 },
+      { k:"str6", t:"Adequate lighting", max:2 }
+    ]},
+  { id:"sec", n:5, title:"Security", max:20,
+    guidance:"Score on the perimeter fence or wall, controlled access, security guards and the hours they are present, secure doors and locks, and visitor access control with registers.",
+    items:[
+      { k:"sec1", t:"Perimeter fence / wall", max:3 },
+      { k:"sec2", t:"Controlled access system", max:3 },
+      { k:"sec3", t:"Security guards available", max:4 },
+      { k:"sec4", t:"24 hour security presence", max:4 },
+      { k:"sec5", t:"Secure doors and locks", max:3 },
+      { k:"sec6", t:"Visitor access control and registers", max:3 }
+    ]},
+  { id:"env", n:6, title:"Environmental Suitability", max:20,
+    guidance:"Score on flooding risk, drainage, temperature and humidity, protection from direct sunlight, and how clean and dust free the store is.",
+    items:[
+      { k:"env1", t:"Warehouse free from flooding risk", max:8 },
+      { k:"env2", t:"Effective drainage system", max:4 },
+      { k:"env3", t:"Temperature and humidity acceptable", max:4 },
+      { k:"env4", t:"Protection from direct sunlight", max:2 },
+      { k:"env5", t:"Clean and dust free environment", max:2 }
+    ]},
+  { id:"acc", n:7, title:"Accessibility and Logistics", max:10,
+    guidance:"Score on truck access in all seasons, space for loading and unloading bales, access during the rains, and the number of doors a truck can enter, ideally one side for receiving and another for dispatch.",
+    items:[
+      { k:"acc1", t:"Truck accessibility throughout the year", max:5 },
+      { k:"acc2", t:"Loading and unloading space available", max:3 },
+      { k:"acc3", t:"Easy access during rainy season", max:1 },
+      { k:"acc4", t:"Number of doors the truck can enter", max:1 }
+    ]},
+  { id:"ohs", n:8, title:"Occupational Health and Safety", max:5,
+    guidance:"Score on a functional fire extinguisher, a first aid kit, an accessible emergency exit, and safety signage on display.",
+    items:[
+      { k:"ohs1", t:"Fire extinguishers available and functional", max:2 },
+      { k:"ohs2", t:"First aid kit available", max:1 },
+      { k:"ohs3", t:"Emergency exits accessible", max:1 },
+      { k:"ohs4", t:"Safety signage displayed", max:1 }
+    ]}
+];
+
+const BANDS = [
+  { min:85, cls:"b1", label:"Highly Recommended for ITN Storage" },
+  { min:70, cls:"b2", label:"Recommended" },
+  { min:50, cls:"b3", label:"Suitable After Corrective Actions" },
+  { min:0,  cls:"b4", label:"Not Suitable" }
+];
+
+let ans = {}, submitted = false;
+
+// ==================== BUILD ====================
+function buildDistricts(){
+  const d = document.getElementById("whDistrict");
+  d.innerHTML = '<option value="">Select district...</option>' + DISTRICTS.map(x => `<option>${x}</option>`).join('');
+}
+
+function buildScored(){
+  document.getElementById("scored").innerHTML = SECTIONS.map(s => `
+    <div class="section-header"><span>${s.n}. ${s.title}</span><span class="section-max">${s.max} points</span></div>
+    <div class="section-card">
+      <div class="guidance"><b>Assessor guidance:</b> ${s.guidance}</div>
+      ${s.items.map(it => `
+        <div class="crit" id="crit_${it.k}">
+          <div class="crit-head">
+            <div class="crit-text">${it.t} <span class="required-star">*</span></div>
+            <div class="crit-max">max ${it.max}</div>
+          </div>
+          <div class="score-line">
+            <input class="score-input" id="sc_${it.k}" type="number" min="0" max="${it.max}" step="1" inputmode="numeric" placeholder="0"
+              oninput="setScore('${it.k}',${it.max},this)">
+            <span class="score-of">of ${it.max}</span>
+            <div class="score-bar"><div class="score-fill" id="bar_${it.k}"></div></div>
+          </div>
+          <div class="score-err" id="er_${it.k}"></div>
+          <div class="crit-comment" id="cm_${it.k}" style="display:none;">
+            <div class="hint" style="margin:8px 0 6px;">Comment, required when the full score is not given <span class="required-star">*</span></div>
+            <input class="form-input" id="co_${it.k}" type="text" placeholder="Why were points deducted?"
+              oninput="ans['co_${it.k}']=this.value">
+          </div>
+        </div>`).join('')}
+      <div class="total-row"><span class="total-label">${s.title} score</span><span class="total-badge" id="tot_${s.id}">0 / ${s.max}</span></div>
+    </div>`).join('');
+}
+
+// ==================== SCORING ====================
+function setScore(k, max, el){
+  const raw = String(el.value).trim();
+  const err = document.getElementById('er_' + k);
+
+  function reject(msg){
+    err.textContent = msg;
+    err.classList.add('show');
+    el.classList.add('bad');
+    const prev = ans['sc_' + k];
+    el.value = (typeof prev === 'number') ? prev : '';   // keep the last valid score
+    paint(k, max, el.value === '' ? '' : prev);
+    recalc();
+  }
+
+  if (raw !== '') {
+    if (!/^\d+$/.test(raw))
+      return reject('Wrong entry. Enter a whole number between 0 and ' + max + '.');
+    const n = parseInt(raw, 10);
+    if (n > max)
+      return reject('Wrong entry. ' + n + ' is above the maximum. This criterion scores 0 to ' + max + '.');
+  }
+
+  err.classList.remove('show');
+  err.textContent = '';
+  el.classList.remove('bad');
+  const v = raw === '' ? '' : parseInt(raw, 10);
+  ans['sc_' + k] = v;
+  paint(k, max, v);
+  recalc();
+  return;
+}
+
+function paint(k, max, v){
+
+  const fill = document.getElementById('bar_' + k);
+  const crit = document.getElementById('crit_' + k);
+  const cm   = document.getElementById('cm_' + k);
+  const pct  = (v === "" || v === undefined) ? 0 : (v / max) * 100;
+  fill.style.width = pct + '%';
+  fill.style.background = pct === 100 ? 'var(--green)' : pct >= 50 ? 'var(--orange)' : 'var(--red)';
+  crit.className = 'crit' + ((v === "" || v === undefined) ? '' : v === max ? ' full' : v === 0 ? ' zero' : ' part');
+  // a deduction needs a reason
+  cm.style.display = (v !== "" && v !== undefined && v < max) ? 'block' : 'none';
+  if (v === max) { const c = document.getElementById('co_' + k); if (c) { c.value = ''; ans['co_' + k] = ''; } }
+}
+
+function sectionScore(s){
+  return s.items.reduce((t, it) => {
+    const v = ans['sc_' + it.k];
+    return t + (typeof v === 'number' ? v : 0);
+  }, 0);
+}
+function grandTotal(){ return SECTIONS.reduce((t, s) => t + sectionScore(s), 0); }
+function bandFor(total){ return BANDS.find(b => total >= b.min) || BANDS[BANDS.length - 1]; }
+
+function recalc(){
+  SECTIONS.forEach(s => {
+    const el = document.getElementById('tot_' + s.id);
+    if (el) el.textContent = sectionScore(s) + ' / ' + s.max;
+  });
+  const total = grandTotal();
+  const anyScore = SECTIONS.some(s => s.items.some(it => typeof ans['sc_' + it.k] === 'number'));
+  const band = bandFor(total);
+
+  document.getElementById('runScore').textContent = total + ' / 100';
+  document.getElementById('outTotal').textContent = total + ' / 100';
+  ['runBand','outBand'].forEach(id => {
+    const el = document.getElementById(id);
+    el.className = 'band ' + (anyScore ? band.cls : 'b0');
+    el.textContent = anyScore ? band.label : 'Not scored yet';
+  });
+
+  // measurements
+  const L = parseFloat(document.getElementById('dimL').value);
+  const W = parseFloat(document.getElementById('dimW').value);
+  const H = parseFloat(document.getElementById('dimH').value);
+  const area = (!isNaN(L) && !isNaN(W)) ? L * W : null;
+  const vol  = (area !== null && !isNaN(H)) ? area * H : null;
+  document.getElementById('calcArea').textContent = area !== null ? area.toFixed(1) + ' m²' : '0 m²';
+  document.getElementById('calcVol').textContent  = vol  !== null ? vol.toFixed(1)  + ' m³' : '0 m³';
+  ans.area = area; ans.volume = vol;
+
+  /* Plan against capacity = (planned bales / bale capacity) x 100.
+     The planned ITNs as a share of what this warehouse can hold.
+     At or below 100% the warehouse takes the whole allocation. Above 100% it does not. */
+  const cap = parseInt(document.getElementById('baleCap').value);
+  const plan = parseInt(document.getElementById('balePlan').value);
+  const fit = document.getElementById('calcFit');
+  if (!isNaN(cap) && !isNaN(plan) && cap > 0) {
+    const pctFit = Math.round((plan / cap) * 100);
+    fit.textContent = pctFit + '% of warehouse capacity';
+    fit.style.color = pctFit <= 100 ? 'var(--green)' : pctFit <= 125 ? 'var(--orange)' : 'var(--red)';
+    ans.fitPct = pctFit;
+  } else {
+    fit.textContent = '0%'; fit.style.color = 'var(--blue-dark)'; ans.fitPct = null;
+  }
+}
+
+/* digits only, never more than 9. Anything else is called out rather than silently trimmed */
+function phoneInput(el){
+  const raw = String(el.value);
+  const digits = raw.replace(/[^0-9]/g, '');
+  const err = document.getElementById('phoneErr');
+  el.value = digits.slice(0, 9);
+  let msg = '';
+  if (/[^0-9]/.test(raw)) msg = 'Wrong entry. Digits only, with no plus sign, spaces or symbols. Example: 099177283';
+  else if (digits.length > 9) msg = 'Wrong entry. A phone number here is exactly 9 digits. Example: 099177283';
+  if (msg) { err.textContent = msg; err.classList.add('show'); el.classList.add('bad'); }
+  else { err.textContent = ''; err.classList.remove('show'); el.classList.remove('bad'); }
+}
+
+/* ==================== GPS ====================
+   Runs on its own once the assessor has signed in. The Recapture button
+   is there for a poor first fix or if the assessor has moved. */
+function captureGPS(){
+  const badge = document.getElementById('gpsBadge');
+  const msg   = document.getElementById('gpsMsg');
+  const clear = () => ['gpsLat','gpsLon','gpsAcc'].forEach(id => document.getElementById(id).textContent = '\u2014');
+
+  if (!navigator.geolocation) {
+    ans.gps = null; clear();
+    badge.textContent = 'Unavailable'; badge.style.background = 'var(--red)';
+    msg.textContent = 'This browser does not support location capture.';
+    return;
+  }
+
+  badge.textContent = 'Capturing'; badge.style.background = 'var(--blue-dark)';
+  msg.textContent = 'Capturing the location, hold still for a moment.';
+
+  navigator.geolocation.getCurrentPosition(
+    function(pos){
+      const c = pos.coords;
+      ans.gps = { lat:c.latitude, lon:c.longitude, acc:c.accuracy, at:new Date().toLocaleString() };
+      document.getElementById('gpsLat').textContent = c.latitude.toFixed(6);
+      document.getElementById('gpsLon').textContent = c.longitude.toFixed(6);
+      document.getElementById('gpsAcc').textContent = Math.round(c.accuracy) + ' m';
+      badge.textContent = 'Captured'; badge.style.background = 'var(--green)';
+      document.getElementById('gpsCard').classList.remove('miss');
+      msg.textContent = 'Captured ' + ans.gps.at + '.' +
+        (c.accuracy > 50 ? ' Accuracy is weak at this spot. Step into the open and tap Recapture.' : '');
+    },
+    function(err){
+      ans.gps = null; clear();
+      badge.textContent = 'Not captured'; badge.style.background = 'var(--red)';
+      const m = {
+        1:'Location permission was refused. Allow location for this page in the browser settings, then tap Recapture.',
+        2:'The location is not available here. Move outdoors or beside a window, then tap Recapture.',
+        3:'The location took too long to arrive. Tap Recapture to try again.'
+      };
+      msg.textContent = m[err.code] || 'The location could not be captured. Tap Recapture to try again.';
+    },
+    { enableHighAccuracy:true, timeout:20000, maximumAge:0 }
+  );
+}
+
+function setRec(el){
+  ans.recommendation = el.value;
+  document.querySelectorAll('#grp_rec .radio-option').forEach(r => {
+    const i = r.querySelector('input');
+    r.classList.toggle('selected', !!(i && i.checked));
+  });
+}
+
+// ==================== VALIDATION ====================
+function flag(el, msg){
+  document.querySelectorAll('.miss').forEach(e => e.classList.remove('miss'));
+  const row = el.closest('.question-row') || el.closest('.crit');
+  if (row) row.classList.add('miss');
+  el.scrollIntoView({ behavior:'smooth', block:'center' });
+  alert(msg);
+  return false;
+}
+
+function validateForm(){
+  const need = [
+    ['ownerName','Enter the name of the warehouse owner'],
+    ['ownerPhone',"Enter the owner's 9 digit phone number"],
+    ['whDistrict','Select the district'],
+    ['whAddress','Enter the warehouse address'],
+    ['assessorName','Enter the assessor name'],
+    ['assessDate','Select the assessment date'],
+    ['dimL','Enter the warehouse length in metres'],
+    ['dimW','Enter the warehouse width in metres'],
+    ['dimH','Enter the warehouse height in metres'],
+    ['baleCap','Enter the estimated bale capacity'],
+    ['balePlan','Enter the planned ITN quantity in bales']
+  ];
+  for (const [id, msg] of need) {
+    const el = document.getElementById(id);
+    if (!String(el.value).trim()) return flag(el, msg);
+    if (id === 'ownerPhone') {
+      const digits = el.value.replace(/\D/g, '');
+      if (digits.length !== 9)
+        return flag(el, 'The phone number must be exactly 9 digits. ' + digits.length + ' entered. Example: 099177283');
+    }
+  }
+  const email = document.getElementById('ownerEmail');
+  if (email.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()))
+    return flag(email, 'That email address does not look valid. Correct it or leave it blank');
+
+  // every criterion scored, and every deduction explained
+  for (const s of SECTIONS) {
+    for (const it of s.items) {
+      const el = document.getElementById('sc_' + it.k);
+      if (String(el.value).trim() === '') return flag(el, 'Score this criterion: ' + it.t);
+      const v = parseInt(el.value);
+      if (v < it.max) {
+        const c = document.getElementById('co_' + it.k);
+        if (!c.value.trim()) return flag(c, 'Give a reason for the deduction: ' + it.t);
+      }
+    }
+  }
+  if (!ans.recommendation) return flag(document.getElementById('grp_rec'), 'Choose your recommendation for this warehouse');
+  const impr = document.getElementById('improvements');
+  if (!impr.value.trim()) return flag(impr, 'List the key improvements required, or enter "None"');
+
+  // no submission without a GPS fix
+  if (!ans.gps) {
+    document.querySelectorAll('.miss').forEach(e => e.classList.remove('miss'));
+    document.getElementById('gpsCard').classList.add('miss');
+    document.getElementById('gpsBadge').scrollIntoView({ behavior:'smooth', block:'center' });
+    captureGPS();   // try again right away
+    alert('The GPS location has not been captured, so this assessment cannot be saved.\n\n' +
+          'A fresh attempt is running now. If it fails again, allow location access for this page, ' +
+          'step into the open and tap Recapture.');
+    return false;
+  }
+
+  document.querySelectorAll('.miss').forEach(e => e.classList.remove('miss'));
+  return true;
+}
+
+// ==================== SUBMIT / SUMMARY ====================
+function switchTab(tab){
+  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.querySelector(tab === 'entry' ? '.tab-btn:first-child' : '.tab-btn:last-child').classList.add('active');
+  if (tab === 'summary') renderSummary();
+  var scr = document.querySelector('.screen');
+  if (scr) scr.scrollTop = 0; else window.scrollTo(0, 0);
+}
+function submitForm(){ if (validateForm()) document.getElementById('confirmModal').style.display = 'flex'; }
+function closeModal(){ document.getElementById('confirmModal').style.display = 'none'; }
+function doSubmit(){
+  closeModal();
+  ans._submitted = new Date().toLocaleString();
+  ans._identity = {
+    owner: document.getElementById('ownerName').value,
+    phone: document.getElementById('ownerPhone').value,
+    email: document.getElementById('ownerEmail').value,
+    district: document.getElementById('whDistrict').value,
+    address: document.getElementById('whAddress').value,
+    assessor: document.getElementById('assessorName').value,
+    date: document.getElementById('assessDate').value,
+    L: document.getElementById('dimL').value,
+    W: document.getElementById('dimW').value,
+    H: document.getElementById('dimH').value,
+    baleCap: document.getElementById('baleCap').value,
+    balePlan: document.getElementById('balePlan').value
+  };
+  ans._improvements = document.getElementById('improvements').value;
+  submitted = true;
+  renderSummary();
+  switchTab('summary');
+}
+
+function renderSummary(){
+  if (!submitted && !ans._submitted) return;
+  const d = ans._identity || {};
+  const total = grandTotal();
+  const band = bandFor(total);
+  document.getElementById('sum_date').textContent = 'Saved: ' + (ans._submitted || new Date().toLocaleString());
+
+  let html = `<div class="verdict" style="background:${
+      band.cls === 'b1' ? 'linear-gradient(135deg,#1a8a3a,#28a745)' :
+      band.cls === 'b2' ? 'linear-gradient(135deg,#2e8b57,#5cb85c)' :
+      band.cls === 'b3' ? 'linear-gradient(135deg,#b26a00,#fd7e14)' :
+                          'linear-gradient(135deg,#a32620,#dc3545)'}">
+    <div class="vscore">${total}</div>
+    <div class="vof">out of 100 points</div>
+    <div class="vband">${band.label}</div>
+    <div class="vname">${d.address || 'Address not given'} · ${d.district || ''}</div>
+  </div>`;
+
+  html += `<div class="summary-section"><div class="summary-section-title">Score Sheet</div>
+    <table class="sheet"><thead><tr><th>Criteria</th><th class="n">Max</th><th class="n">Achieved</th><th class="n">%</th></tr></thead><tbody>`;
+  SECTIONS.forEach(s => {
+    const got = sectionScore(s);
+    const pct = Math.round(got / s.max * 100);
+    const cls = pct >= 85 ? 'ok' : pct >= 50 ? 'mid' : 'low';
+    html += `<tr><td>${s.title}</td><td class="n">${s.max}</td><td class="n">${got}</td>
+      <td class="n"><span class="pctpill ${cls}">${pct}%</span></td></tr>`;
+  });
+  html += `<tr class="tot"><td>Total</td><td class="n">100</td><td class="n">${total}</td>
+    <td class="n">${total}%</td></tr></tbody></table></div>`;
+
+  html += `<div class="summary-section"><div class="summary-section-title">Warehouse</div>
+    ${row('Owner', d.owner)}${row('Phone', d.phone)}${row('Email', d.email || 'Not given')}
+    ${row('District', d.district)}${row('Warehouse address', d.address)}
+    ${row('Assessor', d.assessor)}${row('Assessment date', prettyDate(d.date))}
+  </div>`;
+
+  const area = ans.area, vol = ans.volume;
+  html += `<div class="summary-section"><div class="summary-section-title">Capacity</div>
+    ${row('Dimensions', (d.L||'0') + ' × ' + (d.W||'0') + ' × ' + (d.H||'0') + ' m')}
+    ${row('Floor area', area !== null && area !== undefined ? area.toFixed(1) + ' m²' : '0 m²')}
+    ${row('Storage volume', vol !== null && vol !== undefined ? vol.toFixed(1) + ' m³' : '0 m³')}
+    ${row('Estimated bale capacity', d.baleCap)}
+    ${row('Planned bales for district', d.balePlan)}
+    ${row('Plan against capacity', ans.fitPct !== null && ans.fitPct !== undefined ? ans.fitPct + '% of warehouse capacity' : '0%')}
+  </div>`;
+
+  const g = ans.gps;
+  html += `<div class="summary-section"><div class="summary-section-title">GPS Location</div>
+    ${row('Latitude', g ? g.lat.toFixed(6) : 'Not captured')}
+    ${row('Longitude', g ? g.lon.toFixed(6) : 'Not captured')}
+    ${row('Accuracy', g ? Math.round(g.acc) + ' m' : 'Not captured')}
+    ${row('Captured at', g ? g.at : 'Not captured')}
+  </div>`;
+
+  // deductions, so the reasons travel with the score
+  const cuts = [];
+  SECTIONS.forEach(s => s.items.forEach(it => {
+    const v = ans['sc_' + it.k];
+    if (typeof v === 'number' && v < it.max) cuts.push([it.t, v + '/' + it.max, ans['co_' + it.k] || '']);
+  }));
+  html += `<div class="summary-section"><div class="summary-section-title">Points Deducted (${cuts.length})</div>`;
+  html += cuts.length
+    ? cuts.map(c => `<div class="summary-item"><span class="summary-label">${c[0]}</span><span class="summary-value"><b>${c[1]}</b><br>${c[2]}</span></div>`).join('')
+    : '<div class="impr">Full marks on every criterion.</div>';
+  html += `</div>`;
+
+  html += `<div class="summary-section"><div class="summary-section-title">Recommendation</div>
+    ${row('Assessor recommendation', ans.recommendation || 'Not given')}
+    <div class="summary-item" style="display:block;"><span class="summary-label">Key improvements required</span></div>
+    <div class="impr">${(ans._improvements || 'None stated').replace(/[<>&]/g, m => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[m]))}</div>
+  </div>`;
+
+  document.getElementById('summary-content').innerHTML = html;
+}
+/* show a date as 24/07/2026 rather than the stored 2026-07-24 */
+function prettyDate(iso){
+  if (!iso) return '';
+  const p = String(iso).split('-');
+  return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : iso;
+}
+
+function row(label, val){
+  return `<div class="summary-item"><span class="summary-label">${label}</span><span class="summary-value">${(val === undefined || val === null || val === '') ? 'Not given' : val}</span></div>`;
+}
+
+// ==================== INIT ====================
+buildDistricts();
+buildScored();
+document.getElementById('assessDate').value = new Date().toISOString().split('T')[0];
+recalc();
+</script>
+
+<script>
+/* ==================== SIGN IN ====================
+   Add or change users here. Three slots; fill the empty two when ready. */
+var USERS = [
+  { username: "msk", password: "1234", name: "Mohamed Sillah Kanu" },
+  { username: "",    password: "",     name: "" },   // second user, fill in
+  { username: "",    password: "",     name: "" }    // third user, fill in
+];
+
+(function(){
+  var KEY = "mocm_user";
+  function currentUser(){ try { return JSON.parse(sessionStorage.getItem(KEY)); } catch(e){ return null; } }
+
+  var css = document.createElement('style');
+  css.textContent =
+    '#lgOverlay{position:fixed;inset:0;z-index:3000;background:linear-gradient(160deg,#2b5f8a,#1e4a6d);' +
+    'display:flex;align-items:center;justify-content:center;padding:20px;font-family:inherit;}' +
+    '#lgCard{background:#fff;border-radius:20px;width:100%;max-width:330px;padding:26px 22px 24px;text-align:center;' +
+    'box-shadow:0 24px 48px rgba(0,0,0,.3);}' +
+    '#lgCard .lgIcon{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#2b5f8a,#3b78a8);' +
+    'margin:0 auto 14px;display:flex;align-items:center;justify-content:center;}' +
+    '#lgCard .lgIcon svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;}' +
+    '#lgCard h3{font-size:17px;font-weight:800;color:#2b5f8a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}' +
+    '#lgCard p{font-size:12px;color:#6c7a8a;margin-bottom:18px;}' +
+    '#lgCard input{width:100%;padding:13px 14px;border:1.5px solid #e0e6ed;border-radius:12px;font-size:15px;' +
+    'font-family:inherit;margin-bottom:10px;}' +
+    '#lgCard input:focus{border-color:#3b78a8;outline:2px solid rgba(59,120,168,.2);}' +
+    '#lgErr{color:#dc3545;font-size:12px;font-weight:600;min-height:16px;margin-bottom:8px;display:none;}' +
+    '#lgBtn{width:100%;padding:14px;background:#2b5f8a;color:#fff;border:none;border-radius:12px;' +
+    'font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;}' +
+    '.lgWho{font-size:10.5px;font-weight:600;letter-spacing:.4px;opacity:.9;margin-top:8px;}' +
+    '.lgWho a{color:#ffc107;text-decoration:underline;cursor:pointer;margin-left:8px;}' +
+    '.lgStamp{background:#e7f3ff;border:1px solid #c9dff2;border-radius:12px;padding:11px 14px;margin:12px;}' +
+    '.lgStamp b{color:#2b5f8a;}' +
+    '@keyframes lgShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}';
+  document.head.appendChild(css);
+
+  function showWho(){
+    var u = currentUser(); if(!u) return;
+    var host = document.querySelector('.page-header');
+    if(!host || host.querySelector('.lgWho')) return;
+    var d = document.createElement('div');
+    d.className = 'lgWho';
+    d.innerHTML = 'Signed in: ' + u.name + ' (' + u.username + ')<a id="lgOut">Sign out</a>';
+    host.appendChild(d);
+    d.querySelector('#lgOut').onclick = function(){ sessionStorage.removeItem(KEY); location.reload(); };
+  }
+
+  /* the location prompt should not fight with the sign in card */
+  function startGPS(){
+    if (typeof window.captureGPS === 'function') setTimeout(window.captureGPS, 400);
+  }
+
+  function gate(){
+    if (currentUser()) { showWho(); startGPS(); return; }
+    var o = document.createElement('div');
+    o.id = 'lgOverlay';
+    o.innerHTML =
+      '<div id="lgCard">' +
+      '<div class="lgIcon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/>' +
+      '<path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>' +
+      '<h3>Sign in</h3><p>ITN Mass Campaign 2027 · Warehouse assessment</p>' +
+      '<input id="lgUser" type="text" placeholder="Username" autocomplete="off" autocapitalize="none">' +
+      '<input id="lgPass" type="password" placeholder="Password">' +
+      '<div id="lgErr">Wrong username or password.</div>' +
+      '<button id="lgBtn">Sign in</button></div>';
+    (document.querySelector('.screen') || document.body).appendChild(o);
+    var uEl = o.querySelector('#lgUser'), pEl = o.querySelector('#lgPass'), err = o.querySelector('#lgErr');
+    function attempt(){
+      var u = uEl.value.trim().toLowerCase(), p = pEl.value;
+      for (var i = 0; i < USERS.length; i++) {
+        var acc = USERS[i];
+        if (acc.username && acc.username.toLowerCase() === u && acc.password === p) {
+          sessionStorage.setItem(KEY, JSON.stringify({ username: acc.username, name: acc.name, at: new Date().toLocaleString() }));
+          o.remove(); showWho(); startGPS(); return;
+        }
+      }
+      err.style.display = 'block';
+      var card = o.querySelector('#lgCard');
+      card.style.animation = 'lgShake .3s';
+      setTimeout(function(){ card.style.animation = ''; }, 320);
+      pEl.value = ''; uEl.focus();
+    }
+    o.querySelector('#lgBtn').onclick = attempt;
+    pEl.onkeydown = function(e){ if (e.key === 'Enter') attempt(); };
+    uEl.onkeydown = function(e){ if (e.key === 'Enter') pEl.focus(); };
+    setTimeout(function(){ uEl.focus(); }, 60);
+  }
+
+  function stamp(){
+    var u = currentUser(); if(!u) return;
+    var host = document.getElementById('summary-content');
+    if(!host || host.querySelector('.lgStamp')) return;
+    var d = document.createElement('div');
+    d.className = 'lgStamp';
+    d.innerHTML = 'Assessed and submitted by <b>' + u.name + '</b> (' + u.username + ')';
+    host.insertBefore(d, host.firstChild);
+  }
+  var _rs = window.renderSummary;
+  window.renderSummary = function(){ var r = _rs.apply(this, arguments); stamp(); return r; };
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gate);
+  else gate();
+})();
+</script>
+</body>
+</html>
