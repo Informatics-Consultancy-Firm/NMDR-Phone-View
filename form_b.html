@@ -67,6 +67,14 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
 .question-num { color:var(--blue); margin-right:5px; font-weight:700; }
 .required-star { color:var(--red); margin-left:4px; font-size:12px; }
 
+/* COUNT BOXES */
+.count-hint { font-size:12.5px; color:var(--text-light); margin-top:8px; font-weight:500; }
+.count-note { display:none; margin-top:8px; background:#fdecea; border:1px solid #f5c2bd; border-radius:10px; padding:9px 12px; color:var(--red); font-size:12.5px; font-weight:600; }
+.form-input.bad-entry { border-color:var(--red); box-shadow:0 0 0 3px rgba(220,53,69,.12); }
+
+/* FOLLOW UP ROW */
+.followup-row { border-left:3px solid var(--soft-bg); padding-left:12px; }
+
 /* RADIO OPTIONS */
 .options-group-vertical { display:flex; flex-direction:column; gap:10px; margin-top:6px; }
 .radio-option-vertical {
@@ -103,7 +111,9 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
 /* MEMBER CARD */
 .member-card { background:#f8fafc; border:1.5px solid var(--border); border-radius:14px; padding:16px; margin-bottom:14px; }
 .member-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--border); font-weight:700; color:var(--blue-dark); font-size:14px; }
-.remove-btn { color:var(--red); cursor:pointer; background:#fff0f0; border:1px solid #ffcccc; border-radius:8px; font-size:15px; font-weight:700; padding:6px 14px; min-height:40px; }
+.member-tag { color:var(--text-light); font-size:11.5px; font-weight:600; }
+.train-card { background:white; border:1px solid var(--border); border-radius:12px; padding:13px; margin-bottom:10px; }
+.train-head { font-weight:700; color:var(--blue); font-size:12px; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:12px; }
 .add-btn { background:var(--blue); color:white; border:none; border-radius:12px; padding:15px 20px; font-weight:700; font-size:15px; cursor:pointer; width:100%; margin-top:10px; transition:background 0.2s; min-height:52px; }
 .add-btn:active { background:var(--blue-dark); }
 
@@ -154,6 +164,7 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
 .summary-item:last-child { border-bottom:none; }
 .summary-item-label { font-size:13px; color:var(--text-dark); flex:1; line-height:1.4; }
 .summary-item-val { font-size:12px; font-weight:600; padding:3px 11px; border-radius:20px; white-space:nowrap; flex-shrink:0; }
+.summary-sub { font-size:12px; color:var(--text-light); padding:0 14px 10px 26px; }
 .val-sufficient { background:#d4edda; color:#155724; }
 .val-notsufficient { background:#fff3cd; color:#856404; }
 .val-stockout { background:#f8d7da; color:#721c24; }
@@ -169,7 +180,7 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
 
 .trainee-table { width:100%; border-collapse:collapse; font-size:13px; }
 .trainee-table th { background:var(--soft-bg); color:var(--blue-dark); padding:9px 10px; text-align:left; font-weight:700; border-bottom:2px solid var(--border); }
-.trainee-table td { padding:8px 10px; border-bottom:1px solid var(--border); }
+.trainee-table td { padding:8px 10px; border-bottom:1px solid var(--border); vertical-align:top; }
 
 .overall-rating { text-align:center; padding:24px 16px; }
 .rating-label { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-light); margin-bottom:10px; }
@@ -205,13 +216,13 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
       <img src="ICF-SL.jpg" class="header-logo" alt="ICF-SL" onerror="this.style.display='none'">
       <img src="NMCP.png" class="header-logo" alt="NMCP" onerror="this.style.display='none'">
     </div>
-    <div class="header-org">National Malaria Control Programme — Ministry of Health, Sierra Leone</div>
+    <div class="header-org">National Malaria Control Programme, Ministry of Health, Sierra Leone</div>
     <div class="header-title">MOCM/OTSS+ Checklist</div>
     <div class="header-sub">FORM B: Checklist for Assessing HF Readiness</div>
   </div>
   <div class="form-title">FORM B: CHECKLIST FOR ASSESSING HF READINESS</div>
 
-  <!-- DEMOGRAPHICS: Region > District > Chiefdom > PHU > Facility Type -->
+  <!-- DEMOGRAPHICS: District > Chiefdom > PHU > Facility Type -->
   <div class="demographics">
     <h3>Facility Demographics</h3>
     <div class="question-row">
@@ -219,7 +230,7 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
       <select class="form-select" id="district" onchange="updateChiefdoms()"><option>Bo</option></select>
     </div>
     <div class="question-row">
-      <div class="question-text">Chiefdom / Zone / City <span class="required-star">*</span></div>
+      <div class="question-text">Chiefdom <span class="required-star">*</span></div>
       <select class="form-select" id="chiefdom" onchange="updatePHUs()" disabled><option value="">Select District first</option></select>
     </div>
     <div class="question-row">
@@ -245,35 +256,45 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
 
   <div class="subsection-header">1.1.1 Training on Malaria Case Management</div>
   <div class="section-card"><div class="card-body">
+    <div class="question-row">
+      <div class="question-text"><span class="question-num">1.1.1</span>How many staff have received training on malaria case management?</div>
+      <input class="form-input" id="malariaTrain_count" type="number" min="0" max="50" step="1" placeholder="Type a number" oninput="onStaffCount('malariaTrain')">
+      <div class="count-note" id="malariaTrain_note"></div>
+      <div class="count-hint" id="malariaTrain_hint">Type the number and one card will open for each member of staff.</div>
+    </div>
     <div id="dynamic_malariaTrain"></div>
-    <button class="add-btn" onclick="addRow('malariaTrain')">+ Add Another Trainee</button>
   </div></div>
 
   <div class="subsection-header">1.1.2 Training on HMIS</div>
   <div class="section-card"><div class="card-body">
+    <div class="question-row">
+      <div class="question-text"><span class="question-num">1.1.2</span>How many staff have received training on HMIS?</div>
+      <input class="form-input" id="hmisTrain_count" type="number" min="0" max="50" step="1" placeholder="Type a number" oninput="onStaffCount('hmisTrain')">
+      <div class="count-note" id="hmisTrain_note"></div>
+      <div class="count-hint" id="hmisTrain_hint">Type the number and one card will open for each member of staff.</div>
+    </div>
     <div id="dynamic_hmisTrain"></div>
-    <button class="add-btn" onclick="addRow('hmisTrain')">+ Add Another Trainee</button>
   </div></div>
 
-  <div class="subsection-header">1.2 Reporting Tools Readiness</div>
+  <div class="subsection-header">1.2 Reporting Forms Readiness</div>
   <div class="section-card"><div class="card-body" id="sec_reporting"></div></div>
-  <div class="score-row"><span class="score-label">Reporting Tools Score</span><span class="score-badge" id="score_reporting">0/11</span></div>
+  <div class="score-row"><span class="score-label">Reporting Forms Score</span><span class="score-badge" id="score_reporting">0/22</span></div>
 
   <div class="subsection-header">1.4 Malaria Reference Material</div>
   <div class="section-card"><div class="card-body" id="sec_reference"></div></div>
-  <div class="score-row"><span class="score-label">Reference Material Score</span><span class="score-badge" id="score_reference">0/7</span></div>
+  <div class="score-row"><span class="score-label">Reference Material Score</span><span class="score-badge" id="score_reference">0/14</span></div>
 
   <!-- ====== SECTION 2 ====== -->
   <div class="section-header">2. Supply Chain Readiness</div>
-  <div class="subsection-header">2.1–2.12 Availability of Antimalarial Drugs</div>
+  <div class="subsection-header">2.1 to 2.11 Availability of Antimalarial Commodities</div>
   <div class="section-card"><div class="card-body" id="sec_antimalarial"></div></div>
-  <div class="score-row"><span class="score-label">Antimalarial Supply Score</span><span class="score-badge" id="score_antimalarial">0/12</span></div>
+  <div class="score-row"><span class="score-label">Antimalarial Supply Score</span><span class="score-badge" id="score_antimalarial">0/22</span></div>
 
   <!-- ====== SECTION 3 ====== -->
   <div class="section-header">3. Essential Drugs</div>
-  <div class="subsection-header">3.1–3.11 Availability of Essential Drugs</div>
+  <div class="subsection-header">3.1 to 3.11 Availability of Essential Drugs</div>
   <div class="section-card"><div class="card-body" id="sec_essential"></div></div>
-  <div class="score-row"><span class="score-label">Essential Drugs Score</span><span class="score-badge" id="score_essential">0/11</span></div>
+  <div class="score-row"><span class="score-label">Essential Drugs Score</span><span class="score-badge" id="score_essential">0/22</span></div>
 
   <!-- ====== SECTION 4 ====== -->
   <div class="section-header">4. Pharmacy Operations &amp; Commodity Security</div>
@@ -287,6 +308,7 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
   <!-- ====== SECTION 6 ====== -->
   <div class="section-header">6. Inpatient Services &amp; Referral Systems</div>
   <div class="section-card"><div class="card-body" id="sec_referral"></div></div>
+  <div class="score-row"><span class="score-label">Inpatient &amp; Referral Score</span><span class="score-badge" id="score_referral">0/6</span></div>
 
   <!-- ====== SECTION 7 ====== -->
   <div class="section-header">7. Waste Management</div>
@@ -315,7 +337,7 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
   </div></div>
 
   <!-- ====== SECTION 12-14 ====== -->
-  <div class="section-header">12–14. Gap Analysis &amp; Previous Visit Follow-up</div>
+  <div class="section-header">12 to 14. Gap Analysis &amp; Previous Visit Follow-up</div>
   <div class="section-card"><div class="card-body">
     <div class="question-row">
       <div class="question-text">12. Biggest gap(s) identified during the last HF visit</div>
@@ -332,7 +354,7 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
   </div></div>
 
   <!-- ====== SECTION 15-17 ====== -->
-  <div class="section-header">15–17. Current Visit Gaps &amp; Feedback</div>
+  <div class="section-header">15 to 17. Current Visit Gaps &amp; Feedback</div>
   <div class="section-card"><div class="card-body">
     <div class="question-row">
       <div class="question-text">15. Biggest gap(s) identified today</div>
@@ -351,20 +373,13 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
   <!-- ====== SECTION 18 - ACTION PLAN TABLE ====== -->
   <div class="section-header">18. Action Plan for Addressing Gaps</div>
   <div class="section-card"><div class="card-body">
-    <div style="overflow-x:auto;">
-      <table class="action-table" id="actionPlanTable">
-        <thead><tr>
-          <th>Identified Gap</th>
-          <th>Recommended Action</th>
-          <th>Responsible Person(s)</th>
-          <th>Timeline</th>
-          <th>Status</th>
-          <th style="width:36px;"></th>
-        </tr></thead>
-        <tbody id="actionPlanBody"></tbody>
-      </table>
+    <div class="question-row">
+      <div class="question-text"><span class="question-num">18.1</span>How many gaps were identified?</div>
+      <input class="form-input" id="gap_count" type="number" min="0" max="20" step="1" placeholder="Type a number" oninput="onGapCount()">
+      <div class="count-note" id="gap_note"></div>
+      <div class="count-hint" id="gap_hint">Type the number and one block will open for each gap.</div>
     </div>
-    <button class="add-row-btn" onclick="addActionRow()">+ Add Row</button>
+    <div id="actionPlanBody"></div>
     <div class="question-row" style="margin-top:16px;">
       <div class="question-text">Supervisor Comments</div>
       <textarea class="form-textarea" id="q_supcomments" rows="3" placeholder="Supervisor comments..." oninput="ans.supcomments=this.value"></textarea>
@@ -372,7 +387,7 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
   </div></div>
 
   <div class="px20">
-    <button class="btn-submit" onclick="submitForm()">✅ SAVE &amp; VIEW SUMMARY</button>
+    <button class="btn-submit" onclick="submitForm()">✅ SUBMIT DATA</button>
   </div>
 </div>
 <!-- END DATA ENTRY TAB -->
@@ -381,11 +396,11 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
 <!-- ==================== SUMMARY TAB ==================== -->
 <div class="tab-page" id="tab-summary">
   <div class="summary-header">
-    <h2>FORM B — SUBMISSION SUMMARY</h2>
+    <h2>FORM B, SUBMISSION SUMMARY</h2>
     <p id="sum_date">No submission yet</p>
     <button class="summary-refresh" onclick="renderSummary()">🔄 Refresh Summary</button>
   </div>
-  <div id="summary-content"><div class="no-data" style="padding:40px;">Complete the data entry form and click "Save &amp; View Summary" to see results here.</div></div>
+  <div id="summary-content"><div class="no-data" style="padding:40px;">Complete the data entry form and press Submit Data to see results here.</div></div>
 </div>
 <!-- END SUMMARY TAB -->
 
@@ -393,10 +408,10 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
 <div id="confirmModal" class="modal">
   <div class="modal-content">
     <div class="modal-header"><span>Confirm Submission</span><button onclick="closeModal()">×</button></div>
-    <div class="modal-body">Are you sure you want to save this form? You can still edit it after saving.</div>
+    <div class="modal-body">Are you sure you want to submit this data? You can still edit it afterwards.</div>
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-confirm" onclick="doSubmit()">Save &amp; View Summary</button>
+      <button class="btn-confirm" onclick="doSubmit()">Submit Data</button>
     </div>
   </div>
 </div>
@@ -406,10 +421,36 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
 const ans = {};
 let submitted = false;
 
-const dynamicTables = { malariaTrain:[], hmisTrain:[] };
+/* one staff card per member trained, each card holding its own trainings */
+const trainStaff = { malariaTrain:[], hmisTrain:[] };
+const TRAIN_LABEL = { malariaTrain:'malaria case management', hmisTrain:'HMIS' };
+const MAX_TRAINED_STAFF = 50;
+const MAX_TRAININGS = 10;
 let actionRows = [];
 
 const DISTRICT = "Bo";   // MOCM pilot runs in Bo District only
+
+const MONTHS = ["January","February","March","April","May","June",
+                "July","August","September","October","November","December"];
+
+// ===================== CADRE LIST =====================
+// One list, used by every cadre field in this form. Keep "Other" last.
+const CADRES = [
+  "Community Health Officer (CHO)",
+  "Community Health Technician (CHT)",
+  "Community Health Assistant (CHA)",
+  "State Registered Nurse (SRN)",
+  "State Enrolled Community Health Nurse (SECHN)",
+  "Registered Midwife",
+  "MCH Aide (MCHA)",
+  "Laboratory Technician",
+  "Other"
+];
+function cadreOptions(selected){
+  return '<option value="">Select cadre...</option>' + CADRES.map(function(c){
+    return '<option value="' + escOpt(c) + '"' + (c === selected ? ' selected' : '') + '>' + escOpt(c) + '</option>';
+  }).join('');
+}
 
 // ===================== FACILITY LIST =====================
 // MOCM pilot: 10 selected facilities, Bo District.
@@ -506,58 +547,114 @@ function resetFrom(level){
 function escOpt(s){ return String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
 
 // ===================== SECTION DEFINITIONS =====================
+/* 1.2 and 1.4 are two part questions: the first answer is worth 1 point,
+   the follow up is worth another, and the follow up only appears on Yes. */
 const secReporting = [
-  {k:"r1",n:"1.2.1",t:"IMNCI",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"r2",n:"1.2.2",t:"Under-2 register (EPI Register)",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"r3",n:"1.2.3",t:"Drug Dispensing Register",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"r4",n:"1.2.4",t:"Above-5 or General register",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"r5",n:"1.2.5",t:"MFRHC",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"r6",n:"1.2.6",t:"Stock card/ICC",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"r7",n:"1.2.7",t:"ITN register",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"r8",n:"1.2.7b",t:"HF1 – Morbidity Register",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"r9",n:"1.2.8",t:"HF2 – Child Preventive Services",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"r10",n:"1.2.9",t:"HF3 – Reproductive Health Services",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"r11",n:"1.2.10",t:"HF4 – Community Services",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"r1",n:"1.2.1",t:"IMNCI register",
+   q:"Is the IMNCI register (Integrated Management of New Born and Childhood Illness) available?",
+   f:"Can it serve for up to six months?"},
+  {k:"r2",n:"1.2.2",t:"Under-2 register (EPI Register)",
+   q:"Is the Under-2 register (EPI Register) available?", f:"Can it serve for up to six months?"},
+  {k:"r3",n:"1.2.3",t:"Drug Dispensing Register",
+   q:"Is the Drug Dispensing Register available?", f:"Can it serve for up to six months?"},
+  {k:"r4",n:"1.2.4",t:"Above-5 or General register",
+   q:"Is the Above-5 or General register available?", f:"Can it serve for up to six months?"},
+  {k:"r5",n:"1.2.5",t:"MFRHC",
+   q:"Is the MFRHC available?", f:"Can it serve for up to six months?"},
+  {k:"r6",n:"1.2.6",t:"Stock card / ICC",
+   q:"Is the Stock card / ICC available?", f:"Can it serve for up to six months?"},
+  {k:"r7",n:"1.2.7",t:"ITN register",
+   q:"Is the ITN register available?", f:"Can it serve for up to six months?"},
+  {k:"r8",n:"1.2.8",t:"HF1 Morbidity Register",
+   q:"Is the HF1 Morbidity Register available?", f:"Can it serve for up to six months?"},
+  {k:"r9",n:"1.2.9",t:"HF2 Child Preventive Services form",
+   q:"Is the HF2 Child Preventive Services form available?", f:"Can it serve for up to six months?"},
+  {k:"r10",n:"1.2.10",t:"HF3 Reproductive Health Services form",
+   q:"Is the HF3 Reproductive Health Services form available?", f:"Can it serve for up to six months?"},
+  {k:"r11",n:"1.2.11",t:"HF4 Community Services form",
+   q:"Is the HF4 Community Services form available?", f:"Can it serve for up to six months?"},
 ];
 const secReference = [
-  {k:"ref1",n:"1.4.1",t:"Most recent Malaria treatment guidelines for case management present",opts:["Yes","No"],scored:true},
-  {k:"ref2",n:"1.4.2",t:"Most recent algorithms for case management present in OPD",opts:["Yes","No"],scored:true},
-  {k:"ref3",n:"1.4.3",t:"Most recent Job Aids on Malaria Case Management",opts:["Yes","No"],scored:true},
-  {k:"ref4",n:"1.4.5",t:"Is there an IV holder in the health facility?",opts:["Yes","No"],scored:true},
-  {k:"ref5",n:"1.4.6",t:"Updated IMNCI guidelines and chart note for classification of malaria",opts:["Yes","No"],scored:true},
-  {k:"ref6",n:"1.4.7",t:"Most recent IMNCI Chart Booklet for diagnosis and management",opts:["Yes","No"],scored:true},
-  {k:"ref7",n:"1.4.8",t:"Maternal and child health handbook",opts:["Yes","No"],scored:true},
+  {k:"ref1",n:"1.4.1",t:"Most recent malaria treatment guidelines for case management",
+   q:"Do you have the most recent malaria treatment guidelines for case management?",
+   f:"Have you been trained on it?"},
+  {k:"ref2",n:"1.4.2",t:"Most recent algorithms for case management in OPD",
+   q:"Do you have the most recent algorithms for case management in OPD?",
+   f:"Have you been trained on it?"},
+  {k:"ref3",n:"1.4.3",t:"Most recent job aids on malaria case management",
+   q:"Do you have the most recent job aids on malaria case management?",
+   f:"Have you been trained on it?"},
+  {k:"ref4",n:"1.4.4",t:"IV holder",
+   q:"Do you have an IV holder in the health facility?",
+   f:"Have you been trained on it?"},
+  {k:"ref5",n:"1.4.5",t:"Updated IMNCI guidelines and chart note for classification of malaria",
+   q:"Do you have the updated IMNCI guidelines and chart note for classification of malaria?",
+   f:"Have you been trained on it?"},
+  {k:"ref6",n:"1.4.6",t:"Most recent IMNCI Chart Booklet",
+   q:"Do you have the most recent IMNCI Chart Booklet for diagnosis and management?",
+   f:"Have you been trained on it?"},
+  {k:"ref7",n:"1.4.7",t:"Maternal and child health handbook",
+   q:"Do you have the maternal and child health handbook?",
+   f:"Have you been trained on it?"},
 ];
+/* every parent key that carries a follow up */
+const TWO_PART = {};
+secReporting.concat(secReference).forEach(function(q){ TWO_PART[q.k] = q; });
+
 const secAntimalarial = [
-  {k:"a2",n:"2.2",t:"ACT Infant (6 tabs)",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"a3",n:"2.3",t:"ACT Toddler (12 tabs)",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"a4",n:"2.4",t:"ACT Adolescent (18 tabs)",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"a5",n:"2.5",t:"ACT Adult (24 tabs)",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"a6",n:"2.6",t:"RDTs",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"a7",n:"2.7",t:"SP – IPTp 500mg/25mg",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"a8",n:"2.8",t:"SP – IPTi 250mg/12.5mg (Dispersible)",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"a9",n:"2.9",t:"ITNs",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"a10",n:"2.10",t:"Artesunate inj",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"a11",n:"2.11",t:"Artesunate suppositories",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"a12",n:"2.12",t:"Malaria Vaccine (RTS,S)",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"a1",n:"2.1",t:"Malaria RDT (general availability)",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"a1",n:"2.1",t:"Malaria RDTs",
+   q:"Are malaria RDTs available?", u:"tests", f:"Will this take you up to the next supply?"},
+  {k:"a2",n:"2.2",t:"ACT Infant (6 tabs)",
+   q:"Is ACT Infant (6 tabs) available?", u:"doses", f:"Will this take you up to the next supply?"},
+  {k:"a3",n:"2.3",t:"ACT Toddler (12 tabs)",
+   q:"Is ACT Toddler (12 tabs) available?", u:"doses", f:"Will this take you up to the next supply?"},
+  {k:"a4",n:"2.4",t:"ACT Adolescent (18 tabs)",
+   q:"Is ACT Adolescent (18 tabs) available?", u:"doses", f:"Will this take you up to the next supply?"},
+  {k:"a5",n:"2.5",t:"ACT Adult (24 tabs)",
+   q:"Is ACT Adult (24 tabs) available?", u:"doses", f:"Will this take you up to the next supply?"},
+  {k:"a6",n:"2.6",t:"SP for IPTp 500mg/25mg",
+   q:"Is SP for IPTp 500mg/25mg available?", u:"doses", f:"Will this take you up to the next supply?"},
+  {k:"a7",n:"2.7",t:"SP for IPTi 250mg/12.5mg (Dispersible)",
+   q:"Is SP for IPTi 250mg/12.5mg (Dispersible) available?", u:"doses", f:"Will this take you up to the next supply?"},
+  {k:"a8",n:"2.8",t:"ITNs",
+   q:"Are ITNs available?", u:"nets", f:"Will this take you up to the next supply?"},
+  {k:"a9",n:"2.9",t:"Artesunate injection",
+   q:"Is Artesunate injection available?", u:"vials", f:"Will this take you up to the next supply?"},
+  {k:"a10",n:"2.10",t:"Artesunate suppositories",
+   q:"Are Artesunate suppositories available?", u:"suppositories", f:"Will this take you up to the next supply?"},
+  {k:"a11",n:"2.11",t:"Malaria Vaccine (RTS,S)",
+   q:"Is the Malaria Vaccine (RTS,S) available?", u:"doses", f:"Will this take you up to the next supply?"},
 ];
 const secEssential = [
-  {k:"e1",n:"3.1",t:"Paracetamol",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"e2",n:"3.2",t:"Clotrimazoles",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"e3",n:"3.3",t:"Amoxicillin",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"e4",n:"3.4",t:"Fefol/folic acid",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"e5",n:"3.5",t:"ORS",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"e6",n:"3.6",t:"5% Glucose Solution",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"e7",n:"3.7",t:"10% Glucose Solution",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"e8",n:"3.8",t:"50% Glucose Solution",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"e9",n:"3.9",t:"Injectable Diazepam",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"e10",n:"3.10",t:"IV Ringers Lactate",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
-  {k:"e11",n:"3.11",t:"IV Normal Saline",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"e1",n:"3.1",t:"Paracetamol",
+   q:"Is Paracetamol available?", u:"tablets", f:"Will this take you up to the next supply?"},
+  {k:"e2",n:"3.2",t:"Clotrimazoles",
+   q:"Are Clotrimazoles available?", u:"tablets", f:"Will this take you up to the next supply?"},
+  {k:"e3",n:"3.3",t:"Amoxicillin",
+   q:"Is Amoxicillin available?", u:"tablets", f:"Will this take you up to the next supply?"},
+  {k:"e4",n:"3.4",t:"Fefol / folic acid",
+   q:"Is Fefol / folic acid available?", u:"tablets", f:"Will this take you up to the next supply?"},
+  {k:"e5",n:"3.5",t:"ORS",
+   q:"Is ORS available?", u:"sachets", f:"Will this take you up to the next supply?"},
+  {k:"e6",n:"3.6",t:"5% Glucose Solution",
+   q:"Is 5% Glucose Solution available?", u:"bottles", f:"Will this take you up to the next supply?"},
+  {k:"e7",n:"3.7",t:"10% Glucose Solution",
+   q:"Is 10% Glucose Solution available?", u:"bottles", f:"Will this take you up to the next supply?"},
+  {k:"e8",n:"3.8",t:"50% Glucose Solution",
+   q:"Is 50% Glucose Solution available?", u:"bottles", f:"Will this take you up to the next supply?"},
+  {k:"e9",n:"3.9",t:"Injectable Diazepam",
+   q:"Is Injectable Diazepam available?", u:"ampoules", f:"Will this take you up to the next supply?"},
+  {k:"e10",n:"3.10",t:"IV Ringers Lactate",
+   q:"Is IV Ringers Lactate available?", u:"bags", f:"Will this take you up to the next supply?"},
+  {k:"e11",n:"3.11",t:"IV Normal Saline",
+   q:"Is IV Normal Saline available?", u:"bags", f:"Will this take you up to the next supply?"},
 ];
+/* every parent key in sections 2 and 3: a quantity and a next supply follow up */
+const THREE_PART = {};
+secAntimalarial.concat(secEssential).forEach(function(q){ THREE_PART[q.k] = q; });
+
 const secPharmacy = [
   {k:"p1",n:"4.1",t:"Does this facility use mSupply for Inventory Management?",opts:["Yes","No"]},
-  {k:"p2",n:"4.2",t:"Is the mSupply up to date? (skip if 4.1 is No)",opts:["Yes","No","Not Applicable"]},
   {k:"p3",n:"4.3a",t:"Is the Invoice for the last drug supply available?",opts:["Yes","No"]},
   {k:"p4",n:"4.3b",t:"Is First to Expire First Out (FEFO) method observed?",opts:["Yes","No"]},
   {k:"p5",n:"4.4",t:"Can emergency requests be honored within 72hrs?",opts:["Yes","No"]},
@@ -567,21 +664,21 @@ const secPharmacyStorage = ["Ventilation","Security","Dry","Size","None"];
 const secTools = [
   {k:"t1",n:"5.1",t:"Is there a thermometer in working order in all the Units?",opts:["Yes","No"],scored:true},
   {k:"t2",n:"5.2",t:"Is there a working scale (both hanging and standing scales)?",opts:["Yes","No"],scored:true},
-  {k:"t3",n:"5.3",t:"Is there a working clinical examination kit?",opts:["Yes","No","Not Applicable"],scored:true},
+  {k:"t3",n:"5.3",t:"Is there a working clinical examination kit?",opts:["Yes","No"],scored:true},
   {k:"t5",n:"5.5",t:"Is there an IV holder in the health facility?",opts:["Yes","No"],scored:true},
   {k:"t6",n:"5.6",t:"Are there IMNCI guides for diagnosis and management?",opts:["Yes","No"],scored:true},
-  {k:"t7",n:"5.7",t:"Are coma assessment sheets (Glasgow Coma Scale) available?",opts:["Yes","No","Not Applicable"],scored:true},
+  {k:"t7",n:"5.7",t:"Are coma assessment sheets (Glasgow Coma Scale) available?",opts:["Yes","No"],scored:true},
 ];
 const secToolsCheck = ["BP monitor","Glucometer and strips","Ambu bag","Face mask"];
 
 const secReferral = [
-  {k:"rf1",n:"6.1",t:"Does this health facility have overnight/inpatient beds?",opts:["Yes","No","N/A"]},
-  {k:"rf2",n:"6.2",t:"Does this health facility generally refer patients with Severe Malaria to a higher-level health facility?",opts:["Yes","No"]},
-  {k:"rf4",n:"6.4",t:"Do you have a phone number for the referral health facility?",opts:["Yes","No"]},
-  {k:"rf5",n:"6.5",t:'Do you usually call the referral health facility before sending a severely ill patient?',opts:["Yes","No"]},
-  {k:"rf6",n:"6.6",t:"Do you give a written note to the referral health facility?",opts:["Yes","No"]},
-  {k:"rf7",n:"6.7",t:"Is there a readily available transport system for severely ill patients?",opts:["Yes","No"]},
-  {k:"rf9",n:"6.9",t:"Do you usually get feedback about patients referred to a higher-level health facility?",opts:["Yes","No"]},
+  {k:"rf1",n:"6.1",t:"Does this health facility have overnight/inpatient beds?",opts:["Yes","No"]},
+  {k:"rf2",n:"6.2",t:"Does this health facility generally refer patients with Severe Malaria to a higher-level health facility?",opts:["Yes","No"],scored:true},
+  {k:"rf4",n:"6.4",t:"Do you have a phone number for the referral health facility?",opts:["Yes","No"],scored:true},
+  {k:"rf5",n:"6.5",t:'Do you usually call the referral health facility before sending a severely ill patient?',opts:["Yes","No"],scored:true},
+  {k:"rf6",n:"6.6",t:"Do you give a written note to the referral health facility?",opts:["Yes","No"],scored:true},
+  {k:"rf7",n:"6.7",t:"Is there a readily available transport system for severely ill patients?",opts:["Yes","No"],scored:true},
+  {k:"rf9",n:"6.9",t:"Do you usually get feedback about patients referred to a higher-level health facility?",opts:["Yes","No"],scored:true},
 ];
 const referralLevels = ["CHC","District Hospital","Regional Hospital","Tertiary Hospital","Others"];
 const transportModes = ["Vehicle Ambulance","Boat","Motor bike","Motor tricycle (Kekeh)","Hand Mock/Tooters"];
@@ -635,19 +732,114 @@ function renderSection(containerId, items){
       ${radioGroup(q.k, q.opts, 'updateRadio')}
     </div>`).join('');
 }
+
+/* two part sections: availability then the follow up, 1 point each */
+function renderTwoPart(containerId, items){
+  const c = document.getElementById(containerId);
+  if(!c) return;
+  c.innerHTML = items.map(q=>`
+    <div class="question-row">
+      <div class="question-text"><span class="question-num">${q.n}</span>${q.q}</div>
+      ${radioGroup(q.k, ["Yes","No"], 'updateRadio')}
+    </div>
+    <div class="question-row followup-row" id="row_${q.k}_b" style="display:none">
+      <div class="question-text"><span class="question-num">${q.n}b</span>${q.f}</div>
+      ${radioGroup(q.k + 'b', ["Yes","No"], 'updateRadio')}
+    </div>`).join('');
+}
+
+/* section 2: available, then how many, then will it reach the next supply.
+   The first Yes scores 1, the next supply Yes scores 1, the quantity is a figure. */
+function renderThreePart(containerId, items){
+  const c = document.getElementById(containerId);
+  if(!c) return;
+  c.innerHTML = items.map(q=>`
+    <div class="question-row">
+      <div class="question-text"><span class="question-num">${q.n}</span>${q.q}</div>
+      ${radioGroup(q.k, ["Yes","No"], 'updateRadio')}
+    </div>
+    <div class="question-row followup-row" id="row_${q.k}_qty" style="display:none">
+      <div class="question-text"><span class="question-num">${q.n}b</span>How many ${q.u} are available currently?</div>
+      <input class="form-input" type="number" min="0" step="1" id="qty_${q.k}" placeholder="Type a number" oninput="updateQty('${q.k}', this.value)">
+    </div>
+    <div class="question-row followup-row" id="row_${q.k}_c" style="display:none">
+      <div class="question-text"><span class="question-num">${q.n}c</span>${q.f}</div>
+      ${radioGroup(q.k + 'c', ["Yes","No"], 'updateRadio')}
+    </div>`).join('');
+}
+
+function updateQty(key, val){ ans[key + '_qty'] = val; }
+
+function clearQty(key){
+  delete ans[key + '_qty'];
+  const box = document.getElementById('qty_' + key);
+  if(box) box.value = '';
+}
+
+function clearRadio(key){
+  delete ans[key];
+  const g = document.getElementById(`group_${key}`);
+  if(!g) return;
+  g.querySelectorAll('input[type=radio]').forEach(r=>{ r.checked = false; });
+  g.querySelectorAll('.radio-option-vertical').forEach(o=>o.classList.remove('selected'));
+}
+
+function toggleRow(rowId, show, clearKey){
+  const r = document.getElementById(rowId);
+  if(!r) return;
+  r.style.display = show ? 'block' : 'none';
+  if(!show && clearKey) clearRadio(clearKey);
+}
+
 function updateRadio(key, val, el){
   ans[key] = val;
   const g = document.getElementById(`group_${key}`);
   if(g){ g.querySelectorAll('.radio-option-vertical').forEach(o=>o.classList.remove('selected')); el.closest('.radio-option-vertical').classList.add('selected'); }
-  updateScores();
+
+  // a No on the first part hides and clears the follow up
+  if(TWO_PART[key]) toggleRow(`row_${key}_b`, val === 'Yes', key + 'b');
+
+  // section 2: a No hides the quantity and the next supply question, and clears both
+  if(THREE_PART[key]){
+    const on = val === 'Yes';
+    toggleRow(`row_${key}_qty`, on);
+    if(!on) clearQty(key);
+    toggleRow(`row_${key}_c`, on, key + 'c');
+  }
+
+  if(key==='p1'){ toggleRow('row_p2', val==='Yes', 'p2'); }
   if(key==='rf2'){ document.getElementById('referral_level_row').style.display = val==='Yes'?'block':'none'; }
   if(key==='rf7'){ document.getElementById('transport_row').style.display = val==='Yes'?'block':'none'; }
   if(key==='immfeedback'){ document.getElementById('feedbackhow_row').style.display = val==='Yes'?'block':'none'; }
+  updateScores();
 }
 function updateCheck(key, val, el){
   if(!ans[key]) ans[key]=[];
   if(el.checked){ if(!ans[key].includes(val)) ans[key].push(val); el.closest('.check-option').classList.add('selected'); }
   else{ ans[key]=ans[key].filter(v=>v!==val); el.closest('.check-option').classList.remove('selected'); }
+}
+
+/* untick one box in a group, model and screen together */
+function setCheckOff(key, val){
+  const id = `chk_${key}_${val.replace(/[^a-z0-9]/gi,'_')}`;
+  const label = document.getElementById(id);
+  if(label){
+    const box = label.querySelector('input');
+    if(box) box.checked = false;
+    label.classList.remove('selected');
+  }
+  if(ans[key]) ans[key] = ans[key].filter(v=>v!==val);
+}
+
+/* 4.3c: None cannot sit beside a real storage condition */
+function updateCheckStorage(key, val, el){
+  updateCheck(key, val, el);
+  if(el.checked && val === 'None'){
+    secPharmacyStorage.forEach(function(o){ if(o !== 'None') setCheckOff(key, o); });
+  } else if(el.checked && (ans[key]||[]).includes('None')){
+    setCheckOff(key, 'None');
+  }
+  updateScores();
 }
 
 // ===================== SCORING =====================
@@ -659,28 +851,51 @@ function calcScore(items){
   });
   return {scored, total};
 }
-function scoreClass(s,t){ const p=t?s/t:0; return p>=0.95?'good':p>=0.5?'fair':'poor'; }
-function updateScores(){
-  const sections = [
-    {id:'score_reporting', items:secReporting, exp:11},
-    {id:'score_reference', items:secReference, exp:7},
-    {id:'score_antimalarial', items:secAntimalarial, exp:12},
-    {id:'score_essential', items:secEssential, exp:11},
-    {id:'score_tools', items:secTools, exp:10},
-    {id:'score_waste', items:secWaste, exp:2},
-  ];
-  const wasteScore = (ans.w2==='Yes'?1:0) + (ans.wasteDisposal&&ans.wasteDisposal.length?1:0);
-
-  sections.forEach(s=>{
-    const el=document.getElementById(s.id);
-    if(!el) return;
-    let sc, tot;
-    if(s.id==='score_waste'){ sc=wasteScore; tot=2; }
-    else { const r=calcScore(s.items); sc=r.scored; tot=s.exp; }
-    const cls=scoreClass(sc,tot);
-    el.textContent=`${sc}/${tot}`;
-    el.className=`score-badge ${cls}`;
+/* 1 point for the first Yes, 1 more for the follow up Yes, 2 per item */
+function calcTwoPart(items){
+  let scored=0;
+  items.forEach(q=>{
+    if(ans[q.k]==='Yes'){
+      scored++;
+      if(ans[q.k+'b']==='Yes') scored++;
+    }
   });
+  return {scored, total: items.length*2};
+}
+/* 1 point for available, 1 more for reaching the next supply, 2 per commodity */
+function calcThreePart(items){
+  let scored=0;
+  items.forEach(q=>{
+    if(ans[q.k]==='Yes'){
+      scored++;
+      if(ans[q.k+'c']==='Yes') scored++;
+    }
+  });
+  return {scored, total: items.length*2};
+}
+function toolsScore(){
+  // six radio questions plus the four items ticked in 5.4
+  return calcScore(secTools).scored + (ans.toolsCheck ? ans.toolsCheck.length : 0);
+}
+function wasteScoreNow(){
+  return (ans.w2==='Yes'?1:0) + (ans.wasteDisposal&&ans.wasteDisposal.length?1:0);
+}
+function scoreClass(s,t){ const p=t?s/t:0; return p>=0.95?'good':p>=0.5?'fair':'poor'; }
+
+function setBadge(id, scored, total){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.textContent=`${scored}/${total}`;
+  el.className=`score-badge ${scoreClass(scored,total)}`;
+}
+function updateScores(){
+  setBadge('score_reporting', calcTwoPart(secReporting).scored, 22);
+  setBadge('score_reference', calcTwoPart(secReference).scored, 14);
+  setBadge('score_antimalarial', calcThreePart(secAntimalarial).scored, 22);
+  setBadge('score_essential', calcThreePart(secEssential).scored, 22);
+  setBadge('score_tools', toolsScore(), 10);
+  setBadge('score_referral', calcScore(secReferral).scored, 6);
+  setBadge('score_waste', wasteScoreNow(), 2);
 }
 
 // ===================== BUILD PHARMACY SECTION =====================
@@ -689,10 +904,17 @@ function buildPharmacy(){
   let html='';
   secPharmacy.forEach(q=>{
     html+=`<div class="question-row"><div class="question-text"><span class="question-num">${q.n}</span>${q.t}</div>${radioGroup(q.k,q.opts,'updateRadio')}</div>`;
+    // 4.2 only applies when 4.1 is Yes
+    if(q.k==='p1'){
+      html+=`<div class="question-row followup-row" id="row_p2" style="display:none">
+        <div class="question-text"><span class="question-num">4.2</span>Is the mSupply up to date?</div>
+        ${radioGroup('p2',["Yes","No"],'updateRadio')}
+      </div>`;
+    }
   });
   html+=`<div class="question-row">
-    <div class="question-text"><span class="question-num">4.3c</span>Is the storage condition optimal? (Select all that apply)</div>
-    ${checkGroup('storageCondition', secPharmacyStorage,'updateCheck')}
+    <div class="question-text"><span class="question-num">4.3c</span>Is the storage condition optimal? (Select all that apply. None cannot be combined with the others.)</div>
+    ${checkGroup('storageCondition', secPharmacyStorage,'updateCheckStorage')}
   </div>`;
   c.innerHTML=html;
 }
@@ -706,10 +928,11 @@ function buildTools(){
   });
   html+=`<div class="question-row">
     <div class="question-text"><span class="question-num">5.4</span>Are the following available at the health facility? (Select all that apply)</div>
-    ${checkGroup('toolsCheck', secToolsCheck,'updateCheck')}
+    ${checkGroup('toolsCheck', secToolsCheck,'updateCheckTools')}
   </div>`;
   c.innerHTML=html;
 }
+function updateCheckTools(key,val,el){ updateCheck(key,val,el); updateScores(); }
 
 // ===================== BUILD REFERRAL SECTION =====================
 function buildReferral(){
@@ -717,11 +940,11 @@ function buildReferral(){
   let html='';
   secReferral.forEach((q,i)=>{
     html+=`<div class="question-row"><div class="question-text"><span class="question-num">${q.n}</span>${q.t}</div>${radioGroup(q.k,q.opts,'updateRadio')}</div>`;
-    if(i===1) html+=`<div class="question-row" id="referral_level_row" style="display:none">
+    if(i===1) html+=`<div class="question-row followup-row" id="referral_level_row" style="display:none">
       <div class="question-text"><span class="question-num">6.3</span>If "Yes," what is the level of the health facility?</div>
       ${checkGroup('referralLevel', referralLevels,'updateCheck')}
     </div>`;
-    if(q.k==='rf7') html+=`<div class="question-row" id="transport_row" style="display:none">
+    if(q.k==='rf7') html+=`<div class="question-row followup-row" id="transport_row" style="display:none">
       <div class="question-text"><span class="question-num">6.8</span>Which transport model is available? (Select all that apply)</div>
       ${checkGroup('transportMode', transportModes,'updateCheck')}
     </div>`;
@@ -808,69 +1031,218 @@ function buildImmFeedback(){
     <label class="check-option"><input type="checkbox" value="${o}" onchange="updateCheck('feedbackHow','${o}',this)"> ${o}</label>`).join('');
 }
 
-// ===================== DYNAMIC TRAINEE TABLES =====================
-function renderTrainees(){
-  ['malariaTrain','hmisTrain'].forEach(tn=>{
-    const c=document.getElementById(`dynamic_${tn}`);
-    if(!c) return;
-    const rows=dynamicTables[tn];
-    c.innerHTML=rows.map((row,i)=>`
-      <div class="member-card">
-        <div class="member-header"><span>Trainee ${i+1}</span><button class="remove-btn" onclick="removeRow('${tn}',${i})">×</button></div>
-        <div class="question-row" style="margin-bottom:12px;"><div class="question-text">Name</div>
-          <input class="form-input" value="${esc(row.name||'')}" placeholder="Full name" onchange="updateDyn('${tn}',${i},'name',this.value)">
-        </div>
-        <div class="question-row" style="margin-bottom:12px;"><div class="question-text">Sex</div>
-          <div class="options-group-h">
-            ${['Male','Female'].map(s=>`<label class="check-option ${row.sex===s?'selected':''}"><input type="radio" name="dyn_sex_${tn}_${i}" value="${s}" ${row.sex===s?'checked':''} onchange="updateDyn('${tn}',${i},'sex','${s}'); rerenderSex('${tn}',${i},'${s}')"> ${s}</label>`).join('')}
-          </div>
-        </div>
-        <div class="question-row" style="margin-bottom:12px;"><div class="question-text">Cadre</div>
-          <input class="form-input" value="${esc(row.cadre||'')}" placeholder="Cadre" onchange="updateDyn('${tn}',${i},'cadre',this.value)">
-        </div>
-        <div class="question-row" style="margin-bottom:12px;"><div class="question-text">Duration</div>
-          <input class="form-input" value="${esc(row.duration||'')}" placeholder="e.g. 3 days" onchange="updateDyn('${tn}',${i},'duration',this.value)">
-        </div>
-        <div class="question-row" style="margin-bottom:12px;"><div class="question-text">Year</div>
-          <input class="form-input" value="${esc(row.year||'')}" placeholder="Year trained" onchange="updateDyn('${tn}',${i},'year',this.value)">
-        </div>
-        <div class="question-row" style="margin-bottom:0;"><div class="question-text">Remarks</div>
-          <input class="form-input" value="${esc(row.remarks||'')}" placeholder="Remarks" onchange="updateDyn('${tn}',${i},'remarks',this.value)">
-        </div>
-      </div>`).join('');
-  });
+// ===================== TRAINED STAFF, COUNT DRIVEN =====================
+function blankStaff(){ return { name:"", sex:"", cadre:"", cadreOther:"", remarks:"", trainings:[] }; }
+function blankTraining(){ return { year:"", month:"", days:"" }; }
+
+function countNotice(inputId, noteId, message){
+  const input=document.getElementById(inputId), note=document.getElementById(noteId);
+  if(!input||!note) return;
+  if(message){ note.textContent=message; note.style.display='block'; input.classList.add('bad-entry'); }
+  else { note.textContent=''; note.style.display='none'; input.classList.remove('bad-entry'); }
 }
-function addRow(tn){ dynamicTables[tn].push({}); renderTrainees(); }
-dynamicTables.malariaTrain.push({});
-dynamicTables.hmisTrain.push({});
-function removeRow(tn,i){ dynamicTables[tn].splice(i,1); renderTrainees(); }
-function updateDyn(tn,i,field,val){ if(!dynamicTables[tn][i]) dynamicTables[tn][i]={}; dynamicTables[tn][i][field]=val; }
+
+/* the number typed decides how many staff cards exist. Nothing typed means nothing open. */
+function setStaffCount(tn, n){
+  n = Math.max(0, Math.min(MAX_TRAINED_STAFF, n));
+  const rows = trainStaff[tn];
+  while(rows.length < n) rows.push(blankStaff());
+  while(rows.length > n) rows.pop();
+  const box=document.getElementById(`${tn}_count`);
+  if(n > 0 && box) box.value = rows.length;
+  const hint=document.getElementById(`${tn}_hint`);
+  if(hint){
+    hint.textContent = rows.length
+      ? `Cards open now: ${rows.length}. Every card must be completed.`
+      : (box && box.value === '0'
+          ? 'No staff trained, so no cards open.'
+          : 'Type the number and one card will open for each member of staff.');
+  }
+  renderStaffCards(tn);
+}
+
+function onStaffCount(tn){
+  const box=document.getElementById(`${tn}_count`);
+  const raw=box.value.trim();
+  if(raw===''){ countNotice(`${tn}_count`, `${tn}_note`, ''); setStaffCount(tn, 0); return; }
+  const n=Number(raw);
+  if(!Number.isInteger(n) || n < 0 || n > MAX_TRAINED_STAFF){
+    countNotice(`${tn}_count`, `${tn}_note`, `Wrong entry. Type a whole number between 0 and ${MAX_TRAINED_STAFF}.`);
+    box.value = trainStaff[tn].length || '';
+    return;
+  }
+  countNotice(`${tn}_count`, `${tn}_note`, '');
+  setStaffCount(tn, n);
+}
+
+/* how many trainings that member of staff has had */
+function setTrainingCount(tn, i, n){
+  n = Math.max(0, Math.min(MAX_TRAININGS, n));
+  const list = trainStaff[tn][i].trainings;
+  while(list.length < n) list.push(blankTraining());
+  while(list.length > n) list.pop();
+  const box=document.getElementById(`tcount_${tn}_${i}`);
+  if(n > 0 && box) box.value = list.length;
+  renderTrainings(tn, i);
+}
+
+function onTrainingCount(tn, i){
+  const box=document.getElementById(`tcount_${tn}_${i}`);
+  const raw=box.value.trim();
+  if(raw===''){ countNotice(`tcount_${tn}_${i}`, `tnote_${tn}_${i}`, ''); setTrainingCount(tn, i, 0); return; }
+  const n=Number(raw);
+  if(!Number.isInteger(n) || n < 1 || n > MAX_TRAININGS){
+    countNotice(`tcount_${tn}_${i}`, `tnote_${tn}_${i}`, `Wrong entry. Type a whole number between 1 and ${MAX_TRAININGS}.`);
+    box.value = trainStaff[tn][i].trainings.length || '';
+    return;
+  }
+  countNotice(`tcount_${tn}_${i}`, `tnote_${tn}_${i}`, '');
+  setTrainingCount(tn, i, n);
+}
+
+function renderTrainings(tn, i){
+  const c=document.getElementById(`trainings_${tn}_${i}`);
+  if(!c) return;
+  const rows=trainStaff[tn][i].trainings;
+  c.innerHTML = rows.map((t,j)=>`
+    <div class="train-card">
+      <div class="train-head">Training ${j+1} of ${rows.length}</div>
+      <div class="question-row" style="margin-bottom:12px;"><div class="question-text">Year</div>
+        <input class="form-input" type="number" min="1990" max="2100" placeholder="e.g. 2024" value="${esc(t.year||'')}" onchange="updateTraining('${tn}',${i},${j},'year',this.value)">
+      </div>
+      <div class="question-row" style="margin-bottom:12px;"><div class="question-text">Month</div>
+        <select class="form-select" onchange="updateTraining('${tn}',${i},${j},'month',this.value)">
+          <option value="">Select month...</option>
+          ${MONTHS.map(m=>`<option${t.month===m?' selected':''}>${m}</option>`).join('')}
+        </select>
+      </div>
+      <div class="question-row" style="margin-bottom:0;"><div class="question-text">Number of days trained</div>
+        <input class="form-input" type="number" min="1" max="365" placeholder="e.g. 5" value="${esc(t.days||'')}" onchange="updateTraining('${tn}',${i},${j},'days',this.value)">
+      </div>
+    </div>`).join('');
+}
+function updateTraining(tn,i,j,field,val){ trainStaff[tn][i].trainings[j][field]=val; }
+
+function renderStaffCards(tn){
+  const c=document.getElementById(`dynamic_${tn}`);
+  if(!c) return;
+  const rows=trainStaff[tn];
+  c.innerHTML = rows.map((row,i)=>`
+    <div class="member-card">
+      <div class="member-header"><span>Staff ${i+1}</span><span class="member-tag">of ${rows.length}</span></div>
+      <div class="question-row" style="margin-bottom:12px;"><div class="question-text">Name</div>
+        <input class="form-input" value="${esc(row.name||'')}" placeholder="Full name" onchange="updateStaff('${tn}',${i},'name',this.value)">
+      </div>
+      <div class="question-row" style="margin-bottom:12px;"><div class="question-text">Sex</div>
+        <div class="options-group-h" id="sexgroup_${tn}_${i}">
+          ${['Male','Female'].map(s=>`<label class="check-option ${row.sex===s?'selected':''}"><input type="radio" name="dyn_sex_${tn}_${i}" value="${s}" ${row.sex===s?'checked':''} onchange="updateStaff('${tn}',${i},'sex','${s}'); rerenderSex('${tn}',${i},'${s}')"> ${s}</label>`).join('')}
+        </div>
+      </div>
+      <div class="question-row" style="margin-bottom:12px;"><div class="question-text">Cadre</div>
+        <select class="form-select" id="cadre_${tn}_${i}" onchange="onStaffCadre('${tn}',${i},this.value)">${cadreOptions(row.cadre)}</select>
+        <input class="form-input" id="cadreother_${tn}_${i}" placeholder="If Other, specify" value="${esc(row.cadreOther||'')}"
+               style="display:${row.cadre==='Other'?'block':'none'};margin-top:8px;"
+               onchange="updateStaff('${tn}',${i},'cadreOther',this.value)">
+      </div>
+      <div class="question-row" style="margin-bottom:12px;">
+        <div class="question-text">How many trainings on ${TRAIN_LABEL[tn]} have you received?</div>
+        <input class="form-input" id="tcount_${tn}_${i}" type="number" min="1" max="${MAX_TRAININGS}" step="1"
+               placeholder="Type a number" value="${row.trainings.length || ''}" oninput="onTrainingCount('${tn}',${i})">
+        <div class="count-note" id="tnote_${tn}_${i}"></div>
+        <div class="count-hint">One block opens for each training: year, month and days trained.</div>
+      </div>
+      <div id="trainings_${tn}_${i}"></div>
+      <div class="question-row" style="margin-bottom:0;"><div class="question-text">Remarks</div>
+        <input class="form-input" value="${esc(row.remarks||'')}" placeholder="Remarks" onchange="updateStaff('${tn}',${i},'remarks',this.value)">
+      </div>
+    </div>`).join('');
+  rows.forEach((row,i)=>renderTrainings(tn,i));
+}
+
+function updateStaff(tn,i,field,val){
+  if(!trainStaff[tn][i]) return;
+  trainStaff[tn][i][field]=val;
+}
+function onStaffCadre(tn,i,val){
+  trainStaff[tn][i].cadre=val;
+  const box=document.getElementById(`cadreother_${tn}_${i}`);
+  const isOther = val==='Other';
+  if(box){
+    box.style.display = isOther ? 'block' : 'none';
+    if(!isOther){ box.value=''; trainStaff[tn][i].cadreOther=''; }
+  }
+}
+function staffCadreLabel(row){
+  if(!row.cadre) return '';
+  if(row.cadre!=='Other') return row.cadre;
+  const other=(row.cadreOther||'').trim();
+  return other ? 'Other: '+other : 'Other';
+}
 function rerenderSex(tn,i,sel){
   const wrap=document.querySelectorAll(`[name="dyn_sex_${tn}_${i}"]`);
   wrap.forEach(el=>{ el.closest('.check-option').classList.toggle('selected', el.value===sel); });
 }
 
 // ===================== ACTION PLAN =====================
-function addActionRow(){
-  actionRows.push({gap:'',action:'',person:'',timeline:'',status:''});
+const MAX_GAPS = 20;
+function blankGap(){ return {gap:'',action:'',person:'',timeline:'',status:''}; }
+
+/* 18.1 decides how many gap blocks exist */
+function setGapCount(n){
+  n = Math.max(0, Math.min(MAX_GAPS, n));
+  while(actionRows.length < n) actionRows.push(blankGap());
+  while(actionRows.length > n) actionRows.pop();
+  const box=document.getElementById('gap_count');
+  if(n > 0 && box) box.value = actionRows.length;
+  const hint=document.getElementById('gap_hint');
+  if(hint) hint.textContent = actionRows.length
+    ? `Blocks open now: ${actionRows.length}. Every box in every block must be filled.`
+    : 'Type the number and one block will open for each gap.';
   renderActionRows();
 }
-function renderActionRows(){
-  const tb=document.getElementById('actionPlanBody');
-  if(!tb) return;
-  if(!actionRows.length){ tb.innerHTML=`<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:16px;font-size:13px;">No rows yet. Click "+ Add Row".</td></tr>`; return; }
-  tb.innerHTML=actionRows.map((r,i)=>`
-    <tr>
-      <td><input value="${esc(r.gap)}" onchange="updateAction(${i},'gap',this.value)" placeholder="Identified gap"></td>
-      <td><input value="${esc(r.action)}" onchange="updateAction(${i},'action',this.value)" placeholder="Action"></td>
-      <td><input value="${esc(r.person)}" onchange="updateAction(${i},'person',this.value)" placeholder="Person(s)"></td>
-      <td><input value="${esc(r.timeline)}" onchange="updateAction(${i},'timeline',this.value)" placeholder="Timeline"></td>
-      <td><input value="${esc(r.status)}" onchange="updateAction(${i},'status',this.value)" placeholder="Status"></td>
-      <td style="text-align:center;"><button onclick="removeActionRow(${i})" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:16px;font-weight:700;">×</button></td>
-    </tr>`).join('');
+
+function onGapCount(){
+  const box=document.getElementById('gap_count');
+  const raw=box.value.trim();
+  if(raw===''){ countNotice('gap_count','gap_note',''); setGapCount(0); return; }
+  const n=Number(raw);
+  if(!Number.isInteger(n) || n < 0 || n > MAX_GAPS){
+    countNotice('gap_count','gap_note',`Wrong entry. Type a whole number between 0 and ${MAX_GAPS}.`);
+    box.value = actionRows.length || '';
+    return;
+  }
+  countNotice('gap_count','gap_note','');
+  setGapCount(n);
 }
-function updateAction(i,field,val){ actionRows[i][field]=val; }
-function removeActionRow(i){ actionRows.splice(i,1); renderActionRows(); }
+
+const GAP_FIELDS = [
+  {f:'gap',      label:'Identified gap',       ph:'What is the gap?'},
+  {f:'action',   label:'Recommended action',   ph:'What will be done about it?'},
+  {f:'person',   label:'Responsible person(s)',ph:'Who will do it?'},
+  {f:'timeline', label:'Timeline',             ph:'By when, for example 2 weeks'},
+  {f:'status',   label:'Status',               ph:'For example Not started, Ongoing, Done'}
+];
+
+function renderActionRows(){
+  const c=document.getElementById('actionPlanBody');
+  if(!c) return;
+  if(!actionRows.length){
+    c.innerHTML = `<div class="no-data">No gap block is open. Answer 18.1 above.</div>`;
+    return;
+  }
+  c.innerHTML = actionRows.map(function(r,i){
+    return `<div class="member-card">
+      <div class="member-header"><span>Gap ${i+1}</span><span class="member-tag">of ${actionRows.length}</span></div>` +
+      GAP_FIELDS.map(function(fd,j){
+        return `<div class="question-row" style="margin-bottom:${j===GAP_FIELDS.length-1?'0':'14px'};">
+          <div class="question-text">${fd.label}</div>
+          <input class="form-input" type="text" id="gap_${fd.f}_${i}" value="${esc(r[fd.f]||'')}"
+                 placeholder="${fd.ph}" oninput="updateAction(${i},'${fd.f}',this.value)">
+        </div>`;
+      }).join('') + `</div>`;
+  }).join('');
+}
+function updateAction(i,field,val){ if(actionRows[i]) actionRows[i][field]=val; }
 
 // ===================== SUBMIT =====================
 function submitForm(){
@@ -879,15 +1251,46 @@ function submitForm(){
   if(!d.chiefdom){ alert("Please select Chiefdom"); return; }
   if(!d.phu){ alert("Please select Health Facility (PHU)"); return; }
   if(!d.facility_type){ alert("Please select Health Facility Type"); return; }
+  if(!validateTrainedStaff()) return;
   document.getElementById('confirmModal').style.display='flex';
 }
+
+/* every staff card the count opened must be complete, trainings included */
+function validateTrainedStaff(){
+  const names={ malariaTrain:'malaria case management', hmisTrain:'HMIS' };
+  for(const tn of ['malariaTrain','hmisTrain']){
+    const box=document.getElementById(`${tn}_count`);
+    if(!box.value.trim()){ alert(`Please enter how many staff have received training on ${names[tn]}`); return false; }
+    const rows=trainStaff[tn];
+    for(let i=0;i<rows.length;i++){
+      const r=rows[i];
+      if(!r.name || !r.sex || !r.cadre){
+        alert(`${names[tn]}, staff ${i+1}: Name, Sex and Cadre are all required.`); return false;
+      }
+      if(r.cadre==='Other' && !(r.cadreOther||'').trim()){
+        alert(`${names[tn]}, staff ${i+1}: Please specify the cadre.`); return false;
+      }
+      if(!r.trainings.length){
+        alert(`${names[tn]}, staff ${i+1}: Enter how many trainings this person has received.`); return false;
+      }
+      for(let j=0;j<r.trainings.length;j++){
+        const t=r.trainings[j];
+        if(!t.year || !t.month || !t.days){
+          alert(`${names[tn]}, staff ${i+1}, training ${j+1}: Year, Month and days trained are all required.`); return false;
+        }
+      }
+    }
+  }
+  return true;
+}
+
 function closeModal(){ document.getElementById('confirmModal').style.display='none'; }
 function doSubmit(){
   closeModal();
   ans._submitted = new Date().toLocaleString();
   ans._demographics = getDemographics();
-  ans._malariaTrain = JSON.parse(JSON.stringify(dynamicTables.malariaTrain));
-  ans._hmisTrain = JSON.parse(JSON.stringify(dynamicTables.hmisTrain));
+  ans._malariaTrain = JSON.parse(JSON.stringify(trainStaff.malariaTrain));
+  ans._hmisTrain = JSON.parse(JSON.stringify(trainStaff.hmisTrain));
   ans._actionRows = JSON.parse(JSON.stringify(actionRows));
   submitted = true;
   renderSummary();
@@ -908,16 +1311,17 @@ function getDemographics(){
 function renderSummary(){
   if(!submitted && !ans._submitted){ return; }
   const demo = ans._demographics || getDemographics();
-  document.getElementById('sum_date').textContent = 'Saved: ' + (ans._submitted || new Date().toLocaleString());
+  document.getElementById('sum_date').textContent = 'Submitted: ' + (ans._submitted || new Date().toLocaleString());
 
-  const scR = calcScore(secReporting);
-  const scRef = calcScore(secReference);
-  const scA = calcScore(secAntimalarial);
-  const scE = calcScore(secEssential);
-  const scT = calcScore(secTools);
-  const wasteScore = (ans.w2==='Yes'?1:0) + (ans.wasteDisposal&&ans.wasteDisposal.length?1:0);
-  const totalScored = scR.scored+scRef.scored+scA.scored+scE.scored+scT.scored+wasteScore;
-  const totalPossible = 11+7+12+11+10+2;
+  const scR = calcTwoPart(secReporting);
+  const scRef = calcTwoPart(secReference);
+  const scA = calcThreePart(secAntimalarial);
+  const scE = calcThreePart(secEssential);
+  const scT = toolsScore();
+  const scRf = calcScore(secReferral);
+  const waste = wasteScoreNow();
+  const totalScored = scR.scored+scRef.scored+scA.scored+scE.scored+scT+scRf.scored+waste;
+  const totalPossible = 22+14+22+22+10+6+2;
   const overallPct = Math.round(totalScored/totalPossible*100);
   const overallCls = overallPct>=95?'good':overallPct>=50?'fair':'poor';
 
@@ -930,22 +1334,23 @@ function renderSummary(){
       <div class="progress-bar-wrap"><div class="progress-bar ${overallCls}" style="width:${overallPct}%"></div></div>
     </div>
     <div class="score-card"><div class="score-card-title">Overall Rating</div>
-      <div class="score-card-value" style="font-size:20px;margin-top:6px;">${ans.fb2||'—'}</div>
-      <div class="score-card-sub">${demo.phu||'—'} · ${demo.district||'—'}</div>
+      <div class="score-card-value" style="font-size:20px;margin-top:6px;">${ans.fb2||'Not given'}</div>
+      <div class="score-card-sub">${demo.phu||'Not given'} · ${demo.district||'Not given'}</div>
     </div>
-    ${scoreCard('Reporting Tools', scR.scored, 11)}
-    ${scoreCard('Reference Material', scRef.scored, 7)}
-    ${scoreCard('Antimalarials', scA.scored, 12)}
-    ${scoreCard('Essential Drugs', scE.scored, 11)}
-    ${scoreCard('Basic Tools', scT.scored, 10)}
-    ${scoreCard('Waste Mgmt', wasteScore, 2)}
+    ${scoreCard('Reporting Forms', scR.scored, 22)}
+    ${scoreCard('Reference Material', scRef.scored, 14)}
+    ${scoreCard('Antimalarials', scA.scored, 22)}
+    ${scoreCard('Essential Drugs', scE.scored, 22)}
+    ${scoreCard('Basic Tools', scT, 10)}
+    ${scoreCard('Inpatient & Referral', scRf.scored, 6)}
+    ${scoreCard('Waste Mgmt', waste, 2)}
   </div>`;
 
   html += `<div class="summary-section">
     <div class="summary-section-title">Facility Demographics</div>
     <div class="demo-grid">
       ${demoItem('District', demo.district)}
-      ${demoItem('Chiefdom/Zone', demo.chiefdom)}
+      ${demoItem('Chiefdom', demo.chiefdom)}
       ${demoItem('Health Facility', demo.phu)}
       ${demoItem('Facility Type', demo.facility_type)}
       ${demoItem('Supervisor', demo.supervisor)}
@@ -953,34 +1358,36 @@ function renderSummary(){
     </div>
   </div>`;
 
-  const mt = ans._malariaTrain||[];
-  const ht = ans._hmisTrain||[];
-  html += traineeSection('1.1.1 Malaria Training', mt);
-  html += traineeSection('1.1.2 HMIS Training', ht);
+  html += staffSection('1.1.1 Trained on Malaria Case Management', ans._malariaTrain||[]);
+  html += staffSection('1.1.2 Trained on HMIS', ans._hmisTrain||[]);
 
-  html += summaryRadioSection('1.2 Reporting Tools Readiness', secReporting, `${scR.scored}/11`);
-  html += summaryRadioSection('1.4 Malaria Reference Material', secReference, `${scRef.scored}/7`);
-  html += summaryRadioSection('2. Antimalarial Drugs', secAntimalarial, `${scA.scored}/12`);
-  html += summaryRadioSection('3. Essential Drugs', secEssential, `${scE.scored}/11`);
+  html += twoPartSection('1.2 Reporting Forms Readiness', secReporting, `${scR.scored}/22`);
+  html += twoPartSection('1.4 Malaria Reference Material', secReference, `${scRef.scored}/14`);
+
+  html += threePartSection('2. Antimalarial Commodities', secAntimalarial, `${scA.scored}/22`);
+  html += threePartSection('3. Essential Drugs', secEssential, `${scE.scored}/22`);
 
   html += `<div class="summary-section"><div class="summary-section-title">4. Pharmacy Operations</div>`;
-  secPharmacy.forEach(q=>{ html+=summaryItem(q.t, ans[q.k]); });
-  html+=summaryItem('Storage Condition', (ans.storageCondition||[]).join(', ')||'—');
+  secPharmacy.forEach(q=>{
+    html+=summaryItem(q.t, ans[q.k]);
+    if(q.k==='p1') html+=summaryItem('4.2 Is the mSupply up to date?', ans.p1==='Yes' ? ans.p2 : 'Skipped');
+  });
+  html+=summaryItem('Storage Condition', (ans.storageCondition||[]).join(', ')||'Not given');
   html+='</div>';
 
-  html += `<div class="summary-section"><div class="summary-section-title">5. Basic Tools <span class="badge">${scT.scored}/10</span></div>`;
+  html += `<div class="summary-section"><div class="summary-section-title">5. Basic Tools <span class="badge">${scT}/10</span></div>`;
   secTools.forEach(q=>{ html+=summaryItem(q.t, ans[q.k]); });
-  html+=summaryItem('Available at facility', (ans.toolsCheck||[]).join(', ')||'—');
+  html+=summaryItem('Available at facility (5.4)', (ans.toolsCheck||[]).join(', ')||'None ticked');
   html+='</div>';
 
-  html += `<div class="summary-section"><div class="summary-section-title">6. Inpatient Services & Referral</div>`;
+  html += `<div class="summary-section"><div class="summary-section-title">6. Inpatient Services & Referral <span class="badge">${scRf.scored}/6</span></div>`;
   secReferral.forEach(q=>{ html+=summaryItem(q.t, ans[q.k]); });
-  html+=summaryItem('Referral facility level', (ans.referralLevel||[]).join(', ')||'—');
-  html+=summaryItem('Transport modes', (ans.transportMode||[]).join(', ')||'—');
+  html+=summaryItem('Referral facility level', (ans.referralLevel||[]).join(', ')||'Not given');
+  html+=summaryItem('Transport modes', (ans.transportMode||[]).join(', ')||'Not given');
   html+='</div>';
 
-  html += `<div class="summary-section"><div class="summary-section-title">7. Waste Management <span class="badge">${wasteScore}/2</span></div>`;
-  html+=summaryItem('Waste disposal method', (ans.wasteDisposal||[]).join(', ')||'—');
+  html += `<div class="summary-section"><div class="summary-section-title">7. Waste Management <span class="badge">${waste}/2</span></div>`;
+  html+=summaryItem('Waste disposal method', (ans.wasteDisposal||[]).join(', ')||'Not given');
   if(ans.wasteOther) html+=summaryItem('Other (specify)', ans.wasteOther);
   secWaste.forEach(q=>{ html+=summaryItem(q.t, ans[q.k]); });
   html+='</div>';
@@ -988,12 +1395,12 @@ function renderSummary(){
   html += `<div class="summary-section"><div class="summary-section-title">8. Immediate Corrective Actions</div>
     <div class="issues-grid" style="border-top:1px solid var(--border);">`;
   issuesList.forEach(q=>{
-    const v=ans[q.k]||'—';
+    const v=ans[q.k]||'Not given';
     html+=`<div class="issue-item"><span class="issue-label"><b>${q.n}</b> ${q.t}</span>
       <span class="issue-val ${v==='Yes'?'issue-yes':v==='No'?'issue-no':''}">${v}</span></div>`;
   });
   html+='</div>';
-  html+=summaryItem('Intervention Types', (ans.interventionType||[]).join(', ')||'—');
+  html+=summaryItem('Intervention Types', (ans.interventionType||[]).join(', ')||'Not given');
   html+='</div>';
 
   html += `<div class="summary-section"><div class="summary-section-title">9. Staff Reached</div>`;
@@ -1008,25 +1415,25 @@ function renderSummary(){
   html+='</div>';
 
   html += `<div class="summary-section"><div class="summary-section-title">Comments & Gap Analysis</div>`;
-  html+=summaryItem('Additional Comments', ans.comments||'—');
-  html+=summaryItem('Gaps from last visit', ans.lastgaps||'—');
-  html+=summaryItem('Previous action plan', ans.prevplan||'—');
-  html+=summaryItem('Gaps addressed?', ans.gapaddr||'—');
-  html+=summaryItem('Current visit gaps', ans.todaygaps||'—');
-  html+=summaryItem('Immediate feedback provided?', ans.immfeedback||'—');
-  html+=summaryItem('Feedback method', (ans.feedbackHow||[]).join(', ')||'—');
-  html+=summaryItem('Supervisor Comments', ans.supcomments||'—');
+  html+=summaryItem('Additional Comments', ans.comments||'Not given');
+  html+=summaryItem('Gaps from last visit', ans.lastgaps||'Not given');
+  html+=summaryItem('Previous action plan', ans.prevplan||'Not given');
+  html+=summaryItem('Gaps addressed?', ans.gapaddr||'Not given');
+  html+=summaryItem('Current visit gaps', ans.todaygaps||'Not given');
+  html+=summaryItem('Immediate feedback provided?', ans.immfeedback||'Not given');
+  html+=summaryItem('Feedback method', (ans.feedbackHow||[]).join(', ')||'Not given');
+  html+=summaryItem('Supervisor Comments', ans.supcomments||'Not given');
   html+='</div>';
 
   const ar=ans._actionRows||[];
   if(ar.length){
-    html+=`<div class="summary-section"><div class="summary-section-title">18. Action Plan</div>
+    html+=`<div class="summary-section"><div class="summary-section-title">18. Action Plan <span class="badge">${ar.length} gap${ar.length===1?'':'s'}</span></div>
       <div style="overflow-x:auto;padding:12px;">
         <table class="trainee-table"><thead><tr>
           <th>Gap</th><th>Action</th><th>Responsible</th><th>Timeline</th><th>Status</th>
         </tr></thead><tbody>`;
     ar.forEach(r=>{
-      html+=`<tr><td>${esc(r.gap||'—')}</td><td>${esc(r.action||'—')}</td><td>${esc(r.person||'—')}</td><td>${esc(r.timeline||'—')}</td><td>${esc(r.status||'—')}</td></tr>`;
+      html+=`<tr><td>${esc(r.gap||'Not given')}</td><td>${esc(r.action||'Not given')}</td><td>${esc(r.person||'Not given')}</td><td>${esc(r.timeline||'Not given')}</td><td>${esc(r.status||'Not given')}</td></tr>`;
     });
     html+='</tbody></table></div></div>';
   }
@@ -1044,14 +1451,20 @@ function scoreCard(title, scored, total){
   </div>`;
 }
 function demoItem(label,val){
-  return `<div class="demo-item"><div class="demo-label">${label}</div><div class="demo-value">${val||'—'}</div></div>`;
+  return `<div class="demo-item"><div class="demo-label">${label}</div><div class="demo-value">${val||'Not given'}</div></div>`;
 }
-function traineeSection(title, rows){
-  if(!rows.length) return `<div class="summary-section"><div class="summary-section-title">${title} <span class="badge">0 records</span></div><div class="no-data">No trainees recorded</div></div>`;
-  return `<div class="summary-section"><div class="summary-section-title">${title} <span class="badge">${rows.length} records</span></div>
+function staffSection(title, rows){
+  if(!rows.length) return `<div class="summary-section"><div class="summary-section-title">${title} <span class="badge">0 staff</span></div><div class="no-data">No staff recorded as trained</div></div>`;
+  return `<div class="summary-section"><div class="summary-section-title">${title} <span class="badge">${rows.length} staff</span></div>
     <div style="overflow-x:auto;padding:12px;">
-      <table class="trainee-table"><thead><tr><th>#</th><th>Name</th><th>Sex</th><th>Cadre</th><th>Duration</th><th>Year</th><th>Remarks</th></tr></thead>
-      <tbody>${rows.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.name||'—')}</td><td>${esc(r.sex||'—')}</td><td>${esc(r.cadre||'—')}</td><td>${esc(r.duration||'—')}</td><td>${esc(r.year||'—')}</td><td>${esc(r.remarks||'—')}</td></tr>`).join('')}</tbody>
+      <table class="trainee-table"><thead><tr><th>#</th><th>Name</th><th>Sex</th><th>Cadre</th><th>Trainings</th><th>Remarks</th></tr></thead>
+      <tbody>${rows.map((r,i)=>`<tr>
+        <td>${i+1}</td><td>${esc(r.name||'Not given')}</td><td>${esc(r.sex||'Not given')}</td>
+        <td>${esc(staffCadreLabel(r)||'Not given')}</td>
+        <td>${(r.trainings&&r.trainings.length)
+              ? esc(String(r.trainings.length)) + ': ' + r.trainings.map(t=>esc(`${t.month||'?'} ${t.year||'?'}, ${t.days||'?'} days`)).join('; ')
+              : 'None recorded'}</td>
+        <td>${esc(r.remarks||'Not given')}</td></tr>`).join('')}</tbody>
       </table>
     </div></div>`;
 }
@@ -1059,20 +1472,41 @@ function summaryRadioSection(title, items, score){
   return `<div class="summary-section"><div class="summary-section-title">${title} <span class="badge">${score}</span></div>`+
     items.map(q=>summaryItem(`${q.n} ${q.t}`, ans[q.k])).join('')+'</div>';
 }
+/* both halves of every two part question, with its 0, 1 or 2 points */
+function twoPartSection(title, items, score){
+  return `<div class="summary-section"><div class="summary-section-title">${title} <span class="badge">${score}</span></div>`+
+    items.map(function(q){
+      const first=ans[q.k], second=ans[q.k+'b'];
+      const pts=(first==='Yes'?1:0)+(first==='Yes'&&second==='Yes'?1:0);
+      return summaryItem(`${q.n} ${q.t}`, first) +
+        `<div class="summary-sub">${esc(q.f)} ${first==='Yes' ? (second||'Not answered') : 'Skipped'} &nbsp;·&nbsp; ${pts}/2 points</div>`;
+    }).join('')+'</div>';
+}
+function threePartSection(title, items, score){
+  return `<div class="summary-section"><div class="summary-section-title">${title} <span class="badge">${score}</span></div>`+
+    items.map(function(q){
+      const first=ans[q.k], qty=ans[q.k+'_qty'], next=ans[q.k+'c'];
+      const pts=(first==='Yes'?1:0)+(first==='Yes'&&next==='Yes'?1:0);
+      const qtyTxt = first==='Yes' ? ((qty===undefined||qty==='') ? 'Not given' : qty + ' ' + q.u) : 'Skipped';
+      return summaryItem(`${q.n} ${q.t}`, first) +
+        `<div class="summary-sub">Quantity on hand: ${esc(qtyTxt)}</div>` +
+        `<div class="summary-sub">${esc(q.f)} ${first==='Yes' ? (next||'Not answered') : 'Skipped'} &nbsp;·&nbsp; ${pts}/2 points</div>`;
+    }).join('')+'</div>';
+}
 function summaryItem(label, val){
-  if(!val) val='—';
+  if(!val) val='Not given';
   let cls='val-other';
   if(val==='Sufficient') cls='val-sufficient';
   else if(val==='Not Sufficient') cls='val-notsufficient';
   else if(val==='Stockout') cls='val-stockout';
   else if(val==='Yes') cls='val-yes';
   else if(val==='No') cls='val-no';
-  else if(val==='Not Applicable'||val==='N/A') cls='val-na';
+  else if(val==='Not Applicable'||val==='N/A'||val==='Skipped') cls='val-na';
   return `<div class="summary-item"><span class="summary-item-label">${label}</span><span class="summary-item-val ${cls}">${val}</span></div>`;
 }
 
 // ===================== UTILS =====================
-function esc(s){ return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+function esc(s){ return String(s===undefined||s===null?'':s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
 function switchTab(tab){
   document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -1087,10 +1521,10 @@ function init(){
   document.getElementById("visitdate").value = new Date().toISOString().split('T')[0];
   document.getElementById("district").value = DISTRICT;
   updateChiefdoms();
-  renderSection('sec_reporting', secReporting);
-  renderSection('sec_reference', secReference);
-  renderSection('sec_antimalarial', secAntimalarial);
-  renderSection('sec_essential', secEssential);
+  renderTwoPart('sec_reporting', secReporting);
+  renderTwoPart('sec_reference', secReference);
+  renderThreePart('sec_antimalarial', secAntimalarial);
+  renderThreePart('sec_essential', secEssential);
   buildPharmacy();
   buildTools();
   buildReferral();
@@ -1100,8 +1534,9 @@ function init(){
   buildFeedback();
   buildGapAddr();
   buildImmFeedback();
-  renderTrainees();
-  renderActionRows();
+  setStaffCount('malariaTrain', 0);
+  setStaffCount('hmisTrain', 0);
+  setGapCount(0);
   updateScores();
 }
 init();
@@ -1218,8 +1653,8 @@ function validateAllQuestions(){
    Add or change users here. Three slots; fill the empty two when ready. */
 var USERS = [
   { username: "msk", password: "1234", name: "Mohamed Sillah Kanu" },
-  { username: "",    password: "",     name: "" },   // second user — fill in
-  { username: "",    password: "",     name: "" }    // third user — fill in
+  { username: "",    password: "",     name: "" },   // second user, fill in
+  { username: "",    password: "",     name: "" }    // third user, fill in
 ];
 
 (function(){
@@ -1255,7 +1690,6 @@ var USERS = [
 
   function showWho(){
     var u = currentUser(); if(!u) return;
-    document.querySelectorAll('.page-header, .header-sub').length;
     var host = document.querySelector('.page-header');
     if(!host || host.querySelector('.lgWho')) return;
     var d = document.createElement('div');
