@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>FORM B - MOCM/OTSS+ Checklist | NMCP Sierra Leone</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+:root {
+  --blue:#3b78a8; --blue-dark:#2b5f8a; --blue-light:#4a8dbf;
+  --soft-bg:#e7f3ff; --white:#ffffff; --gold:#ffc107;
+  --green:#28a745; --red:#dc3545; --bg:#f0f2f5;
+  --border:#e0e6ed; --text-dark:#1a2c3e; --text-light:#6c7a8a;
+  --radius:16px; --orange:#fd7e14;
+}
+
+/* BASE — mobile first, everything full width */
+html { font-size:16px; }
+body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-dark); font-size:15px; line-height:1.55; margin:0; overflow-x:hidden; }
+
+/* TAB NAV */
+.tab-nav { display:flex; background:var(--blue-dark); position:sticky; top:0; z-index:200; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
+.tab-btn { flex:1; padding:16px 8px; color:rgba(255,255,255,0.65); font-weight:700; font-size:14px; border:none; background:none; cursor:pointer; border-bottom:3px solid transparent; transition:all 0.2s; letter-spacing:0.3px; }
+.tab-btn.active { color:white; border-bottom:3px solid var(--gold); background:rgba(255,255,255,0.08); }
+
+/* PAGE WRAPPER */
+.tab-page { display:none; width:100%; padding:0 0 80px 0; }
+.tab-page.active { display:block; }
+
+/* HEADER */
+.page-header { background:linear-gradient(135deg,var(--blue-dark) 0%,var(--blue) 60%,var(--blue-light) 100%); color:white; text-align:center; padding:20px 16px; }
+.header-logos { display:flex; justify-content:center; gap:16px; margin-bottom:14px; flex-wrap:wrap; }
+.header-logo { height:56px; width:auto; background:white; padding:5px 10px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.15); }
+.header-org { font-size:11px; font-weight:600; letter-spacing:0.8px; margin-bottom:6px; opacity:0.9; }
+.header-title { font-size:20px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:var(--gold); }
+.header-sub { font-size:12px; font-weight:500; opacity:0.85; margin-top:5px; }
+.form-title { background:linear-gradient(90deg,var(--blue-dark),var(--blue)); color:white; padding:13px 16px; font-weight:700; font-size:14px; border-left:4px solid var(--gold); }
+
+/* SECTION HEADERS */
+.section-header { background:var(--soft-bg); color:var(--blue-dark); padding:13px 16px; font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:0.4px; border-left:4px solid var(--blue); margin-top:2px; }
+.subsection-header { background:white; color:var(--blue-dark); padding:12px 16px; font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:0.3px; border-left:4px solid var(--blue-light); border-bottom:1px solid var(--border); }
+
+/* CARDS */
+.section-card { background:white; border-bottom:1px solid var(--border); }
+.card-body { padding:16px 16px 20px 16px; }
+
+/* DEMOGRAPHICS */
+.demographics { background:white; padding:16px 16px; border-bottom:1px solid var(--border); }
+.demographics h3 { color:var(--blue-dark); margin-bottom:16px; font-size:12px; letter-spacing:0.5px; font-weight:700; text-transform:uppercase; }
+
+/* INPUTS — large touch targets */
+.form-input, .form-select, .form-textarea {
+  width:100%; padding:14px 14px; border:1.5px solid var(--border); border-radius:12px;
+  font-size:16px; font-family:'Inter',sans-serif;
+  background:white; transition:border-color 0.2s; appearance:none; -webkit-appearance:none;
+}
+.form-select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236c7a8a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; padding-right:38px; }
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color:var(--blue); outline:none; box-shadow:0 0 0 3px rgba(59,120,168,0.12); }
+.form-select:disabled { background-color:#f6f8fa; color:#9aa7b4; }
+.form-textarea { resize:vertical; min-height:90px; font-size:15px; }
+
+/* QUESTION ROWS */
+.question-row { margin-bottom:22px; }
+.question-row:last-child { margin-bottom:0; }
+.question-text { font-weight:600; font-size:15px; margin-bottom:10px; color:var(--text-dark); line-height:1.4; }
+.question-num { color:var(--blue); margin-right:5px; font-weight:700; }
+.required-star { color:var(--red); margin-left:4px; font-size:12px; }
+
+/* RADIO OPTIONS */
+.options-group-vertical { display:flex; flex-direction:column; gap:10px; margin-top:6px; }
+.radio-option-vertical {
+  display:flex; align-items:center; gap:14px; background:white; padding:14px 16px;
+  border-radius:12px; border:1.5px solid var(--border); cursor:pointer; font-weight:500;
+  font-size:15px; transition:all 0.15s; min-height:50px;
+}
+.radio-option-vertical input { width:20px; height:20px; accent-color:var(--blue); cursor:pointer; margin:0; flex-shrink:0; }
+.radio-option-vertical.selected { background:var(--blue); border-color:var(--blue); color:white; }
+.radio-option-vertical.selected input { accent-color:white; }
+
+/* CHECKBOX OPTIONS */
+.options-group-check { display:flex; flex-direction:column; gap:10px; margin-top:6px; }
+.check-option {
+  display:flex; align-items:center; gap:12px; background:white; padding:13px 16px;
+  border-radius:12px; border:1.5px solid var(--border); cursor:pointer; font-weight:500;
+  font-size:15px; transition:all 0.15s; min-height:50px; width:100%;
+}
+.check-option input { width:20px; height:20px; accent-color:var(--blue); cursor:pointer; margin:0; flex-shrink:0; }
+.check-option.selected { background:var(--blue); border-color:var(--blue); color:white; }
+
+/* SEX RADIO — side by side */
+.options-group-h { display:flex; gap:10px; margin-top:6px; flex-wrap:wrap; }
+.options-group-h .check-option { flex:1; min-width:120px; justify-content:center; }
+
+/* SCORE BADGE */
+.score-row { display:flex; justify-content:space-between; align-items:center; background:var(--soft-bg); padding:12px 16px; border-top:2px solid var(--border); }
+.score-label { font-size:12px; font-weight:700; color:var(--blue-dark); text-transform:uppercase; }
+.score-badge { font-size:13px; font-weight:800; padding:5px 16px; border-radius:20px; }
+.score-badge.good { background:var(--green); color:white; }
+.score-badge.fair { background:var(--orange); color:white; }
+.score-badge.poor { background:var(--red); color:white; }
+
+/* MEMBER CARD */
+.member-card { background:#f8fafc; border:1.5px solid var(--border); border-radius:14px; padding:16px; margin-bottom:14px; }
+.member-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--border); font-weight:700; color:var(--blue-dark); font-size:14px; }
+.remove-btn { color:var(--red); cursor:pointer; background:#fff0f0; border:1px solid #ffcccc; border-radius:8px; font-size:15px; font-weight:700; padding:6px 14px; min-height:40px; }
+.add-btn { background:var(--blue); color:white; border:none; border-radius:12px; padding:15px 20px; font-weight:700; font-size:15px; cursor:pointer; width:100%; margin-top:10px; transition:background 0.2s; min-height:52px; }
+.add-btn:active { background:var(--blue-dark); }
+
+/* SUBMIT BTN */
+.btn-submit { width:100%; padding:17px; background:var(--blue); color:white; border:none; border-radius:14px; font-weight:700; font-size:16px; cursor:pointer; letter-spacing:0.3px; margin:20px 0; transition:background 0.2s; min-height:56px; }
+.btn-submit:active { background:var(--blue-dark); }
+
+/* ACTION PLAN */
+.action-table { width:100%; border-collapse:collapse; font-size:13px; }
+.action-table th { background:var(--blue-dark); color:white; padding:10px 8px; text-align:left; font-weight:700; font-size:12px; }
+.action-table td { padding:6px 8px; border-bottom:1px solid var(--border); }
+.action-table input { width:100%; padding:9px 10px; border:1.5px solid var(--border); border-radius:10px; font-size:14px; font-family:'Inter',sans-serif; background:white; }
+.action-table input:focus { border-color:var(--blue); outline:none; }
+.add-row-btn { background:var(--soft-bg); color:var(--blue-dark); border:1.5px dashed var(--blue); border-radius:12px; padding:14px 16px; font-weight:700; font-size:14px; cursor:pointer; width:100%; margin-top:8px; min-height:50px; }
+
+/* ISSUES LIST */
+.issues-grid { display:flex; flex-direction:column; border-top:1px solid var(--border); }
+.issue-item { padding:12px 14px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; font-size:14px; gap:10px; }
+.issue-label { color:var(--text-dark); flex:1; line-height:1.4; }
+.issue-val { font-weight:700; padding:4px 12px; border-radius:12px; font-size:12px; white-space:nowrap; }
+.issue-yes { background:#f8d7da; color:#721c24; }
+.issue-no { background:#d4edda; color:#155724; }
+
+/* SUMMARY TAB */
+.summary-header { background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:white; padding:20px 16px; }
+.summary-header h2 { font-size:18px; font-weight:800; color:var(--gold); }
+.summary-header p { font-size:12px; opacity:0.85; margin-top:4px; }
+.summary-refresh { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:white; border-radius:20px; padding:10px 20px; font-weight:600; font-size:13px; cursor:pointer; margin-top:12px; display:inline-block; }
+
+.score-cards { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:14px; }
+.score-card { background:white; border-radius:14px; padding:14px; border:1px solid var(--border); }
+.score-card-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-light); margin-bottom:6px; }
+.score-card-value { font-size:24px; font-weight:800; }
+.score-card-value.good { color:var(--green); }
+.score-card-value.fair { color:var(--orange); }
+.score-card-value.poor { color:var(--red); }
+.score-card-sub { font-size:12px; color:var(--text-light); margin-top:3px; }
+.progress-bar-wrap { height:7px; background:var(--border); border-radius:10px; margin-top:8px; overflow:hidden; }
+.progress-bar { height:100%; border-radius:10px; transition:width 0.5s; }
+.progress-bar.good { background:var(--green); }
+.progress-bar.fair { background:var(--orange); }
+.progress-bar.poor { background:var(--red); }
+
+.summary-section { margin:0 12px 12px 12px; background:white; border-radius:14px; border:1px solid var(--border); overflow:hidden; }
+.summary-section-title { background:var(--blue-dark); color:white; padding:12px 14px; font-weight:700; font-size:13px; display:flex; justify-content:space-between; align-items:center; }
+.summary-section-title span.badge { background:rgba(255,255,255,0.2); border-radius:20px; padding:2px 10px; font-size:12px; }
+.summary-item { padding:11px 14px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+.summary-item:last-child { border-bottom:none; }
+.summary-item-label { font-size:13px; color:var(--text-dark); flex:1; line-height:1.4; }
+.summary-item-val { font-size:12px; font-weight:600; padding:3px 11px; border-radius:20px; white-space:nowrap; flex-shrink:0; }
+.val-sufficient { background:#d4edda; color:#155724; }
+.val-notsufficient { background:#fff3cd; color:#856404; }
+.val-stockout { background:#f8d7da; color:#721c24; }
+.val-yes { background:#d4edda; color:#155724; }
+.val-no { background:#f8d7da; color:#721c24; }
+.val-na { background:#e2e3e5; color:#383d41; }
+.val-other { background:var(--soft-bg); color:var(--blue-dark); }
+
+.demo-grid { display:flex; flex-direction:column; }
+.demo-item { padding:11px 14px; border-bottom:1px solid var(--border); }
+.demo-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-light); margin-bottom:3px; }
+.demo-value { font-size:15px; font-weight:600; color:var(--text-dark); }
+
+.trainee-table { width:100%; border-collapse:collapse; font-size:13px; }
+.trainee-table th { background:var(--soft-bg); color:var(--blue-dark); padding:9px 10px; text-align:left; font-weight:700; border-bottom:2px solid var(--border); }
+.trainee-table td { padding:8px 10px; border-bottom:1px solid var(--border); }
+
+.overall-rating { text-align:center; padding:24px 16px; }
+.rating-label { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-light); margin-bottom:10px; }
+.rating-value { font-size:32px; font-weight:800; }
+.no-data { text-align:center; padding:24px; color:var(--text-light); font-size:14px; font-style:italic; }
+
+/* MODAL */
+.modal { display:none; position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(0,0,0,0.7); z-index:1000; align-items:center; justify-content:center; padding:20px; }
+.modal-content { background:white; border-radius:20px; max-width:500px; width:100%; box-shadow:0 20px 40px rgba(0,0,0,0.3); }
+.modal-header { background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:white; padding:16px 20px; font-weight:700; font-size:15px; border-radius:20px 20px 0 0; display:flex; justify-content:space-between; align-items:center; }
+.modal-header button { background:none; border:none; color:white; font-size:24px; cursor:pointer; }
+.modal-body { padding:20px; font-size:14px; color:var(--text-dark); }
+.modal-footer { padding:16px 20px; border-top:1px solid var(--border); display:flex; gap:12px; }
+.btn-cancel { flex:1; padding:12px; background:#f0f2f5; color:var(--text-dark); border:1px solid var(--border); border-radius:40px; font-weight:600; cursor:pointer; }
+.btn-confirm { flex:1; padding:12px; background:var(--green); color:white; border:none; border-radius:40px; font-weight:600; cursor:pointer; }
+
+.px16 { padding:0 16px; }
+.px20 { padding:0 16px; }
+</style>
+</head>
+<body>
+
+<!-- TAB NAVIGATION -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('entry')">📋 DATA ENTRY</button>
+  <button class="tab-btn" onclick="switchTab('summary')">📊 SUMMARY</button>
+</div>
+
+<!-- ==================== DATA ENTRY TAB ==================== -->
+<div class="tab-page active" id="tab-entry">
+  <div class="page-header">
+    <div class="header-logos">
+      <img src="ICF-SL.jpg" class="header-logo" alt="ICF-SL" onerror="this.style.display='none'">
+      <img src="NMCP.png" class="header-logo" alt="NMCP" onerror="this.style.display='none'">
+    </div>
+    <div class="header-org">National Malaria Control Programme — Ministry of Health, Sierra Leone</div>
+    <div class="header-title">MOCM/OTSS+ Checklist</div>
+    <div class="header-sub">FORM B: Checklist for Assessing HF Readiness</div>
+  </div>
+  <div class="form-title">FORM B: CHECKLIST FOR ASSESSING HF READINESS</div>
+
+  <!-- DEMOGRAPHICS: Region > District > Chiefdom > PHU > Facility Type -->
+  <div class="demographics">
+    <h3>Facility Demographics</h3>
+    <div class="question-row">
+      <div class="question-text">District <span class="required-star">*</span></div>
+      <select class="form-select" id="district" onchange="updateChiefdoms()"><option>Bo</option></select>
+    </div>
+    <div class="question-row">
+      <div class="question-text">Chiefdom / Zone / City <span class="required-star">*</span></div>
+      <select class="form-select" id="chiefdom" onchange="updatePHUs()" disabled><option value="">Select District first</option></select>
+    </div>
+    <div class="question-row">
+      <div class="question-text">Health Facility (PHU) <span class="required-star">*</span></div>
+      <select class="form-select" id="phu" onchange="updateFacilityType()" disabled><option value="">Select Chiefdom first</option></select>
+    </div>
+    <div class="question-row">
+      <div class="question-text">Health Facility Type <span class="required-star">*</span></div>
+      <select class="form-select" id="facilitytype" disabled><option value="">Select PHU first</option></select>
+    </div>
+    <div class="question-row">
+      <div class="question-text">Supervisor Name</div>
+      <input class="form-input" id="supervisor" type="text" placeholder="Supervisor name">
+    </div>
+    <div class="question-row">
+      <div class="question-text">Date of Visit</div>
+      <input class="form-input" id="visitdate" type="date">
+    </div>
+  </div>
+
+  <!-- ====== SECTION 1 ====== -->
+  <div class="section-header">1. Health Facility Capacity</div>
+
+  <div class="subsection-header">1.1.1 Training on Malaria Case Management</div>
+  <div class="section-card"><div class="card-body">
+    <div id="dynamic_malariaTrain"></div>
+    <button class="add-btn" onclick="addRow('malariaTrain')">+ Add Another Trainee</button>
+  </div></div>
+
+  <div class="subsection-header">1.1.2 Training on HMIS</div>
+  <div class="section-card"><div class="card-body">
+    <div id="dynamic_hmisTrain"></div>
+    <button class="add-btn" onclick="addRow('hmisTrain')">+ Add Another Trainee</button>
+  </div></div>
+
+  <div class="subsection-header">1.2 Reporting Tools Readiness</div>
+  <div class="section-card"><div class="card-body" id="sec_reporting"></div></div>
+  <div class="score-row"><span class="score-label">Reporting Tools Score</span><span class="score-badge" id="score_reporting">0/11</span></div>
+
+  <div class="subsection-header">1.4 Malaria Reference Material</div>
+  <div class="section-card"><div class="card-body" id="sec_reference"></div></div>
+  <div class="score-row"><span class="score-label">Reference Material Score</span><span class="score-badge" id="score_reference">0/7</span></div>
+
+  <!-- ====== SECTION 2 ====== -->
+  <div class="section-header">2. Supply Chain Readiness</div>
+  <div class="subsection-header">2.1–2.12 Availability of Antimalarial Drugs</div>
+  <div class="section-card"><div class="card-body" id="sec_antimalarial"></div></div>
+  <div class="score-row"><span class="score-label">Antimalarial Supply Score</span><span class="score-badge" id="score_antimalarial">0/12</span></div>
+
+  <!-- ====== SECTION 3 ====== -->
+  <div class="section-header">3. Essential Drugs</div>
+  <div class="subsection-header">3.1–3.11 Availability of Essential Drugs</div>
+  <div class="section-card"><div class="card-body" id="sec_essential"></div></div>
+  <div class="score-row"><span class="score-label">Essential Drugs Score</span><span class="score-badge" id="score_essential">0/11</span></div>
+
+  <!-- ====== SECTION 4 ====== -->
+  <div class="section-header">4. Pharmacy Operations &amp; Commodity Security</div>
+  <div class="section-card"><div class="card-body" id="sec_pharmacy"></div></div>
+
+  <!-- ====== SECTION 5 ====== -->
+  <div class="section-header">5. Availability of Basic Tools</div>
+  <div class="section-card"><div class="card-body" id="sec_tools"></div></div>
+  <div class="score-row"><span class="score-label">Basic Tools Score</span><span class="score-badge" id="score_tools">0/10</span></div>
+
+  <!-- ====== SECTION 6 ====== -->
+  <div class="section-header">6. Inpatient Services &amp; Referral Systems</div>
+  <div class="section-card"><div class="card-body" id="sec_referral"></div></div>
+
+  <!-- ====== SECTION 7 ====== -->
+  <div class="section-header">7. Waste Management</div>
+  <div class="section-card"><div class="card-body" id="sec_waste"></div></div>
+  <div class="score-row"><span class="score-label">Waste Management Score</span><span class="score-badge" id="score_waste">0/2</span></div>
+
+  <!-- ====== SECTION 8 ====== -->
+  <div class="section-header">8. Immediate Corrective Actions</div>
+  <div class="section-card"><div class="card-body" id="sec_issues"></div></div>
+
+  <!-- ====== SECTION 9 ====== -->
+  <div class="section-header">9. Total Number of Staff Reached</div>
+  <div class="section-card"><div class="card-body" id="sec_staffreach"></div></div>
+
+  <!-- ====== SECTION 10 ====== -->
+  <div class="section-header">10. Supervisor Feedback</div>
+  <div class="section-card"><div class="card-body" id="sec_feedback"></div></div>
+
+  <!-- ====== SECTION 11 ====== -->
+  <div class="section-header">11. Additional Comments</div>
+  <div class="section-card"><div class="card-body">
+    <div class="question-row">
+      <div class="question-text">Additional comments on the observations</div>
+      <textarea class="form-textarea" id="q_comments" rows="4" placeholder="Additional comments on the observations..." oninput="ans.comments=this.value"></textarea>
+    </div>
+  </div></div>
+
+  <!-- ====== SECTION 12-14 ====== -->
+  <div class="section-header">12–14. Gap Analysis &amp; Previous Visit Follow-up</div>
+  <div class="section-card"><div class="card-body">
+    <div class="question-row">
+      <div class="question-text">12. Biggest gap(s) identified during the last HF visit</div>
+      <textarea class="form-textarea" id="q_lastgaps" rows="3" placeholder="1) ... 2) ... 3) ..." oninput="ans.lastgaps=this.value"></textarea>
+    </div>
+    <div class="question-row">
+      <div class="question-text">13. Action plan from the previous visit</div>
+      <textarea class="form-textarea" id="q_prevplan" rows="3" placeholder="Describe the action plan..." oninput="ans.prevplan=this.value"></textarea>
+    </div>
+    <div class="question-row">
+      <div class="question-text">14. Were these gaps addressed?</div>
+      <div class="options-group-vertical" id="group_gapaddr"></div>
+    </div>
+  </div></div>
+
+  <!-- ====== SECTION 15-17 ====== -->
+  <div class="section-header">15–17. Current Visit Gaps &amp; Feedback</div>
+  <div class="section-card"><div class="card-body">
+    <div class="question-row">
+      <div class="question-text">15. Biggest gap(s) identified today</div>
+      <textarea class="form-textarea" id="q_todaygaps" rows="3" placeholder="1) ... 2) ..." oninput="ans.todaygaps=this.value"></textarea>
+    </div>
+    <div class="question-row">
+      <div class="question-text">16. Was immediate feedback provided?</div>
+      <div class="options-group-vertical" id="group_immfeedback"></div>
+    </div>
+    <div class="question-row" id="feedbackhow_row" style="display:none">
+      <div class="question-text">17. How was the feedback provided? (select all that apply)</div>
+      <div class="options-group-check" id="group_feedbackhow"></div>
+    </div>
+  </div></div>
+
+  <!-- ====== SECTION 18 - ACTION PLAN TABLE ====== -->
+  <div class="section-header">18. Action Plan for Addressing Gaps</div>
+  <div class="section-card"><div class="card-body">
+    <div style="overflow-x:auto;">
+      <table class="action-table" id="actionPlanTable">
+        <thead><tr>
+          <th>Identified Gap</th>
+          <th>Recommended Action</th>
+          <th>Responsible Person(s)</th>
+          <th>Timeline</th>
+          <th>Status</th>
+          <th style="width:36px;"></th>
+        </tr></thead>
+        <tbody id="actionPlanBody"></tbody>
+      </table>
+    </div>
+    <button class="add-row-btn" onclick="addActionRow()">+ Add Row</button>
+    <div class="question-row" style="margin-top:16px;">
+      <div class="question-text">Supervisor Comments</div>
+      <textarea class="form-textarea" id="q_supcomments" rows="3" placeholder="Supervisor comments..." oninput="ans.supcomments=this.value"></textarea>
+    </div>
+  </div></div>
+
+  <div class="px20">
+    <button class="btn-submit" onclick="submitForm()">✅ SAVE &amp; VIEW SUMMARY</button>
+  </div>
+</div>
+<!-- END DATA ENTRY TAB -->
+
+
+<!-- ==================== SUMMARY TAB ==================== -->
+<div class="tab-page" id="tab-summary">
+  <div class="summary-header">
+    <h2>FORM B — SUBMISSION SUMMARY</h2>
+    <p id="sum_date">No submission yet</p>
+    <button class="summary-refresh" onclick="renderSummary()">🔄 Refresh Summary</button>
+  </div>
+  <div id="summary-content"><div class="no-data" style="padding:40px;">Complete the data entry form and click "Save &amp; View Summary" to see results here.</div></div>
+</div>
+<!-- END SUMMARY TAB -->
+
+<!-- CONFIRM MODAL -->
+<div id="confirmModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><span>Confirm Submission</span><button onclick="closeModal()">×</button></div>
+    <div class="modal-body">Are you sure you want to save this form? You can still edit it after saving.</div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-confirm" onclick="doSubmit()">Save &amp; View Summary</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================== DATA =====================
+const ans = {};
+let submitted = false;
+
+const dynamicTables = { malariaTrain:[], hmisTrain:[] };
+let actionRows = [];
+
+const DISTRICT = "Bo";   // MOCM pilot runs in Bo District only
+
+// ===================== FACILITY LIST =====================
+// MOCM pilot: 10 selected facilities, Bo District.
+// district | chiefdom | phu | facility_type
+const PILOT_FACILITIES = [
+  { district:"Bo", chiefdom:"Badjia Chiefdom",     phu:"Njagbahun (Badjia) MCHP",   type:"MCHP" },
+  { district:"Bo", chiefdom:"Baoma Chiefdom",      phu:"Faabu CHP",                 type:"CHP"  },
+  { district:"Bo", chiefdom:"Baoma Chiefdom",      phu:"Gerehun CHC",               type:"CHC"  },
+  { district:"Bo", chiefdom:"Baoma Chiefdom",      phu:"Mbundorbu MCHP",            type:"MCHP" },
+  { district:"Bo", chiefdom:"Bongor Chiefdom",     phu:"Mamboma (Bongor) CHP",      type:"CHP"  },
+  { district:"Bo", chiefdom:"Bumpe Ngao Chiefdom", phu:"Bumpe CHC",                 type:"CHC"  },
+  { district:"Bo", chiefdom:"Bumpe Ngao Chiefdom", phu:"Mokoba MCHP",               type:"MCHP" },
+  { district:"Bo", chiefdom:"Bumpe Ngao Chiefdom", phu:"Yengema (Bumpe Ngao) MCHP", type:"MCHP" },
+  { district:"Bo", chiefdom:"Tikonko Chiefdom",    phu:"Gondama (Tikonko) CHC",     type:"CHC"  },
+  { district:"Bo", chiefdom:"Tikonko Chiefdom",    phu:"Griema MCHP",               type:"MCHP" }
+];
+
+
+// only the chiefdoms that hold a pilot facility
+function chiefdomsIn(district){
+  const set = new Set();
+  PILOT_FACILITIES.forEach(f => { if (f.district === district) set.add(f.chiefdom); });
+  return Array.from(set).sort();
+}
+function phusIn(district, chiefdom){
+  return PILOT_FACILITIES
+    .filter(f => f.district === district && f.chiefdom === chiefdom)
+    .sort((a,b) => a.phu.localeCompare(b.phu));
+}
+function typeOf(district, chiefdom, phu){
+  const hit = PILOT_FACILITIES.find(f => f.district === district && f.chiefdom === chiefdom && f.phu === phu);
+  return hit ? hit.type : "";
+}
+
+// ===================== CASCADE =====================
+function updateChiefdoms(){
+  const district = document.getElementById("district").value;
+  const c = document.getElementById("chiefdom");
+  resetFrom("phu");
+  const list = district ? chiefdomsIn(district) : [];
+  if (list.length){
+    c.innerHTML = '<option value="">Select Chiefdom...</option>' + list.map(x => `<option>${escOpt(x)}</option>`).join('');
+    c.disabled = false;
+  } else {
+    c.innerHTML = '<option value="">No chiefdoms listed for this district</option>';
+    c.disabled = true;
+  }
+}
+
+function updatePHUs(){
+  const district = document.getElementById("district").value;
+  const chiefdom = document.getElementById("chiefdom").value;
+  const p = document.getElementById("phu");
+  resetFrom("facilitytype");
+  const list = (district && chiefdom) ? phusIn(district, chiefdom) : [];
+  if (list.length){
+    p.innerHTML = '<option value="">Select PHU...</option>' + list.map(f => `<option>${escOpt(f.phu)}</option>`).join('');
+    p.disabled = false;
+  } else {
+    p.innerHTML = '<option value="">No facilities listed for this chiefdom</option>';
+    p.disabled = true;
+  }
+}
+
+function updateFacilityType(){
+  const district = document.getElementById("district").value;
+  const chiefdom = document.getElementById("chiefdom").value;
+  const phu = document.getElementById("phu").value;
+  const t = document.getElementById("facilitytype");
+  if (!phu){
+    t.innerHTML = '<option value="">Select PHU first</option>';
+    t.disabled = true;
+    return;
+  }
+  const type = typeOf(district, chiefdom, phu);
+  if (type){ t.innerHTML = `<option>${escOpt(type)}</option>`; t.disabled = false; }
+  else { t.innerHTML = '<option value="">Type not listed for this facility</option>'; t.disabled = true; }
+}
+
+// clear the selects below a given level
+function resetFrom(level){
+  const c = document.getElementById("chiefdom");
+  const p = document.getElementById("phu");
+  const t = document.getElementById("facilitytype");
+  if (level === "chiefdom"){
+    c.innerHTML = '<option value="">Select District first</option>'; c.disabled = true;
+  }
+  if (level === "chiefdom" || level === "phu"){
+    p.innerHTML = '<option value="">Select Chiefdom first</option>'; p.disabled = true;
+  }
+  t.innerHTML = '<option value="">Select PHU first</option>'; t.disabled = true;
+}
+
+function escOpt(s){ return String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+
+// ===================== SECTION DEFINITIONS =====================
+const secReporting = [
+  {k:"r1",n:"1.2.1",t:"IMNCI",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"r2",n:"1.2.2",t:"Under-2 register (EPI Register)",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"r3",n:"1.2.3",t:"Drug Dispensing Register",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"r4",n:"1.2.4",t:"Above-5 or General register",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"r5",n:"1.2.5",t:"MFRHC",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"r6",n:"1.2.6",t:"Stock card/ICC",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"r7",n:"1.2.7",t:"ITN register",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"r8",n:"1.2.7b",t:"HF1 – Morbidity Register",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"r9",n:"1.2.8",t:"HF2 – Child Preventive Services",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"r10",n:"1.2.9",t:"HF3 – Reproductive Health Services",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"r11",n:"1.2.10",t:"HF4 – Community Services",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+];
+const secReference = [
+  {k:"ref1",n:"1.4.1",t:"Most recent Malaria treatment guidelines for case management present",opts:["Yes","No"],scored:true},
+  {k:"ref2",n:"1.4.2",t:"Most recent algorithms for case management present in OPD",opts:["Yes","No"],scored:true},
+  {k:"ref3",n:"1.4.3",t:"Most recent Job Aids on Malaria Case Management",opts:["Yes","No"],scored:true},
+  {k:"ref4",n:"1.4.5",t:"Is there an IV holder in the health facility?",opts:["Yes","No"],scored:true},
+  {k:"ref5",n:"1.4.6",t:"Updated IMNCI guidelines and chart note for classification of malaria",opts:["Yes","No"],scored:true},
+  {k:"ref6",n:"1.4.7",t:"Most recent IMNCI Chart Booklet for diagnosis and management",opts:["Yes","No"],scored:true},
+  {k:"ref7",n:"1.4.8",t:"Maternal and child health handbook",opts:["Yes","No"],scored:true},
+];
+const secAntimalarial = [
+  {k:"a2",n:"2.2",t:"ACT Infant (6 tabs)",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"a3",n:"2.3",t:"ACT Toddler (12 tabs)",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"a4",n:"2.4",t:"ACT Adolescent (18 tabs)",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"a5",n:"2.5",t:"ACT Adult (24 tabs)",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"a6",n:"2.6",t:"RDTs",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"a7",n:"2.7",t:"SP – IPTp 500mg/25mg",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"a8",n:"2.8",t:"SP – IPTi 250mg/12.5mg (Dispersible)",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"a9",n:"2.9",t:"ITNs",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"a10",n:"2.10",t:"Artesunate inj",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"a11",n:"2.11",t:"Artesunate suppositories",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"a12",n:"2.12",t:"Malaria Vaccine (RTS,S)",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"a1",n:"2.1",t:"Malaria RDT (general availability)",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+];
+const secEssential = [
+  {k:"e1",n:"3.1",t:"Paracetamol",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"e2",n:"3.2",t:"Clotrimazoles",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"e3",n:"3.3",t:"Amoxicillin",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"e4",n:"3.4",t:"Fefol/folic acid",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"e5",n:"3.5",t:"ORS",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"e6",n:"3.6",t:"5% Glucose Solution",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"e7",n:"3.7",t:"10% Glucose Solution",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"e8",n:"3.8",t:"50% Glucose Solution",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"e9",n:"3.9",t:"Injectable Diazepam",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"e10",n:"3.10",t:"IV Ringers Lactate",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+  {k:"e11",n:"3.11",t:"IV Normal Saline",opts:["Sufficient","Not Sufficient","Stockout"],scored:true},
+];
+const secPharmacy = [
+  {k:"p1",n:"4.1",t:"Does this facility use mSupply for Inventory Management?",opts:["Yes","No"]},
+  {k:"p2",n:"4.2",t:"Is the mSupply up to date? (skip if 4.1 is No)",opts:["Yes","No","Not Applicable"]},
+  {k:"p3",n:"4.3a",t:"Is the Invoice for the last drug supply available?",opts:["Yes","No"]},
+  {k:"p4",n:"4.3b",t:"Is First to Expire First Out (FEFO) method observed?",opts:["Yes","No"]},
+  {k:"p5",n:"4.4",t:"Can emergency requests be honored within 72hrs?",opts:["Yes","No"]},
+];
+const secPharmacyStorage = ["Ventilation","Security","Dry","Size","None"];
+
+const secTools = [
+  {k:"t1",n:"5.1",t:"Is there a thermometer in working order in all the Units?",opts:["Yes","No"],scored:true},
+  {k:"t2",n:"5.2",t:"Is there a working scale (both hanging and standing scales)?",opts:["Yes","No"],scored:true},
+  {k:"t3",n:"5.3",t:"Is there a working clinical examination kit?",opts:["Yes","No","Not Applicable"],scored:true},
+  {k:"t5",n:"5.5",t:"Is there an IV holder in the health facility?",opts:["Yes","No"],scored:true},
+  {k:"t6",n:"5.6",t:"Are there IMNCI guides for diagnosis and management?",opts:["Yes","No"],scored:true},
+  {k:"t7",n:"5.7",t:"Are coma assessment sheets (Glasgow Coma Scale) available?",opts:["Yes","No","Not Applicable"],scored:true},
+];
+const secToolsCheck = ["BP monitor","Glucometer and strips","Ambu bag","Face mask"];
+
+const secReferral = [
+  {k:"rf1",n:"6.1",t:"Does this health facility have overnight/inpatient beds?",opts:["Yes","No","N/A"]},
+  {k:"rf2",n:"6.2",t:"Does this health facility generally refer patients with Severe Malaria to a higher-level health facility?",opts:["Yes","No"]},
+  {k:"rf4",n:"6.4",t:"Do you have a phone number for the referral health facility?",opts:["Yes","No"]},
+  {k:"rf5",n:"6.5",t:'Do you usually call the referral health facility before sending a severely ill patient?',opts:["Yes","No"]},
+  {k:"rf6",n:"6.6",t:"Do you give a written note to the referral health facility?",opts:["Yes","No"]},
+  {k:"rf7",n:"6.7",t:"Is there a readily available transport system for severely ill patients?",opts:["Yes","No"]},
+  {k:"rf9",n:"6.9",t:"Do you usually get feedback about patients referred to a higher-level health facility?",opts:["Yes","No"]},
+];
+const referralLevels = ["CHC","District Hospital","Regional Hospital","Tertiary Hospital","Others"];
+const transportModes = ["Vehicle Ambulance","Boat","Motor bike","Motor tricycle (Kekeh)","Hand Mock/Tooters"];
+
+const secWaste = [
+  {k:"w2",n:"7.2",t:"Does this health facility have any guidelines on standard precautions for infection prevention and control? (Observed)",opts:["Yes","No"],scored:true},
+];
+const wasteDisposal = ["Burning (incinerator or protected environment)","Dump without burning (protected environment)","Disposal in unprotected environment","Other"];
+
+const issuesList = [
+  {k:"i1",n:"8.1",t:"Inadequate staffing"},
+  {k:"i2",n:"8.2",t:"Training on Malaria (Capacity)"},
+  {k:"i3",n:"8.3",t:"Unavailability of Basic reporting Tools"},
+  {k:"i4",n:"8.4",t:"Malaria reference material"},
+  {k:"i5",n:"8.5",t:"Waste management"},
+  {k:"i6",n:"8.6",t:"Stock-out of Basic Tools"},
+  {k:"i7",n:"8.7",t:"Stock-out of antimalarial"},
+  {k:"i8",n:"8.8",t:"Stock-out of essential drugs"},
+  {k:"i9",n:"8.9",t:"Unavailability of essential instruments"},
+  {k:"i10",n:"8.10",t:"Poor Storage condition"},
+  {k:"i11",n:"8.11",t:"Unavailability of Reference Material"},
+  {k:"i12",n:"8.12",t:"Inventory Management"},
+  {k:"i13",n:"8.13",t:"Patient Referral Readiness"},
+  {k:"i14",n:"8.14",t:"Assessment of compliance with mRDT negative results"},
+];
+
+const secFeedback = [
+  {k:"fb1",n:"10.1",t:"Did you provide feedback to staff on issues identified during assessment for each aspect: Malaria Training/Capacity, Supply Chain, Reporting Tools, and mRDT Compliance?",opts:["Yes","No"]},
+  {k:"fb2",n:"10.2",t:"Based on your overall observations of the 8 Malaria Readiness Domains, how would you rate this HF?",opts:["Unsatisfactory","Fair","Satisfactory","Excellent"]},
+];
+
+// ===================== RENDER HELPERS =====================
+function radioGroup(key, opts, onchange){
+  return `<div class="options-group-vertical" id="group_${key}">${opts.map(o=>`
+    <label class="radio-option-vertical" id="opt_${key}_${o.replace(/[^a-z0-9]/gi,'_')}">
+      <input type="radio" name="${key}" value="${o}" onchange="${onchange}('${key}','${o}',this)"> ${o}
+    </label>`).join('')}</div>`;
+}
+function checkGroup(key, opts, onchange){
+  return `<div class="options-group-check" id="checkgroup_${key}">${opts.map(o=>`
+    <label class="check-option" id="chk_${key}_${o.replace(/[^a-z0-9]/gi,'_')}">
+      <input type="checkbox" value="${o}" onchange="${onchange}('${key}','${o}',this)"> ${o}
+    </label>`).join('')}</div>`;
+}
+function renderSection(containerId, items){
+  const c = document.getElementById(containerId);
+  if(!c) return;
+  c.innerHTML = items.map(q=>`
+    <div class="question-row">
+      <div class="question-text"><span class="question-num">${q.n}</span>${q.t}</div>
+      ${radioGroup(q.k, q.opts, 'updateRadio')}
+    </div>`).join('');
+}
+function updateRadio(key, val, el){
+  ans[key] = val;
+  const g = document.getElementById(`group_${key}`);
+  if(g){ g.querySelectorAll('.radio-option-vertical').forEach(o=>o.classList.remove('selected')); el.closest('.radio-option-vertical').classList.add('selected'); }
+  updateScores();
+  if(key==='rf2'){ document.getElementById('referral_level_row').style.display = val==='Yes'?'block':'none'; }
+  if(key==='rf7'){ document.getElementById('transport_row').style.display = val==='Yes'?'block':'none'; }
+  if(key==='immfeedback'){ document.getElementById('feedbackhow_row').style.display = val==='Yes'?'block':'none'; }
+}
+function updateCheck(key, val, el){
+  if(!ans[key]) ans[key]=[];
+  if(el.checked){ if(!ans[key].includes(val)) ans[key].push(val); el.closest('.check-option').classList.add('selected'); }
+  else{ ans[key]=ans[key].filter(v=>v!==val); el.closest('.check-option').classList.remove('selected'); }
+}
+
+// ===================== SCORING =====================
+function calcScore(items){
+  let scored=0, total=0;
+  items.filter(q=>q.scored).forEach(q=>{
+    total++;
+    if(ans[q.k]==='Sufficient'||ans[q.k]==='Yes') scored++;
+  });
+  return {scored, total};
+}
+function scoreClass(s,t){ const p=t?s/t:0; return p>=0.95?'good':p>=0.5?'fair':'poor'; }
+function updateScores(){
+  const sections = [
+    {id:'score_reporting', items:secReporting, exp:11},
+    {id:'score_reference', items:secReference, exp:7},
+    {id:'score_antimalarial', items:secAntimalarial, exp:12},
+    {id:'score_essential', items:secEssential, exp:11},
+    {id:'score_tools', items:secTools, exp:10},
+    {id:'score_waste', items:secWaste, exp:2},
+  ];
+  const wasteScore = (ans.w2==='Yes'?1:0) + (ans.wasteDisposal&&ans.wasteDisposal.length?1:0);
+
+  sections.forEach(s=>{
+    const el=document.getElementById(s.id);
+    if(!el) return;
+    let sc, tot;
+    if(s.id==='score_waste'){ sc=wasteScore; tot=2; }
+    else { const r=calcScore(s.items); sc=r.scored; tot=s.exp; }
+    const cls=scoreClass(sc,tot);
+    el.textContent=`${sc}/${tot}`;
+    el.className=`score-badge ${cls}`;
+  });
+}
+
+// ===================== BUILD PHARMACY SECTION =====================
+function buildPharmacy(){
+  const c=document.getElementById('sec_pharmacy');
+  let html='';
+  secPharmacy.forEach(q=>{
+    html+=`<div class="question-row"><div class="question-text"><span class="question-num">${q.n}</span>${q.t}</div>${radioGroup(q.k,q.opts,'updateRadio')}</div>`;
+  });
+  html+=`<div class="question-row">
+    <div class="question-text"><span class="question-num">4.3c</span>Is the storage condition optimal? (Select all that apply)</div>
+    ${checkGroup('storageCondition', secPharmacyStorage,'updateCheck')}
+  </div>`;
+  c.innerHTML=html;
+}
+
+// ===================== BUILD TOOLS SECTION =====================
+function buildTools(){
+  const c=document.getElementById('sec_tools');
+  let html='';
+  secTools.forEach(q=>{
+    html+=`<div class="question-row"><div class="question-text"><span class="question-num">${q.n}</span>${q.t}</div>${radioGroup(q.k,q.opts,'updateRadio')}</div>`;
+  });
+  html+=`<div class="question-row">
+    <div class="question-text"><span class="question-num">5.4</span>Are the following available at the health facility? (Select all that apply)</div>
+    ${checkGroup('toolsCheck', secToolsCheck,'updateCheck')}
+  </div>`;
+  c.innerHTML=html;
+}
+
+// ===================== BUILD REFERRAL SECTION =====================
+function buildReferral(){
+  const c=document.getElementById('sec_referral');
+  let html='';
+  secReferral.forEach((q,i)=>{
+    html+=`<div class="question-row"><div class="question-text"><span class="question-num">${q.n}</span>${q.t}</div>${radioGroup(q.k,q.opts,'updateRadio')}</div>`;
+    if(i===1) html+=`<div class="question-row" id="referral_level_row" style="display:none">
+      <div class="question-text"><span class="question-num">6.3</span>If "Yes," what is the level of the health facility?</div>
+      ${checkGroup('referralLevel', referralLevels,'updateCheck')}
+    </div>`;
+    if(q.k==='rf7') html+=`<div class="question-row" id="transport_row" style="display:none">
+      <div class="question-text"><span class="question-num">6.8</span>Which transport model is available? (Select all that apply)</div>
+      ${checkGroup('transportMode', transportModes,'updateCheck')}
+    </div>`;
+  });
+  c.innerHTML=html;
+}
+
+// ===================== BUILD WASTE SECTION =====================
+function buildWaste(){
+  const c=document.getElementById('sec_waste');
+  let html=`<div class="question-row">
+    <div class="question-text"><span class="question-num">7.1</span>How does this health facility finally dispose of medical waste? (Observed)</div>
+    ${checkGroup('wasteDisposal', wasteDisposal,'updateCheckWaste')}
+    <div id="wasteOther" style="display:none;margin-top:8px;"><input class="form-input" placeholder="Specify other..." oninput="ans.wasteOther=this.value"></div>
+  </div>`;
+  secWaste.forEach(q=>{
+    html+=`<div class="question-row"><div class="question-text"><span class="question-num">${q.n}</span>${q.t}</div>${radioGroup(q.k,q.opts,'updateRadio')}</div>`;
+  });
+  c.innerHTML=html;
+}
+function updateCheckWaste(key,val,el){
+  updateCheck(key,val,el);
+  document.getElementById('wasteOther').style.display=(ans[key]&&ans[key].includes('Other'))?'block':'none';
+  updateScores();
+}
+
+// ===================== BUILD ISSUES SECTION =====================
+function buildIssues(){
+  const c=document.getElementById('sec_issues');
+  c.innerHTML=`<p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">Briefly describe key activities conducted during Support Supervision visit and number of staff reached. Tick issues present:</p>
+  <div class="issues-grid" style="border:1px solid var(--border);border-radius:12px;overflow:hidden;">`+
+  issuesList.map(q=>`
+    <div class="issue-item">
+      <span class="issue-label"><span style="color:var(--blue);font-weight:700;">${q.n}</span> ${q.t}</span>
+      <span>${radioInline(q.k)}</span>
+    </div>`).join('')+`</div>
+  <div class="question-row" style="margin-top:16px;">
+    <div class="question-text">Intervention type (select all that apply)</div>
+    ${checkGroup('interventionType',['FMC Engagement','Escalate to DHMT','Mentoring/Coaching','Document','Demonstration'],'updateCheck')}
+  </div>`;
+}
+function radioInline(key){
+  return `<span style="display:flex;gap:6px;">
+    <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;font-weight:600;color:var(--green)">
+      <input type="radio" name="${key}" value="Yes" onchange="updateRadio('${key}','Yes',this)" style="width:14px;height:14px;accent-color:var(--green)"> Yes</label>
+    <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;font-weight:600;color:var(--red)">
+      <input type="radio" name="${key}" value="No" onchange="updateRadio('${key}','No',this)" style="width:14px;height:14px;accent-color:var(--red)"> No</label>
+  </span>`;
+}
+
+// ===================== BUILD STAFF REACH =====================
+function buildStaffReach(){
+  const c=document.getElementById('sec_staffreach');
+  c.innerHTML=`<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;">
+  <thead><tr><th style="background:var(--blue);color:white;padding:10px 12px;text-align:left;">Issue</th><th style="background:var(--blue);color:white;padding:10px 12px;width:130px;">No. of Staff Reached</th></tr></thead>
+  <tbody>`+issuesList.map((q,i)=>`
+    <tr style="${i%2===0?'':'background:#fafbfc'}">
+      <td style="padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px;"><span style="color:var(--blue);font-weight:700;">${q.n.replace('8.','9.')}</span> ${q.t}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid var(--border);">
+        <input class="form-input" type="number" min="0" style="padding:6px 10px;" placeholder="0" oninput="ans['staff_${q.k}']=this.value">
+      </td>
+    </tr>`).join('')+`</tbody></table></div>`;
+}
+
+// ===================== BUILD FEEDBACK SECTION =====================
+function buildFeedback(){
+  renderSection('sec_feedback', secFeedback);
+}
+
+// ===================== SECTION 14 GAP ADDR =====================
+function buildGapAddr(){
+  const g=document.getElementById('group_gapaddr');
+  if(g) g.innerHTML=['Not addressed','Partially addressed','Completely addressed','Initial Visit'].map(o=>`
+    <label class="radio-option-vertical"><input type="radio" name="gapaddr" value="${o}" onchange="updateRadio('gapaddr','${o}',this)"> ${o}</label>`).join('');
+}
+
+// ===================== SECTION 16-17 =====================
+function buildImmFeedback(){
+  const g=document.getElementById('group_immfeedback');
+  if(g) g.innerHTML=['Yes','No'].map(o=>`
+    <label class="radio-option-vertical"><input type="radio" name="immfeedback" value="${o}" onchange="updateRadio('immfeedback','${o}',this)"> ${o}</label>`).join('');
+  const fh=document.getElementById('group_feedbackhow');
+  if(fh) fh.innerHTML=['FMC Engagement','Escalate to DHMT','Mentoring/Coaching','Document','Demonstration'].map(o=>`
+    <label class="check-option"><input type="checkbox" value="${o}" onchange="updateCheck('feedbackHow','${o}',this)"> ${o}</label>`).join('');
+}
+
+// ===================== DYNAMIC TRAINEE TABLES =====================
+function renderTrainees(){
+  ['malariaTrain','hmisTrain'].forEach(tn=>{
+    const c=document.getElementById(`dynamic_${tn}`);
+    if(!c) return;
+    const rows=dynamicTables[tn];
+    c.innerHTML=rows.map((row,i)=>`
+      <div class="member-card">
+        <div class="member-header"><span>Trainee ${i+1}</span><button class="remove-btn" onclick="removeRow('${tn}',${i})">×</button></div>
+        <div class="question-row" style="margin-bottom:12px;"><div class="question-text">Name</div>
+          <input class="form-input" value="${esc(row.name||'')}" placeholder="Full name" onchange="updateDyn('${tn}',${i},'name',this.value)">
+        </div>
+        <div class="question-row" style="margin-bottom:12px;"><div class="question-text">Sex</div>
+          <div class="options-group-h">
+            ${['Male','Female'].map(s=>`<label class="check-option ${row.sex===s?'selected':''}"><input type="radio" name="dyn_sex_${tn}_${i}" value="${s}" ${row.sex===s?'checked':''} onchange="updateDyn('${tn}',${i},'sex','${s}'); rerenderSex('${tn}',${i},'${s}')"> ${s}</label>`).join('')}
+          </div>
+        </div>
+        <div class="question-row" style="margin-bottom:12px;"><div class="question-text">Cadre</div>
+          <input class="form-input" value="${esc(row.cadre||'')}" placeholder="Cadre" onchange="updateDyn('${tn}',${i},'cadre',this.value)">
+        </div>
+        <div class="question-row" style="margin-bottom:12px;"><div class="question-text">Duration</div>
+          <input class="form-input" value="${esc(row.duration||'')}" placeholder="e.g. 3 days" onchange="updateDyn('${tn}',${i},'duration',this.value)">
+        </div>
+        <div class="question-row" style="margin-bottom:12px;"><div class="question-text">Year</div>
+          <input class="form-input" value="${esc(row.year||'')}" placeholder="Year trained" onchange="updateDyn('${tn}',${i},'year',this.value)">
+        </div>
+        <div class="question-row" style="margin-bottom:0;"><div class="question-text">Remarks</div>
+          <input class="form-input" value="${esc(row.remarks||'')}" placeholder="Remarks" onchange="updateDyn('${tn}',${i},'remarks',this.value)">
+        </div>
+      </div>`).join('');
+  });
+}
+function addRow(tn){ dynamicTables[tn].push({}); renderTrainees(); }
+dynamicTables.malariaTrain.push({});
+dynamicTables.hmisTrain.push({});
+function removeRow(tn,i){ dynamicTables[tn].splice(i,1); renderTrainees(); }
+function updateDyn(tn,i,field,val){ if(!dynamicTables[tn][i]) dynamicTables[tn][i]={}; dynamicTables[tn][i][field]=val; }
+function rerenderSex(tn,i,sel){
+  const wrap=document.querySelectorAll(`[name="dyn_sex_${tn}_${i}"]`);
+  wrap.forEach(el=>{ el.closest('.check-option').classList.toggle('selected', el.value===sel); });
+}
+
+// ===================== ACTION PLAN =====================
+function addActionRow(){
+  actionRows.push({gap:'',action:'',person:'',timeline:'',status:''});
+  renderActionRows();
+}
+function renderActionRows(){
+  const tb=document.getElementById('actionPlanBody');
+  if(!tb) return;
+  if(!actionRows.length){ tb.innerHTML=`<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:16px;font-size:13px;">No rows yet. Click "+ Add Row".</td></tr>`; return; }
+  tb.innerHTML=actionRows.map((r,i)=>`
+    <tr>
+      <td><input value="${esc(r.gap)}" onchange="updateAction(${i},'gap',this.value)" placeholder="Identified gap"></td>
+      <td><input value="${esc(r.action)}" onchange="updateAction(${i},'action',this.value)" placeholder="Action"></td>
+      <td><input value="${esc(r.person)}" onchange="updateAction(${i},'person',this.value)" placeholder="Person(s)"></td>
+      <td><input value="${esc(r.timeline)}" onchange="updateAction(${i},'timeline',this.value)" placeholder="Timeline"></td>
+      <td><input value="${esc(r.status)}" onchange="updateAction(${i},'status',this.value)" placeholder="Status"></td>
+      <td style="text-align:center;"><button onclick="removeActionRow(${i})" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:16px;font-weight:700;">×</button></td>
+    </tr>`).join('');
+}
+function updateAction(i,field,val){ actionRows[i][field]=val; }
+function removeActionRow(i){ actionRows.splice(i,1); renderActionRows(); }
+
+// ===================== SUBMIT =====================
+function submitForm(){
+  const d=getDemographics();
+  if(!d.district){ alert("Please select District"); return; }
+  if(!d.chiefdom){ alert("Please select Chiefdom"); return; }
+  if(!d.phu){ alert("Please select Health Facility (PHU)"); return; }
+  if(!d.facility_type){ alert("Please select Health Facility Type"); return; }
+  document.getElementById('confirmModal').style.display='flex';
+}
+function closeModal(){ document.getElementById('confirmModal').style.display='none'; }
+function doSubmit(){
+  closeModal();
+  ans._submitted = new Date().toLocaleString();
+  ans._demographics = getDemographics();
+  ans._malariaTrain = JSON.parse(JSON.stringify(dynamicTables.malariaTrain));
+  ans._hmisTrain = JSON.parse(JSON.stringify(dynamicTables.hmisTrain));
+  ans._actionRows = JSON.parse(JSON.stringify(actionRows));
+  submitted = true;
+  renderSummary();
+  switchTab('summary');
+}
+function getDemographics(){
+  return {
+    district: document.getElementById("district").value,
+    chiefdom: document.getElementById("chiefdom").value,
+    phu: document.getElementById("phu").value,
+    facility_type: document.getElementById("facilitytype").value,
+    supervisor: document.getElementById("supervisor").value,
+    visitdate: document.getElementById("visitdate").value,
+  };
+}
+
+// ===================== RENDER SUMMARY =====================
+function renderSummary(){
+  if(!submitted && !ans._submitted){ return; }
+  const demo = ans._demographics || getDemographics();
+  document.getElementById('sum_date').textContent = 'Saved: ' + (ans._submitted || new Date().toLocaleString());
+
+  const scR = calcScore(secReporting);
+  const scRef = calcScore(secReference);
+  const scA = calcScore(secAntimalarial);
+  const scE = calcScore(secEssential);
+  const scT = calcScore(secTools);
+  const wasteScore = (ans.w2==='Yes'?1:0) + (ans.wasteDisposal&&ans.wasteDisposal.length?1:0);
+  const totalScored = scR.scored+scRef.scored+scA.scored+scE.scored+scT.scored+wasteScore;
+  const totalPossible = 11+7+12+11+10+2;
+  const overallPct = Math.round(totalScored/totalPossible*100);
+  const overallCls = overallPct>=95?'good':overallPct>=50?'fair':'poor';
+
+  let html = '';
+
+  html += `<div class="score-cards">
+    <div class="score-card"><div class="score-card-title">Overall Score</div>
+      <div class="score-card-value ${overallCls}">${overallPct}%</div>
+      <div class="score-card-sub">${totalScored}/${totalPossible} points</div>
+      <div class="progress-bar-wrap"><div class="progress-bar ${overallCls}" style="width:${overallPct}%"></div></div>
+    </div>
+    <div class="score-card"><div class="score-card-title">Overall Rating</div>
+      <div class="score-card-value" style="font-size:20px;margin-top:6px;">${ans.fb2||'—'}</div>
+      <div class="score-card-sub">${demo.phu||'—'} · ${demo.district||'—'}</div>
+    </div>
+    ${scoreCard('Reporting Tools', scR.scored, 11)}
+    ${scoreCard('Reference Material', scRef.scored, 7)}
+    ${scoreCard('Antimalarials', scA.scored, 12)}
+    ${scoreCard('Essential Drugs', scE.scored, 11)}
+    ${scoreCard('Basic Tools', scT.scored, 10)}
+    ${scoreCard('Waste Mgmt', wasteScore, 2)}
+  </div>`;
+
+  html += `<div class="summary-section">
+    <div class="summary-section-title">Facility Demographics</div>
+    <div class="demo-grid">
+      ${demoItem('District', demo.district)}
+      ${demoItem('Chiefdom/Zone', demo.chiefdom)}
+      ${demoItem('Health Facility', demo.phu)}
+      ${demoItem('Facility Type', demo.facility_type)}
+      ${demoItem('Supervisor', demo.supervisor)}
+      ${demoItem('Date of Visit', demo.visitdate)}
+    </div>
+  </div>`;
+
+  const mt = ans._malariaTrain||[];
+  const ht = ans._hmisTrain||[];
+  html += traineeSection('1.1.1 Malaria Training', mt);
+  html += traineeSection('1.1.2 HMIS Training', ht);
+
+  html += summaryRadioSection('1.2 Reporting Tools Readiness', secReporting, `${scR.scored}/11`);
+  html += summaryRadioSection('1.4 Malaria Reference Material', secReference, `${scRef.scored}/7`);
+  html += summaryRadioSection('2. Antimalarial Drugs', secAntimalarial, `${scA.scored}/12`);
+  html += summaryRadioSection('3. Essential Drugs', secEssential, `${scE.scored}/11`);
+
+  html += `<div class="summary-section"><div class="summary-section-title">4. Pharmacy Operations</div>`;
+  secPharmacy.forEach(q=>{ html+=summaryItem(q.t, ans[q.k]); });
+  html+=summaryItem('Storage Condition', (ans.storageCondition||[]).join(', ')||'—');
+  html+='</div>';
+
+  html += `<div class="summary-section"><div class="summary-section-title">5. Basic Tools <span class="badge">${scT.scored}/10</span></div>`;
+  secTools.forEach(q=>{ html+=summaryItem(q.t, ans[q.k]); });
+  html+=summaryItem('Available at facility', (ans.toolsCheck||[]).join(', ')||'—');
+  html+='</div>';
+
+  html += `<div class="summary-section"><div class="summary-section-title">6. Inpatient Services & Referral</div>`;
+  secReferral.forEach(q=>{ html+=summaryItem(q.t, ans[q.k]); });
+  html+=summaryItem('Referral facility level', (ans.referralLevel||[]).join(', ')||'—');
+  html+=summaryItem('Transport modes', (ans.transportMode||[]).join(', ')||'—');
+  html+='</div>';
+
+  html += `<div class="summary-section"><div class="summary-section-title">7. Waste Management <span class="badge">${wasteScore}/2</span></div>`;
+  html+=summaryItem('Waste disposal method', (ans.wasteDisposal||[]).join(', ')||'—');
+  if(ans.wasteOther) html+=summaryItem('Other (specify)', ans.wasteOther);
+  secWaste.forEach(q=>{ html+=summaryItem(q.t, ans[q.k]); });
+  html+='</div>';
+
+  html += `<div class="summary-section"><div class="summary-section-title">8. Immediate Corrective Actions</div>
+    <div class="issues-grid" style="border-top:1px solid var(--border);">`;
+  issuesList.forEach(q=>{
+    const v=ans[q.k]||'—';
+    html+=`<div class="issue-item"><span class="issue-label"><b>${q.n}</b> ${q.t}</span>
+      <span class="issue-val ${v==='Yes'?'issue-yes':v==='No'?'issue-no':''}">${v}</span></div>`;
+  });
+  html+='</div>';
+  html+=summaryItem('Intervention Types', (ans.interventionType||[]).join(', ')||'—');
+  html+='</div>';
+
+  html += `<div class="summary-section"><div class="summary-section-title">9. Staff Reached</div>`;
+  issuesList.forEach(q=>{
+    const v=ans[`staff_${q.k}`];
+    if(v) html+=summaryItem(q.t, v+' staff');
+  });
+  html+='</div>';
+
+  html += `<div class="summary-section"><div class="summary-section-title">10. Supervisor Feedback</div>`;
+  secFeedback.forEach(q=>{ html+=summaryItem(q.t, ans[q.k]); });
+  html+='</div>';
+
+  html += `<div class="summary-section"><div class="summary-section-title">Comments & Gap Analysis</div>`;
+  html+=summaryItem('Additional Comments', ans.comments||'—');
+  html+=summaryItem('Gaps from last visit', ans.lastgaps||'—');
+  html+=summaryItem('Previous action plan', ans.prevplan||'—');
+  html+=summaryItem('Gaps addressed?', ans.gapaddr||'—');
+  html+=summaryItem('Current visit gaps', ans.todaygaps||'—');
+  html+=summaryItem('Immediate feedback provided?', ans.immfeedback||'—');
+  html+=summaryItem('Feedback method', (ans.feedbackHow||[]).join(', ')||'—');
+  html+=summaryItem('Supervisor Comments', ans.supcomments||'—');
+  html+='</div>';
+
+  const ar=ans._actionRows||[];
+  if(ar.length){
+    html+=`<div class="summary-section"><div class="summary-section-title">18. Action Plan</div>
+      <div style="overflow-x:auto;padding:12px;">
+        <table class="trainee-table"><thead><tr>
+          <th>Gap</th><th>Action</th><th>Responsible</th><th>Timeline</th><th>Status</th>
+        </tr></thead><tbody>`;
+    ar.forEach(r=>{
+      html+=`<tr><td>${esc(r.gap||'—')}</td><td>${esc(r.action||'—')}</td><td>${esc(r.person||'—')}</td><td>${esc(r.timeline||'—')}</td><td>${esc(r.status||'—')}</td></tr>`;
+    });
+    html+='</tbody></table></div></div>';
+  }
+
+  document.getElementById('summary-content').innerHTML=html;
+}
+
+function scoreCard(title, scored, total){
+  const pct=Math.round(scored/total*100);
+  const cls=pct>=95?'good':pct>=50?'fair':'poor';
+  return `<div class="score-card"><div class="score-card-title">${title}</div>
+    <div class="score-card-value ${cls}">${scored}/${total}</div>
+    <div class="score-card-sub">${pct}%</div>
+    <div class="progress-bar-wrap"><div class="progress-bar ${cls}" style="width:${pct}%"></div></div>
+  </div>`;
+}
+function demoItem(label,val){
+  return `<div class="demo-item"><div class="demo-label">${label}</div><div class="demo-value">${val||'—'}</div></div>`;
+}
+function traineeSection(title, rows){
+  if(!rows.length) return `<div class="summary-section"><div class="summary-section-title">${title} <span class="badge">0 records</span></div><div class="no-data">No trainees recorded</div></div>`;
+  return `<div class="summary-section"><div class="summary-section-title">${title} <span class="badge">${rows.length} records</span></div>
+    <div style="overflow-x:auto;padding:12px;">
+      <table class="trainee-table"><thead><tr><th>#</th><th>Name</th><th>Sex</th><th>Cadre</th><th>Duration</th><th>Year</th><th>Remarks</th></tr></thead>
+      <tbody>${rows.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.name||'—')}</td><td>${esc(r.sex||'—')}</td><td>${esc(r.cadre||'—')}</td><td>${esc(r.duration||'—')}</td><td>${esc(r.year||'—')}</td><td>${esc(r.remarks||'—')}</td></tr>`).join('')}</tbody>
+      </table>
+    </div></div>`;
+}
+function summaryRadioSection(title, items, score){
+  return `<div class="summary-section"><div class="summary-section-title">${title} <span class="badge">${score}</span></div>`+
+    items.map(q=>summaryItem(`${q.n} ${q.t}`, ans[q.k])).join('')+'</div>';
+}
+function summaryItem(label, val){
+  if(!val) val='—';
+  let cls='val-other';
+  if(val==='Sufficient') cls='val-sufficient';
+  else if(val==='Not Sufficient') cls='val-notsufficient';
+  else if(val==='Stockout') cls='val-stockout';
+  else if(val==='Yes') cls='val-yes';
+  else if(val==='No') cls='val-no';
+  else if(val==='Not Applicable'||val==='N/A') cls='val-na';
+  return `<div class="summary-item"><span class="summary-item-label">${label}</span><span class="summary-item-val ${cls}">${val}</span></div>`;
+}
+
+// ===================== UTILS =====================
+function esc(s){ return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+function switchTab(tab){
+  document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.querySelectorAll('.tab-btn')[tab==='entry'?0:1].classList.add('active');
+  if(tab==='summary') renderSummary();
+  window.scrollTo(0,0);
+}
+
+// ===================== INIT =====================
+function init(){
+  document.getElementById("visitdate").value = new Date().toISOString().split('T')[0];
+  document.getElementById("district").value = DISTRICT;
+  updateChiefdoms();
+  renderSection('sec_reporting', secReporting);
+  renderSection('sec_reference', secReference);
+  renderSection('sec_antimalarial', secAntimalarial);
+  renderSection('sec_essential', secEssential);
+  buildPharmacy();
+  buildTools();
+  buildReferral();
+  buildWaste();
+  buildIssues();
+  buildStaffReach();
+  buildFeedback();
+  buildGapAddr();
+  buildImmFeedback();
+  renderTrainees();
+  renderActionRows();
+  updateScores();
+}
+init();
+
+/* ==================== REQUIRE EVERY QUESTION ====================
+   Set REQUIRE_ALL to false to go back to checking only the key fields. */
+var REQUIRE_ALL = true;
+
+var _RA_STYLE = document.createElement('style');
+_RA_STYLE.textContent =
+  '.ra-missing input,.ra-missing select,.ra-missing textarea{border-color:#dc3545 !important;box-shadow:0 0 0 3px rgba(220,53,69,.15) !important;}' +
+  '.ra-missing .options-group-vertical,.ra-missing .options-group-check,.ra-missing .options-group-h{outline:2px solid #dc3545;outline-offset:4px;border-radius:12px;}' +
+  '.ra-flag{color:#dc3545;font-weight:700;font-size:12px;margin-top:6px;}';
+document.head.appendChild(_RA_STYLE);
+
+function _raVisible(el){
+  // a row is skipped only when it (or a wrapper inside its section) is hidden,
+  // never because its wizard section is the inactive one
+  var n = el;
+  while (n && n !== document.body) {
+    if (n.classList && (n.classList.contains('section-page') || n.classList.contains('tab-page'))) return true;
+    if (n.style && n.style.display === 'none') return false;
+    n = n.parentElement;
+  }
+  return true;
+}
+
+function _raLabel(row){
+  var t = row.querySelector('.question-text');
+  var s = t ? t.textContent.replace(/\s+/g,' ').replace(/\*$/,'').trim() : 'this question';
+  return s.length > 90 ? s.slice(0,90) + '…' : s;
+}
+
+/* an "Other, specify" box only counts when an Other option is ticked */
+function _raOtherRequired(row){
+  var ticked = row.querySelectorAll('input[type=radio]:checked, input[type=checkbox]:checked');
+  for (var i = 0; i < ticked.length; i++) {
+    if (/other/i.test(ticked[i].value || '')) return true;
+  }
+  var sels = row.querySelectorAll('select');
+  for (var j = 0; j < sels.length; j++) {
+    if (/other/i.test(sels[j].value || '')) return true;
+  }
+  return false;
+}
+
+function _raRowAnswered(row){
+  var radios = row.querySelectorAll('input[type=radio]');
+  if (radios.length) {
+    var names = {};
+    for (var i = 0; i < radios.length; i++) names[radios[i].name] = true;
+    for (var nm in names) {
+      if (!row.querySelector('input[type=radio][name="' + nm + '"]:checked')) return false;
+    }
+  }
+  var boxes = row.querySelectorAll('input[type=checkbox]');
+  if (boxes.length && !row.querySelector('input[type=checkbox]:checked')) return false;
+
+  var fields = row.querySelectorAll('select, textarea, input[type=text], input[type=number], input[type=date], input[type=month], input[type=tel], input[type=email]');
+  for (var j = 0; j < fields.length; j++) {
+    var f = fields[j];
+    if (f.disabled) continue;
+    if (/other/i.test(f.placeholder || '') && !_raOtherRequired(row)) continue;
+    if (String(f.value).trim() === '') return false;
+  }
+  return true;
+}
+
+function validateAllQuestions(){
+  document.querySelectorAll('.ra-missing').forEach(function(e){ e.classList.remove('ra-missing'); });
+  document.querySelectorAll('.ra-flag').forEach(function(e){ e.remove(); });
+
+  var rows = document.querySelectorAll('.question-row');
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    if (!_raVisible(row)) continue;
+    if (!row.querySelector('input, select, textarea')) continue;   // heading-only rows
+    if (_raRowAnswered(row)) continue;
+
+    // bring it on screen: right tab, right wizard section
+    if (typeof switchTab === 'function') {
+      var tab = row.closest('.tab-page');
+      if (tab && !tab.classList.contains('active')) switchTab('entry');
+    }
+    var page = row.closest('.section-page');
+    if (page && typeof showSection === 'function') {
+      var all = Array.prototype.slice.call(document.querySelectorAll('.section-page'));
+      var idx = all.indexOf(page);
+      if (idx > -1) showSection(idx);
+    }
+    row.classList.add('ra-missing');
+    var flag = document.createElement('div');
+    flag.className = 'ra-flag';
+    flag.textContent = 'This question is required.';
+    row.appendChild(flag);
+    row.scrollIntoView({ behavior:'smooth', block:'center' });
+    alert('Please answer: ' + _raLabel(row));
+    return false;
+  }
+  return true;
+}
+
+/* run the full check before whatever the form already did */
+(function(){
+  var _origSubmit = window.submitForm;
+  window.submitForm = function(){
+    if (REQUIRE_ALL && !validateAllQuestions()) return;
+    return _origSubmit.apply(this, arguments);
+  };
+})();
+
+
+/* ==================== SIGN IN ====================
+   Add or change users here. Three slots; fill the empty two when ready. */
+var USERS = [
+  { username: "msk", password: "1234", name: "Mohamed Sillah Kanu" },
+  { username: "",    password: "",     name: "" },   // second user — fill in
+  { username: "",    password: "",     name: "" }    // third user — fill in
+];
+
+(function(){
+  var KEY = "mocm_user";
+
+  function currentUser(){
+    try { return JSON.parse(sessionStorage.getItem(KEY)); } catch(e){ return null; }
+  }
+
+  var css = document.createElement('style');
+  css.textContent =
+    '#lgOverlay{position:fixed;inset:0;z-index:3000;background:linear-gradient(160deg,#2b5f8a,#1e4a6d);' +
+    'display:flex;align-items:center;justify-content:center;padding:20px;font-family:inherit;}' +
+    '#lgCard{background:#fff;border-radius:20px;width:100%;max-width:330px;padding:26px 22px 24px;text-align:center;' +
+    'box-shadow:0 24px 48px rgba(0,0,0,.3);}' +
+    '#lgCard .lgIcon{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#2b5f8a,#3b78a8);' +
+    'margin:0 auto 14px;display:flex;align-items:center;justify-content:center;}' +
+    '#lgCard .lgIcon svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;}' +
+    '#lgCard h3{font-size:17px;font-weight:800;color:#2b5f8a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}' +
+    '#lgCard p{font-size:12px;color:#6c7a8a;margin-bottom:18px;}' +
+    '#lgCard input{width:100%;padding:13px 14px;border:1.5px solid #e0e6ed;border-radius:12px;font-size:15px;' +
+    'font-family:inherit;margin-bottom:10px;}' +
+    '#lgCard input:focus{border-color:#3b78a8;outline:2px solid rgba(59,120,168,.2);}' +
+    '#lgErr{color:#dc3545;font-size:12px;font-weight:600;min-height:16px;margin-bottom:8px;display:none;}' +
+    '#lgBtn{width:100%;padding:14px;background:#2b5f8a;color:#fff;border:none;border-radius:12px;' +
+    'font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;}' +
+    '.lgWho{font-size:10.5px;font-weight:600;letter-spacing:.4px;opacity:.9;margin-top:8px;}' +
+    '.lgWho a{color:#ffc107;text-decoration:underline;cursor:pointer;margin-left:8px;}' +
+    '.lgStamp{background:#e7f3ff;border:1px solid #c9dff2;border-radius:12px;padding:11px 14px;margin:0 0 12px;}' +
+    '.lgStamp b{color:#2b5f8a;}' +
+    '@keyframes lgShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}';
+  document.head.appendChild(css);
+
+  function showWho(){
+    var u = currentUser(); if(!u) return;
+    document.querySelectorAll('.page-header, .header-sub').length;
+    var host = document.querySelector('.page-header');
+    if(!host || host.querySelector('.lgWho')) return;
+    var d = document.createElement('div');
+    d.className = 'lgWho';
+    d.innerHTML = 'Signed in: ' + u.name + ' (' + u.username + ')<a id="lgOut">Sign out</a>';
+    host.appendChild(d);
+    d.querySelector('#lgOut').onclick = function(){
+      sessionStorage.removeItem(KEY);
+      location.reload();
+    };
+  }
+
+  function gate(){
+    if (currentUser()) { showWho(); return; }
+    var o = document.createElement('div');
+    o.id = 'lgOverlay';
+    o.innerHTML =
+      '<div id="lgCard">' +
+      '<div class="lgIcon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/>' +
+      '<path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>' +
+      '<h3>Sign in</h3><p>MOCM / OTSS+ supervision · NMCP Sierra Leone</p>' +
+      '<input id="lgUser" type="text" placeholder="Username" autocomplete="off" autocapitalize="none">' +
+      '<input id="lgPass" type="password" placeholder="Password">' +
+      '<div id="lgErr">Wrong username or password.</div>' +
+      '<button id="lgBtn">Sign in</button></div>';
+    document.body.appendChild(o);
+
+    var uEl = o.querySelector('#lgUser'), pEl = o.querySelector('#lgPass'), err = o.querySelector('#lgErr');
+    function attempt(){
+      var u = uEl.value.trim().toLowerCase(), p = pEl.value;
+      for (var i = 0; i < USERS.length; i++) {
+        var acc = USERS[i];
+        if (acc.username && acc.username.toLowerCase() === u && acc.password === p) {
+          sessionStorage.setItem(KEY, JSON.stringify({ username: acc.username, name: acc.name, at: new Date().toLocaleString() }));
+          o.remove();
+          showWho();
+          return;
+        }
+      }
+      err.style.display = 'block';
+      var card = o.querySelector('#lgCard');
+      card.style.animation = 'lgShake .3s';
+      setTimeout(function(){ card.style.animation = ''; }, 320);
+      pEl.value = ''; uEl.focus();
+    }
+    o.querySelector('#lgBtn').onclick = attempt;
+    pEl.onkeydown = function(e){ if (e.key === 'Enter') attempt(); };
+    uEl.onkeydown = function(e){ if (e.key === 'Enter') pEl.focus(); };
+    setTimeout(function(){ uEl.focus(); }, 60);
+  }
+
+  /* the summary carries who submitted it */
+  function stamp(){
+    var u = currentUser(); if(!u) return;
+    var host = document.getElementById('summary-content') || document.getElementById('summaryBody');
+    if(!host || host.querySelector('.lgStamp')) return;
+    var d = document.createElement('div');
+    d.className = 'lgStamp';
+    d.innerHTML = 'Submitted by <b>' + u.name + '</b> (' + u.username + ')';
+    host.insertBefore(d, host.firstChild);
+  }
+  ['renderSummary','showSummary'].forEach(function(fnName){
+    if (typeof window[fnName] === 'function') {
+      var orig = window[fnName];
+      window[fnName] = function(){ var r = orig.apply(this, arguments); stamp(); return r; };
+    }
+  });
+  if (typeof window.doSubmit === 'function') {
+    var _ds = window.doSubmit;
+    window.doSubmit = function(){ var r = _ds.apply(this, arguments); stamp(); return r; };
+  }
+  if (typeof window.confirmSubmit === 'function') {
+    var _cs = window.confirmSubmit;
+    window.confirmSubmit = function(){ stamp(); return _cs.apply(this, arguments); };
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gate);
+  else gate();
+})();
+
+
+/* ---------- show the star on every question the form enforces ---------- */
+(function(){
+  function isOtherBox(f){ return /other/i.test(f.placeholder || ''); }
+
+  function markRequired(){
+    var rows = document.querySelectorAll('.question-row');
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var fields = row.querySelectorAll('input, select, textarea');
+      if (!fields.length) continue;                     // heading-only row
+
+      // a row holding nothing but an "If Other, specify" box stays unstarred
+      var onlyOther = true;
+      for (var j = 0; j < fields.length; j++) {
+        if (!isOtherBox(fields[j])) { onlyOther = false; break; }
+      }
+      if (onlyOther) continue;
+
+      var label = row.querySelector('.question-text');
+      if (!label || label.querySelector('.required-star')) continue;
+      var star = document.createElement('span');
+      star.className = 'required-star';
+      star.textContent = '*';
+      label.appendChild(star);
+    }
+  }
+
+  var pending = null;
+  function schedule(){
+    clearTimeout(pending);
+    pending = setTimeout(markRequired, 120);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', schedule);
+  else schedule();
+  new MutationObserver(schedule).observe(document.body, { childList:true, subtree:true });
+})();
+
+</script>
+</body>
+</html>

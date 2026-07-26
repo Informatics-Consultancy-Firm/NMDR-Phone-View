@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>FORM A - MOCM/OTSS+ Checklist | NMCP Sierra Leone</title>
+<style>
+  @font-face {
+    font-family: 'AgencyFB';
+    src: local('Agency FB'), local('AgencyFB');
+  }
+</style>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --blue: #3b78a8;
+  --blue-dark: #2b5f8a;
+  --blue-light: #4a8dbf;
+  --soft-bg: #e7f3ff;
+  --white: #ffffff;
+  --gold: #ffc107;
+  --green: #28a745;
+  --red: #dc3545;
+  --bg: #f0f2f5;
+  --border: #e0e6ed;
+  --text-dark: #1a2c3e;
+  --text-light: #6c7a8a;
+  --radius: 16px;
+}
+
+body {
+  font-family: 'Agency FB', 'AgencyFB', 'Arial Narrow', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text-dark);
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 20px 16px 0 16px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.page-header {
+  background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 60%, var(--blue-light) 100%);
+  color: white;
+  text-align: center;
+  padding: 24px 16px;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.header-logos { display: flex; justify-content: center; gap: 20px; margin-bottom: 16px; flex-wrap: wrap; }
+.header-logo { height: 65px; width: auto; background: white; padding: 6px 12px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+.header-org { font-size: 11px; font-weight: 600; letter-spacing: 1px; margin-bottom: 6px; opacity: 0.9; }
+.header-title { font-size: 22px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); }
+.header-sub { font-size: 11px; font-weight: 500; opacity: 0.85; margin-top: 6px; }
+
+.form-title {
+  background: linear-gradient(90deg, var(--blue-dark), var(--blue));
+  color: white;
+  padding: 14px 20px;
+  font-weight: 700;
+  font-size: 15px;
+  border-left: 4px solid var(--gold);
+}
+
+.section-card {
+  background: var(--white);
+}
+.card-header {
+  background: var(--white);
+  color: var(--blue-dark);
+  padding: 16px 20px 8px 20px;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--soft-bg);
+}
+.card-body { padding: 16px 20px 20px 20px; }
+
+.demographics {
+  background: var(--white);
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.demographics h3 { 
+  color: var(--blue-dark); 
+  margin-bottom: 16px; 
+  font-size: 13px; 
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.form-input, .form-select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: 'Agency FB', 'AgencyFB', 'Arial Narrow', Arial, sans-serif;
+  background: var(--white);
+}
+.form-input:focus, .form-select:focus {
+  border-color: var(--blue);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 120, 168, 0.1);
+}
+.form-select:disabled { background: #f6f8fa; color: #9aa7b4; }
+
+.question-row { margin-bottom: 24px; }
+.question-text { font-weight: 600; font-size: 14px; margin-bottom: 12px; color: var(--text-dark); }
+.required-star { color: var(--red); margin-left: 4px; font-size: 12px; }
+
+.options-group-vertical { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.radio-option-vertical {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--white);
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+.radio-option-vertical input { width: 18px; height: 18px; accent-color: var(--blue); cursor: pointer; margin: 0; }
+.radio-option-vertical.selected { background: var(--blue); border-color: var(--blue); color: white; }
+.radio-option-vertical.selected input { accent-color: white; }
+
+.member-card {
+  background: #fafbfc;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.member-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  color: var(--blue-dark);
+  font-size: 13px;
+}
+.remove-btn { color: var(--red); cursor: pointer; background: none; border: none; font-size: 18px; font-weight: 700; padding: 0 8px; }
+.add-btn {
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 40px;
+  padding: 12px 20px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 8px;
+}
+.add-btn:hover { background: var(--blue-dark); }
+
+.signature-container {
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: white;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.signature-canvas { display: block; width: 100%; height: 120px; background: white; cursor: crosshair; }
+.signature-buttons { display: flex; gap: 10px; padding: 8px 10px; background: var(--soft-bg); border-top: 1px solid var(--border); }
+.signature-btn { background: var(--blue); color: white; border: none; border-radius: 20px; padding: 6px 12px; font-size: 11px; font-weight: 600; cursor: pointer; }
+.signature-btn.clear { background: var(--red); }
+
+.submit-container { padding: 20px; background: var(--white); margin-bottom: 20px; }
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+  color: white;
+  border: none;
+  border-radius: 40px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-content {
+  background: var(--white);
+  border-radius: 20px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.modal-header {
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+  color: white;
+  padding: 16px 20px;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+}
+.modal-header button { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+.modal-body { padding: 20px; }
+.modal-footer { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; gap: 12px; background: white; position: sticky; bottom: 0; }
+.summary-item { margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.summary-label { font-weight: 700; color: var(--blue); font-size: 10px; text-transform: uppercase; margin-bottom: 4px; }
+.summary-value { font-size: 13px; color: var(--text-dark); }
+.summary-section-title { font-weight: 700; font-size: 14px; color: var(--blue); margin: 16px 0 10px 0; padding-bottom: 6px; border-bottom: 2px solid var(--blue); }
+.btn-cancel { flex: 1; padding: 12px; background: #f0f2f5; color: var(--text-dark); border: 1px solid var(--border); border-radius: 40px; font-weight: 600; cursor: pointer; }
+.btn-confirm { flex: 1; padding: 12px; background: var(--blue); color: white; border: none; border-radius: 40px; font-weight: 600; cursor: pointer; }
+.loading-indicator { text-align: center; padding: 20px; color: var(--blue); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="header-logos">
+    <img src="ICF-SL.jpg" class="header-logo" alt="ICF-SL" onerror="this.style.display='none'">
+    <img src="NMCP.png" class="header-logo" alt="NMCP" onerror="this.style.display='none'">
+  </div>
+  <div class="header-org">National Malaria Control Programme — Ministry of Health, Sierra Leone</div>
+  <div class="header-title">MOCM/OTSS+ Checklist</div>
+  <div class="header-sub">FORM A: General Health Facility Information</div>
+</div>
+
+<div class="form-title">FORM A: General Health Facility Information</div>
+
+<!-- Demographics Section: District > Chiefdom > PHU > Facility Type -->
+<div class="demographics">
+  <h3>FACILITY DEMOGRAPHICS</h3>
+  <div class="question-row">
+    <div class="question-text">1. District <span class="required-star">*</span></div>
+    <select class="form-select" id="districtSelect" onchange="updateChiefdom()">
+      <option value="">Select District...</option>
+    </select>
+  </div>
+  <div class="question-row">
+    <div class="question-text">2. Chiefdom / Zone / City <span class="required-star">*</span></div>
+    <select class="form-select" id="chiefdomSelect" onchange="updatePHU()" disabled>
+      <option value="">Select District first</option>
+    </select>
+  </div>
+  <div class="question-row">
+    <div class="question-text">3. Name of Health Facility (PHU) <span class="required-star">*</span></div>
+    <select class="form-select" id="phuSelect" onchange="updateFacilityType()" disabled>
+      <option value="">Select Chiefdom first</option>
+    </select>
+  </div>
+  <div class="question-row">
+    <div class="question-text">4. Health Facility Type <span class="required-star">*</span></div>
+    <select class="form-select" id="facilityTypeSelect" disabled>
+      <option value="">Select PHU first</option>
+    </select>
+  </div>
+</div>
+
+<!-- Remaining Facility Information -->
+<div class="section-card">
+  <div class="card-header">FACILITY INFORMATION (CONTINUED)</div>
+  <div class="card-body">
+    <div class="question-row"><div class="question-text">5. Number of health care workers responsible for malaria services <span class="required-star">*</span></div>
+      <input class="form-input" id="hcw_count" type="number" min="0" placeholder="0" value="0">
+    </div>
+    <div class="question-row"><div class="question-text">6. Name of Health Facility In-Charge <span class="required-star">*</span></div>
+      <input class="form-input" id="incharge_name" type="text" placeholder="Full name">
+    </div>
+    <div class="question-row"><div class="question-text">7. Gender of health facility In-charge <span class="required-star">*</span></div>
+      <div class="options-group-vertical" id="incharge_gender_group">
+        <label class="radio-option-vertical"><input type="radio" name="incharge_gender" value="Female"> Female</label>
+        <label class="radio-option-vertical"><input type="radio" name="incharge_gender" value="Male"> Male</label>
+      </div>
+    </div>
+    <div class="question-row"><div class="question-text">8. Cadre of In-Charge <span class="required-star">*</span></div>
+      <select class="form-select" id="cadre" onchange="toggleCadreOther()">
+        <option value="">Select cadre...</option>
+        <option>Medical Officer / Doctor</option>
+        <option>Community Health Officer (CHO)</option>
+        <option>Community Health Technician (CHT)</option>
+        <option>Community Health Assistant (CHA)</option>
+        <option>State Registered Nurse (SRN)</option>
+        <option>State Enrolled Community Health Nurse (SECHN)</option>
+        <option>Registered Midwife</option>
+        <option>MCH Aide (MCHA)</option>
+        <option>Public Health Nurse (PHN)</option>
+        <option>Nurse Anaesthetist</option>
+        <option>Laboratory Technician</option>
+        <option>Laboratory Assistant</option>
+        <option>Pharmacy Technician / Dispenser</option>
+        <option>Environmental Health Officer / Assistant</option>
+        <option>Nutritionist</option>
+        <option>Data Clerk / M&amp;E Officer</option>
+        <option>Vaccinator / EPI Officer</option>
+        <option>Community Health Worker (CHW)</option>
+        <option>Nurse Aide / Ward Attendant</option>
+        <option>Other</option>
+      </select>
+      <input class="form-input" id="cadre_other" type="text" placeholder="If Other, specify" style="display:none;margin-top:8px;">
+    </div>
+    <div class="question-row"><div class="question-text">9. Date of visit <span class="required-star">*</span></div>
+      <input class="form-input" id="visit_date" type="date">
+    </div>
+  </div>
+</div>
+
+<!-- Supervisors -->
+<div class="section-card">
+  <div class="card-header">SUPERVISORS INFORMATION</div>
+  <div class="card-body">
+    <div class="question-text" style="margin-bottom: 12px;">At least one supervisor is required <span class="required-star">*</span></div>
+    <div id="supervisors-container"></div>
+    <button class="add-btn" onclick="addSupervisor()">+ Add Supervisor</button>
+  </div>
+</div>
+
+<!-- Staff -->
+<div class="section-card">
+  <div class="card-header">HEALTH FACILITY STAFF DESCRIPTION</div>
+  <div class="card-body">
+    <div id="staff-container"></div>
+    <button class="add-btn" onclick="addStaffMember()">+ Add Staff Member</button>
+  </div>
+</div>
+
+<div class="submit-container">
+  <button class="btn-submit" onclick="validateAndSubmit()">REVIEW & SUBMIT FORM A</button>
+</div>
+
+<div id="summaryModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><span>FORM A - SUBMISSION SUMMARY</span><button onclick="closeModal()">&times;</button></div>
+    <div class="modal-body" id="summaryBody"></div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeModal()">CANCEL</button><button class="btn-confirm" onclick="confirmSubmit()">CONFIRM SUBMIT</button></div>
+  </div>
+</div>
+
+<script>
+// ==================== FACILITY LIST ====================
+// MOCM pilot: 10 selected facilities, Bo District.
+// district | chiefdom | phu | facility_type
+const PILOT_FACILITIES = [
+  { district: "Bo", chiefdom: "Badjia Chiefdom",     phu: "Njagbahun (Badjia) MCHP",   facilityType: "MCHP" },
+  { district: "Bo", chiefdom: "Baoma Chiefdom",      phu: "Faabu CHP",                 facilityType: "CHP"  },
+  { district: "Bo", chiefdom: "Baoma Chiefdom",      phu: "Gerehun CHC",               facilityType: "CHC"  },
+  { district: "Bo", chiefdom: "Baoma Chiefdom",      phu: "Mbundorbu MCHP",            facilityType: "MCHP" },
+  { district: "Bo", chiefdom: "Bongor Chiefdom",     phu: "Mamboma (Bongor) CHP",      facilityType: "CHP"  },
+  { district: "Bo", chiefdom: "Bumpe Ngao Chiefdom", phu: "Bumpe CHC",                 facilityType: "CHC"  },
+  { district: "Bo", chiefdom: "Bumpe Ngao Chiefdom", phu: "Mokoba MCHP",               facilityType: "MCHP" },
+  { district: "Bo", chiefdom: "Bumpe Ngao Chiefdom", phu: "Yengema (Bumpe Ngao) MCHP", facilityType: "MCHP" },
+  { district: "Bo", chiefdom: "Tikonko Chiefdom",    phu: "Gondama (Tikonko) CHC",     facilityType: "CHC"  },
+  { district: "Bo", chiefdom: "Tikonko Chiefdom",    phu: "Griema MCHP",               facilityType: "MCHP" }
+];
+
+
+
+// ==================== CASCADE DATA STRUCTURE ====================
+let csvData = [];
+let districtsSet = new Set();
+let chiefdomMap = new Map();        // district -> Set of chiefdoms
+let phuMap = new Map();             // "district|chiefdom" -> Array of {phu, facilityType}
+let facilityTypeMap = new Map();    // "district|chiefdom|phu" -> facility_type
+
+function resetCascade() {
+  csvData = [];
+  districtsSet = new Set();
+  chiefdomMap = new Map();
+  phuMap = new Map();
+  facilityTypeMap = new Map();
+}
+
+// Load rows of {district, chiefdom, phu, facilityType} into the cascade
+function ingestRows(rows) {
+  resetCascade();
+  rows.forEach(function(row) {
+    const district = (row.district || "").trim();
+    const chiefdom = (row.chiefdom || "").trim();
+    const phu = (row.phu || "").trim();
+    const facilityType = (row.facilityType || "").trim();
+    if (!district || !chiefdom || !phu) return;
+
+    csvData.push({ district, chiefdom, phu, facilityType });
+    districtsSet.add(district);
+
+    if (!chiefdomMap.has(district)) chiefdomMap.set(district, new Set());
+    chiefdomMap.get(district).add(chiefdom);
+
+    const phuKey = district + "|" + chiefdom;
+    if (!phuMap.has(phuKey)) phuMap.set(phuKey, []);
+    phuMap.get(phuKey).push({ phu, facilityType });
+
+    const facilityKey = district + "|" + chiefdom + "|" + phu;
+    if (!facilityTypeMap.has(facilityKey) && facilityType) facilityTypeMap.set(facilityKey, facilityType);
+  });
+  populateDistricts();
+}
+
+function populateDistricts() {
+  const districtSelect = document.getElementById("districtSelect");
+  const sorted = Array.from(districtsSet).sort();
+  districtSelect.innerHTML = '<option value="">Select District...</option>';
+  sorted.forEach(function(district) {
+    districtSelect.innerHTML += '<option value="' + escapeHtml(district) + '">' + escapeHtml(district) + '</option>';
+  });
+  districtSelect.disabled = false;
+  // if only one district exists, select it
+  if (sorted.length === 1) {
+    districtSelect.value = sorted[0];
+    updateChiefdom();
+  }
+}
+
+// Optional: cascading.csv in the same folder overrides the built-in list
+async function loadCSV() {
+  ingestRows(PILOT_FACILITIES);
+  try {
+    const response = await fetch('cascading.csv');
+    if (!response.ok) return;
+    const rows = parseCSV(await response.text());
+    if (rows.length) ingestRows(rows);
+  } catch (error) {
+    // no CSV present - the built-in pilot list stays in use
+  }
+}
+
+// Expected CSV columns: district, chiefdom, phu, facility_type
+function parseCSV(csvText) {
+  const lines = csvText.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+
+  const headers = parseCSVLine(lines[0]);
+  let districtIdx = -1, chiefdomIdx = -1, phuIdx = -1, facilityTypeIdx = -1;
+  for (let i = 0; i < headers.length; i++) {
+    const h = headers[i].toLowerCase().trim();
+    if (h === 'district') districtIdx = i;
+    else if (h === 'chiefdom') chiefdomIdx = i;
+    else if (h === 'phu') phuIdx = i;
+    else if (h === 'facility_type') facilityTypeIdx = i;
+  }
+  if (districtIdx === -1) districtIdx = headers.findIndex(h => h.toLowerCase().includes('district'));
+  if (chiefdomIdx === -1) chiefdomIdx = headers.findIndex(h => h.toLowerCase().includes('chiefdom'));
+  if (phuIdx === -1) phuIdx = headers.findIndex(h => h.toLowerCase().includes('phu') || h.toLowerCase().includes('facility'));
+  if (facilityTypeIdx === -1) facilityTypeIdx = headers.findIndex(h => h.toLowerCase().includes('facility_type') || h.toLowerCase().includes('facility type'));
+
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line === "") continue;
+    const cells = parseCSVLine(line);
+    if (cells.length <= Math.max(districtIdx, chiefdomIdx, phuIdx)) continue;
+    rows.push({
+      district: cells[districtIdx],
+      chiefdom: cells[chiefdomIdx],
+      phu: cells[phuIdx],
+      facilityType: facilityTypeIdx !== -1 ? cells[facilityTypeIdx] : ""
+    });
+  }
+  return rows;
+}
+
+function parseCSVLine(line) {
+  const result = [];
+  let inQuotes = false;
+  let current = '';
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    if (char === '"') inQuotes = !inQuotes;
+    else if (char === ',' && !inQuotes) { result.push(current); current = ''; }
+    else current += char;
+  }
+  result.push(current);
+  return result;
+}
+
+// only the chiefdoms that hold a facility in the list
+function chiefdomsForDistrict(district) {
+  if (chiefdomMap.has(district)) return Array.from(chiefdomMap.get(district)).sort();
+  return [];
+}
+
+function updateChiefdom() {
+  const district = document.getElementById("districtSelect").value;
+  const chiefdomSelect = document.getElementById("chiefdomSelect");
+  const phuSelect = document.getElementById("phuSelect");
+  const facilityTypeSelect = document.getElementById("facilityTypeSelect");
+
+  chiefdomSelect.innerHTML = '<option value="">Select Chiefdom...</option>';
+  phuSelect.innerHTML = '<option value="">Select Chiefdom first</option>';
+  facilityTypeSelect.innerHTML = '<option value="">Select PHU first</option>';
+  phuSelect.disabled = true;
+  facilityTypeSelect.disabled = true;
+
+  const chiefdoms = chiefdomsForDistrict(district);
+  if (chiefdoms.length) {
+    chiefdoms.forEach(function(chiefdom) {
+      chiefdomSelect.innerHTML += '<option value="' + escapeHtml(chiefdom) + '">' + escapeHtml(chiefdom) + '</option>';
+    });
+    chiefdomSelect.disabled = false;
+  } else {
+    chiefdomSelect.innerHTML = '<option value="">No chiefdoms listed for this district</option>';
+    chiefdomSelect.disabled = true;
+  }
+}
+
+function updatePHU() {
+  const district = document.getElementById("districtSelect").value;
+  const chiefdom = document.getElementById("chiefdomSelect").value;
+  const phuSelect = document.getElementById("phuSelect");
+  const facilityTypeSelect = document.getElementById("facilityTypeSelect");
+
+  phuSelect.innerHTML = '<option value="">Select PHU...</option>';
+  facilityTypeSelect.innerHTML = '<option value="">Select PHU first</option>';
+  facilityTypeSelect.disabled = true;
+
+  const phuKey = district + "|" + chiefdom;
+  if (district && chiefdom && phuMap.has(phuKey)) {
+    phuMap.get(phuKey).slice().sort(function(a, b) { return a.phu.localeCompare(b.phu); }).forEach(function(item) {
+      phuSelect.innerHTML += '<option value="' + escapeHtml(item.phu) + '" data-facility-type="' + escapeHtml(item.facilityType || '') + '">' + escapeHtml(item.phu) + '</option>';
+    });
+    phuSelect.disabled = false;
+  } else {
+    phuSelect.innerHTML = '<option value="">No facilities listed for this chiefdom</option>';
+    phuSelect.disabled = true;
+  }
+}
+
+function updateFacilityType() {
+  const district = document.getElementById("districtSelect").value;
+  const chiefdom = document.getElementById("chiefdomSelect").value;
+  const phu = document.getElementById("phuSelect").value;
+  const facilityTypeSelect = document.getElementById("facilityTypeSelect");
+
+  if (district && chiefdom && phu) {
+    const facilityType = facilityTypeMap.get(district + "|" + chiefdom + "|" + phu) || "";
+    if (facilityType) {
+      facilityTypeSelect.innerHTML = '<option value="' + escapeHtml(facilityType) + '">' + escapeHtml(facilityType) + '</option>';
+      facilityTypeSelect.disabled = false;
+    } else {
+      facilityTypeSelect.innerHTML = '<option value="">Type not listed for this facility</option>';
+      facilityTypeSelect.disabled = true;
+    }
+  } else {
+    facilityTypeSelect.innerHTML = '<option value="">Select PHU first</option>';
+    facilityTypeSelect.disabled = true;
+  }
+}
+
+// ==================== SUPERVISORS WITH SIGNATURE PADS ====================
+let supervisors = [];
+let staffMembers = [];
+
+function createSignaturePad(canvasId, clearBtnId, storageKey) {
+  let drawing = false;
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function getCoordinates(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    let clientX, clientY;
+    if (e.touches) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+    return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+  }
+
+  function startDrawing(e) {
+    drawing = true;
+    const coord = getCoordinates(e);
+    ctx.beginPath();
+    ctx.moveTo(coord.x, coord.y);
+    ctx.lineTo(coord.x, coord.y);
+    ctx.stroke();
+    e.preventDefault();
+  }
+
+  function draw(e) {
+    if (!drawing) return;
+    const coord = getCoordinates(e);
+    ctx.lineTo(coord.x, coord.y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(coord.x, coord.y);
+    e.preventDefault();
+  }
+
+  function stopDrawing() {
+    drawing = false;
+    ctx.beginPath();
+    if (storageKey) sessionStorage.setItem(storageKey, canvas.toDataURL());
+  }
+
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#1a2c3e';
+
+  canvas.addEventListener('mousedown', startDrawing);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', stopDrawing);
+  canvas.addEventListener('mouseleave', stopDrawing);
+  canvas.addEventListener('touchstart', startDrawing);
+  canvas.addEventListener('touchmove', draw);
+  canvas.addEventListener('touchend', stopDrawing);
+
+  document.getElementById(clearBtnId)?.addEventListener('click', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (storageKey) sessionStorage.removeItem(storageKey);
+  });
+
+  canvas.width = canvas.offsetWidth * 2;
+  canvas.height = canvas.offsetHeight * 2;
+  ctx.scale(2, 2);
+
+  const saved = sessionStorage.getItem(storageKey);
+  if (saved) { const img = new Image(); img.onload = () => ctx.drawImage(img, 0, 0); img.src = saved; }
+}
+
+function renderSupervisors() {
+  const container = document.getElementById("supervisors-container");
+  if (!container) return;
+  let html = '';
+  supervisors.forEach((s, i) => {
+    html += `<div class="member-card">
+      <div class="member-header"><span>Supervisor #${i + 1}</span><button class="remove-btn" onclick="removeSupervisor(${i})">✕</button></div>
+      <div class="question-row"><div class="question-text">Full Name <span class="required-star">*</span></div><input class="form-input" type="text" id="sup_name_${i}" value="${escapeHtml(s.name || '')}" placeholder="Full name"></div>
+      <div class="question-row"><div class="question-text">Sex <span class="required-star">*</span></div><div class="options-group-vertical" id="sup_sex_group_${i}"><label class="radio-option-vertical"><input type="radio" name="sup_sex_${i}" value="Male" ${s.sex === 'Male' ? 'checked' : ''}> Male</label><label class="radio-option-vertical"><input type="radio" name="sup_sex_${i}" value="Female" ${s.sex === 'Female' ? 'checked' : ''}> Female</label></div></div>
+      <div class="question-row"><div class="question-text">Designation <span class="required-star">*</span></div><input class="form-input" type="text" id="sup_designation_${i}" value="${escapeHtml(s.designation || '')}" placeholder="Designation"></div>
+      <div class="question-row"><div class="question-text">Organization</div><input class="form-input" type="text" id="sup_org_${i}" value="${escapeHtml(s.organization || '')}" placeholder="Organization"></div>
+      <div class="question-row"><div class="question-text">Phone Number (9 digits) <span class="required-star">*</span></div><input class="form-input" type="tel" id="sup_phone_${i}" value="${escapeHtml(s.phone || '')}" placeholder="099177283" maxlength="9" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,9)"></div>
+      <div class="question-row"><div class="question-text">Signature <span class="required-star">*</span></div><div class="signature-container"><canvas id="sup_sig_canvas_${i}" class="signature-canvas"></canvas><div class="signature-buttons"><button type="button" class="signature-btn clear" id="sup_sig_clear_${i}">Clear Signature</button></div></div></div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  supervisors.forEach((s, i) => {
+    setTimeout(() => createSignaturePad(`sup_sig_canvas_${i}`, `sup_sig_clear_${i}`, `sup_sig_${i}`), 50);
+    document.getElementById(`sup_name_${i}`).addEventListener('input', (e) => { supervisors[i].name = e.target.value; });
+    document.querySelectorAll(`input[name="sup_sex_${i}"]`).forEach(r => r.addEventListener('change', (e) => { if(e.target.checked) supervisors[i].sex = e.target.value; updateRadioVisuals(document.getElementById(`sup_sex_group_${i}`)); }));
+    document.getElementById(`sup_designation_${i}`).addEventListener('input', (e) => { supervisors[i].designation = e.target.value; });
+    document.getElementById(`sup_org_${i}`).addEventListener('input', (e) => { supervisors[i].organization = e.target.value; });
+    document.getElementById(`sup_phone_${i}`).addEventListener('input', (e) => { supervisors[i].phone = e.target.value; });
+  });
+}
+
+function addSupervisor() { supervisors.push({ name: "", sex: "", designation: "", organization: "", phone: "" }); renderSupervisors(); }
+function removeSupervisor(i) { supervisors.splice(i, 1); if (supervisors.length === 0) supervisors.push({ name: "", sex: "", designation: "", organization: "", phone: "" }); renderSupervisors(); }
+
+function renderStaff() {
+  const container = document.getElementById("staff-container");
+  if (!container) return;
+  let html = '';
+  staffMembers.forEach((s, i) => {
+    html += `<div class="member-card">
+      <div class="member-header"><span>Staff Member #${i + 1}</span>${staffMembers.length > 1 ? `<button class="remove-btn" onclick="removeStaffMember(${i})">✕</button>` : '<span style="color:#aaa; font-size:11px;">(Required)</span>'}</div>
+      <div class="question-row"><div class="question-text">Full Name ${staffMembers.length === 1 ? '<span class="required-star">*</span>' : ''}</div><input class="form-input" type="text" id="staff_name_${i}" value="${escapeHtml(s.name || '')}" placeholder="Full name"></div>
+      <div class="question-row"><div class="question-text">Sex ${staffMembers.length === 1 ? '<span class="required-star">*</span>' : ''}</div><div class="options-group-vertical" id="staff_sex_group_${i}"><label class="radio-option-vertical"><input type="radio" name="staff_sex_${i}" value="Male" ${s.sex === 'Male' ? 'checked' : ''}> Male</label><label class="radio-option-vertical"><input type="radio" name="staff_sex_${i}" value="Female" ${s.sex === 'Female' ? 'checked' : ''}> Female</label></div></div>
+      <div class="question-row"><div class="question-text">Cadre ${staffMembers.length === 1 ? '<span class="required-star">*</span>' : ''}</div><input class="form-input" type="text" id="staff_cadre_${i}" value="${escapeHtml(s.cadre || '')}" placeholder="Cadre"></div>
+      <div class="question-row"><div class="question-text">Unit</div><input class="form-input" type="text" id="staff_unit_${i}" value="${escapeHtml(s.unit || '')}" placeholder="Unit/Department"></div>
+      <div class="question-row"><div class="question-text">Phone Number (9 digits)</div><input class="form-input" type="tel" id="staff_phone_${i}" value="${escapeHtml(s.phone || '')}" placeholder="099177283" maxlength="9" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,9)"></div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  staffMembers.forEach((s, i) => {
+    document.getElementById(`staff_name_${i}`)?.addEventListener('input', (e) => { staffMembers[i].name = e.target.value; });
+    document.querySelectorAll(`input[name="staff_sex_${i}"]`).forEach(r => r.addEventListener('change', (e) => { if(e.target.checked) staffMembers[i].sex = e.target.value; updateRadioVisuals(document.getElementById(`staff_sex_group_${i}`)); }));
+    document.getElementById(`staff_cadre_${i}`)?.addEventListener('input', (e) => { staffMembers[i].cadre = e.target.value; });
+    document.getElementById(`staff_unit_${i}`)?.addEventListener('input', (e) => { staffMembers[i].unit = e.target.value; });
+    document.getElementById(`staff_phone_${i}`)?.addEventListener('input', (e) => { staffMembers[i].phone = e.target.value; });
+  });
+}
+
+function addStaffMember() { staffMembers.push({ name: "", sex: "", cadre: "", unit: "", phone: "" }); renderStaff(); }
+function removeStaffMember(i) { if (staffMembers.length > 1) { staffMembers.splice(i, 1); renderStaff(); } }
+
+function updateRadioVisuals(container) {
+  if (!container) return;
+  container.querySelectorAll('.radio-option-vertical').forEach(radio => {
+    const input = radio.querySelector('input');
+    if (input && input.checked) radio.classList.add('selected');
+    else radio.classList.remove('selected');
+  });
+}
+
+function toggleCadreOther() {
+  var sel = document.getElementById("cadre");
+  var box = document.getElementById("cadre_other");
+  var isOther = sel.value === "Other";
+  box.style.display = isOther ? "block" : "none";
+  if (!isOther) box.value = "";
+}
+
+function cadreValue() {
+  var sel = document.getElementById("cadre").value;
+  if (sel !== "Other") return sel;
+  var other = document.getElementById("cadre_other").value.trim();
+  return other ? "Other: " + other : "Other";
+}
+
+function escapeHtml(str) { if (!str) return ''; return String(str).replace(/[&<>"]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[m])); }
+function validatePhone(phone) { return phone && String(phone).replace(/\D/g, '').length === 9; }
+
+function validateForm() {
+  if (!document.getElementById("districtSelect").value) { alert("Please select District"); return false; }
+  if (!document.getElementById("chiefdomSelect").value) { alert("Please select Chiefdom"); return false; }
+  if (!document.getElementById("phuSelect").value) { alert("Please select Health Facility (PHU)"); return false; }
+  if (!document.getElementById("facilityTypeSelect").value) { alert("Please select/enter Health Facility Type"); return false; }
+  if (!document.getElementById("incharge_name").value) { alert("Please enter In-Charge Name"); return false; }
+  if (!document.querySelector('input[name="incharge_gender"]:checked')) { alert("Please select In-Charge Gender"); return false; }
+  if (!document.getElementById("cadre").value) { alert("Please select In-Charge Cadre"); return false; }
+  if (document.getElementById("cadre").value === "Other" && !document.getElementById("cadre_other").value.trim()) { alert("Please specify the In-Charge Cadre"); return false; }
+
+  const validSupervisors = supervisors.filter((s, idx) => {
+    if (!s.name || !s.sex || !s.designation) return false;
+    if (!validatePhone(s.phone)) { alert(`Supervisor #${idx+1}: Phone must be 9 digits`); return false; }
+    return true;
+  });
+  if (validSupervisors.length === 0) { alert("Add at least one supervisor with Name, Sex, Designation, and 9-digit Phone."); return false; }
+
+  const firstStaff = staffMembers[0];
+  if (!firstStaff.name || !firstStaff.sex || !firstStaff.cadre) { alert("First staff member: Name, Sex, and Cadre are required."); return false; }
+  return true;
+}
+
+function getFormData() {
+  return {
+    submittedAt: new Date().toLocaleString(),
+    district: document.getElementById("districtSelect").value,
+    chiefdom: document.getElementById("chiefdomSelect").value,
+    phu: document.getElementById("phuSelect").value,
+    facility_type: document.getElementById("facilityTypeSelect").value,
+    hcw_count: document.getElementById("hcw_count").value,
+    incharge_name: document.getElementById("incharge_name").value,
+    incharge_gender: document.querySelector('input[name="incharge_gender"]:checked')?.value || "",
+    cadre: cadreValue(),
+    visit_date: document.getElementById("visit_date").value,
+    supervisors: supervisors.map((s, i) => ({ ...s, signature: sessionStorage.getItem(`sup_sig_${i}`) || "" })),
+    staff: staffMembers
+  };
+}
+
+function showSummary() {
+  const data = getFormData();
+  let html = `<div class="summary-item"><div class="summary-label">Submitted At</div><div class="summary-value">${data.submittedAt}</div></div>`;
+  html += `<div class="summary-section-title">LOCATION & FACILITY TYPE</div>`;
+  html += `<div class="summary-item"><div class="summary-label">District</div><div class="summary-value">${data.district}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Chiefdom</div><div class="summary-value">${data.chiefdom}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Health Facility (PHU)</div><div class="summary-value">${data.phu}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Facility Type</div><div class="summary-value">${data.facility_type}</div></div>`;
+  html += `<div class="summary-section-title">FACILITY INFORMATION</div>`;
+  html += `<div class="summary-item"><div class="summary-label">HCWs for Malaria</div><div class="summary-value">${data.hcw_count}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">In-Charge</div><div class="summary-value">${data.incharge_name}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Gender</div><div class="summary-value">${data.incharge_gender}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Cadre</div><div class="summary-value">${data.cadre}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Visit Date</div><div class="summary-value">${data.visit_date}</div></div>`;
+  html += `<div class="summary-section-title">SUPERVISORS</div>` + data.supervisors.map((s,i) => `<div class="summary-item"><div class="summary-label">Supervisor #${i+1}</div><div class="summary-value">${s.name} | ${s.sex} | ${s.designation} | Phone: ${s.phone} | Sig: ${s.signature ? '✓' : '✗'}</div></div>`).join('');
+  html += `<div class="summary-section-title">STAFF</div>` + data.staff.map((s,i) => `<div class="summary-item"><div class="summary-label">Staff #${i+1}</div><div class="summary-value">${s.name || '-'} | ${s.sex || '-'} | ${s.cadre || '-'}</div></div>`).join('');
+  document.getElementById("summaryBody").innerHTML = html;
+  document.getElementById("summaryModal").style.display = "flex";
+}
+
+function validateAndSubmit() { if (validateForm()) showSummary(); }
+function closeModal() { document.getElementById("summaryModal").style.display = "none"; }
+function confirmSubmit() { closeModal(); alert("FORM A submitted successfully!"); console.log(getFormData()); }
+
+// Initialize
+document.getElementById("visit_date").value = new Date().toISOString().split('T')[0];
+loadCSV();
+supervisors.push({ name: "", sex: "", designation: "", organization: "", phone: "" });
+staffMembers.push({ name: "", sex: "", cadre: "", unit: "", phone: "" });
+renderSupervisors();
+renderStaff();
+
+setTimeout(() => {
+  updateRadioVisuals(document.getElementById('incharge_gender_group'));
+}, 100);
+
+/* ==================== REQUIRE EVERY QUESTION ====================
+   Set REQUIRE_ALL to false to go back to checking only the key fields. */
+var REQUIRE_ALL = true;
+
+var _RA_STYLE = document.createElement('style');
+_RA_STYLE.textContent =
+  '.ra-missing input,.ra-missing select,.ra-missing textarea{border-color:#dc3545 !important;box-shadow:0 0 0 3px rgba(220,53,69,.15) !important;}' +
+  '.ra-missing .options-group-vertical,.ra-missing .options-group-check,.ra-missing .options-group-h{outline:2px solid #dc3545;outline-offset:4px;border-radius:12px;}' +
+  '.ra-flag{color:#dc3545;font-weight:700;font-size:12px;margin-top:6px;}';
+document.head.appendChild(_RA_STYLE);
+
+function _raVisible(el){
+  // a row is skipped only when it (or a wrapper inside its section) is hidden,
+  // never because its wizard section is the inactive one
+  var n = el;
+  while (n && n !== document.body) {
+    if (n.classList && (n.classList.contains('section-page') || n.classList.contains('tab-page'))) return true;
+    if (n.style && n.style.display === 'none') return false;
+    n = n.parentElement;
+  }
+  return true;
+}
+
+function _raLabel(row){
+  var t = row.querySelector('.question-text');
+  var s = t ? t.textContent.replace(/\s+/g,' ').replace(/\*$/,'').trim() : 'this question';
+  return s.length > 90 ? s.slice(0,90) + '…' : s;
+}
+
+/* an "Other, specify" box only counts when an Other option is ticked */
+function _raOtherRequired(row){
+  var ticked = row.querySelectorAll('input[type=radio]:checked, input[type=checkbox]:checked');
+  for (var i = 0; i < ticked.length; i++) {
+    if (/other/i.test(ticked[i].value || '')) return true;
+  }
+  var sels = row.querySelectorAll('select');
+  for (var j = 0; j < sels.length; j++) {
+    if (/other/i.test(sels[j].value || '')) return true;
+  }
+  return false;
+}
+
+function _raRowAnswered(row){
+  var radios = row.querySelectorAll('input[type=radio]');
+  if (radios.length) {
+    var names = {};
+    for (var i = 0; i < radios.length; i++) names[radios[i].name] = true;
+    for (var nm in names) {
+      if (!row.querySelector('input[type=radio][name="' + nm + '"]:checked')) return false;
+    }
+  }
+  var boxes = row.querySelectorAll('input[type=checkbox]');
+  if (boxes.length && !row.querySelector('input[type=checkbox]:checked')) return false;
+
+  var fields = row.querySelectorAll('select, textarea, input[type=text], input[type=number], input[type=date], input[type=month], input[type=tel], input[type=email]');
+  for (var j = 0; j < fields.length; j++) {
+    var f = fields[j];
+    if (f.disabled) continue;
+    if (/other/i.test(f.placeholder || '') && !_raOtherRequired(row)) continue;
+    if (String(f.value).trim() === '') return false;
+  }
+  return true;
+}
+
+function validateAllQuestions(){
+  document.querySelectorAll('.ra-missing').forEach(function(e){ e.classList.remove('ra-missing'); });
+  document.querySelectorAll('.ra-flag').forEach(function(e){ e.remove(); });
+
+  var rows = document.querySelectorAll('.question-row');
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    if (!_raVisible(row)) continue;
+    if (!row.querySelector('input, select, textarea')) continue;   // heading-only rows
+    if (_raRowAnswered(row)) continue;
+
+    // bring it on screen: right tab, right wizard section
+    if (typeof switchTab === 'function') {
+      var tab = row.closest('.tab-page');
+      if (tab && !tab.classList.contains('active')) switchTab('entry');
+    }
+    var page = row.closest('.section-page');
+    if (page && typeof showSection === 'function') {
+      var all = Array.prototype.slice.call(document.querySelectorAll('.section-page'));
+      var idx = all.indexOf(page);
+      if (idx > -1) showSection(idx);
+    }
+    row.classList.add('ra-missing');
+    var flag = document.createElement('div');
+    flag.className = 'ra-flag';
+    flag.textContent = 'This question is required.';
+    row.appendChild(flag);
+    row.scrollIntoView({ behavior:'smooth', block:'center' });
+    alert('Please answer: ' + _raLabel(row));
+    return false;
+  }
+  return true;
+}
+
+/* run the full check before whatever the form already did */
+(function(){
+  var _origSubmit = window.submitForm;
+  window.submitForm = function(){
+    if (REQUIRE_ALL && !validateAllQuestions()) return;
+    return _origSubmit.apply(this, arguments);
+  };
+})();
+
+(function(){
+  var _origVAS = window.validateAndSubmit;
+  window.validateAndSubmit = function(){
+    if (REQUIRE_ALL && !validateAllQuestions()) return;
+    return _origVAS.apply(this, arguments);
+  };
+})();
+
+
+/* ==================== SIGN IN ====================
+   Add or change users here. Three slots; fill the empty two when ready. */
+var USERS = [
+  { username: "msk", password: "1234", name: "Mohamed Sillah Kanu" },
+  { username: "",    password: "",     name: "" },   // second user — fill in
+  { username: "",    password: "",     name: "" }    // third user — fill in
+];
+
+(function(){
+  var KEY = "mocm_user";
+
+  function currentUser(){
+    try { return JSON.parse(sessionStorage.getItem(KEY)); } catch(e){ return null; }
+  }
+
+  var css = document.createElement('style');
+  css.textContent =
+    '#lgOverlay{position:fixed;inset:0;z-index:3000;background:linear-gradient(160deg,#2b5f8a,#1e4a6d);' +
+    'display:flex;align-items:center;justify-content:center;padding:20px;font-family:inherit;}' +
+    '#lgCard{background:#fff;border-radius:20px;width:100%;max-width:330px;padding:26px 22px 24px;text-align:center;' +
+    'box-shadow:0 24px 48px rgba(0,0,0,.3);}' +
+    '#lgCard .lgIcon{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#2b5f8a,#3b78a8);' +
+    'margin:0 auto 14px;display:flex;align-items:center;justify-content:center;}' +
+    '#lgCard .lgIcon svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;}' +
+    '#lgCard h3{font-size:17px;font-weight:800;color:#2b5f8a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}' +
+    '#lgCard p{font-size:12px;color:#6c7a8a;margin-bottom:18px;}' +
+    '#lgCard input{width:100%;padding:13px 14px;border:1.5px solid #e0e6ed;border-radius:12px;font-size:15px;' +
+    'font-family:inherit;margin-bottom:10px;}' +
+    '#lgCard input:focus{border-color:#3b78a8;outline:2px solid rgba(59,120,168,.2);}' +
+    '#lgErr{color:#dc3545;font-size:12px;font-weight:600;min-height:16px;margin-bottom:8px;display:none;}' +
+    '#lgBtn{width:100%;padding:14px;background:#2b5f8a;color:#fff;border:none;border-radius:12px;' +
+    'font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;}' +
+    '.lgWho{font-size:10.5px;font-weight:600;letter-spacing:.4px;opacity:.9;margin-top:8px;}' +
+    '.lgWho a{color:#ffc107;text-decoration:underline;cursor:pointer;margin-left:8px;}' +
+    '.lgStamp{background:#e7f3ff;border:1px solid #c9dff2;border-radius:12px;padding:11px 14px;margin:0 0 12px;}' +
+    '.lgStamp b{color:#2b5f8a;}' +
+    '@keyframes lgShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}';
+  document.head.appendChild(css);
+
+  function showWho(){
+    var u = currentUser(); if(!u) return;
+    document.querySelectorAll('.page-header, .header-sub').length;
+    var host = document.querySelector('.page-header');
+    if(!host || host.querySelector('.lgWho')) return;
+    var d = document.createElement('div');
+    d.className = 'lgWho';
+    d.innerHTML = 'Signed in: ' + u.name + ' (' + u.username + ')<a id="lgOut">Sign out</a>';
+    host.appendChild(d);
+    d.querySelector('#lgOut').onclick = function(){
+      sessionStorage.removeItem(KEY);
+      location.reload();
+    };
+  }
+
+  function gate(){
+    if (currentUser()) { showWho(); return; }
+    var o = document.createElement('div');
+    o.id = 'lgOverlay';
+    o.innerHTML =
+      '<div id="lgCard">' +
+      '<div class="lgIcon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/>' +
+      '<path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>' +
+      '<h3>Sign in</h3><p>MOCM / OTSS+ supervision · NMCP Sierra Leone</p>' +
+      '<input id="lgUser" type="text" placeholder="Username" autocomplete="off" autocapitalize="none">' +
+      '<input id="lgPass" type="password" placeholder="Password">' +
+      '<div id="lgErr">Wrong username or password.</div>' +
+      '<button id="lgBtn">Sign in</button></div>';
+    document.body.appendChild(o);
+
+    var uEl = o.querySelector('#lgUser'), pEl = o.querySelector('#lgPass'), err = o.querySelector('#lgErr');
+    function attempt(){
+      var u = uEl.value.trim().toLowerCase(), p = pEl.value;
+      for (var i = 0; i < USERS.length; i++) {
+        var acc = USERS[i];
+        if (acc.username && acc.username.toLowerCase() === u && acc.password === p) {
+          sessionStorage.setItem(KEY, JSON.stringify({ username: acc.username, name: acc.name, at: new Date().toLocaleString() }));
+          o.remove();
+          showWho();
+          return;
+        }
+      }
+      err.style.display = 'block';
+      var card = o.querySelector('#lgCard');
+      card.style.animation = 'lgShake .3s';
+      setTimeout(function(){ card.style.animation = ''; }, 320);
+      pEl.value = ''; uEl.focus();
+    }
+    o.querySelector('#lgBtn').onclick = attempt;
+    pEl.onkeydown = function(e){ if (e.key === 'Enter') attempt(); };
+    uEl.onkeydown = function(e){ if (e.key === 'Enter') pEl.focus(); };
+    setTimeout(function(){ uEl.focus(); }, 60);
+  }
+
+  /* the summary carries who submitted it */
+  function stamp(){
+    var u = currentUser(); if(!u) return;
+    var host = document.getElementById('summary-content') || document.getElementById('summaryBody');
+    if(!host || host.querySelector('.lgStamp')) return;
+    var d = document.createElement('div');
+    d.className = 'lgStamp';
+    d.innerHTML = 'Submitted by <b>' + u.name + '</b> (' + u.username + ')';
+    host.insertBefore(d, host.firstChild);
+  }
+  ['renderSummary','showSummary'].forEach(function(fnName){
+    if (typeof window[fnName] === 'function') {
+      var orig = window[fnName];
+      window[fnName] = function(){ var r = orig.apply(this, arguments); stamp(); return r; };
+    }
+  });
+  if (typeof window.doSubmit === 'function') {
+    var _ds = window.doSubmit;
+    window.doSubmit = function(){ var r = _ds.apply(this, arguments); stamp(); return r; };
+  }
+  if (typeof window.confirmSubmit === 'function') {
+    var _cs = window.confirmSubmit;
+    window.confirmSubmit = function(){ stamp(); return _cs.apply(this, arguments); };
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gate);
+  else gate();
+})();
+
+
+/* ---------- show the star on every question the form enforces ---------- */
+(function(){
+  function isOtherBox(f){ return /other/i.test(f.placeholder || ''); }
+
+  function markRequired(){
+    var rows = document.querySelectorAll('.question-row');
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var fields = row.querySelectorAll('input, select, textarea');
+      if (!fields.length) continue;                     // heading-only row
+
+      // a row holding nothing but an "If Other, specify" box stays unstarred
+      var onlyOther = true;
+      for (var j = 0; j < fields.length; j++) {
+        if (!isOtherBox(fields[j])) { onlyOther = false; break; }
+      }
+      if (onlyOther) continue;
+
+      var label = row.querySelector('.question-text');
+      if (!label || label.querySelector('.required-star')) continue;
+      var star = document.createElement('span');
+      star.className = 'required-star';
+      star.textContent = '*';
+      label.appendChild(star);
+    }
+  }
+
+  var pending = null;
+  function schedule(){
+    clearTimeout(pending);
+    pending = setTimeout(markRequired, 120);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', schedule);
+  else schedule();
+  new MutationObserver(schedule).observe(document.body, { childList:true, subtree:true });
+})();
+
+</script>
+</body>
+</html>

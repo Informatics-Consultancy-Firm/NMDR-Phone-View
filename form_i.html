@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>FORM I - PMC (SP) | MOCM/OTSS+ Checklist | NMCP Sierra Leone</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+:root {
+  --blue:#3b78a8; --blue-dark:#2b5f8a; --blue-light:#4a8dbf; --soft-bg:#e7f3ff;
+  --white:#fff; --gold:#ffc107; --green:#28a745; --red:#dc3545; --bg:#f0f2f5;
+  --border:#e0e6ed; --text-dark:#1a2c3e; --text-light:#6c7a8a; --orange:#fd7e14;
+}
+body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-dark); font-size:15px; line-height:1.55; margin:0; }
+.tab-nav { display:flex; background:var(--blue-dark); position:sticky; top:0; z-index:200; box-shadow:0 2px 8px rgba(0,0,0,.2); }
+.tab-btn { flex:1; padding:15px 8px; color:rgba(255,255,255,.65); font-weight:700; font-size:14px; border:none; background:none; cursor:pointer; border-bottom:3px solid transparent; }
+.tab-btn.active { color:#fff; border-bottom:3px solid var(--gold); background:rgba(255,255,255,.08); }
+.tab-page { display:none; padding-bottom:40px; }
+.tab-page.active { display:block; }
+.page-header { background:linear-gradient(135deg,var(--blue-dark) 0%,var(--blue) 60%,var(--blue-light) 100%); color:#fff; text-align:center; padding:18px 16px; }
+.header-logos { display:flex; justify-content:center; gap:16px; margin-bottom:12px; flex-wrap:wrap; }
+.header-logo { height:52px; width:auto; background:#fff; padding:5px 10px; border-radius:10px; }
+.header-org { font-size:10px; font-weight:600; letter-spacing:.7px; margin-bottom:5px; opacity:.9; }
+.header-title { font-size:18px; font-weight:800; letter-spacing:.8px; text-transform:uppercase; color:var(--gold); }
+.header-sub { font-size:11px; font-weight:500; opacity:.85; margin-top:4px; }
+.form-title { background:linear-gradient(90deg,var(--blue-dark),var(--blue)); color:#fff; padding:12px 16px; font-weight:700; font-size:13.5px; border-left:4px solid var(--gold); }
+.section-header { background:var(--soft-bg); color:var(--blue-dark); padding:13px 16px; font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:.4px; border-left:4px solid var(--blue); margin-top:2px; }
+.section-card { background:#fff; border-bottom:1px solid var(--border); padding:16px; }
+.form-input, .form-select { width:100%; padding:13px 14px; border:1.5px solid var(--border); border-radius:12px; font-size:15px; font-family:inherit; background:#fff; }
+.form-input:focus, .form-select:focus { border-color:var(--blue); outline:none; box-shadow:0 0 0 3px rgba(59,120,168,.12); }
+.form-select:disabled { background:#f6f8fa; color:#9aa7b4; }
+.question-row { margin-bottom:20px; }
+.question-row:last-child { margin-bottom:0; }
+.question-text { font-weight:600; font-size:14.5px; margin-bottom:9px; }
+.required-star { color:var(--red); margin-left:4px; font-size:12px; }
+.hint { font-size:12px; color:var(--text-light); font-weight:500; margin-top:-4px; margin-bottom:8px; }
+.options-group-vertical { display:flex; flex-direction:column; gap:9px; margin-top:5px; }
+.radio-option { display:flex; align-items:center; gap:12px; background:#fff; padding:13px 16px; border-radius:12px; border:1.5px solid var(--border); cursor:pointer; font-weight:500; font-size:14.5px; min-height:48px; }
+.radio-option input { width:19px; height:19px; accent-color:var(--blue); cursor:pointer; margin:0; flex-shrink:0; }
+.radio-option.selected { background:var(--blue); border-color:var(--blue); color:#fff; }
+.radio-option.selected input { accent-color:#fff; }
+.dose-row { display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid var(--border); }
+.dose-row:last-of-type { border-bottom:none; }
+.dose-label { flex:1; font-size:14px; font-weight:500; }
+.dose-label b { color:var(--blue); }
+.dose-input { width:92px; padding:10px; border:1.5px solid var(--border); border-radius:10px; text-align:center; font-family:inherit; font-size:15px; }
+.total-row { display:flex; justify-content:space-between; align-items:center; background:var(--soft-bg); border-radius:12px; padding:13px 16px; margin-top:14px; }
+.total-label { font-size:12.5px; font-weight:700; color:var(--blue-dark); text-transform:uppercase; letter-spacing:.4px; }
+.total-value { font-size:20px; font-weight:800; color:var(--blue-dark); }
+.btn-submit { width:100%; padding:16px; background:var(--green); color:#fff; border:none; border-radius:14px; font-weight:700; font-size:15.5px; cursor:pointer; margin:20px 0; }
+.submit-wrap { padding:0 16px; }
+.summary-header { background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:#fff; padding:20px 16px; }
+.summary-header h2 { font-size:18px; font-weight:800; color:var(--gold); }
+.summary-header p { font-size:12px; opacity:.9; margin-top:4px; }
+.summary-refresh { background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3); color:#fff; border-radius:20px; padding:9px 18px; font-weight:600; font-size:12.5px; cursor:pointer; margin-top:11px; }
+.summary-section { margin:12px; background:#fff; border-radius:14px; border:1px solid var(--border); overflow:hidden; }
+.summary-section-title { background:var(--blue-dark); color:#fff; padding:12px 14px; font-weight:700; font-size:13px; }
+.summary-item { padding:11px 14px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; gap:10px; }
+.summary-item:last-child { border-bottom:none; }
+.summary-label { font-weight:700; color:var(--blue); font-size:10.5px; text-transform:uppercase; }
+.summary-value { font-size:13px; text-align:right; flex:1; }
+.modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:1000; align-items:center; justify-content:center; padding:20px; }
+.modal-content { background:#fff; border-radius:20px; max-width:500px; width:100%; }
+.modal-header { background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:#fff; padding:16px 20px; font-weight:700; display:flex; justify-content:space-between; }
+.modal-header button { background:none; border:none; color:#fff; font-size:24px; cursor:pointer; }
+.modal-body { padding:20px; }
+.modal-footer { padding:16px 20px; border-top:1px solid var(--border); display:flex; gap:12px; }
+.btn-cancel { flex:1; padding:12px; background:#f0f2f5; border:1px solid var(--border); border-radius:40px; font-weight:600; cursor:pointer; }
+.btn-confirm { flex:1; padding:12px; background:var(--green); color:#fff; border:none; border-radius:40px; font-weight:600; cursor:pointer; }
+.no-data { text-align:center; padding:40px; color:var(--text-light); }
+</style>
+</head>
+<body>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('entry')">📋 DATA ENTRY</button>
+  <button class="tab-btn" onclick="switchTab('summary')">📊 SUMMARY</button>
+</div>
+
+<div class="tab-page active" id="tab-entry">
+  <div class="page-header">
+    <div class="header-logos"><img src="ICF-SL.jpg" class="header-logo" onerror="this.style.display='none'"><img src="NMCP.png" class="header-logo" onerror="this.style.display='none'"></div>
+    <div class="header-org">National Malaria Control Programme — Ministry of Health, Sierra Leone</div>
+    <div class="header-title">MOCM/OTSS+ Checklist</div>
+    <div class="header-sub">FORM I: Perennial Malaria Chemoprevention (PMC) — formerly IPTi</div>
+  </div>
+  <div class="form-title">USE OF SP AS PERENNIAL MALARIA CHEMOPREVENTION (PMC)</div>
+
+  <!-- 1. DEMOGRAPHICS -->
+  <div class="section-header">1. Facility Demographics</div>
+  <div class="section-card">
+    <div class="question-row"><div class="question-text">District <span class="required-star">*</span></div>
+      <select class="form-select" id="districtSelect" onchange="updateChiefdom()"><option>Bo</option></select></div>
+    <div class="question-row"><div class="question-text">Chiefdom / Zone / City <span class="required-star">*</span></div>
+      <select class="form-select" id="chiefdomSelect" onchange="updatePHU()" disabled><option value="">Select District first</option></select></div>
+    <div class="question-row"><div class="question-text">Health Facility (PHU) <span class="required-star">*</span></div>
+      <select class="form-select" id="phuSelect" onchange="updateFacilityType()" disabled><option value="">Select Chiefdom first</option></select></div>
+    <div class="question-row"><div class="question-text">Health Facility Type <span class="required-star">*</span></div>
+      <select class="form-select" id="facilityTypeSelect" disabled><option value="">Select PHU first</option></select></div>
+    <div class="question-row"><div class="question-text">Provider interviewed — cadre</div>
+      <select class="form-select" id="providerCadre" onchange="updateAns('provider_cadre',this.value)">
+        <option value="">Select...</option>
+        <option>Community Health Officer</option><option>Community Health Assistant</option>
+        <option>Midwife</option><option>SECHN</option><option>MCH Aide</option><option>CHT</option><option>Other</option>
+      </select></div>
+    <div class="question-row"><div class="question-text">Supervisor Name <span class="required-star">*</span></div>
+      <input class="form-input" id="supervisor" type="text" placeholder="Supervisor name"></div>
+    <div class="question-row"><div class="question-text">Date of Visit <span class="required-star">*</span></div>
+      <input class="form-input" id="visitdate" type="date"></div>
+  </div>
+
+  <!-- 2. PROVIDER READINESS -->
+  <div class="section-header">2. Provider Readiness</div>
+  <div class="section-card">
+    <div class="question-row">
+      <div class="question-text">1. Have you been trained on the revised malaria policy and treatment guidelines? <span class="required-star">*</span></div>
+      <div class="options-group-vertical" id="grp_trained">
+        <label class="radio-option"><input type="radio" name="trained" value="Yes" onchange="updateAns('trained','Yes'); paint('grp_trained')"> Yes</label>
+        <label class="radio-option"><input type="radio" name="trained" value="No" onchange="updateAns('trained','No'); paint('grp_trained')"> No</label>
+      </div>
+    </div>
+    <div class="question-row">
+      <div class="question-text">2. Is the PMC job aide available in your clinic? <span class="required-star">*</span></div>
+      <div class="hint">Observe — do not accept a verbal answer.</div>
+      <div class="options-group-vertical" id="grp_jobaide">
+        <label class="radio-option"><input type="radio" name="jobaide" value="Yes" onchange="updateAns('jobaide','Yes'); paint('grp_jobaide')"> Yes</label>
+        <label class="radio-option"><input type="radio" name="jobaide" value="No" onchange="updateAns('jobaide','No'); paint('grp_jobaide')"> No</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. MONTHLY SP DOSES -->
+  <div class="section-header">3. SP Doses Administered — Monthly Tally</div>
+  <div class="section-card">
+    <div class="question-row"><div class="question-text">Reporting month <span class="required-star">*</span></div>
+      <input class="form-input" id="reportMonth" type="month" oninput="updateAns('report_month',this.value)"></div>
+    <div class="question-row"><div class="question-text">Total visits for the month <span class="required-star">*</span></div>
+      <input class="form-input" id="totalVisits" type="number" min="0" placeholder="0" oninput="updateAns('total_visits',this.value); recalc()"></div>
+    <div class="question-text" style="margin-top:6px;">Doses of SP administered</div>
+    <div id="dose-rows"></div>
+    <div class="total-row"><span class="total-label">Total SP doses</span><span class="total-value" id="doseTotal">0</span></div>
+  </div>
+
+  <div class="submit-wrap"><button class="btn-submit" onclick="submitForm()">✓ SAVE &amp; VIEW SUMMARY</button></div>
+</div>
+
+<div class="tab-page" id="tab-summary">
+  <div class="summary-header"><h2>FORM I — SUBMISSION SUMMARY</h2><p id="sum_date">No submission yet</p>
+    <button class="summary-refresh" onclick="renderSummary()">🔄 Refresh Summary</button></div>
+  <div id="summary-content"><div class="no-data">Complete the form and tap "Save &amp; View Summary".</div></div>
+</div>
+
+<div id="confirmModal" class="modal"><div class="modal-content">
+  <div class="modal-header"><span>Confirm Submission</span><button onclick="closeModal()">×</button></div>
+  <div class="modal-body">Save this form? You can still edit after saving.</div>
+  <div class="modal-footer"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-confirm" onclick="doSubmit()">Save &amp; View Summary</button></div>
+</div></div>
+
+<script>
+// ==================== FACILITY LIST ====================
+// MOCM pilot: 10 selected facilities, Bo District.
+const DISTRICT = "Bo";
+
+
+const PILOT_FACILITIES = [
+  { district:"Bo", chiefdom:"Badjia Chiefdom",     phu:"Njagbahun (Badjia) MCHP",   type:"MCHP" },
+  { district:"Bo", chiefdom:"Baoma Chiefdom",      phu:"Faabu CHP",                 type:"CHP"  },
+  { district:"Bo", chiefdom:"Baoma Chiefdom",      phu:"Gerehun CHC",               type:"CHC"  },
+  { district:"Bo", chiefdom:"Baoma Chiefdom",      phu:"Mbundorbu MCHP",            type:"MCHP" },
+  { district:"Bo", chiefdom:"Bongor Chiefdom",     phu:"Mamboma (Bongor) CHP",      type:"CHP"  },
+  { district:"Bo", chiefdom:"Bumpe Ngao Chiefdom", phu:"Bumpe CHC",                 type:"CHC"  },
+  { district:"Bo", chiefdom:"Bumpe Ngao Chiefdom", phu:"Mokoba MCHP",               type:"MCHP" },
+  { district:"Bo", chiefdom:"Bumpe Ngao Chiefdom", phu:"Yengema (Bumpe Ngao) MCHP", type:"MCHP" },
+  { district:"Bo", chiefdom:"Tikonko Chiefdom",    phu:"Gondama (Tikonko) CHC",     type:"CHC"  },
+  { district:"Bo", chiefdom:"Tikonko Chiefdom",    phu:"Griema MCHP",               type:"MCHP" }
+];
+
+
+// PMC schedule, as in the national tool
+const DOSES = [
+  { n:1, label:"1st dose", age:"10 weeks" },
+  { n:2, label:"2nd dose", age:"14 weeks" },
+  { n:3, label:"3rd dose", age:"6 months" },
+  { n:4, label:"4th dose", age:"9 months" },
+  { n:5, label:"5th dose", age:"12 months" },
+  { n:6, label:"6th dose", age:"15 months" }
+];
+
+let ans = {}, submitted = false;
+
+// only the chiefdoms that hold a pilot facility
+function chiefdomsIn(d){ const s=new Set(); PILOT_FACILITIES.forEach(f=>{ if(f.district===d) s.add(f.chiefdom); }); return Array.from(s).sort(); }
+function phusIn(d,c){ return PILOT_FACILITIES.filter(f=>f.district===d&&f.chiefdom===c).sort((a,b)=>a.phu.localeCompare(b.phu)); }
+function typeOf(d,c,p){ const h=PILOT_FACILITIES.find(f=>f.district===d&&f.chiefdom===c&&f.phu===p); return h?h.type:""; }
+function escOpt(s){ return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+
+function updateChiefdom(){
+  const d=document.getElementById("districtSelect").value;
+  const c=document.getElementById("chiefdomSelect");
+  const list=d?chiefdomsIn(d):[];
+  if(list.length){ c.innerHTML='<option value="">Select Chiefdom...</option>'+list.map(x=>`<option>${escOpt(x)}</option>`).join(''); c.disabled=false; }
+  else { c.innerHTML='<option value="">No chiefdoms listed for this district</option>'; c.disabled=true; }
+  const p=document.getElementById("phuSelect"); p.innerHTML='<option value="">Select Chiefdom first</option>'; p.disabled=true;
+  const t=document.getElementById("facilityTypeSelect"); t.innerHTML='<option value="">Select PHU first</option>'; t.disabled=true;
+}
+function updatePHU(){
+  const d=document.getElementById("districtSelect").value, c=document.getElementById("chiefdomSelect").value;
+  const p=document.getElementById("phuSelect");
+  const list=(d&&c)?phusIn(d,c):[];
+  if(list.length){ p.innerHTML='<option value="">Select PHU...</option>'+list.map(f=>`<option>${escOpt(f.phu)}</option>`).join(''); p.disabled=false; }
+  else { p.innerHTML='<option value="">No facilities listed for this chiefdom</option>'; p.disabled=true; }
+  const t=document.getElementById("facilityTypeSelect"); t.innerHTML='<option value="">Select PHU first</option>'; t.disabled=true;
+}
+function updateFacilityType(){
+  const d=document.getElementById("districtSelect").value, c=document.getElementById("chiefdomSelect").value, p=document.getElementById("phuSelect").value;
+  const t=document.getElementById("facilityTypeSelect");
+  if(!p){ t.innerHTML='<option value="">Select PHU first</option>'; t.disabled=true; return; }
+  const ty=typeOf(d,c,p);
+  if(ty){ t.innerHTML=`<option>${escOpt(ty)}</option>`; t.disabled=false; }
+  else { t.innerHTML='<option value="">Type not listed for this facility</option>'; t.disabled=true; }
+}
+
+function updateAns(k,v){ ans[k]=v; }
+function paint(id){ const g=document.getElementById(id); if(!g) return;
+  g.querySelectorAll('.radio-option').forEach(r=>{ const i=r.querySelector('input'); r.classList.toggle('selected', !!(i&&i.checked)); }); }
+
+function buildDoseRows(){
+  document.getElementById('dose-rows').innerHTML = DOSES.map(d=>`
+    <div class="dose-row">
+      <span class="dose-label"><b>${d.n})</b> ${d.label} <span style="color:var(--text-light)">(${d.age})</span></span>
+      <input class="dose-input" type="number" min="0" placeholder="0" id="dose${d.n}"
+        oninput="updateAns('dose${d.n}',this.value); recalc()">
+    </div>`).join('');
+}
+function recalc(){
+  let total=0;
+  DOSES.forEach(d=>{ const v=parseInt(ans['dose'+d.n]); if(!isNaN(v)) total+=v; });
+  ans.dose_total = total;
+  document.getElementById('doseTotal').textContent = total;
+}
+
+function switchTab(tab){
+  document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.querySelector(tab==='entry'?'.tab-btn:first-child':'.tab-btn:last-child').classList.add('active');
+  if(tab==='summary') renderSummary();
+  window.scrollTo(0,0);
+}
+function getDemographics(){
+  return {
+    district: document.getElementById("districtSelect").value,
+    chiefdom: document.getElementById("chiefdomSelect").value,
+    phu: document.getElementById("phuSelect").value,
+    facility_type: document.getElementById("facilityTypeSelect").value,
+    provider_cadre: document.getElementById("providerCadre").value,
+    supervisor: document.getElementById("supervisor").value,
+    visitdate: document.getElementById("visitdate").value
+  };
+}
+function validateForm(){
+  const d=getDemographics();
+  if(!d.chiefdom){ alert("Select Chiefdom"); return false; }
+  if(!d.phu){ alert("Select Health Facility"); return false; }
+  if(!d.facility_type){ alert("Select Health Facility Type"); return false; }
+  if(!d.supervisor){ alert("Enter Supervisor Name"); return false; }
+  if(!d.visitdate){ alert("Select Date of Visit"); return false; }
+  if(!ans.trained){ alert("Answer question 1: trained on the revised guidelines?"); return false; }
+  if(!ans.jobaide){ alert("Answer question 2: is the PMC job aide available?"); return false; }
+  if(!ans.report_month){ alert("Select the reporting month"); return false; }
+  if(ans.total_visits === undefined || ans.total_visits === ""){ alert("Enter total visits for the month"); return false; }
+  return true;
+}
+function submitForm(){ if(validateForm()) document.getElementById('confirmModal').style.display='flex'; }
+function closeModal(){ document.getElementById('confirmModal').style.display='none'; }
+function doSubmit(){ closeModal(); ans._submitted=new Date().toLocaleString(); ans._demographics=getDemographics(); submitted=true; renderSummary(); switchTab('summary'); }
+
+function renderSummary(){
+  if(!submitted && !ans._submitted) return;
+  const d = ans._demographics || getDemographics();
+  document.getElementById('sum_date').textContent = 'Saved: ' + (ans._submitted || new Date().toLocaleString());
+  const visits = parseInt(ans.total_visits);
+  const total = ans.dose_total || 0;
+  const perVisit = (!isNaN(visits) && visits > 0) ? (Math.round((total/visits)*1000)/10) + '%' : '—';
+
+  let html = `<div class="summary-section"><div class="summary-section-title">Facility Information</div>
+    <div class="summary-item"><span class="summary-label">District</span><span class="summary-value">${d.district||'—'}</span></div>
+    <div class="summary-item"><span class="summary-label">Chiefdom</span><span class="summary-value">${d.chiefdom||'—'}</span></div>
+    <div class="summary-item"><span class="summary-label">Health Facility</span><span class="summary-value">${d.phu||'—'}</span></div>
+    <div class="summary-item"><span class="summary-label">Facility Type</span><span class="summary-value">${d.facility_type||'—'}</span></div>
+    <div class="summary-item"><span class="summary-label">Provider Cadre</span><span class="summary-value">${d.provider_cadre||'—'}</span></div>
+    <div class="summary-item"><span class="summary-label">Supervisor</span><span class="summary-value">${d.supervisor||'—'}</span></div>
+    <div class="summary-item"><span class="summary-label">Visit Date</span><span class="summary-value">${d.visitdate||'—'}</span></div>
+  </div>
+  <div class="summary-section"><div class="summary-section-title">Provider Readiness</div>
+    <div class="summary-item"><span class="summary-label">Trained on revised guidelines</span><span class="summary-value">${ans.trained||'—'}</span></div>
+    <div class="summary-item"><span class="summary-label">PMC job aide available</span><span class="summary-value">${ans.jobaide||'—'}</span></div>
+  </div>
+  <div class="summary-section"><div class="summary-section-title">SP Doses — ${ans.report_month||'month not set'}</div>
+    <div class="summary-item"><span class="summary-label">Total visits</span><span class="summary-value">${isNaN(visits)?'—':visits}</span></div>`;
+  DOSES.forEach(dd=>{
+    html += `<div class="summary-item"><span class="summary-label">${dd.label} (${dd.age})</span><span class="summary-value">${ans['dose'+dd.n]||'0'}</span></div>`;
+  });
+  html += `<div class="summary-item"><span class="summary-label">Total SP doses</span><span class="summary-value"><b>${total}</b></span></div>
+    <div class="summary-item"><span class="summary-label">Doses per visit</span><span class="summary-value">${perVisit}</span></div>
+  </div>`;
+  document.getElementById('summary-content').innerHTML = html;
+}
+
+// INIT
+buildDoseRows();
+document.getElementById("districtSelect").value = DISTRICT;
+updateChiefdom();
+document.getElementById("visitdate").value = new Date().toISOString().split('T')[0];
+recalc();
+
+/* ==================== REQUIRE EVERY QUESTION ====================
+   Set REQUIRE_ALL to false to go back to checking only the key fields. */
+var REQUIRE_ALL = true;
+
+var _RA_STYLE = document.createElement('style');
+_RA_STYLE.textContent =
+  '.ra-missing input,.ra-missing select,.ra-missing textarea{border-color:#dc3545 !important;box-shadow:0 0 0 3px rgba(220,53,69,.15) !important;}' +
+  '.ra-missing .options-group-vertical,.ra-missing .options-group-check,.ra-missing .options-group-h{outline:2px solid #dc3545;outline-offset:4px;border-radius:12px;}' +
+  '.ra-flag{color:#dc3545;font-weight:700;font-size:12px;margin-top:6px;}';
+document.head.appendChild(_RA_STYLE);
+
+function _raVisible(el){
+  // a row is skipped only when it (or a wrapper inside its section) is hidden,
+  // never because its wizard section is the inactive one
+  var n = el;
+  while (n && n !== document.body) {
+    if (n.classList && (n.classList.contains('section-page') || n.classList.contains('tab-page'))) return true;
+    if (n.style && n.style.display === 'none') return false;
+    n = n.parentElement;
+  }
+  return true;
+}
+
+function _raLabel(row){
+  var t = row.querySelector('.question-text');
+  var s = t ? t.textContent.replace(/\s+/g,' ').replace(/\*$/,'').trim() : 'this question';
+  return s.length > 90 ? s.slice(0,90) + '…' : s;
+}
+
+/* an "Other, specify" box only counts when an Other option is ticked */
+function _raOtherRequired(row){
+  var ticked = row.querySelectorAll('input[type=radio]:checked, input[type=checkbox]:checked');
+  for (var i = 0; i < ticked.length; i++) {
+    if (/other/i.test(ticked[i].value || '')) return true;
+  }
+  var sels = row.querySelectorAll('select');
+  for (var j = 0; j < sels.length; j++) {
+    if (/other/i.test(sels[j].value || '')) return true;
+  }
+  return false;
+}
+
+function _raRowAnswered(row){
+  var radios = row.querySelectorAll('input[type=radio]');
+  if (radios.length) {
+    var names = {};
+    for (var i = 0; i < radios.length; i++) names[radios[i].name] = true;
+    for (var nm in names) {
+      if (!row.querySelector('input[type=radio][name="' + nm + '"]:checked')) return false;
+    }
+  }
+  var boxes = row.querySelectorAll('input[type=checkbox]');
+  if (boxes.length && !row.querySelector('input[type=checkbox]:checked')) return false;
+
+  var fields = row.querySelectorAll('select, textarea, input[type=text], input[type=number], input[type=date], input[type=month], input[type=tel], input[type=email]');
+  for (var j = 0; j < fields.length; j++) {
+    var f = fields[j];
+    if (f.disabled) continue;
+    if (/other/i.test(f.placeholder || '') && !_raOtherRequired(row)) continue;
+    if (String(f.value).trim() === '') return false;
+  }
+  return true;
+}
+
+function validateAllQuestions(){
+  document.querySelectorAll('.ra-missing').forEach(function(e){ e.classList.remove('ra-missing'); });
+  document.querySelectorAll('.ra-flag').forEach(function(e){ e.remove(); });
+
+  var rows = document.querySelectorAll('.question-row');
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    if (!_raVisible(row)) continue;
+    if (!row.querySelector('input, select, textarea')) continue;   // heading-only rows
+    if (_raRowAnswered(row)) continue;
+
+    // bring it on screen: right tab, right wizard section
+    if (typeof switchTab === 'function') {
+      var tab = row.closest('.tab-page');
+      if (tab && !tab.classList.contains('active')) switchTab('entry');
+    }
+    var page = row.closest('.section-page');
+    if (page && typeof showSection === 'function') {
+      var all = Array.prototype.slice.call(document.querySelectorAll('.section-page'));
+      var idx = all.indexOf(page);
+      if (idx > -1) showSection(idx);
+    }
+    row.classList.add('ra-missing');
+    var flag = document.createElement('div');
+    flag.className = 'ra-flag';
+    flag.textContent = 'This question is required.';
+    row.appendChild(flag);
+    row.scrollIntoView({ behavior:'smooth', block:'center' });
+    alert('Please answer: ' + _raLabel(row));
+    return false;
+  }
+  return true;
+}
+
+/* run the full check before whatever the form already did */
+(function(){
+  var _origSubmit = window.submitForm;
+  window.submitForm = function(){
+    if (REQUIRE_ALL && !validateAllQuestions()) return;
+    return _origSubmit.apply(this, arguments);
+  };
+})();
+
+
+/* ==================== SIGN IN ====================
+   Add or change users here. Three slots; fill the empty two when ready. */
+var USERS = [
+  { username: "msk", password: "1234", name: "Mohamed Sillah Kanu" },
+  { username: "",    password: "",     name: "" },   // second user — fill in
+  { username: "",    password: "",     name: "" }    // third user — fill in
+];
+
+(function(){
+  var KEY = "mocm_user";
+
+  function currentUser(){
+    try { return JSON.parse(sessionStorage.getItem(KEY)); } catch(e){ return null; }
+  }
+
+  var css = document.createElement('style');
+  css.textContent =
+    '#lgOverlay{position:fixed;inset:0;z-index:3000;background:linear-gradient(160deg,#2b5f8a,#1e4a6d);' +
+    'display:flex;align-items:center;justify-content:center;padding:20px;font-family:inherit;}' +
+    '#lgCard{background:#fff;border-radius:20px;width:100%;max-width:330px;padding:26px 22px 24px;text-align:center;' +
+    'box-shadow:0 24px 48px rgba(0,0,0,.3);}' +
+    '#lgCard .lgIcon{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#2b5f8a,#3b78a8);' +
+    'margin:0 auto 14px;display:flex;align-items:center;justify-content:center;}' +
+    '#lgCard .lgIcon svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;}' +
+    '#lgCard h3{font-size:17px;font-weight:800;color:#2b5f8a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}' +
+    '#lgCard p{font-size:12px;color:#6c7a8a;margin-bottom:18px;}' +
+    '#lgCard input{width:100%;padding:13px 14px;border:1.5px solid #e0e6ed;border-radius:12px;font-size:15px;' +
+    'font-family:inherit;margin-bottom:10px;}' +
+    '#lgCard input:focus{border-color:#3b78a8;outline:2px solid rgba(59,120,168,.2);}' +
+    '#lgErr{color:#dc3545;font-size:12px;font-weight:600;min-height:16px;margin-bottom:8px;display:none;}' +
+    '#lgBtn{width:100%;padding:14px;background:#2b5f8a;color:#fff;border:none;border-radius:12px;' +
+    'font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;}' +
+    '.lgWho{font-size:10.5px;font-weight:600;letter-spacing:.4px;opacity:.9;margin-top:8px;}' +
+    '.lgWho a{color:#ffc107;text-decoration:underline;cursor:pointer;margin-left:8px;}' +
+    '.lgStamp{background:#e7f3ff;border:1px solid #c9dff2;border-radius:12px;padding:11px 14px;margin:0 0 12px;}' +
+    '.lgStamp b{color:#2b5f8a;}' +
+    '@keyframes lgShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}';
+  document.head.appendChild(css);
+
+  function showWho(){
+    var u = currentUser(); if(!u) return;
+    document.querySelectorAll('.page-header, .header-sub').length;
+    var host = document.querySelector('.page-header');
+    if(!host || host.querySelector('.lgWho')) return;
+    var d = document.createElement('div');
+    d.className = 'lgWho';
+    d.innerHTML = 'Signed in: ' + u.name + ' (' + u.username + ')<a id="lgOut">Sign out</a>';
+    host.appendChild(d);
+    d.querySelector('#lgOut').onclick = function(){
+      sessionStorage.removeItem(KEY);
+      location.reload();
+    };
+  }
+
+  function gate(){
+    if (currentUser()) { showWho(); return; }
+    var o = document.createElement('div');
+    o.id = 'lgOverlay';
+    o.innerHTML =
+      '<div id="lgCard">' +
+      '<div class="lgIcon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/>' +
+      '<path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>' +
+      '<h3>Sign in</h3><p>MOCM / OTSS+ supervision · NMCP Sierra Leone</p>' +
+      '<input id="lgUser" type="text" placeholder="Username" autocomplete="off" autocapitalize="none">' +
+      '<input id="lgPass" type="password" placeholder="Password">' +
+      '<div id="lgErr">Wrong username or password.</div>' +
+      '<button id="lgBtn">Sign in</button></div>';
+    document.body.appendChild(o);
+
+    var uEl = o.querySelector('#lgUser'), pEl = o.querySelector('#lgPass'), err = o.querySelector('#lgErr');
+    function attempt(){
+      var u = uEl.value.trim().toLowerCase(), p = pEl.value;
+      for (var i = 0; i < USERS.length; i++) {
+        var acc = USERS[i];
+        if (acc.username && acc.username.toLowerCase() === u && acc.password === p) {
+          sessionStorage.setItem(KEY, JSON.stringify({ username: acc.username, name: acc.name, at: new Date().toLocaleString() }));
+          o.remove();
+          showWho();
+          return;
+        }
+      }
+      err.style.display = 'block';
+      var card = o.querySelector('#lgCard');
+      card.style.animation = 'lgShake .3s';
+      setTimeout(function(){ card.style.animation = ''; }, 320);
+      pEl.value = ''; uEl.focus();
+    }
+    o.querySelector('#lgBtn').onclick = attempt;
+    pEl.onkeydown = function(e){ if (e.key === 'Enter') attempt(); };
+    uEl.onkeydown = function(e){ if (e.key === 'Enter') pEl.focus(); };
+    setTimeout(function(){ uEl.focus(); }, 60);
+  }
+
+  /* the summary carries who submitted it */
+  function stamp(){
+    var u = currentUser(); if(!u) return;
+    var host = document.getElementById('summary-content') || document.getElementById('summaryBody');
+    if(!host || host.querySelector('.lgStamp')) return;
+    var d = document.createElement('div');
+    d.className = 'lgStamp';
+    d.innerHTML = 'Submitted by <b>' + u.name + '</b> (' + u.username + ')';
+    host.insertBefore(d, host.firstChild);
+  }
+  ['renderSummary','showSummary'].forEach(function(fnName){
+    if (typeof window[fnName] === 'function') {
+      var orig = window[fnName];
+      window[fnName] = function(){ var r = orig.apply(this, arguments); stamp(); return r; };
+    }
+  });
+  if (typeof window.doSubmit === 'function') {
+    var _ds = window.doSubmit;
+    window.doSubmit = function(){ var r = _ds.apply(this, arguments); stamp(); return r; };
+  }
+  if (typeof window.confirmSubmit === 'function') {
+    var _cs = window.confirmSubmit;
+    window.confirmSubmit = function(){ stamp(); return _cs.apply(this, arguments); };
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gate);
+  else gate();
+})();
+
+
+/* ---------- show the star on every question the form enforces ---------- */
+(function(){
+  function isOtherBox(f){ return /other/i.test(f.placeholder || ''); }
+
+  function markRequired(){
+    var rows = document.querySelectorAll('.question-row');
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var fields = row.querySelectorAll('input, select, textarea');
+      if (!fields.length) continue;                     // heading-only row
+
+      // a row holding nothing but an "If Other, specify" box stays unstarred
+      var onlyOther = true;
+      for (var j = 0; j < fields.length; j++) {
+        if (!isOtherBox(fields[j])) { onlyOther = false; break; }
+      }
+      if (onlyOther) continue;
+
+      var label = row.querySelector('.question-text');
+      if (!label || label.querySelector('.required-star')) continue;
+      var star = document.createElement('span');
+      star.className = 'required-star';
+      star.textContent = '*';
+      label.appendChild(star);
+    }
+  }
+
+  var pending = null;
+  function schedule(){
+    clearTimeout(pending);
+    pending = setTimeout(markRequired, 120);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', schedule);
+  else schedule();
+  new MutationObserver(schedule).observe(document.body, { childList:true, subtree:true });
+})();
+
+</script>
+</body>
+</html>

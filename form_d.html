@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>FORM D - MOCM/OTSS+ Checklist | NMCP Sierra Leone</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+:root {
+  --blue: #3b78a8;
+  --blue-dark: #2b5f8a;
+  --blue-light: #4a8dbf;
+  --soft-bg: #e7f3ff;
+  --white: #ffffff;
+  --gold: #ffc107;
+  --green: #28a745;
+  --red: #dc3545;
+  --bg: #f0f2f5;
+  --border: #e0e6ed;
+  --text-dark: #1a2c3e;
+  --text-light: #6c7a8a;
+  --orange: #fd7e14;
+}
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text-dark);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+}
+.tab-nav { display: flex; background: var(--blue-dark); position: sticky; top: 0; z-index: 200; }
+.tab-btn {
+  flex: 1;
+  padding: 14px 8px;
+  color: rgba(255,255,255,0.65);
+  font-weight: 700;
+  font-size: 14px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  text-align: center;
+}
+.tab-btn.active { color: white; border-bottom: 3px solid var(--gold); background: rgba(255,255,255,0.08); }
+.tab-page { display: none; width: 100%; padding-bottom: 20px; }
+.tab-page.active { display: block; }
+.progress-container { background: var(--blue-dark); padding: 10px 16px; position: sticky; top: 52px; z-index: 100; }
+.progress-bar { background: rgba(255,255,255,0.2); border-radius: 20px; height: 6px; overflow: hidden; }
+.progress-fill { background: var(--gold); height: 100%; width: 0%; transition: width 0.3s ease; }
+.progress-text { color: white; font-size: 11px; margin-top: 6px; text-align: center; font-weight: 500; }
+.page-header {
+  background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 60%, var(--blue-light) 100%);
+  color: white;
+  text-align: center;
+  padding: 16px;
+}
+.header-logos { display: flex; justify-content: center; gap: 16px; margin-bottom: 10px; flex-wrap: wrap; }
+.header-logo { height: 50px; width: auto; background: white; padding: 4px 10px; border-radius: 10px; }
+.header-org { font-size: 9px; font-weight: 600; letter-spacing: 0.8px; margin-bottom: 4px; opacity: 0.9; }
+.header-title { font-size: 16px; font-weight: 800; text-transform: uppercase; color: var(--gold); }
+.header-sub { font-size: 10px; font-weight: 500; opacity: 0.85; }
+.form-title {
+  background: linear-gradient(90deg, var(--blue-dark), var(--blue));
+  color: white;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: 13px;
+  border-left: 4px solid var(--gold);
+}
+.section-page {
+  display: none;
+  background: white;
+  margin: 12px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.section-page.active { display: block; }
+.section-header {
+  background: var(--soft-bg);
+  color: var(--blue-dark);
+  padding: 14px 16px;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  border-left: 4px solid var(--blue);
+}
+.section-card { padding: 16px; }
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  background: white;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--blue); outline: none; }
+.form-select:disabled { background: #f6f8fa; color: #9aa7b4; }
+.question-row { margin-bottom: 20px; }
+.question-text { font-weight: 600; font-size: 14px; margin-bottom: 10px; color: var(--text-dark); }
+.required-star { color: var(--red); margin-left: 4px; }
+.options-group-vertical { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+}
+.radio-option input { width: 18px; height: 18px; accent-color: var(--blue); cursor: pointer; margin: 0; }
+.radio-option.selected { background: var(--blue); border-color: var(--blue); color: white; }
+.radio-option.selected input { accent-color: white; }
+.options-group-check { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+.check-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+}
+.check-option input { width: 18px; height: 18px; accent-color: var(--blue); cursor: pointer; margin: 0; }
+.check-option.selected { background: var(--blue); border-color: var(--blue); color: white; }
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--soft-bg);
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+.score-label { font-size: 12px; font-weight: 700; color: var(--blue-dark); text-transform: uppercase; }
+.score-badge { font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 20px; }
+.score-badge.good { background: var(--green); color: white; }
+.score-badge.fair { background: var(--orange); color: white; }
+.score-badge.poor { background: var(--red); color: white; }
+.nav-buttons { display: flex; gap: 12px; padding: 16px; background: white; border-top: 1px solid var(--border); }
+.btn-prev, .btn-next, .btn-submit-final {
+  flex: 1;
+  padding: 12px;
+  border-radius: 40px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: center;
+  border: none;
+}
+.btn-prev { background: #f0f2f5; color: var(--text-dark); border: 1px solid var(--border); }
+.btn-next { background: var(--blue); color: white; }
+.btn-submit-final { background: var(--green); color: white; }
+.member-card { background: #f8fafc; border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 14px; }
+.member-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  color: var(--blue-dark);
+}
+.remove-btn { color: var(--red); cursor: pointer; background: none; border: none; font-size: 20px; font-weight: 700; padding: 0 8px; }
+.add-btn {
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 40px;
+  padding: 12px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 8px;
+}
+.summary-header { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; padding: 20px 16px; }
+.summary-header h2 { font-size: 18px; font-weight: 800; color: var(--gold); }
+.summary-refresh {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 10px;
+  display: inline-block;
+}
+.summary-section { margin: 12px; background: white; border-radius: 14px; border: 1px solid var(--border); overflow: hidden; }
+.summary-section-title { background: var(--blue-dark); color: white; padding: 12px 14px; font-weight: 700; }
+.summary-item {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.summary-label { font-weight: 700; color: var(--blue); font-size: 11px; text-transform: uppercase; }
+.summary-value { font-size: 13px; color: var(--text-dark); text-align: right; flex: 1; }
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-content { background: white; border-radius: 20px; max-width: 500px; width: 100%; }
+.modal-header {
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+  color: white;
+  padding: 16px 20px;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+}
+.modal-header button { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+.modal-body { padding: 20px; }
+.modal-footer { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; gap: 12px; }
+.btn-cancel { flex: 1; padding: 12px; background: #f0f2f5; border: 1px solid var(--border); border-radius: 40px; font-weight: 600; cursor: pointer; }
+.btn-confirm { flex: 1; padding: 12px; background: var(--green); color: white; border: none; border-radius: 40px; font-weight: 600; cursor: pointer; }
+.no-data { text-align: center; padding: 40px; color: var(--text-light); }
+</style>
+</head>
+<body>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('entry')">📋 DATA ENTRY</button>
+  <button class="tab-btn" onclick="switchTab('summary')">📊 SUMMARY</button>
+</div>
+
+<div class="tab-page active" id="tab-entry">
+  <div class="page-header">
+    <div class="header-logos"><img src="ICF-SL.jpg" class="header-logo" onerror="this.style.display='none'"><img src="NMCP.png" class="header-logo" onerror="this.style.display='none'"></div>
+    <div class="header-org">National Malaria Control Programme — Ministry of Health, Sierra Leone</div>
+    <div class="header-title">MOCM/OTSS+ Checklist</div>
+    <div class="header-sub">FORM D: Clinical Management of Patients Suspected of Having Malaria</div>
+  </div>
+  <div class="form-title">FORM D: ASSESSING CLINICAL MANAGEMENT OF PATIENTS SUSPECTED OF HAVING MALARIA</div>
+  <div class="progress-container"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div><div class="progress-text" id="progressText">Section 1 of 11</div></div>
+  <div id="sections-container"></div>
+</div>
+
+<div class="tab-page" id="tab-summary">
+  <div class="summary-header"><h2>FORM D — SUBMISSION SUMMARY</h2><p id="sum_date">No submission yet</p><button class="summary-refresh" onclick="renderSummary()">🔄 Refresh Summary</button></div>
+  <div id="summary-content"><div class="no-data">Complete the form and click "Save &amp; View Summary".</div></div>
+</div>
+
+<div id="confirmModal" class="modal"><div class="modal-content"><div class="modal-header"><span>Confirm Submission</span><button onclick="closeModal()">×</button></div><div class="modal-body">Save this form? You can still edit after saving.</div><div class="modal-footer"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-confirm" onclick="doSubmit()">Save &amp; View Summary</button></div></div></div>
+
+<script>
+// ==================== FACILITY LIST ====================
+// MOCM pilot: 10 selected facilities, Bo District.
+const DISTRICT = "Bo";
+
+
+// district | chiefdom | phu | facility_type
+const PILOT_FACILITIES = [
+  { district:"Bo", chiefdom:"Badjia Chiefdom",     phu:"Njagbahun (Badjia) MCHP",   type:"MCHP" },
+  { district:"Bo", chiefdom:"Baoma Chiefdom",      phu:"Faabu CHP",                 type:"CHP"  },
+  { district:"Bo", chiefdom:"Baoma Chiefdom",      phu:"Gerehun CHC",               type:"CHC"  },
+  { district:"Bo", chiefdom:"Baoma Chiefdom",      phu:"Mbundorbu MCHP",            type:"MCHP" },
+  { district:"Bo", chiefdom:"Bongor Chiefdom",     phu:"Mamboma (Bongor) CHP",      type:"CHP"  },
+  { district:"Bo", chiefdom:"Bumpe Ngao Chiefdom", phu:"Bumpe CHC",                 type:"CHC"  },
+  { district:"Bo", chiefdom:"Bumpe Ngao Chiefdom", phu:"Mokoba MCHP",               type:"MCHP" },
+  { district:"Bo", chiefdom:"Bumpe Ngao Chiefdom", phu:"Yengema (Bumpe Ngao) MCHP", type:"MCHP" },
+  { district:"Bo", chiefdom:"Tikonko Chiefdom",    phu:"Gondama (Tikonko) CHC",     type:"CHC"  },
+  { district:"Bo", chiefdom:"Tikonko Chiefdom",    phu:"Griema MCHP",               type:"MCHP" }
+];
+
+
+// only the chiefdoms that hold a pilot facility
+function chiefdomsIn(district){
+  const set = new Set();
+  PILOT_FACILITIES.forEach(f => { if (f.district === district) set.add(f.chiefdom); });
+  return Array.from(set).sort();
+}
+function phusIn(district, chiefdom){
+  return PILOT_FACILITIES
+    .filter(f => f.district === district && f.chiefdom === chiefdom)
+    .sort((a,b) => a.phu.localeCompare(b.phu));
+}
+function typeOf(district, chiefdom, phu){
+  const hit = PILOT_FACILITIES.find(f => f.district === district && f.chiefdom === chiefdom && f.phu === phu);
+  return hit ? hit.type : "";
+}
+function escOpt(s){ return String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+
+// ==================== CASCADE ====================
+function updateChiefdom() {
+  const district = document.getElementById("districtSelect")?.value;
+  const chiefdomSelect = document.getElementById("chiefdomSelect");
+  if(!chiefdomSelect) return;
+  const list = district ? chiefdomsIn(district) : [];
+  if (list.length) {
+    chiefdomSelect.innerHTML = '<option value="">Select Chiefdom...</option>' + list.map(c => `<option>${escOpt(c)}</option>`).join('');
+    chiefdomSelect.disabled = false;
+  } else {
+    chiefdomSelect.innerHTML = '<option value="">No chiefdoms listed for this district</option>';
+    chiefdomSelect.disabled = true;
+  }
+  const phuSelect = document.getElementById("phuSelect");
+  if(phuSelect) { phuSelect.innerHTML = '<option value="">Select Chiefdom first</option>'; phuSelect.disabled = true; }
+  const t = document.getElementById("facilityTypeSelect");
+  if(t) { t.innerHTML = '<option value="">Select PHU first</option>'; t.disabled = true; }
+}
+
+function updatePHU() {
+  const district = document.getElementById("districtSelect")?.value;
+  const chiefdom = document.getElementById("chiefdomSelect")?.value;
+  const phuSelect = document.getElementById("phuSelect");
+  if(!phuSelect) return;
+  const list = (district && chiefdom) ? phusIn(district, chiefdom) : [];
+  if (list.length) {
+    phuSelect.innerHTML = '<option value="">Select PHU...</option>' + list.map(f => `<option>${escOpt(f.phu)}</option>`).join('');
+    phuSelect.disabled = false;
+  } else {
+    phuSelect.innerHTML = '<option value="">No facilities listed for this chiefdom</option>';
+    phuSelect.disabled = true;
+  }
+  const t = document.getElementById("facilityTypeSelect");
+  if(t) { t.innerHTML = '<option value="">Select PHU first</option>'; t.disabled = true; }
+}
+
+function updateFacilityType() {
+  const district = document.getElementById("districtSelect")?.value;
+  const chiefdom = document.getElementById("chiefdomSelect")?.value;
+  const phu = document.getElementById("phuSelect")?.value;
+  const t = document.getElementById("facilityTypeSelect");
+  if(!t) return;
+  if (!phu) { t.innerHTML = '<option value="">Select PHU first</option>'; t.disabled = true; return; }
+  const type = typeOf(district, chiefdom, phu);
+  if (type) { t.innerHTML = `<option>${escOpt(type)}</option>`; t.disabled = false; }
+  else { t.innerHTML = '<option value="">Type not listed for this facility</option>'; t.disabled = true; }
+}
+
+// Data storage
+let ans = {}, submitted = false;
+let observations = [{ cadre: "", gender: "", trained: "", mentored: "", last_mentorship: "" }];
+let currentSection = 0;
+const sections = ["Facility Demographics", "Staff Observation", "Patient Reception", "Clinical History", "Signs of Severe Malaria", "Physical Examination", "Diagnosis & Treatment", "Immediate Corrective Actions", "Staff Reached", "Supervisor Feedback", "Gap Analysis & Action Plan"];
+
+function updateAns(key, val) { ans[key] = val; }
+function updateObservation(idx, field, val) { if (!observations[idx]) observations[idx] = {}; observations[idx][field] = val; }
+function addObservation() { observations.push({ cadre: "", gender: "", trained: "", mentored: "", last_mentorship: "" }); renderObservations(); }
+function removeObservation(i) { observations.splice(i,1); if(observations.length===0) observations=[{ cadre: "", gender: "", trained: "", mentored: "", last_mentorship: "" }]; renderObservations(); }
+function updateRadioVisuals(groupId) { const g = document.getElementById(groupId); if(!g) return; g.querySelectorAll('.radio-option').forEach(r => { const inp = r.querySelector('input'); if(inp && inp.checked) r.classList.add('selected'); else r.classList.remove('selected'); }); }
+function updateCheck(key, val, el) { if(!ans[key]) ans[key]=[]; if(el.checked){ if(!ans[key].includes(val)) ans[key].push(val); el.closest('.check-option').classList.add('selected'); } else{ ans[key]=ans[key].filter(v=>v!==val); el.closest('.check-option').classList.remove('selected'); } }
+
+function renderObservations() {
+  const container = document.getElementById("obs-container");
+  if(!container) return;
+  let html = '';
+  observations.forEach((obs, i) => {
+    html += `<div class="member-card">
+      <div class="member-header"><span>Healthcare Worker #${i+1}</span>${observations.length>1?`<button class="remove-btn" onclick="removeObservation(${i})">✕</button>`:''}</div>
+      <div class="question-row"><div class="question-text">Cadre of staff being observed <span class="required-star">*</span></div><select class="form-select" id="obs_cadre_${i}" onchange="updateObservation(${i},'cadre',this.value)"><option value="">Select...</option><option ${obs.cadre==='Community Health Officer'?'selected':''}>Community Health Officer</option><option ${obs.cadre==='Community Health Assistant'?'selected':''}>Community Health Assistant</option><option ${obs.cadre==='Midwife'?'selected':''}>Midwife</option><option ${obs.cadre==='SECHN'?'selected':''}>SECHN</option><option ${obs.cadre==='MCH Aide'?'selected':''}>MCH Aide</option><option ${obs.cadre==='CHT'?'selected':''}>CHT</option><option ${obs.cadre==='Other'?'selected':''}>Other</option></select><input class="form-input" style="margin-top:8px;" placeholder="If Other, specify" onchange="updateObservation(${i},'cadre_other',this.value)"></div>
+      <div class="question-row"><div class="question-text">Gender of staff being observed <span class="required-star">*</span></div><div class="options-group-vertical" id="obs_gender_${i}"><label class="radio-option"><input type="radio" name="obs_gender_${i}" value="Male" onchange="updateObservation(${i},'gender','Male'); updateRadioVisuals('obs_gender_${i}')"> Male</label><label class="radio-option"><input type="radio" name="obs_gender_${i}" value="Female" onchange="updateObservation(${i},'gender','Female'); updateRadioVisuals('obs_gender_${i}')"> Female</label></div></div>
+      <div class="question-row"><div class="question-text">Has the health worker been formally trained/mentored in malaria case management? <span class="required-star">*</span></div><div class="options-group-vertical" id="obs_trained_${i}"><label class="radio-option"><input type="radio" name="obs_trained_${i}" value="Yes" onchange="updateObservation(${i},'trained','Yes'); updateRadioVisuals('obs_trained_${i}')"> Yes</label><label class="radio-option"><input type="radio" name="obs_trained_${i}" value="No" onchange="updateObservation(${i},'trained','No'); updateRadioVisuals('obs_trained_${i}')"> No</label></div></div>
+      <div class="question-row"><div class="question-text">Has this worker received mentorship and coaching before?</div><div class="options-group-vertical" id="obs_mentored_${i}"><label class="radio-option"><input type="radio" name="obs_mentored_${i}" value="Yes" onchange="updateObservation(${i},'mentored','Yes'); updateRadioVisuals('obs_mentored_${i}')"> Yes</label><label class="radio-option"><input type="radio" name="obs_mentored_${i}" value="No" onchange="updateObservation(${i},'mentored','No'); updateRadioVisuals('obs_mentored_${i}')"> No</label></div></div>
+      <div class="question-row"><div class="question-text">If yes, when was the last time?</div><div class="options-group-vertical" id="obs_last_${i}"><label class="radio-option"><input type="radio" name="obs_last_${i}" value="Past 3 months" onchange="updateObservation(${i},'last_mentorship','Past 3 months'); updateRadioVisuals('obs_last_${i}')"> Past 3 months</label><label class="radio-option"><input type="radio" name="obs_last_${i}" value="Past 6 months" onchange="updateObservation(${i},'last_mentorship','Past 6 months'); updateRadioVisuals('obs_last_${i}')"> Past 6 months</label><label class="radio-option"><input type="radio" name="obs_last_${i}" value="Past year" onchange="updateObservation(${i},'last_mentorship','Past year'); updateRadioVisuals('obs_last_${i}')"> Past year</label></div></div>
+    </div>`;
+  });
+  container.innerHTML = html;
+  observations.forEach((_,i) => { updateRadioVisuals(`obs_gender_${i}`); updateRadioVisuals(`obs_trained_${i}`); updateRadioVisuals(`obs_mentored_${i}`); updateRadioVisuals(`obs_last_${i}`); });
+}
+
+function buildAllSections() {
+  const container = document.getElementById("sections-container");
+  let html = '';
+
+  // SECTION 0: Demographics — District > Chiefdom > PHU > Facility Type
+  html += `<div class="section-page" id="section0"><div class="section-header">1. FACILITY DEMOGRAPHICS</div><div class="section-card">
+    <div class="question-row"><div class="question-text">District <span class="required-star">*</span></div><select class="form-select" id="districtSelect" onchange="updateChiefdom()"><option>${DISTRICT}</option></select></div>
+    <div class="question-row"><div class="question-text">Chiefdom / Zone / City <span class="required-star">*</span></div><select class="form-select" id="chiefdomSelect" onchange="updatePHU()" disabled><option value="">Select District first</option></select></div>
+    <div class="question-row"><div class="question-text">Health Facility (PHU) <span class="required-star">*</span></div><select class="form-select" id="phuSelect" onchange="updateFacilityType()" disabled><option value="">Select Chiefdom first</option></select></div>
+    <div class="question-row"><div class="question-text">Health Facility Type <span class="required-star">*</span></div><select class="form-select" id="facilityTypeSelect" disabled><option value="">Select PHU first</option></select></div>
+    <div class="question-row"><div class="question-text">Supervisor Name <span class="required-star">*</span></div><input class="form-input" id="supervisor" type="text" placeholder="Supervisor name"></div>
+    <div class="question-row"><div class="question-text">Date of Visit <span class="required-star">*</span></div><input class="form-input" id="visitdate" type="date"></div>
+  </div></div>`;
+
+  // SECTION 1: Staff Observation
+  html += `<div class="section-page" id="section1"><div class="section-header">2. STAFF OBSERVATION</div><div class="section-card"><div id="obs-container"></div><button class="add-btn" onclick="addObservation()">+ Add Another Healthcare Worker</button></div></div>`;
+
+  // SECTION 2: Patient Reception
+  html += `<div class="section-page" id="section2"><div class="section-header">3. PATIENT RECEPTION</div><div class="section-card">
+    <div class="question-row"><div class="question-text">Did the provider greet the patient and the family with kindness and respect? <span class="required-star">*</span></div><div class="options-group-vertical" id="greet"><label class="radio-option"><input type="radio" name="greet" value="Yes" onchange="updateAns('greet','Yes'); updateRadioVisuals('greet')"> Yes</label><label class="radio-option"><input type="radio" name="greet" value="No" onchange="updateAns('greet','No'); updateRadioVisuals('greet')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">Did the provider introduce him/herself and invite the patient to sit down? <span class="required-star">*</span></div><div class="options-group-vertical" id="intro"><label class="radio-option"><input type="radio" name="intro" value="Yes" onchange="updateAns('intro','Yes'); updateRadioVisuals('intro')"> Yes</label><label class="radio-option"><input type="radio" name="intro" value="No" onchange="updateAns('intro','No'); updateRadioVisuals('intro')"> No</label></div></div>
+  </div></div>`;
+
+  // SECTION 3: Clinical History
+  html += `<div class="section-page" id="section3"><div class="section-header">4. CLINICAL HISTORY</div><div class="section-card">
+    <div class="question-row"><div class="question-text">Was the patient referred from another HF? <span class="required-star">*</span></div><div class="options-group-vertical" id="referred"><label class="radio-option"><input type="radio" name="referred" value="Yes" onchange="updateAns('referred','Yes'); updateRadioVisuals('referred')"> Yes</label><label class="radio-option"><input type="radio" name="referred" value="No" onchange="updateAns('referred','No'); updateRadioVisuals('referred')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">Is demographic data collected (age, gender, location)? <span class="required-star">*</span></div><div class="options-group-vertical" id="demo"><label class="radio-option"><input type="radio" name="demo" value="Yes" onchange="updateAns('demo','Yes'); updateRadioVisuals('demo')"> Yes</label><label class="radio-option"><input type="radio" name="demo" value="No" onchange="updateAns('demo','No'); updateRadioVisuals('demo')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">Was medical history asked? <span class="required-star">*</span></div><div class="options-group-vertical" id="history"><label class="radio-option"><input type="radio" name="history" value="Yes" onchange="updateAns('history','Yes'); updateRadioVisuals('history')"> Yes</label><label class="radio-option"><input type="radio" name="history" value="No" onchange="updateAns('history','No'); updateRadioVisuals('history')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">Were the weight & height taken? <span class="required-star">*</span></div><div class="options-group-vertical" id="weight"><label class="radio-option"><input type="radio" name="weight" value="Yes" onchange="updateAns('weight','Yes'); updateRadioVisuals('weight')"> Yes</label><label class="radio-option"><input type="radio" name="weight" value="No" onchange="updateAns('weight','No'); updateRadioVisuals('weight')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">Was the temperature taken? <span class="required-star">*</span></div><div class="options-group-vertical" id="temp"><label class="radio-option"><input type="radio" name="temp" value="Yes" onchange="updateAns('temp','Yes'); updateRadioVisuals('temp')"> Yes</label><label class="radio-option"><input type="radio" name="temp" value="No" onchange="updateAns('temp','No'); updateRadioVisuals('temp')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">Was the fever hyper pyretic? (Above 37.5C) <span class="required-star">*</span></div><div class="options-group-vertical" id="hyper"><label class="radio-option"><input type="radio" name="hyper" value="Yes" onchange="updateAns('hyper','Yes'); updateRadioVisuals('hyper')"> Yes</label><label class="radio-option"><input type="radio" name="hyper" value="No" onchange="updateAns('hyper','No'); updateRadioVisuals('hyper')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">Were the pulse, blood pressure, and respiratory rates taken? <span class="required-star">*</span></div><div class="options-group-vertical" id="vitals"><label class="radio-option"><input type="radio" name="vitals" value="Yes" onchange="updateAns('vitals','Yes'); updateRadioVisuals('vitals')"> Yes</label><label class="radio-option"><input type="radio" name="vitals" value="No" onchange="updateAns('vitals','No'); updateRadioVisuals('vitals')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">If the blood pressure, pulse, and respiration were taken, select all that applied:</div><div class="options-group-check" id="vitals_taken"><label class="check-option"><input type="checkbox" value="BP Normal" onchange="updateCheck('vitals_taken',this.value,this)"> BP Normal</label><label class="check-option"><input type="checkbox" value="BP Abnormal" onchange="updateCheck('vitals_taken',this.value,this)"> BP Abnormal</label><label class="check-option"><input type="checkbox" value="Pulse Normal" onchange="updateCheck('vitals_taken',this.value,this)"> Pulse Normal</label><label class="check-option"><input type="checkbox" value="Pulse Abnormal" onchange="updateCheck('vitals_taken',this.value,this)"> Pulse Abnormal</label><label class="check-option"><input type="checkbox" value="Respiratory Normal" onchange="updateCheck('vitals_taken',this.value,this)"> Respiratory Normal</label><label class="check-option"><input type="checkbox" value="Respiratory Abnormal" onchange="updateCheck('vitals_taken',this.value,this)"> Respiratory Abnormal</label></div></div>
+  </div></div>`;
+
+  // SECTION 4: Signs of Severe Malaria
+  html += `<div class="section-page" id="section4"><div class="section-header">5. SIGNS OF SEVERE MALARIA</div><div class="section-card">
+    <div class="question-row"><div class="question-text">Did the clinician check for signs of severe malaria? (Select all that apply)</div><div class="options-group-check" id="severe_signs"><label class="check-option"><input type="checkbox" value="Convulsion" onchange="updateCheck('severe_signs',this.value,this)"> Convulsion</label><label class="check-option"><input type="checkbox" value="Reduced urinary output" onchange="updateCheck('severe_signs',this.value,this)"> Reduced urinary output</label><label class="check-option"><input type="checkbox" value="Spontaneous bleeding" onchange="updateCheck('severe_signs',this.value,this)"> Spontaneous bleeding</label><label class="check-option"><input type="checkbox" value="Prostration" onchange="updateCheck('severe_signs',this.value,this)"> Prostration</label><label class="check-option"><input type="checkbox" value="Inability to drink" onchange="updateCheck('severe_signs',this.value,this)"> Inability to drink</label><label class="check-option"><input type="checkbox" value="Respiratory distress" onchange="updateCheck('severe_signs',this.value,this)"> Respiratory distress</label><label class="check-option"><input type="checkbox" value="Jaundice" onchange="updateCheck('severe_signs',this.value,this)"> Jaundice</label><label class="check-option"><input type="checkbox" value="Altered consciousness" onchange="updateCheck('severe_signs',this.value,this)"> Altered consciousness</label></div><input class="form-input" style="margin-top:8px;" placeholder="Other specify..." oninput="updateAns('severe_other',this.value)"></div>
+  </div></div>`;
+
+  // SECTION 5: Physical Examination
+  html += `<div class="section-page" id="section5"><div class="section-header">6. PHYSICAL EXAMINATION</div><div class="section-card">
+    <div class="question-row"><div class="question-text">Did the clinician check for evidence of anemia (palmar/conjunctival pallor)? <span class="required-star">*</span></div><div class="options-group-vertical" id="anemia"><label class="radio-option"><input type="radio" name="anemia" value="Yes" onchange="updateAns('anemia','Yes'); updateRadioVisuals('anemia')"> Yes</label><label class="radio-option"><input type="radio" name="anemia" value="No" onchange="updateAns('anemia','No'); updateRadioVisuals('anemia')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">Did the clinician examine the chest to check for fast breathing or chest in-drawing? <span class="required-star">*</span></div><div class="options-group-vertical" id="chest"><label class="radio-option"><input type="radio" name="chest" value="Yes" onchange="updateAns('chest','Yes'); updateRadioVisuals('chest')"> Yes</label><label class="radio-option"><input type="radio" name="chest" value="No" onchange="updateAns('chest','No'); updateRadioVisuals('chest')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">Did the clinician complete a full physical examination? <span class="required-star">*</span></div><div class="options-group-vertical" id="full_physical"><label class="radio-option"><input type="radio" name="full_physical" value="Yes" onchange="updateAns('full_physical','Yes'); updateRadioVisuals('full_physical')"> Yes</label><label class="radio-option"><input type="radio" name="full_physical" value="No" onchange="updateAns('full_physical','No'); updateRadioVisuals('full_physical')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">Did the clinician look for signs of serious diseases? (Multiple Choice)</div><div class="options-group-check" id="serious_diseases"><label class="check-option"><input type="checkbox" value="Stiffness of neck" onchange="updateCheck('serious_diseases',this.value,this)"> Stiffness of neck</label><label class="check-option"><input type="checkbox" value="Dehydration" onchange="updateCheck('serious_diseases',this.value,this)"> Dehydration</label><label class="check-option"><input type="checkbox" value="Convulsion" onchange="updateCheck('serious_diseases',this.value,this)"> Convulsion</label><label class="check-option"><input type="checkbox" value="Vomiting everything" onchange="updateCheck('serious_diseases',this.value,this)"> Vomiting everything</label><label class="check-option"><input type="checkbox" value="Not able to drink or breastfeed" onchange="updateCheck('serious_diseases',this.value,this)"> Not able to drink or breastfeed</label></div></div>
+    <div class="question-row"><div class="question-text">Is the appropriate IPC procedure observed? <span class="required-star">*</span></div><div class="options-group-check" id="ipc"><label class="check-option"><input type="checkbox" value="Glove worn" onchange="updateCheck('ipc',this.value,this)"> Glove worn</label><label class="check-option"><input type="checkbox" value="Hand washing/sanitizer" onchange="updateCheck('ipc',this.value,this)"> Hand washing/sanitizer</label><label class="check-option"><input type="checkbox" value="Sitting position" onchange="updateCheck('ipc',this.value,this)"> Sitting position</label></div></div>
+  </div></div>`;
+
+  // SECTION 6: Diagnosis & Treatment
+  html += `<div class="section-page" id="section6"><div class="section-header">7. DIAGNOSIS & TREATMENT</div><div class="section-card">
+    <div class="question-row"><div class="question-text">Are ACTs available today in the health facility? <span class="required-star">*</span></div><div class="options-group-vertical" id="acts"><label class="radio-option"><input type="radio" name="acts" value="Yes" onchange="updateAns('acts','Yes'); updateRadioVisuals('acts')"> Yes</label><label class="radio-option"><input type="radio" name="acts" value="No" onchange="updateAns('acts','No'); updateRadioVisuals('acts')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">Are antipyretics available today in the HF? <span class="required-star">*</span></div><div class="options-group-vertical" id="antipyretics"><label class="radio-option"><input type="radio" name="antipyretics" value="Yes" onchange="updateAns('antipyretics','Yes'); updateRadioVisuals('antipyretics')"> Yes</label><label class="radio-option"><input type="radio" name="antipyretics" value="No" onchange="updateAns('antipyretics','No'); updateRadioVisuals('antipyretics')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">Did the health worker conduct/order a malaria test? <span class="required-star">*</span></div><div class="options-group-vertical" id="test_ordered"><label class="radio-option"><input type="radio" name="test_ordered" value="Yes" onchange="updateAns('test_ordered','Yes'); updateRadioVisuals('test_ordered')"> Yes</label><label class="radio-option"><input type="radio" name="test_ordered" value="No" onchange="updateAns('test_ordered','No'); updateRadioVisuals('test_ordered')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">Was the test order recorded in the register? <span class="required-star">*</span></div><div class="options-group-vertical" id="test_recorded"><label class="radio-option"><input type="radio" name="test_recorded" value="Yes" onchange="updateAns('test_recorded','Yes'); updateRadioVisuals('test_recorded')"> Yes</label><label class="radio-option"><input type="radio" name="test_recorded" value="No" onchange="updateAns('test_recorded','No'); updateRadioVisuals('test_recorded')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">What type of malaria test was done?</div><div class="options-group-vertical" id="test_type"><label class="radio-option"><input type="radio" name="test_type" value="mRDT" onchange="updateAns('test_type','mRDT'); updateRadioVisuals('test_type')"> mRDT</label><label class="radio-option"><input type="radio" name="test_type" value="Microscopy" onchange="updateAns('test_type','Microscopy'); updateRadioVisuals('test_type')"> Microscopy</label></div></div>
+    <div class="question-row"><div class="question-text">What was the Malaria test result? <span class="required-star">*</span></div><div class="options-group-vertical" id="test_result"><label class="radio-option"><input type="radio" name="test_result" value="Positive" onchange="updateAns('test_result','Positive'); updateRadioVisuals('test_result')"> Positive</label><label class="radio-option"><input type="radio" name="test_result" value="Negative" onchange="updateAns('test_result','Negative'); updateRadioVisuals('test_result')"> Negative</label><label class="radio-option"><input type="radio" name="test_result" value="Invalid" onchange="updateAns('test_result','Invalid'); updateRadioVisuals('test_result')"> Invalid</label></div></div>
+    <div class="question-row"><div class="question-text">If negative, did the provider explore for other causes of fever? <span class="required-star">*</span></div><div class="options-group-vertical" id="explore_fever"><label class="radio-option"><input type="radio" name="explore_fever" value="Yes" onchange="updateAns('explore_fever','Yes'); updateRadioVisuals('explore_fever')"> Yes</label><label class="radio-option"><input type="radio" name="explore_fever" value="No" onchange="updateAns('explore_fever','No'); updateRadioVisuals('explore_fever')"> No</label><label class="radio-option"><input type="radio" name="explore_fever" value="N/A" onchange="updateAns('explore_fever','N/A'); updateRadioVisuals('explore_fever')"> N/A</label></div></div>
+    <div class="question-row"><div class="question-text">Was the result of the malaria test recorded in the register? <span class="required-star">*</span></div><div class="options-group-vertical" id="result_recorded"><label class="radio-option"><input type="radio" name="result_recorded" value="Yes" onchange="updateAns('result_recorded','Yes'); updateRadioVisuals('result_recorded')"> Yes</label><label class="radio-option"><input type="radio" name="result_recorded" value="No" onchange="updateAns('result_recorded','No'); updateRadioVisuals('result_recorded')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">Other tests ordered and results - Hb/gm</div><div class="options-group-vertical" id="hb"><label class="radio-option"><input type="radio" name="hb" value="Normal" onchange="updateAns('hb','Normal'); updateRadioVisuals('hb')"> Normal</label><label class="radio-option"><input type="radio" name="hb" value="Not Normal" onchange="updateAns('hb','Not Normal'); updateRadioVisuals('hb')"> Not Normal</label><label class="radio-option"><input type="radio" name="hb" value="Not ordered" onchange="updateAns('hb','Not ordered'); updateRadioVisuals('hb')"> Not ordered</label></div></div>
+    <div class="question-row"><div class="question-text">Other tests ordered and results - Glucose</div><div class="options-group-vertical" id="glucose"><label class="radio-option"><input type="radio" name="glucose" value="Normal" onchange="updateAns('glucose','Normal'); updateRadioVisuals('glucose')"> Normal</label><label class="radio-option"><input type="radio" name="glucose" value="Not Normal" onchange="updateAns('glucose','Not Normal'); updateRadioVisuals('glucose')"> Not Normal</label><label class="radio-option"><input type="radio" name="glucose" value="Not ordered" onchange="updateAns('glucose','Not ordered'); updateRadioVisuals('glucose')"> Not ordered</label></div></div>
+    <div class="question-row"><div class="question-text">Other tests ordered and results - Urinalysis</div><div class="options-group-vertical" id="urinalysis"><label class="radio-option"><input type="radio" name="urinalysis" value="Normal" onchange="updateAns('urinalysis','Normal'); updateRadioVisuals('urinalysis')"> Normal</label><label class="radio-option"><input type="radio" name="urinalysis" value="Not Normal" onchange="updateAns('urinalysis','Not Normal'); updateRadioVisuals('urinalysis')"> Not Normal</label><label class="radio-option"><input type="radio" name="urinalysis" value="Not ordered" onchange="updateAns('urinalysis','Not ordered'); updateRadioVisuals('urinalysis')"> Not ordered</label></div></div>
+    <div class="question-row"><div class="question-text">What is the health worker's final diagnosis?</div><input class="form-input" placeholder="Enter diagnosis" oninput="updateAns('diagnosis',this.value)"></div>
+    <div class="question-row"><div class="question-text">Was the diagnosis recorded in the register? <span class="required-star">*</span></div><div class="options-group-vertical" id="diagnosis_recorded"><label class="radio-option"><input type="radio" name="diagnosis_recorded" value="Yes" onchange="updateAns('diagnosis_recorded','Yes'); updateRadioVisuals('diagnosis_recorded')"> Yes</label><label class="radio-option"><input type="radio" name="diagnosis_recorded" value="No" onchange="updateAns('diagnosis_recorded','No'); updateRadioVisuals('diagnosis_recorded')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">If malaria is diagnosed, classify as:</div><div class="options-group-vertical" id="malaria_class"><label class="radio-option"><input type="radio" name="malaria_class" value="Uncomplicated malaria" onchange="updateAns('malaria_class','Uncomplicated malaria'); updateRadioVisuals('malaria_class')"> Uncomplicated malaria</label><label class="radio-option"><input type="radio" name="malaria_class" value="Severe Malaria" onchange="updateAns('malaria_class','Severe Malaria'); updateRadioVisuals('malaria_class')"> Severe Malaria</label><label class="radio-option"><input type="radio" name="malaria_class" value="Neither" onchange="updateAns('malaria_class','Neither'); updateRadioVisuals('malaria_class')"> Neither</label></div></div>
+    <div class="question-row"><div class="question-text">If uncomplicated, was the patient treated according to national policy? <span class="required-star">*</span></div><div class="options-group-vertical" id="treatment_policy"><label class="radio-option"><input type="radio" name="treatment_policy" value="Yes" onchange="updateAns('treatment_policy','Yes'); updateRadioVisuals('treatment_policy')"> Yes</label><label class="radio-option"><input type="radio" name="treatment_policy" value="No" onchange="updateAns('treatment_policy','No'); updateRadioVisuals('treatment_policy')"> No</label><label class="radio-option"><input type="radio" name="treatment_policy" value="N/A" onchange="updateAns('treatment_policy','N/A'); updateRadioVisuals('treatment_policy')"> N/A</label></div></div>
+    <div class="question-row"><div class="question-text">Was the patient and family provided counseling on doses, danger signs, etc.? <span class="required-star">*</span></div><div class="options-group-vertical" id="counseling"><label class="radio-option"><input type="radio" name="counseling" value="Yes" onchange="updateAns('counseling','Yes'); updateRadioVisuals('counseling')"> Yes</label><label class="radio-option"><input type="radio" name="counseling" value="No" onchange="updateAns('counseling','No'); updateRadioVisuals('counseling')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">Was the patient admitted or referred?</div><div class="options-group-vertical" id="admit_refer"><label class="radio-option"><input type="radio" name="admit_refer" value="Admitted" onchange="updateAns('admit_refer','Admitted'); updateRadioVisuals('admit_refer')"> Admitted</label><label class="radio-option"><input type="radio" name="admit_refer" value="Referred" onchange="updateAns('admit_refer','Referred'); updateRadioVisuals('admit_refer')"> Referred</label><label class="radio-option"><input type="radio" name="admit_refer" value="Neither" onchange="updateAns('admit_refer','Neither'); updateRadioVisuals('admit_refer')"> Neither</label></div></div>
+    <div class="question-row"><div class="question-text">Was pre-referral treatment provided? <span class="required-star">*</span></div><div class="options-group-vertical" id="prereferral_tx"><label class="radio-option"><input type="radio" name="prereferral_tx" value="Yes" onchange="updateAns('prereferral_tx','Yes'); updateRadioVisuals('prereferral_tx')"> Yes</label><label class="radio-option"><input type="radio" name="prereferral_tx" value="No" onchange="updateAns('prereferral_tx','No'); updateRadioVisuals('prereferral_tx')"> No</label><label class="radio-option"><input type="radio" name="prereferral_tx" value="N/A" onchange="updateAns('prereferral_tx','N/A'); updateRadioVisuals('prereferral_tx')"> N/A</label></div></div>
+    <div class="question-row"><div class="question-text">Was a referral note properly provided? <span class="required-star">*</span></div><div class="options-group-vertical" id="referral_note"><label class="radio-option"><input type="radio" name="referral_note" value="Yes" onchange="updateAns('referral_note','Yes'); updateRadioVisuals('referral_note')"> Yes</label><label class="radio-option"><input type="radio" name="referral_note" value="No" onchange="updateAns('referral_note','No'); updateRadioVisuals('referral_note')"> No</label><label class="radio-option"><input type="radio" name="referral_note" value="N/A" onchange="updateAns('referral_note','N/A'); updateRadioVisuals('referral_note')"> N/A</label></div></div>
+  </div></div>`;
+
+  // SECTION 7: Immediate Corrective Actions
+  html += `<div class="section-page" id="section7"><div class="section-header">8. IMMEDIATE CORRECTIVE ACTIONS</div><div class="section-card">
+    <div class="question-row"><div class="question-text">Briefly describe key activities conducted</div><textarea class="form-textarea" rows="3" oninput="updateAns('issues',this.value)"></textarea></div>
+    ${['Training on malaria case management','Patient reception','Clinical history taking','Signs of Severe Malaria','Physical Exam','Diagnose and treatment','Pre-referral treatment','Referral Procedure','Referral Note writing'].map((issue,i)=>`<div class="question-row"><div class="question-text">${issue}</div><div class="options-group-vertical" id="issue${i}"><label class="radio-option"><input type="radio" name="issue${i}" value="Yes" onchange="updateAns(['issue_training','issue_reception','issue_history','issue_severe','issue_physical','issue_diagnosis','issue_prereferral','issue_referral','issue_note'][${i}],'Yes'); updateRadioVisuals('issue${i}')"> Yes (Issue present)</label><label class="radio-option"><input type="radio" name="issue${i}" value="No" onchange="updateAns(['issue_training','issue_reception','issue_history','issue_severe','issue_physical','issue_diagnosis','issue_prereferral','issue_referral','issue_note'][${i}],'No'); updateRadioVisuals('issue${i}')"> No issue</label></div></div>`).join('')}
+    <div class="question-row"><div class="question-text">Intervention types (select all that apply)</div><div class="options-group-check" id="interventions"><label class="check-option"><input type="checkbox" value="Guideline review" onchange="updateCheck('interventions',this.value,this)"> Guideline review</label><label class="check-option"><input type="checkbox" value="SOP review" onchange="updateCheck('interventions',this.value,this)"> SOP review</label><label class="check-option"><input type="checkbox" value="Mentoring/Coaching" onchange="updateCheck('interventions',this.value,this)"> Mentoring/Coaching</label><label class="check-option"><input type="checkbox" value="Document" onchange="updateCheck('interventions',this.value,this)"> Document</label><label class="check-option"><input type="checkbox" value="Demonstration" onchange="updateCheck('interventions',this.value,this)"> Demonstration</label></div></div>
+  </div></div>`;
+
+  // SECTION 8: Staff Reached
+  html += `<div class="section-page" id="section8"><div class="section-header">9. TOTAL NUMBER OF STAFF REACHED</div><div class="section-card">
+    ${['Training on malaria case management','Patient reception','Clinical history taking','Signs of Severe Malaria','Physical Exam','Diagnose and treatment','Pre-referral treatment','Referral Procedure','Referral Note writing'].map((area,i)=>`<div class="question-row"><div class="question-text">${area}</div><input class="form-input" type="number" min="0" placeholder="Number of staff reached" oninput="updateAns(['staff_training','staff_reception','staff_history','staff_severe','staff_physical','staff_diagnosis','staff_prereferral','staff_referral','staff_note'][${i}],this.value)"></div>`).join('')}
+  </div></div>`;
+
+  // SECTION 9: Supervisor Feedback
+  html += `<div class="section-page" id="section9"><div class="section-header">10. SUPERVISOR FEEDBACK</div><div class="section-card">
+    <div class="question-row"><div class="question-text">Did you provide feedback to staff on clinical management? <span class="required-star">*</span></div><div class="options-group-vertical" id="feedback_provided"><label class="radio-option"><input type="radio" name="feedback_provided" value="Yes" onchange="updateAns('feedback_provided','Yes'); updateRadioVisuals('feedback_provided')"> Yes</label><label class="radio-option"><input type="radio" name="feedback_provided" value="No" onchange="updateAns('feedback_provided','No'); updateRadioVisuals('feedback_provided')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">If No, why not?</div><div class="options-group-check" id="fb_reasons"><label class="check-option"><input type="checkbox" value="No febrile patient available" onchange="updateCheck('fb_reasons',this.value,this)"> No febrile patient available</label><label class="check-option"><input type="checkbox" value="RDT/Lab services unavailable" onchange="updateCheck('fb_reasons',this.value,this)"> RDT/Lab services unavailable</label><label class="check-option"><input type="checkbox" value="Patient referred immediately" onchange="updateCheck('fb_reasons',this.value,this)"> Patient referred immediately</label><label class="check-option"><input type="checkbox" value="Consultation stopped" onchange="updateCheck('fb_reasons',this.value,this)"> Consultation stopped</label><label class="check-option"><input type="checkbox" value="Not enough time" onchange="updateCheck('fb_reasons',this.value,this)"> Not enough time</label></div><input class="form-input" style="margin-top:8px;" placeholder="Other explain..." oninput="updateAns('fb_other',this.value)"></div>
+    <div class="question-row"><div class="question-text">Overall rating of this HF on Clinical Management <span class="required-star">*</span></div><div class="options-group-vertical" id="rating"><label class="radio-option"><input type="radio" name="rating" value="Unsatisfactory" onchange="updateAns('rating','Unsatisfactory'); updateRadioVisuals('rating')"> Unsatisfactory</label><label class="radio-option"><input type="radio" name="rating" value="Fair" onchange="updateAns('rating','Fair'); updateRadioVisuals('rating')"> Fair</label><label class="radio-option"><input type="radio" name="rating" value="Satisfactory" onchange="updateAns('rating','Satisfactory'); updateRadioVisuals('rating')"> Satisfactory</label><label class="radio-option"><input type="radio" name="rating" value="Excellent" onchange="updateAns('rating','Excellent'); updateRadioVisuals('rating')"> Excellent</label></div></div>
+    <div class="question-row"><div class="question-text">Additional comments</div><textarea class="form-textarea" rows="2" oninput="updateAns('addComments',this.value)"></textarea></div>
+  </div></div>`;
+
+  // SECTION 10: Gap Analysis
+  html += `<div class="section-page" id="section10"><div class="section-header">11. GAP ANALYSIS & ACTION PLAN</div><div class="section-card">
+    <div class="question-row"><div class="question-text">Biggest gap(s) identified during last HF visit</div><textarea class="form-textarea" id="lastgaps" rows="2" placeholder="1)... 2)... 3)..." oninput="updateAns('lastgaps',this.value)"></textarea></div>
+    <div class="question-row"><div class="question-text">Action plan from previous visit</div><textarea class="form-textarea" id="prevplan" rows="2" placeholder="Describe action plan..." oninput="updateAns('prevplan',this.value)"></textarea></div>
+    <div class="question-row"><div class="question-text">Were these gaps addressed?</div><div class="options-group-vertical" id="gapaddr"><label class="radio-option"><input type="radio" name="gapaddr" value="Not addressed" onchange="updateAns('gapaddr','Not addressed'); updateRadioVisuals('gapaddr')"> Not addressed</label><label class="radio-option"><input type="radio" name="gapaddr" value="Partially addressed" onchange="updateAns('gapaddr','Partially addressed'); updateRadioVisuals('gapaddr')"> Partially addressed</label><label class="radio-option"><input type="radio" name="gapaddr" value="Completely addressed" onchange="updateAns('gapaddr','Completely addressed'); updateRadioVisuals('gapaddr')"> Completely addressed</label><label class="radio-option"><input type="radio" name="gapaddr" value="Initial Visit" onchange="updateAns('gapaddr','Initial Visit'); updateRadioVisuals('gapaddr')"> Initial Visit</label></div></div>
+    <div class="question-row"><div class="question-text">Biggest gap(s) identified today</div><textarea class="form-textarea" id="todaygaps" rows="2" placeholder="1)... 2)..." oninput="updateAns('todaygaps',this.value)"></textarea></div>
+    <div class="question-row"><div class="question-text">Was immediate feedback provided?</div><div class="options-group-vertical" id="immfeedback"><label class="radio-option"><input type="radio" name="immfeedback" value="Yes" onchange="updateAns('immfeedback','Yes'); updateRadioVisuals('immfeedback')"> Yes</label><label class="radio-option"><input type="radio" name="immfeedback" value="No" onchange="updateAns('immfeedback','No'); updateRadioVisuals('immfeedback')"> No</label></div></div>
+    <div class="question-row"><div class="question-text">How was feedback provided?</div><div class="options-group-check" id="feedbackhow"><label class="check-option"><input type="checkbox" value="FMC Engagement" onchange="updateCheck('feedbackHow',this.value,this)"> FMC Engagement</label><label class="check-option"><input type="checkbox" value="Escalate to DHMT" onchange="updateCheck('feedbackHow',this.value,this)"> Escalate to DHMT</label><label class="check-option"><input type="checkbox" value="Mentoring/Coaching" onchange="updateCheck('feedbackHow',this.value,this)"> Mentoring/Coaching</label><label class="check-option"><input type="checkbox" value="Document" onchange="updateCheck('feedbackHow',this.value,this)"> Document</label><label class="check-option"><input type="checkbox" value="Demonstration" onchange="updateCheck('feedbackHow',this.value,this)"> Demonstration</label></div></div>
+    <div class="question-row"><div class="question-text">Action Plan</div><div class="options-group-check" id="action_plan"><label class="check-option"><input type="checkbox" value="Identified gap will be addressed" onchange="updateCheck('action_plan',this.value,this)"> Identified gap will be addressed</label></div></div>
+    <div class="question-row"><div class="question-text">Supervisor Comments</div><textarea class="form-textarea" id="supcomments" rows="3" placeholder="Supervisor comments..." oninput="updateAns('supcomments',this.value)"></textarea></div>
+  </div></div>`;
+
+  container.innerHTML = html;
+
+  // Add navigation buttons
+  for(let i = 0; i <= 10; i++) {
+    const page = document.getElementById(`section${i}`);
+    if(page) {
+      const navDiv = document.createElement('div');
+      navDiv.className = 'nav-buttons';
+      if(i === 0) navDiv.innerHTML = `<button class="btn-next" onclick="nextSection()">Next →</button>`;
+      else if(i === 10) navDiv.innerHTML = `<button class="btn-prev" onclick="prevSection()">← Back</button><button class="btn-submit-final" onclick="submitForm()">✓ SUBMIT FORM</button>`;
+      else navDiv.innerHTML = `<button class="btn-prev" onclick="prevSection()">← Back</button><button class="btn-next" onclick="nextSection()">Next →</button>`;
+      page.appendChild(navDiv);
+    }
+  }
+}
+
+function showSection(index) {
+  for(let i = 0; i <= 10; i++) {
+    const page = document.getElementById(`section${i}`);
+    if(page) page.classList.toggle('active', i === index);
+  }
+  currentSection = index;
+  document.getElementById('progressFill').style.width = ((index + 1) / 11 * 100) + '%';
+  document.getElementById('progressText').innerText = `Section ${index + 1} of 11: ${sections[index]}`;
+  window.scrollTo(0, 0);
+}
+function nextSection() { if (currentSection < 10) showSection(currentSection + 1); }
+function prevSection() { if (currentSection > 0) showSection(currentSection - 1); }
+function switchTab(tab) {
+  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  if(tab === 'entry') document.querySelector('.tab-btn:first-child').classList.add('active');
+  else document.querySelector('.tab-btn:last-child').classList.add('active');
+  if(tab === 'summary') renderSummary();
+  window.scrollTo(0, 0);
+}
+function getDemographics() {
+  return {
+    district: document.getElementById("districtSelect")?.value || "",
+    chiefdom: document.getElementById("chiefdomSelect")?.value || "",
+    phu: document.getElementById("phuSelect")?.value || "",
+    facility_type: document.getElementById("facilityTypeSelect")?.value || "",
+    supervisor: document.getElementById("supervisor")?.value || "",
+    visitdate: document.getElementById("visitdate")?.value || ""
+  };
+}
+function validateForm() {
+  const d = getDemographics();
+  if(!d.district){ alert("Select District"); return false; }
+  if(!d.chiefdom){ alert("Select Chiefdom"); return false; }
+  if(!d.phu){ alert("Select Health Facility"); return false; }
+  if(!d.facility_type){ alert("Select Health Facility Type"); return false; }
+  if(!d.supervisor){ alert("Enter Supervisor Name"); return false; }
+  if(!d.visitdate){ alert("Select Date of Visit"); return false; }
+  return true;
+}
+function submitForm(){ if(validateForm()) document.getElementById('confirmModal').style.display='flex'; }
+function closeModal(){ document.getElementById('confirmModal').style.display='none'; }
+function doSubmit(){
+  closeModal();
+  ans._submitted = new Date().toLocaleString();
+  ans._demographics = getDemographics();
+  ans._observations = observations;
+  submitted = true;
+  renderSummary();
+  switchTab('summary');
+}
+function renderSummary(){
+  if(!submitted && !ans._submitted) return;
+  const demo = ans._demographics || getDemographics();
+  document.getElementById('sum_date').textContent = 'Saved: ' + (ans._submitted || new Date().toLocaleString());
+  let html = `<div class="summary-section"><div class="summary-section-title">Facility Information</div>
+    <div class="summary-item"><span class="summary-label">District</span><span class="summary-value">${demo.district||'—'}</span></div>
+    <div class="summary-item"><span class="summary-label">Chiefdom</span><span class="summary-value">${demo.chiefdom||'—'}</span></div>
+    <div class="summary-item"><span class="summary-label">Health Facility</span><span class="summary-value">${demo.phu||'—'}</span></div>
+    <div class="summary-item"><span class="summary-label">Facility Type</span><span class="summary-value">${demo.facility_type||'—'}</span></div>
+    <div class="summary-item"><span class="summary-label">Supervisor</span><span class="summary-value">${demo.supervisor||'—'}</span></div>
+    <div class="summary-item"><span class="summary-label">Visit Date</span><span class="summary-value">${demo.visitdate||'—'}</span></div>
+    <div class="summary-item"><span class="summary-label">Overall Rating</span><span class="summary-value">${ans.rating||'—'}</span></div>
+  </div>
+  <div class="summary-section"><div class="summary-section-title">Healthcare Workers Observed (${(ans._observations||[]).length})</div>${(ans._observations||[]).map((o,i)=>`<div class="summary-item"><span class="summary-label">Worker #${i+1}</span><span class="summary-value">${o.cadre||'-'} | ${o.gender||'-'} | Trained: ${o.trained||'-'}</span></div>`).join('')}</div>`;
+  document.getElementById('summary-content').innerHTML = html;
+}
+
+buildAllSections();
+renderObservations();
+document.getElementById("districtSelect").value = DISTRICT;
+updateChiefdom();
+const _vd = document.getElementById("visitdate");
+if (_vd) _vd.value = new Date().toISOString().split('T')[0];
+showSection(0);
+setTimeout(() => {
+  const radioGroups = ['greet','intro','referred','demo','history','weight','temp','hyper','vitals','anemia','chest','full_physical','acts','antipyretics','test_ordered','test_recorded','test_result','explore_fever','result_recorded','diagnosis_recorded','treatment_policy','counseling','prereferral_tx','referral_note','feedback_provided','rating','gapaddr','immfeedback','test_type','malaria_class','admit_refer','hb','glucose','urinalysis'];
+  radioGroups.forEach(g => updateRadioVisuals(g));
+  for(let i=0;i<=8;i++) updateRadioVisuals(`issue${i}`);
+}, 200);
+
+/* ==================== REQUIRE EVERY QUESTION ====================
+   Set REQUIRE_ALL to false to go back to checking only the key fields. */
+var REQUIRE_ALL = true;
+
+var _RA_STYLE = document.createElement('style');
+_RA_STYLE.textContent =
+  '.ra-missing input,.ra-missing select,.ra-missing textarea{border-color:#dc3545 !important;box-shadow:0 0 0 3px rgba(220,53,69,.15) !important;}' +
+  '.ra-missing .options-group-vertical,.ra-missing .options-group-check,.ra-missing .options-group-h{outline:2px solid #dc3545;outline-offset:4px;border-radius:12px;}' +
+  '.ra-flag{color:#dc3545;font-weight:700;font-size:12px;margin-top:6px;}';
+document.head.appendChild(_RA_STYLE);
+
+function _raVisible(el){
+  // a row is skipped only when it (or a wrapper inside its section) is hidden,
+  // never because its wizard section is the inactive one
+  var n = el;
+  while (n && n !== document.body) {
+    if (n.classList && (n.classList.contains('section-page') || n.classList.contains('tab-page'))) return true;
+    if (n.style && n.style.display === 'none') return false;
+    n = n.parentElement;
+  }
+  return true;
+}
+
+function _raLabel(row){
+  var t = row.querySelector('.question-text');
+  var s = t ? t.textContent.replace(/\s+/g,' ').replace(/\*$/,'').trim() : 'this question';
+  return s.length > 90 ? s.slice(0,90) + '…' : s;
+}
+
+/* an "Other, specify" box only counts when an Other option is ticked */
+function _raOtherRequired(row){
+  var ticked = row.querySelectorAll('input[type=radio]:checked, input[type=checkbox]:checked');
+  for (var i = 0; i < ticked.length; i++) {
+    if (/other/i.test(ticked[i].value || '')) return true;
+  }
+  var sels = row.querySelectorAll('select');
+  for (var j = 0; j < sels.length; j++) {
+    if (/other/i.test(sels[j].value || '')) return true;
+  }
+  return false;
+}
+
+function _raRowAnswered(row){
+  var radios = row.querySelectorAll('input[type=radio]');
+  if (radios.length) {
+    var names = {};
+    for (var i = 0; i < radios.length; i++) names[radios[i].name] = true;
+    for (var nm in names) {
+      if (!row.querySelector('input[type=radio][name="' + nm + '"]:checked')) return false;
+    }
+  }
+  var boxes = row.querySelectorAll('input[type=checkbox]');
+  if (boxes.length && !row.querySelector('input[type=checkbox]:checked')) return false;
+
+  var fields = row.querySelectorAll('select, textarea, input[type=text], input[type=number], input[type=date], input[type=month], input[type=tel], input[type=email]');
+  for (var j = 0; j < fields.length; j++) {
+    var f = fields[j];
+    if (f.disabled) continue;
+    if (/other/i.test(f.placeholder || '') && !_raOtherRequired(row)) continue;
+    if (String(f.value).trim() === '') return false;
+  }
+  return true;
+}
+
+function validateAllQuestions(){
+  document.querySelectorAll('.ra-missing').forEach(function(e){ e.classList.remove('ra-missing'); });
+  document.querySelectorAll('.ra-flag').forEach(function(e){ e.remove(); });
+
+  var rows = document.querySelectorAll('.question-row');
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    if (!_raVisible(row)) continue;
+    if (!row.querySelector('input, select, textarea')) continue;   // heading-only rows
+    if (_raRowAnswered(row)) continue;
+
+    // bring it on screen: right tab, right wizard section
+    if (typeof switchTab === 'function') {
+      var tab = row.closest('.tab-page');
+      if (tab && !tab.classList.contains('active')) switchTab('entry');
+    }
+    var page = row.closest('.section-page');
+    if (page && typeof showSection === 'function') {
+      var all = Array.prototype.slice.call(document.querySelectorAll('.section-page'));
+      var idx = all.indexOf(page);
+      if (idx > -1) showSection(idx);
+    }
+    row.classList.add('ra-missing');
+    var flag = document.createElement('div');
+    flag.className = 'ra-flag';
+    flag.textContent = 'This question is required.';
+    row.appendChild(flag);
+    row.scrollIntoView({ behavior:'smooth', block:'center' });
+    alert('Please answer: ' + _raLabel(row));
+    return false;
+  }
+  return true;
+}
+
+/* run the full check before whatever the form already did */
+(function(){
+  var _origSubmit = window.submitForm;
+  window.submitForm = function(){
+    if (REQUIRE_ALL && !validateAllQuestions()) return;
+    return _origSubmit.apply(this, arguments);
+  };
+})();
+
+
+/* ==================== SIGN IN ====================
+   Add or change users here. Three slots; fill the empty two when ready. */
+var USERS = [
+  { username: "msk", password: "1234", name: "Mohamed Sillah Kanu" },
+  { username: "",    password: "",     name: "" },   // second user — fill in
+  { username: "",    password: "",     name: "" }    // third user — fill in
+];
+
+(function(){
+  var KEY = "mocm_user";
+
+  function currentUser(){
+    try { return JSON.parse(sessionStorage.getItem(KEY)); } catch(e){ return null; }
+  }
+
+  var css = document.createElement('style');
+  css.textContent =
+    '#lgOverlay{position:fixed;inset:0;z-index:3000;background:linear-gradient(160deg,#2b5f8a,#1e4a6d);' +
+    'display:flex;align-items:center;justify-content:center;padding:20px;font-family:inherit;}' +
+    '#lgCard{background:#fff;border-radius:20px;width:100%;max-width:330px;padding:26px 22px 24px;text-align:center;' +
+    'box-shadow:0 24px 48px rgba(0,0,0,.3);}' +
+    '#lgCard .lgIcon{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#2b5f8a,#3b78a8);' +
+    'margin:0 auto 14px;display:flex;align-items:center;justify-content:center;}' +
+    '#lgCard .lgIcon svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;}' +
+    '#lgCard h3{font-size:17px;font-weight:800;color:#2b5f8a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}' +
+    '#lgCard p{font-size:12px;color:#6c7a8a;margin-bottom:18px;}' +
+    '#lgCard input{width:100%;padding:13px 14px;border:1.5px solid #e0e6ed;border-radius:12px;font-size:15px;' +
+    'font-family:inherit;margin-bottom:10px;}' +
+    '#lgCard input:focus{border-color:#3b78a8;outline:2px solid rgba(59,120,168,.2);}' +
+    '#lgErr{color:#dc3545;font-size:12px;font-weight:600;min-height:16px;margin-bottom:8px;display:none;}' +
+    '#lgBtn{width:100%;padding:14px;background:#2b5f8a;color:#fff;border:none;border-radius:12px;' +
+    'font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;}' +
+    '.lgWho{font-size:10.5px;font-weight:600;letter-spacing:.4px;opacity:.9;margin-top:8px;}' +
+    '.lgWho a{color:#ffc107;text-decoration:underline;cursor:pointer;margin-left:8px;}' +
+    '.lgStamp{background:#e7f3ff;border:1px solid #c9dff2;border-radius:12px;padding:11px 14px;margin:0 0 12px;}' +
+    '.lgStamp b{color:#2b5f8a;}' +
+    '@keyframes lgShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}';
+  document.head.appendChild(css);
+
+  function showWho(){
+    var u = currentUser(); if(!u) return;
+    document.querySelectorAll('.page-header, .header-sub').length;
+    var host = document.querySelector('.page-header');
+    if(!host || host.querySelector('.lgWho')) return;
+    var d = document.createElement('div');
+    d.className = 'lgWho';
+    d.innerHTML = 'Signed in: ' + u.name + ' (' + u.username + ')<a id="lgOut">Sign out</a>';
+    host.appendChild(d);
+    d.querySelector('#lgOut').onclick = function(){
+      sessionStorage.removeItem(KEY);
+      location.reload();
+    };
+  }
+
+  function gate(){
+    if (currentUser()) { showWho(); return; }
+    var o = document.createElement('div');
+    o.id = 'lgOverlay';
+    o.innerHTML =
+      '<div id="lgCard">' +
+      '<div class="lgIcon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/>' +
+      '<path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>' +
+      '<h3>Sign in</h3><p>MOCM / OTSS+ supervision · NMCP Sierra Leone</p>' +
+      '<input id="lgUser" type="text" placeholder="Username" autocomplete="off" autocapitalize="none">' +
+      '<input id="lgPass" type="password" placeholder="Password">' +
+      '<div id="lgErr">Wrong username or password.</div>' +
+      '<button id="lgBtn">Sign in</button></div>';
+    document.body.appendChild(o);
+
+    var uEl = o.querySelector('#lgUser'), pEl = o.querySelector('#lgPass'), err = o.querySelector('#lgErr');
+    function attempt(){
+      var u = uEl.value.trim().toLowerCase(), p = pEl.value;
+      for (var i = 0; i < USERS.length; i++) {
+        var acc = USERS[i];
+        if (acc.username && acc.username.toLowerCase() === u && acc.password === p) {
+          sessionStorage.setItem(KEY, JSON.stringify({ username: acc.username, name: acc.name, at: new Date().toLocaleString() }));
+          o.remove();
+          showWho();
+          return;
+        }
+      }
+      err.style.display = 'block';
+      var card = o.querySelector('#lgCard');
+      card.style.animation = 'lgShake .3s';
+      setTimeout(function(){ card.style.animation = ''; }, 320);
+      pEl.value = ''; uEl.focus();
+    }
+    o.querySelector('#lgBtn').onclick = attempt;
+    pEl.onkeydown = function(e){ if (e.key === 'Enter') attempt(); };
+    uEl.onkeydown = function(e){ if (e.key === 'Enter') pEl.focus(); };
+    setTimeout(function(){ uEl.focus(); }, 60);
+  }
+
+  /* the summary carries who submitted it */
+  function stamp(){
+    var u = currentUser(); if(!u) return;
+    var host = document.getElementById('summary-content') || document.getElementById('summaryBody');
+    if(!host || host.querySelector('.lgStamp')) return;
+    var d = document.createElement('div');
+    d.className = 'lgStamp';
+    d.innerHTML = 'Submitted by <b>' + u.name + '</b> (' + u.username + ')';
+    host.insertBefore(d, host.firstChild);
+  }
+  ['renderSummary','showSummary'].forEach(function(fnName){
+    if (typeof window[fnName] === 'function') {
+      var orig = window[fnName];
+      window[fnName] = function(){ var r = orig.apply(this, arguments); stamp(); return r; };
+    }
+  });
+  if (typeof window.doSubmit === 'function') {
+    var _ds = window.doSubmit;
+    window.doSubmit = function(){ var r = _ds.apply(this, arguments); stamp(); return r; };
+  }
+  if (typeof window.confirmSubmit === 'function') {
+    var _cs = window.confirmSubmit;
+    window.confirmSubmit = function(){ stamp(); return _cs.apply(this, arguments); };
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gate);
+  else gate();
+})();
+
+
+/* ---------- show the star on every question the form enforces ---------- */
+(function(){
+  function isOtherBox(f){ return /other/i.test(f.placeholder || ''); }
+
+  function markRequired(){
+    var rows = document.querySelectorAll('.question-row');
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var fields = row.querySelectorAll('input, select, textarea');
+      if (!fields.length) continue;                     // heading-only row
+
+      // a row holding nothing but an "If Other, specify" box stays unstarred
+      var onlyOther = true;
+      for (var j = 0; j < fields.length; j++) {
+        if (!isOtherBox(fields[j])) { onlyOther = false; break; }
+      }
+      if (onlyOther) continue;
+
+      var label = row.querySelector('.question-text');
+      if (!label || label.querySelector('.required-star')) continue;
+      var star = document.createElement('span');
+      star.className = 'required-star';
+      star.textContent = '*';
+      label.appendChild(star);
+    }
+  }
+
+  var pending = null;
+  function schedule(){
+    clearTimeout(pending);
+    pending = setTimeout(markRequired, 120);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', schedule);
+  else schedule();
+  new MutationObserver(schedule).observe(document.body, { childList:true, subtree:true });
+})();
+
+</script>
+</body>
+</html>
