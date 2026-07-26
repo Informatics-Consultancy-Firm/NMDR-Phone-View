@@ -115,6 +115,20 @@ body {
 .question-text { font-weight: 600; font-size: 14px; margin-bottom: 12px; color: var(--text-dark); }
 .required-star { color: var(--red); margin-left: 4px; font-size: 12px; }
 
+.count-hint { font-size: 12px; color: var(--text-light); margin-top: 8px; font-weight: 500; }
+.count-note {
+  display: none;
+  margin-top: 8px;
+  background: #fdecea;
+  border: 1px solid #f5c2bd;
+  border-radius: 10px;
+  padding: 9px 12px;
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 600;
+}
+.form-input.bad-entry { border-color: var(--red); box-shadow: 0 0 0 3px rgba(220,53,69,.12); }
+
 .options-group-vertical { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
 .radio-option-vertical {
   display: flex;
@@ -151,20 +165,7 @@ body {
   color: var(--blue-dark);
   font-size: 13px;
 }
-.remove-btn { color: var(--red); cursor: pointer; background: none; border: none; font-size: 18px; font-weight: 700; padding: 0 8px; }
-.add-btn {
-  background: var(--blue);
-  color: white;
-  border: none;
-  border-radius: 40px;
-  padding: 12px 20px;
-  font-weight: 600;
-  font-size: 13px;
-  cursor: pointer;
-  width: 100%;
-  margin-top: 8px;
-}
-.add-btn:hover { background: var(--blue-dark); }
+.member-tag { color: var(--text-light); font-size: 11px; font-weight: 600; }
 
 .signature-container {
   border: 1.5px solid var(--border);
@@ -241,7 +242,7 @@ body {
     <img src="ICF-SL.jpg" class="header-logo" alt="ICF-SL" onerror="this.style.display='none'">
     <img src="NMCP.png" class="header-logo" alt="NMCP" onerror="this.style.display='none'">
   </div>
-  <div class="header-org">National Malaria Control Programme — Ministry of Health, Sierra Leone</div>
+  <div class="header-org">National Malaria Control Programme, Ministry of Health, Sierra Leone</div>
   <div class="header-title">MOCM/OTSS+ Checklist</div>
   <div class="header-sub">FORM A: General Health Facility Information</div>
 </div>
@@ -296,26 +297,6 @@ body {
     <div class="question-row"><div class="question-text">8. Cadre of In-Charge <span class="required-star">*</span></div>
       <select class="form-select" id="cadre" onchange="toggleCadreOther()">
         <option value="">Select cadre...</option>
-        <option>Medical Officer / Doctor</option>
-        <option>Community Health Officer (CHO)</option>
-        <option>Community Health Technician (CHT)</option>
-        <option>Community Health Assistant (CHA)</option>
-        <option>State Registered Nurse (SRN)</option>
-        <option>State Enrolled Community Health Nurse (SECHN)</option>
-        <option>Registered Midwife</option>
-        <option>MCH Aide (MCHA)</option>
-        <option>Public Health Nurse (PHN)</option>
-        <option>Nurse Anaesthetist</option>
-        <option>Laboratory Technician</option>
-        <option>Laboratory Assistant</option>
-        <option>Pharmacy Technician / Dispenser</option>
-        <option>Environmental Health Officer / Assistant</option>
-        <option>Nutritionist</option>
-        <option>Data Clerk / M&amp;E Officer</option>
-        <option>Vaccinator / EPI Officer</option>
-        <option>Community Health Worker (CHW)</option>
-        <option>Nurse Aide / Ward Attendant</option>
-        <option>Other</option>
       </select>
       <input class="form-input" id="cadre_other" type="text" placeholder="If Other, specify" style="display:none;margin-top:8px;">
     </div>
@@ -325,27 +306,36 @@ body {
   </div>
 </div>
 
-<!-- Supervisors -->
+<!-- Supervisors: the count opens the cards -->
 <div class="section-card">
   <div class="card-header">SUPERVISORS INFORMATION</div>
   <div class="card-body">
-    <div class="question-text" style="margin-bottom: 12px;">At least one supervisor is required <span class="required-star">*</span></div>
+    <div class="question-row">
+      <div class="question-text">10. Number of supervisors on this visit <span class="required-star">*</span></div>
+      <input class="form-input" id="supervisor_count" type="number" min="1" max="10" step="1" value="1" oninput="onSupervisorCountInput()">
+      <div class="count-note" id="supervisor_count_note"></div>
+      <div class="count-hint">One card opens for each supervisor. Cards open now: <span id="supervisor_count_echo">1</span>. Every card must be completed.</div>
+    </div>
     <div id="supervisors-container"></div>
-    <button class="add-btn" onclick="addSupervisor()">+ Add Supervisor</button>
   </div>
 </div>
 
-<!-- Staff -->
+<!-- Staff: the count opens the cards -->
 <div class="section-card">
   <div class="card-header">HEALTH FACILITY STAFF DESCRIPTION</div>
   <div class="card-body">
+    <div class="question-row">
+      <div class="question-text">11. Number of staff members you met <span class="required-star">*</span></div>
+      <input class="form-input" id="staff_count" type="number" min="1" max="30" step="1" value="1" oninput="onStaffCountInput()">
+      <div class="count-note" id="staff_count_note"></div>
+      <div class="count-hint">One card opens for each staff member. Cards open now: <span id="staff_count_echo">1</span>. Every card must be completed.</div>
+    </div>
     <div id="staff-container"></div>
-    <button class="add-btn" onclick="addStaffMember()">+ Add Staff Member</button>
   </div>
 </div>
 
 <div class="submit-container">
-  <button class="btn-submit" onclick="validateAndSubmit()">REVIEW & SUBMIT FORM A</button>
+  <button class="btn-submit" onclick="validateAndSubmit()">REVIEW &amp; SUBMIT FORM A</button>
 </div>
 
 <div id="summaryModal" class="modal">
@@ -373,7 +363,39 @@ const PILOT_FACILITIES = [
   { district: "Bo", chiefdom: "Tikonko Chiefdom",    phu: "Griema MCHP",               facilityType: "MCHP" }
 ];
 
+// ==================== CADRE LIST ====================
+// One list, used by question 8 (In-Charge) and by every staff card.
+// Add a cadre here and it appears in both dropdowns. Keep "Other" last.
+const CADRES = [
+  "Community Health Officer (CHO)",
+  "Community Health Technician (CHT)",
+  "Community Health Assistant (CHA)",
+  "State Registered Nurse (SRN)",
+  "State Enrolled Community Health Nurse (SECHN)",
+  "Registered Midwife",
+  "MCH Aide (MCHA)",
+  "Laboratory Technician",
+  "Other"
+];
 
+function cadreOptions(selected) {
+  var html = '<option value="">Select cadre...</option>';
+  CADRES.forEach(function(cadre) {
+    var on = (cadre === selected) ? ' selected' : '';
+    html += '<option value="' + escapeHtml(cadre) + '"' + on + '>' + escapeHtml(cadre) + '</option>';
+  });
+  return html;
+}
+
+function fillInChargeCadre() {
+  var sel = document.getElementById("cadre");
+  var keep = sel.value;
+  sel.innerHTML = cadreOptions(keep);
+}
+
+// ==================== HOW MANY CARDS ====================
+const MAX_SUPERVISORS = 10;
+const MAX_STAFF = 30;
 
 // ==================== CASCADE DATA STRUCTURE ====================
 let csvData = [];
@@ -566,9 +588,77 @@ function updateFacilityType() {
   }
 }
 
-// ==================== SUPERVISORS WITH SIGNATURE PADS ====================
+// ==================== SUPERVISORS AND STAFF ====================
 let supervisors = [];
 let staffMembers = [];
+
+function blankSupervisor() { return { name: "", sex: "", designation: "", organization: "", phone: "" }; }
+function blankStaff() { return { name: "", sex: "", cadre: "", cadreOther: "", unit: "", phone: "" }; }
+
+/* the number typed in question 10 decides how many supervisor cards exist */
+function setSupervisorCount(n) {
+  n = Math.max(1, Math.min(MAX_SUPERVISORS, n));
+  while (supervisors.length < n) supervisors.push(blankSupervisor());
+  while (supervisors.length > n) {
+    sessionStorage.removeItem('sup_sig_' + (supervisors.length - 1));
+    supervisors.pop();
+  }
+  document.getElementById("supervisor_count").value = supervisors.length;
+  document.getElementById("supervisor_count_echo").textContent = supervisors.length;
+  renderSupervisors();
+}
+
+/* the number typed in question 11 decides how many staff cards exist */
+function setStaffCount(n) {
+  n = Math.max(1, Math.min(MAX_STAFF, n));
+  while (staffMembers.length < n) staffMembers.push(blankStaff());
+  while (staffMembers.length > n) staffMembers.pop();
+  document.getElementById("staff_count").value = staffMembers.length;
+  document.getElementById("staff_count_echo").textContent = staffMembers.length;
+  renderStaff();
+}
+
+function countNotice(inputId, noteId, message) {
+  var input = document.getElementById(inputId);
+  var note = document.getElementById(noteId);
+  if (message) {
+    note.textContent = message;
+    note.style.display = "block";
+    input.classList.add("bad-entry");
+  } else {
+    note.textContent = "";
+    note.style.display = "none";
+    input.classList.remove("bad-entry");
+  }
+}
+
+function onSupervisorCountInput() {
+  var raw = document.getElementById("supervisor_count").value.trim();
+  if (raw === "") { countNotice("supervisor_count", "supervisor_count_note", ""); return; }
+  var n = Number(raw);
+  if (!Number.isInteger(n) || n < 1 || n > MAX_SUPERVISORS) {
+    countNotice("supervisor_count", "supervisor_count_note",
+      "Wrong entry. Type a whole number between 1 and " + MAX_SUPERVISORS + ".");
+    document.getElementById("supervisor_count").value = supervisors.length;
+    return;
+  }
+  countNotice("supervisor_count", "supervisor_count_note", "");
+  setSupervisorCount(n);
+}
+
+function onStaffCountInput() {
+  var raw = document.getElementById("staff_count").value.trim();
+  if (raw === "") { countNotice("staff_count", "staff_count_note", ""); return; }
+  var n = Number(raw);
+  if (!Number.isInteger(n) || n < 1 || n > MAX_STAFF) {
+    countNotice("staff_count", "staff_count_note",
+      "Wrong entry. Type a whole number between 1 and " + MAX_STAFF + ".");
+    document.getElementById("staff_count").value = staffMembers.length;
+    return;
+  }
+  countNotice("staff_count", "staff_count_note", "");
+  setStaffCount(n);
+}
 
 function createSignaturePad(canvasId, clearBtnId, storageKey) {
   let drawing = false;
@@ -648,11 +738,11 @@ function renderSupervisors() {
   let html = '';
   supervisors.forEach((s, i) => {
     html += `<div class="member-card">
-      <div class="member-header"><span>Supervisor #${i + 1}</span><button class="remove-btn" onclick="removeSupervisor(${i})">✕</button></div>
+      <div class="member-header"><span>Supervisor #${i + 1}</span><span class="member-tag">of ${supervisors.length}</span></div>
       <div class="question-row"><div class="question-text">Full Name <span class="required-star">*</span></div><input class="form-input" type="text" id="sup_name_${i}" value="${escapeHtml(s.name || '')}" placeholder="Full name"></div>
       <div class="question-row"><div class="question-text">Sex <span class="required-star">*</span></div><div class="options-group-vertical" id="sup_sex_group_${i}"><label class="radio-option-vertical"><input type="radio" name="sup_sex_${i}" value="Male" ${s.sex === 'Male' ? 'checked' : ''}> Male</label><label class="radio-option-vertical"><input type="radio" name="sup_sex_${i}" value="Female" ${s.sex === 'Female' ? 'checked' : ''}> Female</label></div></div>
       <div class="question-row"><div class="question-text">Designation <span class="required-star">*</span></div><input class="form-input" type="text" id="sup_designation_${i}" value="${escapeHtml(s.designation || '')}" placeholder="Designation"></div>
-      <div class="question-row"><div class="question-text">Organization</div><input class="form-input" type="text" id="sup_org_${i}" value="${escapeHtml(s.organization || '')}" placeholder="Organization"></div>
+      <div class="question-row"><div class="question-text">Organization <span class="required-star">*</span></div><input class="form-input" type="text" id="sup_org_${i}" value="${escapeHtml(s.organization || '')}" placeholder="Organization"></div>
       <div class="question-row"><div class="question-text">Phone Number (9 digits) <span class="required-star">*</span></div><input class="form-input" type="tel" id="sup_phone_${i}" value="${escapeHtml(s.phone || '')}" placeholder="099177283" maxlength="9" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,9)"></div>
       <div class="question-row"><div class="question-text">Signature <span class="required-star">*</span></div><div class="signature-container"><canvas id="sup_sig_canvas_${i}" class="signature-canvas"></canvas><div class="signature-buttons"><button type="button" class="signature-btn clear" id="sup_sig_clear_${i}">Clear Signature</button></div></div></div>
     </div>`;
@@ -666,11 +756,9 @@ function renderSupervisors() {
     document.getElementById(`sup_designation_${i}`).addEventListener('input', (e) => { supervisors[i].designation = e.target.value; });
     document.getElementById(`sup_org_${i}`).addEventListener('input', (e) => { supervisors[i].organization = e.target.value; });
     document.getElementById(`sup_phone_${i}`).addEventListener('input', (e) => { supervisors[i].phone = e.target.value; });
+    updateRadioVisuals(document.getElementById(`sup_sex_group_${i}`));
   });
 }
-
-function addSupervisor() { supervisors.push({ name: "", sex: "", designation: "", organization: "", phone: "" }); renderSupervisors(); }
-function removeSupervisor(i) { supervisors.splice(i, 1); if (supervisors.length === 0) supervisors.push({ name: "", sex: "", designation: "", organization: "", phone: "" }); renderSupervisors(); }
 
 function renderStaff() {
   const container = document.getElementById("staff-container");
@@ -678,12 +766,12 @@ function renderStaff() {
   let html = '';
   staffMembers.forEach((s, i) => {
     html += `<div class="member-card">
-      <div class="member-header"><span>Staff Member #${i + 1}</span>${staffMembers.length > 1 ? `<button class="remove-btn" onclick="removeStaffMember(${i})">✕</button>` : '<span style="color:#aaa; font-size:11px;">(Required)</span>'}</div>
-      <div class="question-row"><div class="question-text">Full Name ${staffMembers.length === 1 ? '<span class="required-star">*</span>' : ''}</div><input class="form-input" type="text" id="staff_name_${i}" value="${escapeHtml(s.name || '')}" placeholder="Full name"></div>
-      <div class="question-row"><div class="question-text">Sex ${staffMembers.length === 1 ? '<span class="required-star">*</span>' : ''}</div><div class="options-group-vertical" id="staff_sex_group_${i}"><label class="radio-option-vertical"><input type="radio" name="staff_sex_${i}" value="Male" ${s.sex === 'Male' ? 'checked' : ''}> Male</label><label class="radio-option-vertical"><input type="radio" name="staff_sex_${i}" value="Female" ${s.sex === 'Female' ? 'checked' : ''}> Female</label></div></div>
-      <div class="question-row"><div class="question-text">Cadre ${staffMembers.length === 1 ? '<span class="required-star">*</span>' : ''}</div><input class="form-input" type="text" id="staff_cadre_${i}" value="${escapeHtml(s.cadre || '')}" placeholder="Cadre"></div>
-      <div class="question-row"><div class="question-text">Unit</div><input class="form-input" type="text" id="staff_unit_${i}" value="${escapeHtml(s.unit || '')}" placeholder="Unit/Department"></div>
-      <div class="question-row"><div class="question-text">Phone Number (9 digits)</div><input class="form-input" type="tel" id="staff_phone_${i}" value="${escapeHtml(s.phone || '')}" placeholder="099177283" maxlength="9" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,9)"></div>
+      <div class="member-header"><span>Staff Member #${i + 1}</span><span class="member-tag">of ${staffMembers.length}</span></div>
+      <div class="question-row"><div class="question-text">Full Name <span class="required-star">*</span></div><input class="form-input" type="text" id="staff_name_${i}" value="${escapeHtml(s.name || '')}" placeholder="Full name"></div>
+      <div class="question-row"><div class="question-text">Sex <span class="required-star">*</span></div><div class="options-group-vertical" id="staff_sex_group_${i}"><label class="radio-option-vertical"><input type="radio" name="staff_sex_${i}" value="Male" ${s.sex === 'Male' ? 'checked' : ''}> Male</label><label class="radio-option-vertical"><input type="radio" name="staff_sex_${i}" value="Female" ${s.sex === 'Female' ? 'checked' : ''}> Female</label></div></div>
+      <div class="question-row"><div class="question-text">Cadre <span class="required-star">*</span></div><select class="form-select" id="staff_cadre_${i}" onchange="onStaffCadreChange(${i})">${cadreOptions(s.cadre)}</select><input class="form-input" type="text" id="staff_cadre_other_${i}" value="${escapeHtml(s.cadreOther || '')}" placeholder="If Other, specify" style="display:${s.cadre === 'Other' ? 'block' : 'none'};margin-top:8px;"></div>
+      <div class="question-row"><div class="question-text">Unit <span class="required-star">*</span></div><input class="form-input" type="text" id="staff_unit_${i}" value="${escapeHtml(s.unit || '')}" placeholder="Unit/Department"></div>
+      <div class="question-row"><div class="question-text">Phone Number (9 digits) <span class="required-star">*</span></div><input class="form-input" type="tel" id="staff_phone_${i}" value="${escapeHtml(s.phone || '')}" placeholder="099177283" maxlength="9" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,9)"></div>
     </div>`;
   });
   container.innerHTML = html;
@@ -691,14 +779,12 @@ function renderStaff() {
   staffMembers.forEach((s, i) => {
     document.getElementById(`staff_name_${i}`)?.addEventListener('input', (e) => { staffMembers[i].name = e.target.value; });
     document.querySelectorAll(`input[name="staff_sex_${i}"]`).forEach(r => r.addEventListener('change', (e) => { if(e.target.checked) staffMembers[i].sex = e.target.value; updateRadioVisuals(document.getElementById(`staff_sex_group_${i}`)); }));
-    document.getElementById(`staff_cadre_${i}`)?.addEventListener('input', (e) => { staffMembers[i].cadre = e.target.value; });
+    document.getElementById(`staff_cadre_other_${i}`)?.addEventListener('input', (e) => { staffMembers[i].cadreOther = e.target.value; });
     document.getElementById(`staff_unit_${i}`)?.addEventListener('input', (e) => { staffMembers[i].unit = e.target.value; });
     document.getElementById(`staff_phone_${i}`)?.addEventListener('input', (e) => { staffMembers[i].phone = e.target.value; });
+    updateRadioVisuals(document.getElementById(`staff_sex_group_${i}`));
   });
 }
-
-function addStaffMember() { staffMembers.push({ name: "", sex: "", cadre: "", unit: "", phone: "" }); renderStaff(); }
-function removeStaffMember(i) { if (staffMembers.length > 1) { staffMembers.splice(i, 1); renderStaff(); } }
 
 function updateRadioVisuals(container) {
   if (!container) return;
@@ -717,6 +803,23 @@ function toggleCadreOther() {
   if (!isOther) box.value = "";
 }
 
+function onStaffCadreChange(i) {
+  var sel = document.getElementById("staff_cadre_" + i);
+  var box = document.getElementById("staff_cadre_other_" + i);
+  staffMembers[i].cadre = sel.value;
+  var isOther = sel.value === "Other";
+  box.style.display = isOther ? "block" : "none";
+  if (!isOther) { box.value = ""; staffMembers[i].cadreOther = ""; }
+}
+
+function staffCadreValue(i) {
+  var s = staffMembers[i];
+  if (!s.cadre) return "";
+  if (s.cadre !== "Other") return s.cadre;
+  var other = (s.cadreOther || "").trim();
+  return other ? "Other: " + other : "Other";
+}
+
 function cadreValue() {
   var sel = document.getElementById("cadre").value;
   if (sel !== "Other") return sel;
@@ -726,6 +829,7 @@ function cadreValue() {
 
 function escapeHtml(str) { if (!str) return ''; return String(str).replace(/[&<>"]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[m])); }
 function validatePhone(phone) { return phone && String(phone).replace(/\D/g, '').length === 9; }
+function supervisorSignature(i) { return sessionStorage.getItem('sup_sig_' + i) || ""; }
 
 function validateForm() {
   if (!document.getElementById("districtSelect").value) { alert("Please select District"); return false; }
@@ -737,15 +841,29 @@ function validateForm() {
   if (!document.getElementById("cadre").value) { alert("Please select In-Charge Cadre"); return false; }
   if (document.getElementById("cadre").value === "Other" && !document.getElementById("cadre_other").value.trim()) { alert("Please specify the In-Charge Cadre"); return false; }
 
-  const validSupervisors = supervisors.filter((s, idx) => {
-    if (!s.name || !s.sex || !s.designation) return false;
-    if (!validatePhone(s.phone)) { alert(`Supervisor #${idx+1}: Phone must be 9 digits`); return false; }
-    return true;
-  });
-  if (validSupervisors.length === 0) { alert("Add at least one supervisor with Name, Sex, Designation, and 9-digit Phone."); return false; }
+  // every supervisor card the count opened must be complete
+  if (!document.getElementById("supervisor_count").value.trim()) { alert("Please enter the number of supervisors"); return false; }
+  for (let i = 0; i < supervisors.length; i++) {
+    const s = supervisors[i];
+    if (!s.name || !s.sex || !s.designation || !s.organization) {
+      alert(`Supervisor #${i+1}: Name, Sex, Designation and Organization are all required.`); return false;
+    }
+    if (!validatePhone(s.phone)) { alert(`Supervisor #${i+1}: Phone must be 9 digits`); return false; }
+    if (!supervisorSignature(i)) { alert(`Supervisor #${i+1}: Signature is required`); return false; }
+  }
 
-  const firstStaff = staffMembers[0];
-  if (!firstStaff.name || !firstStaff.sex || !firstStaff.cadre) { alert("First staff member: Name, Sex, and Cadre are required."); return false; }
+  // every staff card the count opened must be complete
+  if (!document.getElementById("staff_count").value.trim()) { alert("Please enter the number of staff members you met"); return false; }
+  for (let i = 0; i < staffMembers.length; i++) {
+    const s = staffMembers[i];
+    if (!s.name || !s.sex || !s.cadre || !s.unit) {
+      alert(`Staff Member #${i+1}: Name, Sex, Cadre and Unit are all required.`); return false;
+    }
+    if (s.cadre === "Other" && !(s.cadreOther || "").trim()) {
+      alert(`Staff Member #${i+1}: Please specify the cadre`); return false;
+    }
+    if (!validatePhone(s.phone)) { alert(`Staff Member #${i+1}: Phone must be 9 digits`); return false; }
+  }
   return true;
 }
 
@@ -761,8 +879,10 @@ function getFormData() {
     incharge_gender: document.querySelector('input[name="incharge_gender"]:checked')?.value || "",
     cadre: cadreValue(),
     visit_date: document.getElementById("visit_date").value,
-    supervisors: supervisors.map((s, i) => ({ ...s, signature: sessionStorage.getItem(`sup_sig_${i}`) || "" })),
-    staff: staffMembers
+    supervisor_count: supervisors.length,
+    staff_count: staffMembers.length,
+    supervisors: supervisors.map((s, i) => ({ ...s, signature: supervisorSignature(i) })),
+    staff: staffMembers.map((s, i) => ({ ...s, cadre: staffCadreValue(i) }))
   };
 }
 
@@ -780,8 +900,8 @@ function showSummary() {
   html += `<div class="summary-item"><div class="summary-label">Gender</div><div class="summary-value">${data.incharge_gender}</div></div>`;
   html += `<div class="summary-item"><div class="summary-label">Cadre</div><div class="summary-value">${data.cadre}</div></div>`;
   html += `<div class="summary-item"><div class="summary-label">Visit Date</div><div class="summary-value">${data.visit_date}</div></div>`;
-  html += `<div class="summary-section-title">SUPERVISORS</div>` + data.supervisors.map((s,i) => `<div class="summary-item"><div class="summary-label">Supervisor #${i+1}</div><div class="summary-value">${s.name} | ${s.sex} | ${s.designation} | Phone: ${s.phone} | Sig: ${s.signature ? '✓' : '✗'}</div></div>`).join('');
-  html += `<div class="summary-section-title">STAFF</div>` + data.staff.map((s,i) => `<div class="summary-item"><div class="summary-label">Staff #${i+1}</div><div class="summary-value">${s.name || '-'} | ${s.sex || '-'} | ${s.cadre || '-'}</div></div>`).join('');
+  html += `<div class="summary-section-title">SUPERVISORS (${data.supervisor_count})</div>` + data.supervisors.map((s,i) => `<div class="summary-item"><div class="summary-label">Supervisor #${i+1}</div><div class="summary-value">${s.name} | ${s.sex} | ${s.designation} | ${s.organization} | Phone: ${s.phone} | Sig: ${s.signature ? '✓' : '✗'}</div></div>`).join('');
+  html += `<div class="summary-section-title">STAFF (${data.staff_count})</div>` + data.staff.map((s,i) => `<div class="summary-item"><div class="summary-label">Staff #${i+1}</div><div class="summary-value">${s.name || '-'} | ${s.sex || '-'} | ${s.cadre || '-'} | ${s.unit || '-'} | Phone: ${s.phone || '-'}</div></div>`).join('');
   document.getElementById("summaryBody").innerHTML = html;
   document.getElementById("summaryModal").style.display = "flex";
 }
@@ -792,11 +912,10 @@ function confirmSubmit() { closeModal(); alert("FORM A submitted successfully!")
 
 // Initialize
 document.getElementById("visit_date").value = new Date().toISOString().split('T')[0];
+fillInChargeCadre();
 loadCSV();
-supervisors.push({ name: "", sex: "", designation: "", organization: "", phone: "" });
-staffMembers.push({ name: "", sex: "", cadre: "", unit: "", phone: "" });
-renderSupervisors();
-renderStaff();
+setSupervisorCount(Number(document.getElementById("supervisor_count").value) || 1);
+setStaffCount(Number(document.getElementById("staff_count").value) || 1);
 
 setTimeout(() => {
   updateRadioVisuals(document.getElementById('incharge_gender_group'));
@@ -959,7 +1078,6 @@ var USERS = [
 
   function showWho(){
     var u = currentUser(); if(!u) return;
-    document.querySelectorAll('.page-header, .header-sub').length;
     var host = document.querySelector('.page-header');
     if(!host || host.querySelector('.lgWho')) return;
     var d = document.createElement('div');
