@@ -16,8 +16,9 @@
 body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-dark); font-size:15px; line-height:1.55; margin:0; }
 
 .tab-nav { display:flex; background:var(--blue-dark); position:sticky; top:0; z-index:200; box-shadow:0 2px 8px rgba(0,0,0,.2); }
-.tab-btn { flex:1; padding:15px 8px; color:rgba(255,255,255,.65); font-weight:700; font-size:14px; border:none; background:none; cursor:pointer; border-bottom:3px solid transparent; }
+.tab-btn { flex:1; padding:15px 4px; color:rgba(255,255,255,.65); font-weight:700; font-size:12px; border:none; background:none; cursor:pointer; border-bottom:3px solid transparent; letter-spacing:.2px; }
 .tab-btn.active { color:#fff; border-bottom:3px solid var(--gold); background:rgba(255,255,255,.08); }
+.tab-btn .cnt { background:var(--gold); color:#1a2c3e; border-radius:20px; padding:1px 6px; font-size:10px; margin-left:3px; }
 .tab-page { display:none; padding-bottom:40px; }
 .tab-page.active { display:block; }
 
@@ -29,6 +30,14 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
 .header-sub { font-size:11px; font-weight:500; opacity:.85; margin-top:4px; }
 .form-title { background:linear-gradient(90deg,var(--blue-dark),var(--blue)); color:#fff; padding:12px 16px; font-weight:700; font-size:13.5px; border-left:4px solid var(--gold); }
 .purpose { background:#fff; border-bottom:1px solid var(--border); padding:14px 16px; font-size:12.5px; color:var(--text-light); line-height:1.55; }
+
+/* submission identity strip */
+.idstrip { background:#fff; border-bottom:1px solid var(--border); padding:12px 16px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.idstrip .lbl { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--text-light); }
+.idstrip .val { font-size:13px; font-weight:800; color:var(--blue-dark); font-variant-numeric:tabular-nums; }
+.idstrip .mode { border-radius:20px; padding:3px 10px; font-size:10.5px; font-weight:800; color:#fff; background:var(--green); white-space:nowrap; }
+.idstrip .mode.editing { background:var(--orange); }
+.idstrip .newbtn { margin-left:auto; background:#eef2f6; border:1px solid var(--border); color:var(--blue-dark); border-radius:20px; padding:8px 14px; font-weight:700; font-size:12px; font-family:inherit; cursor:pointer; }
 
 .section-header { background:var(--soft-bg); color:var(--blue-dark); padding:13px 16px; font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:.4px; border-left:4px solid var(--blue); display:flex; justify-content:space-between; align-items:center; gap:10px; }
 .section-max { background:var(--blue-dark); color:#fff; border-radius:20px; padding:3px 11px; font-size:11px; font-weight:700; white-space:nowrap; }
@@ -92,14 +101,39 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
 .radio-option.selected { background:var(--blue); border-color:var(--blue); color:#fff; }
 .radio-option.selected input { accent-color:#fff; }
 
-.btn-submit { width:100%; padding:16px; background:var(--green); color:#fff; border:none; border-radius:14px; font-weight:700; font-size:15.5px; cursor:pointer; margin:20px 0; }
+.btn-submit { width:100%; padding:16px; background:var(--green); color:#fff; border:none; border-radius:14px; font-weight:700; font-size:15.5px; cursor:pointer; margin:20px 0; font-family:inherit; }
+.btn-submit.update { background:var(--orange); }
 .submit-wrap { padding:0 16px; }
+
+/* records */
+.rec-toolbar { background:#fff; border-bottom:1px solid var(--border); padding:12px 16px; display:flex; align-items:center; gap:10px; }
+.rec-toolbar .rc { font-size:12px; font-weight:700; color:var(--text-light); text-transform:uppercase; letter-spacing:.4px; }
+.rec-toolbar button { margin-left:auto; background:var(--blue-dark); color:#fff; border:none; border-radius:20px; padding:9px 15px; font-weight:700; font-size:12px; font-family:inherit; cursor:pointer; }
+.rec-card { margin:12px; background:#fff; border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+.rec-top { display:flex; align-items:center; gap:9px; padding:12px 14px 0; flex-wrap:wrap; }
+.rec-id { font-size:12px; font-weight:800; color:var(--blue-dark); font-variant-numeric:tabular-nums; }
+.rec-ver { font-size:10.5px; font-weight:700; color:var(--text-light); }
+.sync { border-radius:20px; padding:3px 9px; font-size:10px; font-weight:800; white-space:nowrap; margin-left:auto; }
+.sync.synced { background:#e8f6ec; color:#1a7a3c; }
+.sync.sending { background:#e7f3ff; color:#2b5f8a; }
+.sync.pending { background:#fff4e5; color:#8a5300; }
+.sync.error { background:#fdeceb; color:#a32620; }
+.rec-body { padding:8px 14px 12px; }
+.rec-where { font-size:14px; font-weight:700; }
+.rec-meta { font-size:12px; color:var(--text-light); margin-top:2px; }
+.rec-score { display:flex; align-items:center; gap:9px; margin-top:9px; }
+.rec-score .n { font-size:20px; font-weight:800; color:var(--blue-dark); }
+.rec-btns { display:flex; gap:8px; padding:0 14px 13px; }
+.btn-sm { flex:1; padding:11px 8px; border-radius:12px; font-weight:700; font-size:12.5px; font-family:inherit; cursor:pointer; border:1.5px solid var(--border); background:#f7f9fc; color:var(--blue-dark); }
+.btn-sm.pri { background:var(--orange); border-color:var(--orange); color:#fff; }
+.btn-sm.snd { background:var(--blue-dark); border-color:var(--blue-dark); color:#fff; }
+.rec-msg { font-size:11.5px; color:var(--red); padding:0 14px 12px; font-weight:600; }
 
 /* summary */
 .summary-header { background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:#fff; padding:20px 16px; }
 .summary-header h2 { font-size:18px; font-weight:800; color:var(--gold); }
 .summary-header p { font-size:12px; opacity:.9; margin-top:4px; }
-.summary-refresh { background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3); color:#fff; border-radius:20px; padding:9px 18px; font-weight:600; font-size:12.5px; cursor:pointer; margin-top:11px; }
+.summary-refresh { background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3); color:#fff; border-radius:20px; padding:9px 18px; font-weight:600; font-size:12.5px; cursor:pointer; margin-top:11px; font-family:inherit; }
 .verdict { margin:12px; border-radius:16px; padding:22px 18px; text-align:center; color:#fff; }
 .verdict .vscore { font-size:44px; font-weight:800; line-height:1; }
 .verdict .vof { font-size:13px; opacity:.9; margin-top:2px; }
@@ -129,9 +163,12 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
 .modal-header button { background:none; border:none; color:#fff; font-size:24px; cursor:pointer; }
 .modal-body { padding:20px; font-size:14px; }
 .modal-footer { padding:16px 20px; border-top:1px solid var(--border); display:flex; gap:12px; }
-.btn-cancel { flex:1; padding:12px; background:#f0f2f5; border:1px solid var(--border); border-radius:40px; font-weight:600; cursor:pointer; }
-.btn-confirm { flex:1; padding:12px; background:var(--green); color:#fff; border:none; border-radius:40px; font-weight:600; cursor:pointer; }
+.btn-cancel { flex:1; padding:12px; background:#f0f2f5; border:1px solid var(--border); border-radius:40px; font-weight:600; cursor:pointer; font-family:inherit; }
+.btn-confirm { flex:1; padding:12px; background:var(--green); color:#fff; border:none; border-radius:40px; font-weight:600; cursor:pointer; font-family:inherit; }
 .no-data { text-align:center; padding:40px; color:var(--text-light); }
+.doneid { background:var(--soft-bg); border:1px solid #c9dff2; border-radius:12px; padding:12px 14px; margin-top:12px; text-align:center; }
+.doneid .k { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--text-light); }
+.doneid .v { font-size:16px; font-weight:800; color:var(--blue-dark); font-variant-numeric:tabular-nums; }
 
 /* ==================== PHONE SHELL (same as the MOCM portal) ==================== */
 html, body { height:100%; }
@@ -158,7 +195,6 @@ body { display:flex; align-items:center; justify-content:center; padding:22px 14
 @media(max-width:640px){ .modal, #lgOverlay { border-radius:0; } }
 
 .miss input, .miss textarea, .miss select { border-color:var(--red) !important; box-shadow:0 0 0 3px rgba(220,53,69,.15) !important; }
-.section-card.miss { box-shadow:inset 0 0 0 2px var(--red); }
 </style>
 </head>
 <body>
@@ -166,8 +202,9 @@ body { display:flex; align-items:center; justify-content:center; padding:22px 14
 <div class="stage"><div class="phone"><div class="screen">
 
 <div class="tab-nav">
-  <button class="tab-btn active" onclick="switchTab('entry')">📋 ASSESSMENT</button>
-  <button class="tab-btn" onclick="switchTab('summary')">📊 SCORE SHEET</button>
+  <button class="tab-btn active" id="btn-entry" onclick="switchTab('entry')">📋 FORM</button>
+  <button class="tab-btn" id="btn-records" onclick="switchTab('records')">🗂 RECORDS<span class="cnt" id="recCount">0</span></button>
+  <button class="tab-btn" id="btn-summary" onclick="switchTab('summary')">📊 SCORE SHEET</button>
 </div>
 
 <div class="tab-page active" id="tab-entry">
@@ -185,6 +222,15 @@ body { display:flex; align-items:center; justify-content:center; padding:22px 14
     To assess, compare and select the most suitable warehouse in each district for storing
     Insecticide Treated Nets for about seven months before distribution. judged on infrastructure,
     storage conditions, security, accessibility, safety and operational readiness. Total 100 points.
+  </div>
+
+  <div class="idstrip">
+    <div>
+      <div class="lbl">Submission ID</div>
+      <div class="val" id="idVal">Assigned on submission</div>
+    </div>
+    <span class="mode" id="idMode">New</span>
+    <button class="newbtn" onclick="newAssessment(true)">＋ New blank form</button>
   </div>
 
   <!-- 1. WAREHOUSE IDENTIFICATION -->
@@ -228,7 +274,7 @@ body { display:flex; align-items:center; justify-content:center; padding:22px 14
       <input class="form-input" id="baleCap" type="number" min="0" placeholder="0" oninput="recalc()"></div>
     <div class="question-row"><div class="question-text">Planned ITN quantity for this district, in bales <span class="required-star">*</span></div>
       <input class="form-input" id="balePlan" type="number" min="0" placeholder="0" oninput="recalc()"></div>
-    <div class="calc-row"><span class="calc-label">Plan against capacity</span><span class="calc-val" id="calcFit">0%</span></div>
+    <div class="calc-row"><span class="calc-label">Planned against capacity</span><span class="calc-val" id="calcFit">0%</span></div>
   </div>
 
   <!-- SCORED SECTIONS BUILT HERE -->
@@ -257,18 +303,7 @@ body { display:flex; align-items:center; justify-content:center; padding:22px 14
     </div>
   </div>
 
-  <!-- 10. GPS -->
-  <div class="section-header"><span>10. GPS Coordinates</span><span class="section-max" id="gpsBadge">Waiting</span></div>
-  <div class="section-card" id="gpsCard">
-    <div class="guidance"><b>Captured automatically:</b> the location is taken when the form opens. Stand at the main door of the warehouse. Tap Recapture if you have moved, or if the accuracy reading is poor. The assessment cannot be saved until a location is captured.</div>
-    <div class="calc-row"><span class="calc-label">Latitude</span><span class="calc-val" id="gpsLat">&mdash;</span></div>
-    <div class="calc-row"><span class="calc-label">Longitude</span><span class="calc-val" id="gpsLon">&mdash;</span></div>
-    <div class="calc-row"><span class="calc-label">Accuracy</span><span class="calc-val" id="gpsAcc">&mdash;</span></div>
-    <div class="hint" id="gpsMsg" style="margin:12px 0 0;">Waiting for the location.</div>
-    <button class="summary-refresh" onclick="captureGPS()" style="background:var(--blue-dark);border:none;margin-top:10px;">📍 Recapture location</button>
-  </div>
-
-  <div class="submit-wrap"><button class="btn-submit" onclick="submitForm()">✓ SAVE &amp; VIEW SCORE SHEET</button></div>
+  <div class="submit-wrap"><button class="btn-submit" id="btnSubmit" onclick="submitForm()">✓ SUBMIT TO ICF-SL SERVER</button></div>
 
   <div class="runbar">
     <div><div class="rl">Running score</div><div class="rv" id="runScore">0 / 100</div></div>
@@ -276,24 +311,56 @@ body { display:flex; align-items:center; justify-content:center; padding:22px 14
   </div>
 </div>
 
+<div class="tab-page" id="tab-records">
+  <div class="summary-header"><h2>SUBMITTED ASSESSMENTS</h2><p id="rec_sub">Every assessment made on this device</p></div>
+  <div class="rec-toolbar">
+    <span class="rc" id="recStat">0 records</span>
+    <button onclick="syncAll()">⇧ Send pending</button>
+  </div>
+  <div id="records-content"></div>
+</div>
+
 <div class="tab-page" id="tab-summary">
-  <div class="summary-header"><h2>WAREHOUSE ASSESSMENT SCORE SHEET</h2><p id="sum_date">No assessment saved yet</p>
+  <div class="summary-header"><h2>WAREHOUSE ASSESSMENT SCORE SHEET</h2><p id="sum_date">No assessment submitted yet</p>
     <button class="summary-refresh" onclick="renderSummary()">🔄 Refresh</button></div>
-  <div id="summary-content"><div class="no-data">Complete the assessment and tap "Save &amp; View Score Sheet".</div></div>
+  <div id="summary-content"><div class="no-data">Complete the assessment and tap "Submit to ICF-SL Server".</div></div>
 </div>
 
 <div id="confirmModal" class="modal"><div class="modal-content">
-  <div class="modal-header"><span>Confirm Assessment</span><button onclick="closeModal()">×</button></div>
-  <div class="modal-body">Save this warehouse assessment? You can still edit it afterwards.</div>
-  <div class="modal-footer"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-confirm" onclick="doSubmit()">Save &amp; View Score Sheet</button></div>
+  <div class="modal-header"><span id="cfTitle">Confirm Assessment</span><button onclick="closeModal()">×</button></div>
+  <div class="modal-body" id="cfBody">Submit this warehouse assessment to the ICF-SL server?</div>
+  <div class="modal-footer"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-confirm" id="cfOk" onclick="doSubmit()">Submit to ICF-SL Server</button></div>
+</div></div>
+
+<div id="doneModal" class="modal"><div class="modal-content">
+  <div class="modal-header"><span id="dnTitle">Submitted</span><button onclick="closeDone()">×</button></div>
+  <div class="modal-body">
+    <div id="dnText">The assessment has been recorded and sent to the ICF-SL server.</div>
+    <div class="doneid"><div class="k">Submission ID</div><div class="v" id="dnId">—</div></div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn-cancel" onclick="closeDone(); switchTab('summary');">View score sheet</button>
+    <button class="btn-confirm" onclick="closeDone(); newAssessment(false);">＋ New assessment</button>
+  </div>
 </div></div>
 
 </div></div></div>
 
 <script>
+// ==================== BACKEND ====================
+/* Live ICF-SL endpoint: the Apps Script web app bound to the
+   "Warehouse Assessment ITN 2027" Google Sheet.
+   If the deployment URL ever changes, replace it here only. */
+var SHEET_URL = "https://script.google.com/macros/s/AKfycbzWqQEA3wXSJ_tXR8bJHXQB4LsIeJjmMVvVkK0q9fde5EUpNVoA5AzEQARzx5ngbTpPqg/exec";
+
 // ==================== REFERENCE DATA ====================
 const DISTRICTS = ["Bo","Bombali","Bonthe","Falaba","Kailahun","Kambia","Karene","Kenema",
   "Koinadugu","Kono","Moyamba","Port Loko","Pujehun","Tonkolili","Western Area Rural","Western Area Urban"];
+
+// short codes used inside the submission ID
+const DIST_CODE = { "Bo":"BO","Bombali":"BOM","Bonthe":"BON","Falaba":"FAL","Kailahun":"KAI",
+  "Kambia":"KAM","Karene":"KAR","Kenema":"KEN","Koinadugu":"KOI","Kono":"KON","Moyamba":"MOY",
+  "Port Loko":"POR","Pujehun":"PUJ","Tonkolili":"TON","Western Area Rural":"WAR","Western Area Urban":"WAU" };
 
 // The six scored sections, exactly as in the checklist. Max points in brackets.
 const SECTIONS = [
@@ -360,7 +427,42 @@ const BANDS = [
   { min:0,  cls:"b4", label:"Not Suitable" }
 ];
 
-let ans = {}, submitted = false;
+// ==================== STATE ====================
+function blankRecord(){
+  return { id:null, version:0, scores:{}, comments:{}, recommendation:"", improvements:"",
+           meta:{}, submittedAt:"", updatedAt:"", submittedBy:"", syncState:"", serverMsg:"" };
+}
+var cur = blankRecord();   // the record currently open in the form
+var viewRec = null;        // the record shown on the score sheet
+
+/* device store: localStorage where allowed, memory otherwise */
+var STORE_KEY = "wh2027_records";
+var memList = null;
+function allRecords(){
+  if (memList) return memList;
+  try { var raw = localStorage.getItem(STORE_KEY); memList = raw ? JSON.parse(raw) : []; }
+  catch(e) { memList = []; }
+  return memList;
+}
+function saveAll(list){
+  memList = list;
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(list)); } catch(e) {}
+}
+function upsertLocal(rec){
+  var list = allRecords();
+  var i = list.findIndex(function(r){ return r.id === rec.id; });
+  if (i >= 0) list[i] = rec; else list.unshift(rec);
+  saveAll(list);
+  updateCount();
+}
+function findRecord(id){ return allRecords().filter(function(r){ return r.id === id; })[0]; }
+
+function newSubmissionId(district){
+  var d = new Date(), p = function(n){ return (n < 10 ? "0" : "") + n; };
+  var code = DIST_CODE[district] || "XXX";
+  var rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return "WH27-" + code + "-" + String(d.getFullYear()).slice(2) + p(d.getMonth() + 1) + p(d.getDate()) + "-" + rand;
+}
 
 // ==================== BUILD ====================
 function buildDistricts(){
@@ -389,7 +491,7 @@ function buildScored(){
           <div class="crit-comment" id="cm_${it.k}" style="display:none;">
             <div class="hint" style="margin:8px 0 6px;">Comment, required when the full score is not given <span class="required-star">*</span></div>
             <input class="form-input" id="co_${it.k}" type="text" placeholder="Why were points deducted?"
-              oninput="ans['co_${it.k}']=this.value">
+              oninput="cur.comments['${it.k}']=this.value">
           </div>
         </div>`).join('')}
       <div class="total-row"><span class="total-label">${s.title} score</span><span class="total-badge" id="tot_${s.id}">0 / ${s.max}</span></div>
@@ -405,7 +507,7 @@ function setScore(k, max, el){
     err.textContent = msg;
     err.classList.add('show');
     el.classList.add('bad');
-    const prev = ans['sc_' + k];
+    const prev = cur.scores[k];
     el.value = (typeof prev === 'number') ? prev : '';   // keep the last valid score
     paint(k, max, el.value === '' ? '' : prev);
     recalc();
@@ -423,14 +525,13 @@ function setScore(k, max, el){
   err.textContent = '';
   el.classList.remove('bad');
   const v = raw === '' ? '' : parseInt(raw, 10);
-  ans['sc_' + k] = v;
+  cur.scores[k] = v;
   paint(k, max, v);
   recalc();
   return;
 }
 
 function paint(k, max, v){
-
   const fill = document.getElementById('bar_' + k);
   const crit = document.getElementById('crit_' + k);
   const cm   = document.getElementById('cm_' + k);
@@ -440,25 +541,21 @@ function paint(k, max, v){
   crit.className = 'crit' + ((v === "" || v === undefined) ? '' : v === max ? ' full' : v === 0 ? ' zero' : ' part');
   // a deduction needs a reason
   cm.style.display = (v !== "" && v !== undefined && v < max) ? 'block' : 'none';
-  if (v === max) { const c = document.getElementById('co_' + k); if (c) { c.value = ''; ans['co_' + k] = ''; } }
+  if (v === max) { const c = document.getElementById('co_' + k); if (c) { c.value = ''; cur.comments[k] = ''; } }
 }
 
-function sectionScore(s){
-  return s.items.reduce((t, it) => {
-    const v = ans['sc_' + it.k];
-    return t + (typeof v === 'number' ? v : 0);
-  }, 0);
-}
-function grandTotal(){ return SECTIONS.reduce((t, s) => t + sectionScore(s), 0); }
+function scoreOf(rec, k){ const v = rec.scores[k]; return typeof v === 'number' ? v : 0; }
+function sectionScore(rec, s){ return s.items.reduce((t, it) => t + scoreOf(rec, it.k), 0); }
+function grandTotal(rec){ return SECTIONS.reduce((t, s) => t + sectionScore(rec, s), 0); }
 function bandFor(total){ return BANDS.find(b => total >= b.min) || BANDS[BANDS.length - 1]; }
 
 function recalc(){
   SECTIONS.forEach(s => {
     const el = document.getElementById('tot_' + s.id);
-    if (el) el.textContent = sectionScore(s) + ' / ' + s.max;
+    if (el) el.textContent = sectionScore(cur, s) + ' / ' + s.max;
   });
-  const total = grandTotal();
-  const anyScore = SECTIONS.some(s => s.items.some(it => typeof ans['sc_' + it.k] === 'number'));
+  const total = grandTotal(cur);
+  const anyScore = SECTIONS.some(s => s.items.some(it => typeof cur.scores[it.k] === 'number'));
   const band = bandFor(total);
 
   document.getElementById('runScore').textContent = total + ' / 100';
@@ -477,22 +574,20 @@ function recalc(){
   const vol  = (area !== null && !isNaN(H)) ? area * H : null;
   document.getElementById('calcArea').textContent = area !== null ? area.toFixed(1) + ' m²' : '0 m²';
   document.getElementById('calcVol').textContent  = vol  !== null ? vol.toFixed(1)  + ' m³' : '0 m³';
-  ans.area = area; ans.volume = vol;
 
-  /* Plan against capacity = (planned bales / bale capacity) x 100.
-     The planned ITNs as a share of what this warehouse can hold.
-     At or below 100% the warehouse takes the whole allocation. Above 100% it does not. */
+  // planned bales as a share of what the warehouse can hold: (planned / capacity) * 100
   const cap = parseInt(document.getElementById('baleCap').value);
   const plan = parseInt(document.getElementById('balePlan').value);
   const fit = document.getElementById('calcFit');
+  let fitPct = null;
   if (!isNaN(cap) && !isNaN(plan) && cap > 0) {
-    const pctFit = Math.round((plan / cap) * 100);
-    fit.textContent = pctFit + '% of warehouse capacity';
-    fit.style.color = pctFit <= 100 ? 'var(--green)' : pctFit <= 125 ? 'var(--orange)' : 'var(--red)';
-    ans.fitPct = pctFit;
+    fitPct = Math.round((plan / cap) * 100);
+    fit.textContent = fitPct + '% of warehouse capacity';
+    fit.style.color = fitPct <= 80 ? 'var(--green)' : fitPct <= 100 ? 'var(--orange)' : 'var(--red)';
   } else {
-    fit.textContent = '0%'; fit.style.color = 'var(--blue-dark)'; ans.fitPct = null;
+    fit.textContent = '0%'; fit.style.color = 'var(--blue-dark)';
   }
+  cur._area = area; cur._volume = vol; cur._fitPct = fitPct;
 }
 
 /* digits only, never more than 9. Anything else is called out rather than silently trimmed */
@@ -508,52 +603,8 @@ function phoneInput(el){
   else { err.textContent = ''; err.classList.remove('show'); el.classList.remove('bad'); }
 }
 
-/* ==================== GPS ====================
-   Runs on its own once the assessor has signed in. The Recapture button
-   is there for a poor first fix or if the assessor has moved. */
-function captureGPS(){
-  const badge = document.getElementById('gpsBadge');
-  const msg   = document.getElementById('gpsMsg');
-  const clear = () => ['gpsLat','gpsLon','gpsAcc'].forEach(id => document.getElementById(id).textContent = '\u2014');
-
-  if (!navigator.geolocation) {
-    ans.gps = null; clear();
-    badge.textContent = 'Unavailable'; badge.style.background = 'var(--red)';
-    msg.textContent = 'This browser does not support location capture.';
-    return;
-  }
-
-  badge.textContent = 'Capturing'; badge.style.background = 'var(--blue-dark)';
-  msg.textContent = 'Capturing the location, hold still for a moment.';
-
-  navigator.geolocation.getCurrentPosition(
-    function(pos){
-      const c = pos.coords;
-      ans.gps = { lat:c.latitude, lon:c.longitude, acc:c.accuracy, at:new Date().toLocaleString() };
-      document.getElementById('gpsLat').textContent = c.latitude.toFixed(6);
-      document.getElementById('gpsLon').textContent = c.longitude.toFixed(6);
-      document.getElementById('gpsAcc').textContent = Math.round(c.accuracy) + ' m';
-      badge.textContent = 'Captured'; badge.style.background = 'var(--green)';
-      document.getElementById('gpsCard').classList.remove('miss');
-      msg.textContent = 'Captured ' + ans.gps.at + '.' +
-        (c.accuracy > 50 ? ' Accuracy is weak at this spot. Step into the open and tap Recapture.' : '');
-    },
-    function(err){
-      ans.gps = null; clear();
-      badge.textContent = 'Not captured'; badge.style.background = 'var(--red)';
-      const m = {
-        1:'Location permission was refused. Allow location for this page in the browser settings, then tap Recapture.',
-        2:'The location is not available here. Move outdoors or beside a window, then tap Recapture.',
-        3:'The location took too long to arrive. Tap Recapture to try again.'
-      };
-      msg.textContent = m[err.code] || 'The location could not be captured. Tap Recapture to try again.';
-    },
-    { enableHighAccuracy:true, timeout:20000, maximumAge:0 }
-  );
-}
-
 function setRec(el){
-  ans.recommendation = el.value;
+  cur.recommendation = el.value;
   document.querySelectorAll('#grp_rec .radio-option').forEach(r => {
     const i = r.querySelector('input');
     r.classList.toggle('selected', !!(i && i.checked));
@@ -609,42 +660,16 @@ function validateForm(){
       }
     }
   }
-  if (!ans.recommendation) return flag(document.getElementById('grp_rec'), 'Choose your recommendation for this warehouse');
+  if (!cur.recommendation) return flag(document.getElementById('grp_rec'), 'Choose your recommendation for this warehouse');
   const impr = document.getElementById('improvements');
   if (!impr.value.trim()) return flag(impr, 'List the key improvements required, or enter "None"');
-
-  // no submission without a GPS fix
-  if (!ans.gps) {
-    document.querySelectorAll('.miss').forEach(e => e.classList.remove('miss'));
-    document.getElementById('gpsCard').classList.add('miss');
-    document.getElementById('gpsBadge').scrollIntoView({ behavior:'smooth', block:'center' });
-    captureGPS();   // try again right away
-    alert('The GPS location has not been captured, so this assessment cannot be saved.\n\n' +
-          'A fresh attempt is running now. If it fails again, allow location access for this page, ' +
-          'step into the open and tap Recapture.');
-    return false;
-  }
-
   document.querySelectorAll('.miss').forEach(e => e.classList.remove('miss'));
   return true;
 }
 
-// ==================== SUBMIT / SUMMARY ====================
-function switchTab(tab){
-  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  document.querySelector(tab === 'entry' ? '.tab-btn:first-child' : '.tab-btn:last-child').classList.add('active');
-  if (tab === 'summary') renderSummary();
-  var scr = document.querySelector('.screen');
-  if (scr) scr.scrollTop = 0; else window.scrollTo(0, 0);
-}
-function submitForm(){ if (validateForm()) document.getElementById('confirmModal').style.display = 'flex'; }
-function closeModal(){ document.getElementById('confirmModal').style.display = 'none'; }
-function doSubmit(){
-  closeModal();
-  ans._submitted = new Date().toLocaleString();
-  ans._identity = {
+// ==================== FORM STATE ====================
+function readMeta(){
+  return {
     owner: document.getElementById('ownerName').value,
     phone: document.getElementById('ownerPhone').value,
     email: document.getElementById('ownerEmail').value,
@@ -656,20 +681,267 @@ function doSubmit(){
     W: document.getElementById('dimW').value,
     H: document.getElementById('dimH').value,
     baleCap: document.getElementById('baleCap').value,
-    balePlan: document.getElementById('balePlan').value
+    balePlan: document.getElementById('balePlan').value,
+    area: cur._area, volume: cur._volume, fitPct: cur._fitPct
   };
-  ans._improvements = document.getElementById('improvements').value;
-  submitted = true;
-  renderSummary();
+}
+
+function fillForm(rec){
+  const m = rec.meta || {};
+  const set = function(id, v){ document.getElementById(id).value = (v === undefined || v === null) ? '' : v; };
+  set('ownerName', m.owner); set('ownerPhone', m.phone); set('ownerEmail', m.email);
+  set('whDistrict', m.district); set('whAddress', m.address); set('assessorName', m.assessor);
+  set('assessDate', m.date); set('dimL', m.L); set('dimW', m.W); set('dimH', m.H);
+  set('baleCap', m.baleCap); set('balePlan', m.balePlan);
+  set('improvements', rec.improvements);
+
+  SECTIONS.forEach(function(s){
+    s.items.forEach(function(it){
+      const v = rec.scores[it.k];
+      const el = document.getElementById('sc_' + it.k);
+      el.classList.remove('bad');
+      document.getElementById('er_' + it.k).classList.remove('show');
+      el.value = (typeof v === 'number') ? v : '';
+      paint(it.k, it.max, (typeof v === 'number') ? v : '');
+      const c = document.getElementById('co_' + it.k);
+      if (c) c.value = rec.comments[it.k] || '';
+    });
+  });
+
+  document.querySelectorAll('#grp_rec input[name="rec"]').forEach(function(i){
+    i.checked = (i.value === rec.recommendation);
+    i.closest('.radio-option').classList.toggle('selected', i.checked);
+  });
+
+  document.getElementById('phoneErr').classList.remove('show');
+  document.getElementById('ownerPhone').classList.remove('bad');
+  document.querySelectorAll('.miss').forEach(e => e.classList.remove('miss'));
+  recalc();
+  paintIdStrip();
+}
+
+function newAssessment(ask){
+  const dirty = document.getElementById('ownerName').value.trim() || Object.keys(cur.scores).length;
+  if (ask && dirty && !confirm('Clear the form and start a new blank assessment? Anything not yet submitted will be lost.')) return;
+  cur = blankRecord();
+  fillForm(cur);
+  document.getElementById('assessDate').value = new Date().toISOString().split('T')[0];
+  switchTab('entry');
+}
+
+function paintIdStrip(){
+  const editing = !!cur.id;
+  document.getElementById('idVal').textContent = cur.id || 'Assigned on submission';
+  const mode = document.getElementById('idMode');
+  mode.textContent = editing ? ('Editing · v' + cur.version) : 'New';
+  mode.className = 'mode' + (editing ? ' editing' : '');
+  const btn = document.getElementById('btnSubmit');
+  btn.textContent = editing ? '↻ RESUBMIT AND REPLACE ON SERVER' : '✓ SUBMIT TO ICF-SL SERVER';
+  btn.className = 'btn-submit' + (editing ? ' update' : '');
+}
+
+// ==================== SUBMIT ====================
+function switchTab(tab){
+  ['entry','records','summary'].forEach(function(t){
+    document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+    document.getElementById('btn-' + t).classList.toggle('active', t === tab);
+  });
+  if (tab === 'records') renderRecords();
+  if (tab === 'summary') renderSummary();
+  var scr = document.querySelector('.screen');
+  if (scr) scr.scrollTop = 0; else window.scrollTo(0, 0);
+}
+
+function submitForm(){
+  if (!validateForm()) return;
+  const editing = !!cur.id;
+  document.getElementById('cfTitle').textContent = editing ? 'Confirm Resubmission' : 'Confirm Assessment';
+  document.getElementById('cfBody').textContent = editing
+    ? 'Resubmit ' + cur.id + '? The values already on the ICF-SL server for this submission ID will be replaced by what is now on the form.'
+    : 'Submit this warehouse assessment to the ICF-SL server? A submission ID will be issued and you can still edit it afterwards.';
+  document.getElementById('cfOk').textContent = editing ? 'Resubmit and replace' : 'Submit to ICF-SL Server';
+  document.getElementById('confirmModal').style.display = 'flex';
+}
+function closeModal(){ document.getElementById('confirmModal').style.display = 'none'; }
+function closeDone(){ document.getElementById('doneModal').style.display = 'none'; }
+
+function doSubmit(){
+  closeModal();
+  const now = new Date();
+  const editing = !!cur.id;
+  const u = (window.WH_USER && window.WH_USER()) || null;
+
+  cur.meta = readMeta();
+  cur.improvements = document.getElementById('improvements').value;
+  cur.submittedBy = u ? (u.name + ' (' + u.username + ')') : '';
+  if (!editing) {
+    cur.id = newSubmissionId(cur.meta.district);
+    cur.submittedAt = now.toLocaleString();
+    cur.version = 1;
+  } else {
+    cur.version = (cur.version || 1) + 1;
+  }
+  cur.updatedAt = now.toLocaleString();
+  cur.total = grandTotal(cur);
+  cur.band = bandFor(cur.total).label;
+  cur.syncState = 'sending';
+
+  upsertLocal(cur);
+  viewRec = cur;
+  paintIdStrip();
+  renderRecords();
+  push(cur);
+
+  document.getElementById('dnTitle').textContent = editing ? 'Resubmitted' : 'Submitted';
+  document.getElementById('dnText').textContent = editing
+    ? 'The record has been updated. The row already on the ICF-SL server for this submission ID is replaced, not duplicated.'
+    : 'The assessment has been recorded and sent to the ICF-SL server.';
+  document.getElementById('dnId').textContent = cur.id;
+  document.getElementById('doneModal').style.display = 'flex';
+}
+
+// ==================== SERVER ====================
+function flatten(rec){
+  const m = rec.meta || {};
+  const o = {
+    submissionId: rec.id,
+    version: rec.version,
+    submittedAt: rec.submittedAt,
+    updatedAt: rec.updatedAt,
+    submittedBy: rec.submittedBy,
+    ownerName: m.owner, ownerPhone: m.phone, ownerEmail: m.email,
+    district: m.district, warehouseAddress: m.address,
+    assessorName: m.assessor, assessmentDate: m.date,
+    lengthM: m.L, widthM: m.W, heightM: m.H,
+    floorAreaM2: (m.area === null || m.area === undefined) ? '' : Number(m.area.toFixed(1)),
+    storageVolumeM3: (m.volume === null || m.volume === undefined) ? '' : Number(m.volume.toFixed(1)),
+    baleCapacity: m.baleCap, plannedBales: m.balePlan,
+    plannedVsCapacityPct: (m.fitPct === null || m.fitPct === undefined) ? '' : m.fitPct
+  };
+  SECTIONS.forEach(function(s){
+    s.items.forEach(function(it){
+      o[it.k + '_score'] = (typeof rec.scores[it.k] === 'number') ? rec.scores[it.k] : '';
+      o[it.k + '_comment'] = rec.comments[it.k] || '';
+    });
+    o[s.id + '_total'] = sectionScore(rec, s);
+  });
+  o.totalScore = grandTotal(rec);
+  o.scoreBand = bandFor(grandTotal(rec)).label;
+  o.recommendation = rec.recommendation || '';
+  o.improvementsRequired = rec.improvements || '';
+  return o;
+}
+
+function push(rec){
+  if (!SHEET_URL) {
+    rec.syncState = 'pending';
+    rec.serverMsg = 'No server URL set in the app. Record kept on this device.';
+    upsertLocal(rec); renderRecords(); renderSummary();
+    return;
+  }
+  rec.syncState = 'sending'; rec.serverMsg = '';
+  upsertLocal(rec); renderRecords();
+  fetch(SHEET_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },   // keeps Apps Script happy, no preflight
+    body: JSON.stringify({ action: 'upsert', record: flatten(rec) })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(res){
+    if (res && res.ok) { rec.syncState = 'synced'; rec.serverMsg = res.action || ''; }
+    else { rec.syncState = 'error'; rec.serverMsg = (res && res.message) || 'Server refused the record.'; }
+  })
+  .catch(function(e){
+    rec.syncState = 'error';
+    rec.serverMsg = 'Not sent: ' + (e && e.message ? e.message : e);
+  })
+  .then(function(){ upsertLocal(rec); renderRecords(); renderSummary(); });
+}
+
+function sendOne(id){ const r = findRecord(id); if (r) push(r); }
+function syncAll(){
+  const list = allRecords().filter(function(r){ return r.syncState !== 'synced'; });
+  if (!list.length) { alert('Nothing pending. Every record on this device is already on the server.'); return; }
+  list.forEach(push);
+}
+
+// ==================== RECORDS ====================
+function updateCount(){
+  const list = allRecords();
+  document.getElementById('recCount').textContent = list.length;
+  const pending = list.filter(function(r){ return r.syncState !== 'synced'; }).length;
+  document.getElementById('recStat').textContent = list.length + ' record' + (list.length === 1 ? '' : 's')
+    + (pending ? ' · ' + pending + ' not sent' : ' · all sent');
+}
+
+function esc(s){ return String(s === undefined || s === null ? '' : s).replace(/[<>&"]/g, function(m){
+  return ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'})[m]; }); }
+
+function renderRecords(){
+  updateCount();
+  const list = allRecords();
+  const host = document.getElementById('records-content');
+  if (!list.length) {
+    host.innerHTML = '<div class="no-data">No assessment submitted on this device yet.</div>';
+    return;
+  }
+  host.innerHTML = list.map(function(r){
+    const total = grandTotal(r), band = bandFor(total);
+    const st = r.syncState === 'synced' ? ['synced','Sent to server']
+             : r.syncState === 'sending' ? ['sending','Sending...']
+             : r.syncState === 'error'   ? ['error','Not sent']
+             : ['pending','Not sent'];
+    return '<div class="rec-card">' +
+      '<div class="rec-top"><span class="rec-id">' + esc(r.id) + '</span>' +
+        '<span class="rec-ver">v' + (r.version || 1) + '</span>' +
+        '<span class="sync ' + st[0] + '">' + st[1] + '</span></div>' +
+      '<div class="rec-body">' +
+        '<div class="rec-where">' + esc((r.meta && r.meta.address) || 'Address not given') + '</div>' +
+        '<div class="rec-meta">' + esc((r.meta && r.meta.district) || '') + ' · ' +
+          esc(prettyDate(r.meta && r.meta.date)) + ' · ' + esc((r.meta && r.meta.assessor) || '') + '</div>' +
+        '<div class="rec-score"><span class="n">' + total + '</span><span class="band ' + band.cls + '">' +
+          esc(band.label) + '</span></div>' +
+        '<div class="rec-meta">Submitted ' + esc(r.submittedAt) +
+          (r.version > 1 ? ' · updated ' + esc(r.updatedAt) : '') + '</div>' +
+      '</div>' +
+      '<div class="rec-btns">' +
+        '<button class="btn-sm pri" onclick="editRecord(\'' + esc(r.id) + '\')">✎ Edit</button>' +
+        '<button class="btn-sm" onclick="viewRecord(\'' + esc(r.id) + '\')">📊 Score sheet</button>' +
+        '<button class="btn-sm snd" onclick="sendOne(\'' + esc(r.id) + '\')">⇧ Send</button>' +
+      '</div>' +
+      (r.serverMsg && r.syncState !== 'synced' ? '<div class="rec-msg">' + esc(r.serverMsg) + '</div>' : '') +
+    '</div>';
+  }).join('');
+}
+
+function editRecord(id){
+  const r = findRecord(id);
+  if (!r) return;
+  cur = JSON.parse(JSON.stringify(r));   // work on a copy until resubmitted
+  fillForm(cur);
+  switchTab('entry');
+}
+
+function viewRecord(id){
+  const r = findRecord(id);
+  if (!r) return;
+  viewRec = r;
   switchTab('summary');
 }
 
+// ==================== SCORE SHEET ====================
 function renderSummary(){
-  if (!submitted && !ans._submitted) return;
-  const d = ans._identity || {};
-  const total = grandTotal();
+  const host = document.getElementById('summary-content');
+  if (!viewRec) {
+    document.getElementById('sum_date').textContent = 'No assessment submitted yet';
+    host.innerHTML = '<div class="no-data">Complete the assessment and tap "Submit to ICF-SL Server".</div>';
+    return;
+  }
+  const rec = viewRec, d = rec.meta || {};
+  const total = grandTotal(rec);
   const band = bandFor(total);
-  document.getElementById('sum_date').textContent = 'Saved: ' + (ans._submitted || new Date().toLocaleString());
+  document.getElementById('sum_date').textContent = 'Submitted: ' + (rec.submittedAt || '')
+    + (rec.version > 1 ? ' · updated ' + rec.updatedAt + ' (v' + rec.version + ')' : '');
 
   let html = `<div class="verdict" style="background:${
       band.cls === 'b1' ? 'linear-gradient(135deg,#1a8a3a,#28a745)' :
@@ -679,13 +951,19 @@ function renderSummary(){
     <div class="vscore">${total}</div>
     <div class="vof">out of 100 points</div>
     <div class="vband">${band.label}</div>
-    <div class="vname">${d.address || 'Address not given'} · ${d.district || ''}</div>
+    <div class="vname">${esc(d.address || 'Address not given')} · ${esc(d.district || '')}</div>
+  </div>`;
+
+  const st = rec.syncState === 'synced' ? 'Sent to the ICF-SL server' : 'Not sent yet, held on this device';
+  html += `<div class="summary-section"><div class="summary-section-title">Submission</div>
+    ${row('Submission ID', rec.id)}${row('Version', rec.version)}
+    ${row('Server status', st)}${row('Submitted by', rec.submittedBy)}
   </div>`;
 
   html += `<div class="summary-section"><div class="summary-section-title">Score Sheet</div>
     <table class="sheet"><thead><tr><th>Criteria</th><th class="n">Max</th><th class="n">Achieved</th><th class="n">%</th></tr></thead><tbody>`;
   SECTIONS.forEach(s => {
-    const got = sectionScore(s);
+    const got = sectionScore(rec, s);
     const pct = Math.round(got / s.max * 100);
     const cls = pct >= 85 ? 'ok' : pct >= 50 ? 'mid' : 'low';
     html += `<tr><td>${s.title}</td><td class="n">${s.max}</td><td class="n">${got}</td>
@@ -700,43 +978,35 @@ function renderSummary(){
     ${row('Assessor', d.assessor)}${row('Assessment date', prettyDate(d.date))}
   </div>`;
 
-  const area = ans.area, vol = ans.volume;
+  const area = d.area, vol = d.volume;
   html += `<div class="summary-section"><div class="summary-section-title">Capacity</div>
     ${row('Dimensions', (d.L||'0') + ' × ' + (d.W||'0') + ' × ' + (d.H||'0') + ' m')}
     ${row('Floor area', area !== null && area !== undefined ? area.toFixed(1) + ' m²' : '0 m²')}
     ${row('Storage volume', vol !== null && vol !== undefined ? vol.toFixed(1) + ' m³' : '0 m³')}
     ${row('Estimated bale capacity', d.baleCap)}
     ${row('Planned bales for district', d.balePlan)}
-    ${row('Plan against capacity', ans.fitPct !== null && ans.fitPct !== undefined ? ans.fitPct + '% of warehouse capacity' : '0%')}
-  </div>`;
-
-  const g = ans.gps;
-  html += `<div class="summary-section"><div class="summary-section-title">GPS Location</div>
-    ${row('Latitude', g ? g.lat.toFixed(6) : 'Not captured')}
-    ${row('Longitude', g ? g.lon.toFixed(6) : 'Not captured')}
-    ${row('Accuracy', g ? Math.round(g.acc) + ' m' : 'Not captured')}
-    ${row('Captured at', g ? g.at : 'Not captured')}
+    ${row('Planned against capacity', d.fitPct !== null && d.fitPct !== undefined ? d.fitPct + '% of warehouse capacity' : '0%')}
   </div>`;
 
   // deductions, so the reasons travel with the score
   const cuts = [];
   SECTIONS.forEach(s => s.items.forEach(it => {
-    const v = ans['sc_' + it.k];
-    if (typeof v === 'number' && v < it.max) cuts.push([it.t, v + '/' + it.max, ans['co_' + it.k] || '']);
+    const v = rec.scores[it.k];
+    if (typeof v === 'number' && v < it.max) cuts.push([it.t, v + '/' + it.max, rec.comments[it.k] || '']);
   }));
   html += `<div class="summary-section"><div class="summary-section-title">Points Deducted (${cuts.length})</div>`;
   html += cuts.length
-    ? cuts.map(c => `<div class="summary-item"><span class="summary-label">${c[0]}</span><span class="summary-value"><b>${c[1]}</b><br>${c[2]}</span></div>`).join('')
+    ? cuts.map(c => `<div class="summary-item"><span class="summary-label">${esc(c[0])}</span><span class="summary-value"><b>${c[1]}</b><br>${esc(c[2])}</span></div>`).join('')
     : '<div class="impr">Full marks on every criterion.</div>';
   html += `</div>`;
 
   html += `<div class="summary-section"><div class="summary-section-title">Recommendation</div>
-    ${row('Assessor recommendation', ans.recommendation || 'Not given')}
+    ${row('Assessor recommendation', rec.recommendation || 'Not given')}
     <div class="summary-item" style="display:block;"><span class="summary-label">Key improvements required</span></div>
-    <div class="impr">${(ans._improvements || 'None stated').replace(/[<>&]/g, m => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[m]))}</div>
+    <div class="impr">${esc(rec.improvements || 'None stated')}</div>
   </div>`;
 
-  document.getElementById('summary-content').innerHTML = html;
+  host.innerHTML = html;
 }
 /* show a date as 24/07/2026 rather than the stored 2026-07-24 */
 function prettyDate(iso){
@@ -746,7 +1016,7 @@ function prettyDate(iso){
 }
 
 function row(label, val){
-  return `<div class="summary-item"><span class="summary-label">${label}</span><span class="summary-value">${(val === undefined || val === null || val === '') ? 'Not given' : val}</span></div>`;
+  return `<div class="summary-item"><span class="summary-label">${label}</span><span class="summary-value">${(val === undefined || val === null || val === '') ? 'Not given' : esc(val)}</span></div>`;
 }
 
 // ==================== INIT ====================
@@ -754,20 +1024,26 @@ buildDistricts();
 buildScored();
 document.getElementById('assessDate').value = new Date().toISOString().split('T')[0];
 recalc();
+paintIdStrip();
+updateCount();
+renderRecords();
 </script>
 
 <script>
 /* ==================== SIGN IN ====================
-   Add or change users here. Three slots; fill the empty two when ready. */
+   Four accounts, one per assessment team. Add or change them here.
+   The team name is stamped on every submission and written to the sheet. */
 var USERS = [
-  { username: "msk", password: "1234", name: "Mohamed Sillah Kanu" },
-  { username: "",    password: "",     name: "" },   // second user, fill in
-  { username: "",    password: "",     name: "" }    // third user, fill in
+  { username: "team1", password: "team1@2026", name: "Team 1" },
+  { username: "team2", password: "team2@2026", name: "Team 2" },
+  { username: "team3", password: "team3@2026", name: "Team 3" },
+  { username: "team4", password: "team4@2026", name: "Team 4" }
 ];
 
 (function(){
   var KEY = "mocm_user";
   function currentUser(){ try { return JSON.parse(sessionStorage.getItem(KEY)); } catch(e){ return null; } }
+  window.WH_USER = currentUser;   // the form stamps the signed in assessor on every submission
 
   var css = document.createElement('style');
   css.textContent =
@@ -804,13 +1080,8 @@ var USERS = [
     d.querySelector('#lgOut').onclick = function(){ sessionStorage.removeItem(KEY); location.reload(); };
   }
 
-  /* the location prompt should not fight with the sign in card */
-  function startGPS(){
-    if (typeof window.captureGPS === 'function') setTimeout(window.captureGPS, 400);
-  }
-
   function gate(){
-    if (currentUser()) { showWho(); startGPS(); return; }
+    if (currentUser()) { showWho(); return; }
     var o = document.createElement('div');
     o.id = 'lgOverlay';
     o.innerHTML =
@@ -830,7 +1101,7 @@ var USERS = [
         var acc = USERS[i];
         if (acc.username && acc.username.toLowerCase() === u && acc.password === p) {
           sessionStorage.setItem(KEY, JSON.stringify({ username: acc.username, name: acc.name, at: new Date().toLocaleString() }));
-          o.remove(); showWho(); startGPS(); return;
+          o.remove(); showWho(); return;
         }
       }
       err.style.display = 'block';
@@ -848,7 +1119,7 @@ var USERS = [
   function stamp(){
     var u = currentUser(); if(!u) return;
     var host = document.getElementById('summary-content');
-    if(!host || host.querySelector('.lgStamp')) return;
+    if(!host || host.querySelector('.lgStamp') || host.querySelector('.no-data')) return;
     var d = document.createElement('div');
     d.className = 'lgStamp';
     d.innerHTML = 'Assessed and submitted by <b>' + u.name + '</b> (' + u.username + ')';
