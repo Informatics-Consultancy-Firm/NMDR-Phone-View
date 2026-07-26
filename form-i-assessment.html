@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<!-- this page carries its own styling; the marker below stops the portal re-theming it -->
+<meta id="mocm-theme" name="mocm-theme" content="self">
+<title>Module I Assessment — Perennial Malaria Chemoprevention (PMC)</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#004080;--navy2:#002952;--navy3:#0056b3;
+  --gold:#ffc107;--gold2:#e6a800;
+  --green:#1a7a3c;--green-l:#e8f5ee;--green-b:#b2dfcc;
+  --red:#c0392b;--red-l:#fff0ee;
+  --gray:#f0f4f8;--border:#dde3ee;
+}
+body{font-family:'Oswald',sans-serif;background:var(--gray);min-height:100vh;color:#1a2533}
+.hdr{background:linear-gradient(135deg,var(--navy2),var(--navy));padding:14px 20px;display:flex;align-items:center;gap:14px;border-bottom:3px solid var(--gold);box-shadow:0 4px 16px rgba(0,20,60,.3)}
+.hdr-logo{width:44px;height:44px;background:#fff;border-radius:9px;border:2px solid var(--gold);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.4rem}
+.hdr-txt h1{font-size:1.1rem;font-weight:700;color:#fff;letter-spacing:.5px}
+.hdr-txt p{font-size:.65rem;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.6px}
+.hdr-timer{margin-left:auto;background:rgba(255,255,255,.1);border:2px solid var(--gold);border-radius:10px;padding:6px 14px;font-size:1.3rem;font-weight:700;color:#fff;letter-spacing:1px;display:none;font-variant-numeric:tabular-nums}
+.hdr-timer.urgent{background:rgba(220,53,69,.3);border-color:#dc3545;animation:pulse .8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.screen{display:none;min-height:calc(100vh - 72px)}
+.screen.active{display:block}
+.tab-bar{background:#fff;border-bottom:2px solid var(--border);display:flex;position:sticky;top:0;z-index:100}
+.tab-btn{flex:1;padding:13px;font-family:'Oswald',sans-serif;font-size:.85rem;font-weight:600;letter-spacing:.5px;border:none;background:none;color:#607080;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s}
+.tab-btn.active{color:var(--navy);border-bottom-color:var(--navy)}
+.welcome-wrap{max-width:500px;margin:0 auto;padding:28px 16px}
+.welcome-card{background:#fff;border-radius:16px;padding:26px 22px;box-shadow:0 6px 24px rgba(0,64,128,.1);border-top:5px solid var(--gold)}
+.welcome-icon{width:60px;height:60px;background:linear-gradient(135deg,var(--navy),var(--navy3));border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:1.6rem}
+.welcome-title{font-size:1.3rem;font-weight:700;color:var(--navy);text-align:center;letter-spacing:.5px;margin-bottom:5px}
+.welcome-sub{font-size:.82rem;color:#607080;text-align:center;margin-bottom:18px;line-height:1.5}
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
+.info-box{background:var(--gray);border-radius:10px;padding:10px;text-align:center;border:2px solid var(--border)}
+.info-val{font-size:1.3rem;font-weight:700;color:var(--navy)}
+.info-lbl{font-size:.6rem;text-transform:uppercase;color:#607080;letter-spacing:.4px;margin-top:1px}
+.field{margin-bottom:13px}
+.label{font-size:.7rem;font-weight:600;color:var(--navy);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:5px}
+.input{width:100%;border:2px solid var(--border);border-radius:9px;padding:11px 13px;font-family:'Oswald',sans-serif;font-size:.95rem;outline:none;transition:border .2s}
+.input:focus{border-color:var(--navy)}
+.btn{width:100%;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:10px;font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.6px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{background:var(--navy2)}
+.btn:disabled{background:#bbb;cursor:not-allowed}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-gold:hover{background:var(--gold2)}
+.err-msg{color:var(--red);font-size:.78rem;text-align:center;margin-top:8px;display:none}
+.quiz-wrap{max-width:600px;margin:0 auto;padding:20px 16px}
+.q-progress-bar{height:6px;background:#e0e7ee;border-radius:3px;margin-bottom:6px}
+.q-progress-fill{height:6px;background:linear-gradient(90deg,var(--navy),var(--navy3));border-radius:3px;transition:width .3s}
+.q-meta{display:flex;justify-content:space-between;font-size:.72rem;color:#607080;margin-bottom:14px}
+.q-card{background:#fff;border-radius:14px;padding:22px 20px;box-shadow:0 4px 16px rgba(0,64,128,.1);margin-bottom:16px}
+.q-num{font-size:.7rem;font-weight:700;color:var(--navy3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.q-text{font-size:1rem;font-weight:600;color:#1a2533;line-height:1.55;margin-bottom:18px}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:center;gap:12px;border:2px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .2s;background:#fff}
+.opt:hover{border-color:var(--navy);background:#f0f5ff}
+.opt.selected{border-color:var(--navy);background:#e8f1fb}
+.opt-circle{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;transition:all .2s}
+.opt.selected .opt-circle{border-color:var(--navy);background:var(--navy);color:#fff}
+.opt-text{font-size:.92rem;line-height:1.4}
+.q-nav{display:flex;gap:10px;margin-top:4px}
+.q-nav-btn{flex:1;padding:11px;border:2px solid var(--navy);border-radius:9px;font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;background:#fff;color:var(--navy)}
+.q-nav-btn:hover{background:var(--navy);color:#fff}
+.q-nav-btn.primary{background:var(--navy);color:#fff}
+.q-nav-btn.primary:hover{background:var(--navy2)}
+.q-nav-btn.finish{background:linear-gradient(135deg,var(--green),#28a745);color:#fff;border-color:var(--green)}
+.q-nav-btn:disabled{opacity:.5;cursor:not-allowed}
+.result-wrap{max-width:560px;margin:0 auto;padding:24px 16px}
+.result-banner{border-radius:16px;padding:26px 22px;text-align:center;margin-bottom:20px}
+.result-banner.pass{background:linear-gradient(135deg,#1a8a3a,#28a745)}
+.result-banner.fail{background:linear-gradient(135deg,#c0392b,#e74c3c)}
+.result-banner.timeout{background:linear-gradient(135deg,#7b4f00,#c8991a)}
+.result-stamp{font-size:3rem;margin-bottom:10px}
+.result-score{font-size:2.8rem;font-weight:700;color:#fff;letter-spacing:1px}
+.result-name{font-size:1rem;color:rgba(255,255,255,.85);margin-top:4px}
+.result-verdict{font-size:1.1rem;font-weight:700;color:#fff;margin-top:8px;letter-spacing:.5px}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.stat-box{background:#fff;border-radius:10px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,64,128,.08)}
+.stat-val{font-size:1.6rem;font-weight:700;color:var(--navy)}
+.stat-lbl{font-size:.65rem;text-transform:uppercase;color:#607080;letter-spacing:.4px;margin-top:2px}
+.review-title{font-family:'Oswald',sans-serif;font-size:.85rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
+.review-item{background:#fff;border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:4px solid var(--border)}
+.review-item.ok{border-left-color:var(--green)}
+.review-item.bad{border-left-color:var(--red)}
+.review-q{font-size:.88rem;font-weight:600;color:#1a2533;margin-bottom:5px}
+.review-a{font-size:.8rem;color:#607080}
+.review-item.ok .review-a{color:var(--green)}
+.review-item.bad .review-a{color:var(--red)}
+.review-exp{font-size:.76rem;color:#5a4500;background:#f8f4e8;border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:6px 10px;margin-top:6px;line-height:1.45}
+.grades-wrap{max-width:760px;margin:0 auto;padding:22px 16px}
+.admin-login{max-width:360px;margin:0 auto}
+.grades-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.kpi-box{background:#fff;border-radius:10px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,64,128,.08)}
+.kpi-val{font-size:1.5rem;font-weight:700}
+.kpi-lbl{font-size:.65rem;text-transform:uppercase;color:#607080;letter-spacing:.4px;margin-top:2px}
+.grade-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,64,128,.08)}
+.grade-table th{background:linear-gradient(135deg,var(--navy2),var(--navy));color:#fff;padding:10px 12px;text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.5px}
+.grade-table td{padding:10px 12px;font-size:.85rem;border-bottom:1px solid var(--border)}
+.grade-table tr:last-child td{border-bottom:none}
+.grade-table tr:hover td{background:#f5f8ff}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:700;letter-spacing:.3px}
+.badge.pass{background:var(--green-l);color:var(--green);border:1px solid var(--green-b)}
+.badge.fail{background:var(--red-l);color:var(--red);border:1px solid #f0b8b2}
+.badge.timeout{background:#fff8e1;color:#8a6500;border:1px solid #ffe082}
+.sync-pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700}
+.sync-pill.ok{background:#e8f5ee;color:var(--green)}
+.sync-pill.pend{background:#fff8e1;color:#8a6500}
+/* CERTIFICATE */
+.cert-overlay{display:none;position:fixed;inset:0;background:rgba(0,20,50,.72);z-index:9000;overflow-y:auto;padding:20px 12px}
+.cert-overlay.show{display:block}
+.cert-scroll{max-width:780px;margin:0 auto}
+#certificate{background:#fff;border:4px solid var(--gold);border-radius:6px;position:relative;box-shadow:0 10px 40px rgba(0,0,0,.4)}
+.cert-inner{border:2px solid var(--navy);margin:9px;padding:30px 34px 24px;text-align:center}
+.cert-seal{width:62px;height:62px;margin:0 auto 10px;background:linear-gradient(135deg,var(--navy),var(--navy3));border:3px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem}
+.cert-org{font-size:.74rem;letter-spacing:2px;color:var(--navy);font-weight:700;text-transform:uppercase}
+.cert-org2{font-size:.62rem;letter-spacing:1.5px;color:#607080;text-transform:uppercase;margin-top:3px}
+.cert-title{font-size:1.85rem;font-weight:700;color:var(--navy);letter-spacing:3px;margin:16px 0 2px;text-transform:uppercase}
+.cert-rule{width:120px;height:3px;background:var(--gold);margin:8px auto 16px}
+.cert-lead{font-size:.8rem;color:#607080;letter-spacing:.5px}
+.cert-name{font-size:1.8rem;font-weight:700;color:#1a2533;margin:8px 0 3px;border-bottom:2px solid var(--border);display:inline-block;padding:0 24px 6px}
+.cert-role{font-size:.85rem;color:#607080;margin-bottom:14px}
+.cert-body{font-size:.9rem;color:#3a4a5a;line-height:1.6;max-width:520px;margin:0 auto}
+.cert-score{font-size:1.15rem;font-weight:700;color:var(--green);margin:14px 0;letter-spacing:.5px}
+.cert-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px;gap:24px}
+.cert-sign{flex:1;text-align:center}
+.cert-sign-line{border-top:2px solid var(--navy);padding-top:5px;font-size:.66rem;color:#607080;letter-spacing:1px;text-transform:uppercase}
+.cert-meta{font-size:.62rem;color:#98a4b3;margin-top:18px;letter-spacing:.5px}
+.cert-actions{max-width:780px;margin:14px auto 0;display:flex;gap:10px}
+.cert-actions .btn{width:auto;flex:1}
+@media print{
+  @page{size:landscape;margin:12mm}
+  body{background:#fff}
+  body *{visibility:hidden}
+  #certificate,#certificate *{visibility:visible;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .cert-overlay{background:#fff!important;padding:0;position:absolute;inset:auto;top:0;left:0;width:100%}
+  #certificate{position:absolute;left:0;top:0;width:100%;box-shadow:none}
+  .no-print{display:none!important}
+}
+
+.q-type{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.6rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;margin-bottom:10px}
+.q-type.k{background:#e8f1fb;color:var(--navy);border:1px solid #c3d9f0}
+.q-type.s{background:#fff8e1;color:#8a6500;border:1px solid #ffe082}
+.sec-note{background:#f0f4f8;border-left:4px solid var(--navy);border-radius:0 8px 8px 0;padding:10px 12px;font-size:.76rem;color:#4a5a6a;line-height:1.5;margin-bottom:14px}
+.who-chip{background:#e8f1fb;border:1px solid #c3d9f0;border-radius:8px;padding:8px 11px;font-size:.75rem;color:var(--navy);margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-logo">&#128138;</div>
+  <div class="hdr-txt">
+    <h1>MODULE I — PERENNIAL MALARIA CHEMOPREVENTION (PMC)</h1>
+    <p>FORM I — Use of SP as PMC</p>
+  </div>
+  <div class="hdr-timer" id="hdrTimer">10:00</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" id="tab-quiz" onclick="showTab('quiz')">ASSESSMENT</button>
+  <button class="tab-btn" id="tab-grades" onclick="showTab('grades')">GRADES</button>
+</div>
+
+<!-- WELCOME -->
+<div class="screen active" id="screen-welcome">
+  <div class="welcome-wrap">
+    <div class="welcome-card">
+      <div class="welcome-icon">&#128138;</div>
+      <div class="welcome-title">MODULE I KNOWLEDGE CHECK</div>
+      <div class="welcome-sub">FORM I — Use of SP as PMC</div>
+      <div class="info-grid">
+        <div class="info-box"><div class="info-val" id="infoQ">10</div><div class="info-lbl">Questions</div></div>
+        <div class="info-box"><div class="info-val" id="infoMin">10</div><div class="info-lbl">Minutes</div></div>
+        <div class="info-box"><div class="info-val" id="infoPass">8/10</div><div class="info-lbl">Pass Mark</div></div>
+      </div>
+      <div class="sec-note">
+        Five knowledge questions, then five field scenarios. One answer each, and you
+        can go back before submitting. The explanation for every question is shown after you finish.
+      </div>
+      <div class="who-chip" id="whoChip" style="display:none;"></div>
+      <div class="field">
+        <label class="label">FULL NAME <span style="color:var(--red)">*</span></label>
+        <input class="input" id="participantName" placeholder="Enter your full name" autocomplete="off">
+      </div>
+      <div class="field">
+        <label class="label">ROLE / DESIGNATION <span style="color:var(--red)">*</span></label>
+        <input class="input" id="participantRole" placeholder="e.g. District M&amp;E Officer, CHO, Supervisor">
+      </div>
+      <div class="err-msg" id="welcomeErr">Please enter your full name and role.</div>
+      <div class="err-msg" id="alreadyDoneErr" style="font-size:.85rem;">This name has already completed the Module I assessment on this device.</div>
+      <button class="btn" onclick="startQuiz()" style="margin-top:6px;">START ASSESSMENT &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="screen" id="screen-quiz">
+  <div class="quiz-wrap">
+    <div class="q-progress-bar"><div class="q-progress-fill" id="qProgressFill" style="width:0%"></div></div>
+    <div class="q-meta">
+      <span id="qProgress">Question 1 of 10</span>
+      <span id="qAnswered">0 answered</span>
+    </div>
+    <div class="q-card">
+      <div class="q-type k" id="qType">KNOWLEDGE</div>
+      <div class="q-num" id="qNum">QUESTION 1</div>
+      <div class="q-text" id="qText"></div>
+      <div class="opts" id="qOpts"></div>
+    </div>
+    <div class="q-nav">
+      <button class="q-nav-btn" onclick="prevQ()">&larr; BACK</button>
+      <button class="q-nav-btn primary" id="nextBtn" onclick="nextQ()">NEXT &rarr;</button>
+      <button class="q-nav-btn finish" id="finishBtn" onclick="finishQuiz(false)" style="display:none;">SUBMIT</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="screen-result">
+  <div class="result-wrap">
+    <div class="result-banner" id="resultBanner">
+      <div class="result-stamp" id="resultStamp">&#127942;</div>
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-name" id="resultName"></div>
+      <div class="result-verdict" id="resultVerdict"></div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-val" id="statCorrect" style="color:var(--green)">0</div><div class="stat-lbl">Correct</div></div>
+      <div class="stat-box"><div class="stat-val" id="statWrong" style="color:var(--red)">0</div><div class="stat-lbl">Wrong</div></div>
+      <div class="stat-box"><div class="stat-val" id="statPct" style="color:var(--navy)">0%</div><div class="stat-lbl">Score</div></div>
+    </div>
+    <div id="certBtnWrap" style="display:none;margin-bottom:16px;">
+      <button class="btn btn-gold" onclick="openCert()" style="font-size:1rem;">GET / PRINT CERTIFICATE</button>
+    </div>
+    <div class="review-title">REVIEW YOUR ANSWERS</div>
+    <div id="reviewList"></div>
+    <div style="margin-top:14px;background:#f0f4f8;border-radius:10px;padding:14px;text-align:center;font-size:.82rem;color:#607080;">
+      Assessment complete — one submission per person on this device.
+    </div>
+  </div>
+</div>
+
+<!-- GRADES -->
+<div class="screen" id="screen-grades">
+  <div class="grades-wrap">
+    <div id="adminLoginWrap" class="admin-login">
+      <div class="welcome-card">
+        <div style="text-align:center;font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:14px;">SUPERVISOR ACCESS</div>
+        <div class="field">
+          <label class="label">PASSWORD</label>
+          <input class="input" id="adminPwd" type="password" placeholder="Enter supervisor password" onkeydown="if(event.key==='Enter')adminLogin()">
+        </div>
+        <div class="err-msg" id="adminErr" style="display:none;">Incorrect password.</div>
+        <button class="btn" onclick="adminLogin()" style="margin-top:6px;">UNLOCK GRADES</button>
+      </div>
+    </div>
+    <div id="gradesDashboard" style="display:none;">
+      <div class="grades-kpi" id="gradesKPI"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+        <div style="font-family:'Oswald',sans-serif;font-size:.85rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;">MODULE I SUBMISSIONS</div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-gold" onclick="syncAllPending()" style="width:auto;padding:7px 14px;font-size:.78rem;">SYNC ALL</button>
+          <button class="btn" onclick="exportCSV()" style="width:auto;padding:7px 14px;font-size:.78rem;background:var(--green);">EXPORT CSV</button>
+          <button class="btn" onclick="if(confirm('Clear all Module I grades on this device?')){localStorage.removeItem(STORE);renderGrades();}" style="width:auto;padding:7px 14px;font-size:.78rem;background:var(--red);">CLEAR</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="grade-table" id="gradeTable">
+          <thead><tr>
+            <th>#</th><th>Name</th><th>Role</th><th>Score</th><th>Correct</th><th>Knowledge</th><th>Scenario</th><th>Time</th><th>Result</th><th>Date/Time</th><th>Sync</th>
+          </tr></thead>
+          <tbody id="gradeBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CERTIFICATE -->
+<div class="cert-overlay" id="certModal">
+  <div class="cert-scroll">
+    <div id="certificate">
+      <div class="cert-inner">
+        <div class="cert-seal">&#9873;</div>
+        <div class="cert-org">Informatics Consultancy Firm — Sierra Leone</div>
+        <div class="cert-org2">National Malaria Control Programme &middot; MOCM / OTSS+</div>
+        <div class="cert-title">Certificate of Completion</div>
+        <div class="cert-rule"></div>
+        <div class="cert-lead">This is to certify that</div>
+        <div class="cert-name" id="certName">—</div>
+        <div class="cert-role" id="certRole">—</div>
+        <div class="cert-body">has completed the <strong>Module I assessment — Perennial Malaria Chemoprevention (PMC)</strong> and demonstrated understanding of the supervision procedures in FORM I — Use of SP as PMC.</div>
+        <div class="cert-score" id="certScore">Score: 0 / 10 (0%)</div>
+        <div class="cert-foot">
+          <div class="cert-sign"><div class="cert-sign-line">Supervisor</div></div>
+          <div class="cert-sign"><div class="cert-sign-line">NMCP / ICF-SL</div></div>
+        </div>
+        <div class="cert-meta" id="certMeta">Issued —</div>
+      </div>
+    </div>
+    <div class="cert-actions no-print">
+      <button class="btn btn-gold" onclick="window.print()">PRINT / SAVE AS PDF</button>
+      <button class="btn" onclick="closeCert()" style="background:#607080;">CLOSE</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════
+const GAS_URL        = '';            // paste the ICF-SL endpoint here to sync grades
+const ADMIN_PASSWORD = 'admin123';    // supervisor password for the GRADES tab
+const TOTAL_MINUTES  = 10;
+const PASS_SCORE     = 8;             // correct answers needed out of 10
+const MODULE         = 'I';
+const MODULE_TITLE   = "Perennial Malaria Chemoprevention (PMC)";
+const STORE          = 'mocm_grades_i';
+
+// ═══════════════════════════════════════════
+// QUESTIONS — 5 knowledge, then 5 scenario
+// ═══════════════════════════════════════════
+const QUESTIONS = [
+  {
+    "t": "k",
+    "q": "How many SP doses are in the PMC schedule?",
+    "opts": [
+      "Six",
+      "Three",
+      "Four",
+      "Five"
+    ],
+    "ans": 0,
+    "exp": "Six doses: 10 weeks, 14 weeks, 6 months, 9 months, 12 months and 15 months."
+  },
+  {
+    "t": "k",
+    "q": "At what age is the first PMC dose given?",
+    "opts": [
+      "At birth",
+      "6 weeks",
+      "10 weeks",
+      "6 months"
+    ],
+    "ans": 2,
+    "exp": "The first dose is at 10 weeks."
+  },
+  {
+    "t": "k",
+    "q": "When is the sixth and last dose given?",
+    "opts": [
+      "9 months",
+      "12 months",
+      "15 months",
+      "24 months"
+    ],
+    "ans": 2,
+    "exp": "The schedule ends at 15 months."
+  },
+  {
+    "t": "k",
+    "q": "The question about the PMC job aide is answered how?",
+    "opts": [
+      "By asking the provider",
+      "By observing whether it is there",
+      "From the last supervision report",
+      "From the district inventory"
+    ],
+    "ans": 1,
+    "exp": "It is an observation. If you cannot see it in the clinic, the answer is No."
+  },
+  {
+    "t": "k",
+    "q": "No child received the 12-month dose last month. What do you enter in that box?",
+    "opts": [
+      "Leave it blank",
+      "N/A",
+      "A dash",
+      "0"
+    ],
+    "ans": 3,
+    "exp": "Type 0. A blank box blocks the save and hides the finding."
+  },
+  {
+    "t": "s",
+    "q": "The provider says the PMC job aide exists, and you find it still wrapped in the store room. What do you record?",
+    "opts": [
+      "No — it is not available in the clinic where it is used",
+      "Yes — the facility has one",
+      "N/A",
+      "Yes, with a comment"
+    ],
+    "ans": 0,
+    "exp": "The question asks whether it is available in the clinic. In the store, unopened, it is not in use."
+  },
+  {
+    "t": "s",
+    "q": "Your tally reads 40, 33, 20, 12, 9 and 8 across the six doses. What does the pattern tell you?",
+    "opts": [
+      "The facility is over-reporting",
+      "Children are not returning for the later doses",
+      "SP is out of stock",
+      "Nothing — doses always fall"
+    ],
+    "ans": 1,
+    "exp": "The completion pattern is the finding. A steep fall means defaulting, and it needs following up."
+  },
+  {
+    "t": "s",
+    "q": "You are visiting in July and counting June's register. What do you enter as the reporting month?",
+    "opts": [
+      "July, the month of the visit",
+      "May",
+      "It does not matter",
+      "June, the month you counted"
+    ],
+    "ans": 3,
+    "exp": "The month you counted, not the month you visited."
+  },
+  {
+    "t": "s",
+    "q": "The provider gives you a figure for total visits from memory. The register shows a different number. Which do you use?",
+    "opts": [
+      "The register figure",
+      "The provider's figure — she was there",
+      "An average of the two",
+      "Leave it blank"
+    ],
+    "ans": 0,
+    "exp": "Total visits is the denominator for everything else. Take it from the register."
+  },
+  {
+    "t": "s",
+    "q": "The provider has not been trained on the revised guidelines, but the job aide is on the wall and doses are being given. How do you record it?",
+    "opts": [
+      "Trained: Yes, because doses are given correctly",
+      "Trained: No, job aide: Yes — record both as they are",
+      "Skip both questions",
+      "Trained: No, and stop the assessment"
+    ],
+    "ans": 1,
+    "exp": "Record what is true for each question. Untrained staff working from a job aide is itself the finding."
+  }
+];
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let participant   = { name:'', role:'' };
+let current       = 0;
+let answers       = new Array(QUESTIONS.length).fill(null);
+let adminLoggedIn = false;
+let timerInterval = null;
+let secondsLeft   = TOTAL_MINUTES * 60;
+let quizStartTime = null;
+let lastGrade     = null;
+
+document.getElementById('infoQ').textContent    = QUESTIONS.length;
+document.getElementById('infoMin').textContent  = TOTAL_MINUTES;
+document.getElementById('infoPass').textContent = PASS_SCORE + '/' + QUESTIONS.length;
+
+// if the supervisor signed in on a data collection form, carry the name over
+(function prefill(){
+  try {
+    const u = JSON.parse(sessionStorage.getItem('mocm_user'));
+    if (u && u.name) {
+      document.getElementById('participantName').value = u.name;
+      const chip = document.getElementById('whoChip');
+      chip.textContent = 'Signed in as ' + u.name + ' (' + u.username + ')';
+      chip.style.display = 'block';
+    }
+  } catch(e) {}
+})();
+
+// ═══════════════════════════════════════════
+// TABS / SCREENS
+// ═══════════════════════════════════════════
+function showTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  if (tab === 'quiz') {
+    const inResult = document.getElementById('screen-result').classList.contains('active');
+    if (!inResult) showScreen('welcome');
+  } else {
+    showScreen('grades');
+    if (adminLoggedIn) renderGrades();
+  }
+}
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+}
+
+// ═══════════════════════════════════════════
+// START
+// ═══════════════════════════════════════════
+function startQuiz() {
+  const name = document.getElementById('participantName').value.trim();
+  const role = document.getElementById('participantRole').value.trim();
+  document.getElementById('welcomeErr').style.display = 'none';
+  document.getElementById('alreadyDoneErr').style.display = 'none';
+  if (!name || !role) { document.getElementById('welcomeErr').style.display = 'block'; return; }
+
+  const grades = JSON.parse(localStorage.getItem(STORE)||'[]');
+  if (grades.some(g => (g.name||'').toLowerCase() === name.toLowerCase())) {
+    document.getElementById('alreadyDoneErr').style.display = 'block'; return;
+  }
+
+  participant = { name, role };
+  current = 0;
+  answers = new Array(QUESTIONS.length).fill(null);
+  secondsLeft = TOTAL_MINUTES * 60;
+  quizStartTime = Date.now();
+  showScreen('quiz');
+  renderQuestion();
+  startTimer();
+}
+
+// ═══════════════════════════════════════════
+// TIMER
+// ═══════════════════════════════════════════
+function startTimer() {
+  const t = document.getElementById('hdrTimer');
+  t.style.display = 'block';
+  updateTimerDisplay();
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    updateTimerDisplay();
+    if (secondsLeft <= 0) { clearInterval(timerInterval); finishQuiz(true); }
+  }, 1000);
+}
+function updateTimerDisplay() {
+  const t = document.getElementById('hdrTimer');
+  const m = Math.floor(secondsLeft/60), s = secondsLeft%60;
+  t.textContent = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  t.classList.toggle('urgent', secondsLeft <= 30);
+}
+
+// ═══════════════════════════════════════════
+// QUESTIONS
+// ═══════════════════════════════════════════
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  const total = QUESTIONS.length;
+  document.getElementById('qProgressFill').style.width = (current/total*100)+'%';
+  document.getElementById('qProgress').textContent = 'Question ' + (current+1) + ' of ' + total;
+  document.getElementById('qAnswered').textContent = answers.filter(a => a!==null).length + ' answered';
+  const chip = document.getElementById('qType');
+  chip.className = 'q-type ' + q.t;
+  chip.textContent = q.t === 'k' ? 'KNOWLEDGE' : 'FIELD SCENARIO';
+  document.getElementById('qNum').textContent = 'QUESTION ' + (current+1);
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('qOpts').innerHTML = q.opts.map((o,i) => {
+    const sel = answers[current]===i ? ' selected' : '';
+    const letter = String.fromCharCode(65+i);
+    return '<div class="opt'+sel+'" onclick="selectOption('+i+')"><div class="opt-circle">'+letter+'</div><div class="opt-text">'+o+'</div></div>';
+  }).join('');
+  const last = current === total-1;
+  document.getElementById('nextBtn').style.display   = last ? 'none' : 'block';
+  document.getElementById('finishBtn').style.display = last ? 'block' : 'none';
+}
+function selectOption(i) { answers[current] = i; renderQuestion(); }
+function prevQ() { if (current>0) { current--; renderQuestion(); } }
+function nextQ() {
+  if (answers[current]===null) { alert('Please select an answer first.'); return; }
+  if (current < QUESTIONS.length-1) { current++; renderQuestion(); }
+}
+
+// ═══════════════════════════════════════════
+// FINISH
+// ═══════════════════════════════════════════
+function finishQuiz(timedOut) {
+  if (!timedOut) {
+    const missing = answers.findIndex(a => a === null);
+    if (missing > -1) { current = missing; renderQuestion(); alert('Question ' + (missing+1) + ' has not been answered.'); return; }
+  }
+  clearInterval(timerInterval);
+  document.getElementById('hdrTimer').style.display = 'none';
+
+  const total = QUESTIONS.length;
+  let correct = 0, kCorrect = 0, sCorrect = 0, kTotal = 0, sTotal = 0;
+  QUESTIONS.forEach((q,i) => {
+    const ok = answers[i] === q.ans;
+    if (q.t === 'k') { kTotal++; if (ok) kCorrect++; } else { sTotal++; if (ok) sCorrect++; }
+    if (ok) correct++;
+  });
+  const pct     = Math.round(correct/total*100);
+  const pass    = !timedOut && correct >= PASS_SCORE;
+  const secUsed = Math.min(TOTAL_MINUTES*60, Math.round((Date.now()-quizStartTime)/1000));
+  const timeUsed = String(Math.floor(secUsed/60)).padStart(2,'0')+':'+String(secUsed%60).padStart(2,'0');
+  const now = new Date();
+
+  const grade = {
+    module: MODULE, moduleTitle: MODULE_TITLE,
+    name: participant.name, role: participant.role,
+    correct, total, pct, pass, timedOut,
+    knowledge: kCorrect + '/' + kTotal, scenario: sCorrect + '/' + sTotal,
+    timeUsed, datetime: now.toLocaleString('en-GB'),
+    timestamp: now.getTime(), synced: false
+  };
+
+  const grades = JSON.parse(localStorage.getItem(STORE)||'[]');
+  grades.push(grade);
+  localStorage.setItem(STORE, JSON.stringify(grades));
+  submitGradeToServer(grade);
+
+  const banner = document.getElementById('resultBanner');
+  banner.className = 'result-banner ' + (timedOut ? 'timeout' : pass ? 'pass' : 'fail');
+  document.getElementById('resultStamp').innerHTML  = timedOut ? '&#9201;' : pass ? '&#127942;' : '&#128218;';
+  document.getElementById('resultScore').textContent = correct + '/' + total;
+  document.getElementById('resultName').textContent  = participant.name;
+  document.getElementById('resultVerdict').textContent = timedOut
+    ? 'TIME IS UP — ASSESSMENT ENDED'
+    : pass ? 'PASSED — ' + correct + ' of ' + total + ' correct'
+    : 'NOT PASSED — ' + PASS_SCORE + ' of ' + total + ' needed';
+  document.getElementById('statCorrect').textContent = correct;
+  document.getElementById('statWrong').textContent   = total - correct;
+  document.getElementById('statPct').textContent     = pct + '%';
+
+  document.getElementById('reviewList').innerHTML = QUESTIONS.map((q,i) => {
+    const ok = answers[i] === q.ans;
+    const yourAns = answers[i] !== null ? q.opts[answers[i]] : '(not answered)';
+    const tag = q.t === 'k' ? 'Knowledge' : 'Scenario';
+    return '<div class="review-item ' + (ok?'ok':'bad') + '">' +
+      '<div class="review-q">' + (i+1) + '. [' + tag + '] ' + q.q + '</div>' +
+      '<div class="review-a">' + (ok ? 'Correct: ' + q.opts[q.ans]
+        : 'Yours: ' + yourAns + '  |  Correct: ' + q.opts[q.ans]) + '</div>' +
+      '<div class="review-exp">' + q.exp + '</div></div>';
+  }).join('');
+
+  lastGrade = grade;
+  document.getElementById('certBtnWrap').style.display = pass ? 'block' : 'none';
+  showScreen('result');
+}
+
+// ═══════════════════════════════════════════
+// CERTIFICATE
+// ═══════════════════════════════════════════
+function openCert() {
+  if (!lastGrade) return;
+  document.getElementById('certName').textContent  = lastGrade.name;
+  document.getElementById('certRole').textContent  = 'Role: ' + lastGrade.role;
+  document.getElementById('certScore').textContent = 'Score: ' + lastGrade.correct + ' / ' + lastGrade.total + ' (' + lastGrade.pct + '%)';
+  const d = new Date(lastGrade.timestamp);
+  const certId = 'ICF-MOCM-' + MODULE + '-' + String(lastGrade.timestamp).slice(-6);
+  document.getElementById('certMeta').textContent =
+    'Issued ' + d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}) + '  ·  Certificate No. ' + certId;
+  document.getElementById('certModal').classList.add('show');
+}
+function closeCert() { document.getElementById('certModal').classList.remove('show'); }
+
+// ═══════════════════════════════════════════
+// SEND TO SERVER (skipped until GAS_URL is set)
+// ═══════════════════════════════════════════
+async function submitGradeToServer(grade) {
+  if (!GAS_URL) return;                       // no endpoint yet — kept on the device
+  try {
+    await fetch(GAS_URL, { method:'POST', body: JSON.stringify({ action:'saveAssessmentGrade', data: grade }) });
+    const grades = JSON.parse(localStorage.getItem(STORE)||'[]');
+    const idx = grades.findIndex(g => g.timestamp === grade.timestamp);
+    if (idx >= 0) { grades[idx].synced = true; localStorage.setItem(STORE, JSON.stringify(grades)); }
+  } catch(e) { /* stays pending until SYNC ALL */ }
+}
+
+// ═══════════════════════════════════════════
+// GRADES
+// ═══════════════════════════════════════════
+function adminLogin() {
+  if (document.getElementById('adminPwd').value === ADMIN_PASSWORD) {
+    adminLoggedIn = true;
+    document.getElementById('adminLoginWrap').style.display  = 'none';
+    document.getElementById('gradesDashboard').style.display = 'block';
+    document.getElementById('adminPwd').value = '';
+    document.getElementById('adminErr').style.display = 'none';
+    renderGrades();
+  } else {
+    document.getElementById('adminErr').style.display = 'block';
+  }
+}
+
+function renderGrades() {
+  const grades = JSON.parse(localStorage.getItem(STORE)||'[]').sort((a,b)=>b.timestamp-a.timestamp);
+  const total  = grades.length;
+  const passed = grades.filter(g => g.pass).length;
+  const failed = total - passed;
+  const avgPct = total ? Math.round(grades.reduce((s,g)=>s+g.pct,0)/total) : 0;
+
+  document.getElementById('gradesKPI').innerHTML =
+    '<div class="kpi-box"><div class="kpi-val" style="color:var(--navy)">' + total + '</div><div class="kpi-lbl">Attempts</div></div>' +
+    '<div class="kpi-box"><div class="kpi-val" style="color:var(--green)">' + passed + '</div><div class="kpi-lbl">Passed</div></div>' +
+    '<div class="kpi-box"><div class="kpi-val" style="color:var(--red)">' + failed + '</div><div class="kpi-lbl">Not Passed</div></div>' +
+    '<div class="kpi-box"><div class="kpi-val" style="color:var(--navy)">' + avgPct + '%</div><div class="kpi-lbl">Avg Score</div></div>';
+
+  const body = document.getElementById('gradeBody');
+  if (!grades.length) {
+    body.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:30px;color:#aaa;">No submissions yet</td></tr>'; return;
+  }
+  body.innerHTML = grades.map((g,i) =>
+    '<tr>' +
+    '<td style="color:#aaa;font-size:.75rem;">' + (total-i) + '</td>' +
+    '<td style="font-weight:600;">' + g.name + '</td>' +
+    '<td style="color:#607080;">' + g.role + '</td>' +
+    '<td style="font-weight:700;color:' + (g.pass?'var(--green)':g.pct>=50?'var(--navy)':'var(--red)') + ';">' + g.pct + '%</td>' +
+    '<td>' + g.correct + '/' + g.total + '</td>' +
+    '<td>' + (g.knowledge||'—') + '</td>' +
+    '<td>' + (g.scenario||'—') + '</td>' +
+    '<td>' + (g.timeUsed||'—') + '</td>' +
+    '<td><span class="badge ' + (g.timedOut?'timeout':g.pass?'pass':'fail') + '">' + (g.timedOut?'TIMEOUT':g.pass?'PASS':'FAIL') + '</span></td>' +
+    '<td style="font-size:.78rem;color:#607080;">' + g.datetime + '</td>' +
+    '<td><span class="sync-pill ' + (g.synced?'ok':'pend') + '">' + (g.synced?'Synced':'Pending') + '</span></td>' +
+    '</tr>').join('');
+}
+
+async function syncAllPending() {
+  if (!GAS_URL) { alert('No server address is set yet. Grades are saved on this device — use EXPORT CSV, or add the endpoint to GAS_URL.'); return; }
+  const grades = JSON.parse(localStorage.getItem(STORE)||'[]');
+  const pending = grades.filter(g => !g.synced);
+  if (!pending.length) { alert('All grades already synced.'); return; }
+  let count = 0;
+  for (const g of pending) {
+    try {
+      await fetch(GAS_URL, { method:'POST', body: JSON.stringify({ action:'saveAssessmentGrade', data:g }) });
+      g.synced = true; count++;
+    } catch(e) {}
+  }
+  localStorage.setItem(STORE, JSON.stringify(grades));
+  renderGrades();
+  alert('Synced ' + count + ' of ' + pending.length + ' records.');
+}
+
+function exportCSV() {
+  const grades = JSON.parse(localStorage.getItem(STORE)||'[]');
+  if (!grades.length) { alert('No data to export.'); return; }
+  const rows = [['Module','Module Title','Name','Role','Score %','Correct','Total','Knowledge','Scenario','Time Used','Result','Timed Out','Date/Time','Synced']];
+  grades.forEach(g => rows.push([g.module||MODULE, g.moduleTitle||MODULE_TITLE, g.name, g.role, g.pct, g.correct, g.total,
+    g.knowledge||'', g.scenario||'', g.timeUsed||'', g.pass?'PASS':'FAIL', g.timedOut?'Yes':'No', g.datetime, g.synced?'Yes':'No']));
+  const csv = rows.map(r => r.map(v => '"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
+  a.download = 'module_i_assessment_grades_' + new Date().toISOString().split('T')[0] + '.csv';
+  a.click();
+}
+</script>
+</body>
+</html>
