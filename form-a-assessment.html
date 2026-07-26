@@ -174,7 +174,7 @@ body{font-family:'Oswald',sans-serif;background:var(--gray);min-height:100vh;col
       <div class="info-grid">
         <div class="info-box"><div class="info-val" id="infoQ">10</div><div class="info-lbl">Questions</div></div>
         <div class="info-box"><div class="info-val" id="infoMin">10</div><div class="info-lbl">Minutes</div></div>
-        <div class="info-box"><div class="info-val" id="infoPass">8/10</div><div class="info-lbl">Pass Mark</div></div>
+        <div class="info-box"><div class="info-val" id="infoPass">10/10</div><div class="info-lbl">Pass Mark</div></div>
       </div>
       <div class="sec-note">
         Five knowledge questions, then five field scenarios. One answer each, and you
@@ -315,7 +315,7 @@ body{font-family:'Oswald',sans-serif;background:var(--gray);min-height:100vh;col
 const GAS_URL        = '';            // paste the ICF-SL endpoint here to sync grades
 const ADMIN_PASSWORD = 'admin123';    // supervisor password for the GRADES tab
 const TOTAL_MINUTES  = 10;
-const PASS_SCORE     = 8;             // correct answers needed out of 10
+const PASS_SCORE     = 10;            // correct answers needed out of 10, every question must be right
 const MODULE         = 'A';
 const MODULE_TITLE   = "Facility Profile";
 const STORE          = 'mocm_grades_a';
@@ -326,19 +326,31 @@ const STORE          = 'mocm_grades_a';
 const QUESTIONS = [
   {
     "t": "k",
-    "q": "Which field in Form A fills itself once you choose the health facility?",
+    "q": "What opens the supervisor cards and the staff cards in Form A?",
     "opts": [
-      "Health Facility Type",
-      "District",
-      "Chiefdom",
-      "Date of visit"
+      "The + Add button at the bottom of each section",
+      "The number you type in question 10 and question 11",
+      "They are all open from the start, ten of each",
+      "The supervisor's signature"
     ],
-    "ans": 0,
-    "exp": "Facility type is taken from the facility list. Check it rather than typing over it."
+    "ans": 1,
+    "exp": "There is no add button. Question 10 opens that many supervisor cards, question 11 opens that many staff cards, and lowering the number closes the last card."
   },
   {
     "t": "k",
-    "q": "How many digits must a supervisor's phone number have?",
+    "q": "How is a cadre entered in Form A, both for the In-Charge and for a staff member?",
+    "opts": [
+      "Typed in full, spelt however the facility writes it",
+      "Typed as an abbreviation, for example SECHN",
+      "Picked from a dropdown, with Other for anything not listed",
+      "Left blank when you are not sure"
+    ],
+    "ans": 2,
+    "exp": "Both cadre fields read the same dropdown, so cadres are written the same way everywhere. Other reveals a specify box that then has to be filled."
+  },
+  {
+    "t": "k",
+    "q": "How many digits must a phone number have in Form A, on a supervisor card or a staff card?",
     "opts": [
       "8",
       "9",
@@ -346,7 +358,7 @@ const QUESTIONS = [
       "Any length"
     ],
     "ans": 1,
-    "exp": "Nine digits. Drop the +232 and any leading zero pair before it — 099177283, not +232 99 177 283."
+    "exp": "Nine digits: 099177283. Drop the +232 and keep the local number. The field takes digits only and stops at nine."
   },
   {
     "t": "k",
@@ -354,7 +366,7 @@ const QUESTIONS = [
     "opts": [
       "Every member of staff on the establishment",
       "Only the In-Charge",
-      "Staff who actually provide malaria services — testing, prescribing, recording",
+      "Staff who actually provide malaria services: testing, prescribing, recording",
       "Staff who attended any training in the last year"
     ],
     "ans": 2,
@@ -362,27 +374,15 @@ const QUESTIONS = [
   },
   {
     "t": "k",
-    "q": "What must every supervisor card carry, besides name, sex and designation?",
+    "q": "Besides name and sex, what must every supervisor card carry?",
     "opts": [
-      "A photograph",
-      "A staff ID number",
+      "A photograph and a staff ID number",
       "An email address",
-      "A 9-digit phone number and a signature drawn on screen"
+      "Nothing else, the rest is optional",
+      "Designation, organization, a 9 digit phone number and a signature drawn on screen"
     ],
     "ans": 3,
-    "exp": "Each supervisor signs on the screen; the signature is stored as an image with the record."
-  },
-  {
-    "t": "k",
-    "q": "When will Form A submit to the ICF-SL server?",
-    "opts": [
-      "Only when every question has been answered",
-      "As soon as the facility is chosen",
-      "Once the supervisor has signed",
-      "At the end of the day, automatically"
-    ],
-    "ans": 0,
-    "exp": "Every question is required. The form names the first unanswered question and jumps to it."
+    "exp": "All six fields are compulsory on every card the number opens. The signature is stored as an image with the record."
   },
   {
     "t": "s",
@@ -390,7 +390,7 @@ const QUESTIONS = [
     "opts": [
       "Type over it with the type you believe is correct",
       "Clear it so the DHMT can complete it",
-      "Leave it — it is filled from the facility list; read it back to confirm it matches this facility",
+      "Leave it. It is filled from the facility list, so read it back and confirm it matches this facility",
       "Change it to CHP because the facility is small"
     ],
     "ans": 2,
@@ -398,7 +398,7 @@ const QUESTIONS = [
   },
   {
     "t": "s",
-    "q": "The In-Charge is a Nurse Anaesthetist, which you cannot see in the cadre list. What do you do?",
+    "q": "The In-Charge is an Environmental Health Officer, which you cannot see in the cadre list. What do you do?",
     "opts": [
       "Leave the cadre blank",
       "Choose the closest cadre in the list",
@@ -406,40 +406,40 @@ const QUESTIONS = [
       "Choose Other and type the cadre in the box that appears"
     ],
     "ans": 3,
-    "exp": "Other reveals a specify box, which is then required. The summary records it as 'Other: Nurse Anaesthetist'."
+    "exp": "Other reveals a specify box, which is then required. The summary records it as 'Other: Environmental Health Officer'."
   },
   {
     "t": "s",
-    "q": "You added a second supervisor card, then found that person had already left the team. You leave the card blank and press submit.",
+    "q": "You type 3 in question 10, Number of supervisors, so three cards open. Only two supervisors turn up. You leave the third card blank and press submit.",
     "opts": [
-      "The form refuses to submit until the card is completed or removed",
+      "The form refuses to submit until the third card is completed, or question 10 is changed to 2",
       "The form submits and ignores the empty card",
-      "The card is deleted automatically",
-      "Only the first supervisor is saved"
+      "The empty card is deleted automatically",
+      "Only the first two supervisors are saved"
     ],
     "ans": 0,
-    "exp": "A half-filled card blocks the submission. Complete it, or remove it with the red ✕ on its header."
+    "exp": "Every card the number opens must be completed. Change question 10 to 2 and the third card closes with it."
   },
   {
     "t": "s",
-    "q": "A supervisor gives you the number +232 76 123 456. What do you enter?",
+    "q": "You met four staff, so question 11 reads 4. On the fourth card you forgot to ask for the unit, and you leave Unit blank.",
     "opts": [
-      "+23276123456",
-      "076123456",
-      "76123456",
-      "232076123456"
+      "The form refuses to submit and points you at the empty Unit",
+      "The form submits, Unit is optional on a staff card",
+      "The fourth card is dropped from the record",
+      "Unit is saved as Not given"
     ],
-    "ans": 1,
-    "exp": "Nine digits only. Drop the country code and keep the local number: 076123456."
+    "ans": 0,
+    "exp": "Every field on every staff card is compulsory, Unit and the 9 digit phone included. Ask before you leave the facility, or lower question 11 to the number you can complete."
   },
   {
     "t": "s",
     "q": "On the summary screen you see 'Sig: ✗' beside Supervisor #1. What does it mean, and what do you do?",
     "opts": [
-      "The phone number is wrong — correct it",
-      "The signature was not captured — cancel, sign again, then submit",
+      "The phone number is wrong, correct it",
+      "The signature was not captured. Cancel, sign again, then submit",
       "The supervisor is not on the team list",
-      "Nothing; the ✗ is only decoration"
+      "Nothing, the cross is only decoration"
     ],
     "ans": 1,
     "exp": "A cross means the signature pad was left empty. Cancel returns you to the form with everything still there."
