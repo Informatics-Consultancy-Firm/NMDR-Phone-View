@@ -802,35 +802,54 @@ function doSubmit(){
 }
 
 // ==================== SERVER ====================
+/* Column headings in the sheet are these readable labels, not the internal
+   variable names. "Submission ID" must stay first: the server matches on
+   column A to decide replace versus insert. */
 function flatten(rec){
   const m = rec.meta || {};
-  const o = {
-    submissionId: rec.id,
-    version: rec.version,
-    submittedAt: rec.submittedAt,
-    updatedAt: rec.updatedAt,
-    submittedBy: rec.submittedBy,
-    ownerName: m.owner, ownerPhone: m.phone, ownerEmail: m.email,
-    district: m.district, warehouseAddress: m.address,
-    assessorName: m.assessor, assessmentDate: m.date,
-    lengthM: m.L, widthM: m.W, heightM: m.H,
-    floorAreaM2: (m.area === null || m.area === undefined) ? '' : Number(m.area.toFixed(1)),
-    storageVolumeM3: (m.volume === null || m.volume === undefined) ? '' : Number(m.volume.toFixed(1)),
-    baleCapacity: m.baleCap, plannedBales: m.balePlan,
-    plannedVsCapacityPct: (m.fitPct === null || m.fitPct === undefined) ? '' : m.fitPct
-  };
+  const o = {};
+  o['Submission ID']                 = rec.id;
+  o['Version']                       = rec.version;
+  o['First Submitted']               = rec.submittedAt;
+  o['Last Updated']                  = rec.updatedAt;
+  o['Submitted By']                  = rec.submittedBy;
+  o['Warehouse Owner']               = m.owner;
+  o['Owner Phone Number']            = m.phone;
+  o['Owner Email']                   = m.email;
+  o['District']                      = m.district;
+  o['Warehouse Address']             = m.address;
+  o['Assessor Name']                 = m.assessor;
+  o['Assessment Date']               = m.date;
+  o['Length (m)']                    = m.L;
+  o['Width (m)']                     = m.W;
+  o['Height (m)']                    = m.H;
+  o['Total Floor Area (sq m)']       = (m.area === null || m.area === undefined) ? '' : Number(m.area.toFixed(1));
+  o['Storage Volume (cu m)']         = (m.volume === null || m.volume === undefined) ? '' : Number(m.volume.toFixed(1));
+  o['Estimated Bale Capacity']       = m.baleCap;
+  o['Planned Bales for District']    = m.balePlan;
+  o['Planned Against Capacity (%)']  = (m.fitPct === null || m.fitPct === undefined) ? '' : m.fitPct;
+
   SECTIONS.forEach(function(s){
     s.items.forEach(function(it){
-      o[it.k + '_score'] = (typeof rec.scores[it.k] === 'number') ? rec.scores[it.k] : '';
-      o[it.k + '_comment'] = rec.comments[it.k] || '';
+      o[it.t + ' - score (max ' + it.max + ')'] = (typeof rec.scores[it.k] === 'number') ? rec.scores[it.k] : '';
+      o[it.t + ' - reason for deduction']       = rec.comments[it.k] || '';
     });
-    o[s.id + '_total'] = sectionScore(rec, s);
+    o[s.title + ' - section score (max ' + s.max + ')'] = sectionScore(rec, s);
   });
-  o.totalScore = grandTotal(rec);
-  o.scoreBand = bandFor(grandTotal(rec)).label;
-  o.recommendation = rec.recommendation || '';
-  o.improvementsRequired = rec.improvements || '';
+
+  o['Total Score (out of 100)']      = grandTotal(rec);
+  o['Score Band']                    = bandFor(grandTotal(rec)).label;
+  o['Assessor Recommendation']       = rec.recommendation || '';
+  o['Key Improvements Required']     = rec.improvements || '';
   return o;
+}
+
+/* sent alongside the labelled record so the server's change log does not
+   depend on the column labels above */
+function metaFor(rec){
+  return { submissionId: rec.id, version: rec.version,
+           district: (rec.meta || {}).district || '', totalScore: grandTotal(rec),
+           submittedBy: rec.submittedBy || '' };
 }
 
 function push(rec){
@@ -845,7 +864,7 @@ function push(rec){
   fetch(SHEET_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },   // keeps Apps Script happy, no preflight
-    body: JSON.stringify({ action: 'upsert', record: flatten(rec) })
+    body: JSON.stringify({ action: 'upsert', record: flatten(rec), meta: metaFor(rec) })
   })
   .then(function(r){ return r.json(); })
   .then(function(res){
