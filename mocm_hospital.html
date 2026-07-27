@@ -128,6 +128,16 @@ body{
 .summary-value{ font-weight:700; color:var(--text-dark); text-align:right; }
 .summary-section-title{ font-weight:800; color:var(--blue); font-size:12px; text-transform:uppercase; letter-spacing:.4px;
   margin:16px 0 6px; padding-bottom:5px; border-bottom:2px solid var(--soft-bg); }
+.hr-card{ border:1.5px solid var(--border); border-radius:14px; margin-bottom:12px; overflow:hidden; background:#fff; }
+.hr-card-head{ background:var(--soft-bg); color:var(--blue-dark); font-weight:800; font-size:12.5px; padding:10px 12px;
+  text-transform:uppercase; letter-spacing:.3px; }
+.hr-line{ display:flex; align-items:center; gap:10px; padding:8px 12px; border-top:1px solid var(--border); }
+.hr-label{ flex:1 1 auto; font-size:13.5px; color:var(--text-dark); }
+.hr-input{ flex:0 0 92px; padding:11px 12px; border:1.5px solid var(--border); border-radius:12px; font-size:15px;
+  text-align:center; font-family:inherit; }
+.hr-input:focus{ outline:none; border-color:var(--blue); }
+.hr-total{ padding:9px 12px; border-top:1px solid var(--border); background:#fafbfc; font-size:12.5px; color:var(--text-light); }
+.hr-total b{ color:var(--blue-dark); }
 .fixed-site{ padding:15px 16px; border:1.5px solid var(--border); border-radius:14px; background:var(--soft-bg);
              font-weight:700; color:var(--blue-dark); }
 .note{ font-size:12.5px; color:var(--text-light); font-style:italic; margin:8px 0 4px; padding-left:10px; border-left:3px solid var(--gold); }
@@ -316,7 +326,7 @@ const Y=(n,q,note)=>({n,q,note,type:'choice',options:['Yes','No']});
 const YN3=(n,q)=>({n,q,type:'choice',options:['Yes','No','N/A']});
 const C=(n,q,options,note)=>({n,q,options,note,type:'choice'});
 const T=(n,q)=>({n,q,type:'text'});
-const NUM=(n,q)=>({n,q,type:'num'});
+const NUM=(n,q,note)=>({n,q,note,type:'num'});
 const TA=(n,q)=>({n,q,type:'textarea'});
 const DATE=(n,q)=>({n,q,type:'date'});
 const AV=(n,q)=>({n,q,type:'choice',options:['Available & in use','Available & not in use','Not available']});
@@ -324,7 +334,6 @@ const SUB=(t)=>({type:'subhead',q:t});
 const NOTE=(t)=>({type:'note',q:t});
 
 const demoExtra=[
-  T('1.5','Province / Region'),
   C('1.6','Level of Health Facility',['Regional Hospital','District Hospital','Tertiary / Teaching Hospital']),
   C('1.7','Ownership',['Government','Private','FBHF / Mission','Parastatal']),
   T('1.8','General / Facility Telephone'),
@@ -336,9 +345,25 @@ const demoExtra=[
   T('1.14','Hours of Operation — Weekdays'),
   T('1.15','Hours of Operation — Weekend'),
   DATE('1.16','Date of Visit'),
-  {n:'1.17',q:'Head of Laboratory / Lead — Signature',type:'signature'},
-  Y('1.18','Unable to sign')
+  {n:'1.17',q:'Head of Laboratory / Lead — Signature',type:'signature'}
 ];
+/* the national laboratory indicator list, recorded once per visit */
+const indicators=[
+  NUM('27.1','Percentage of laboratory staff trained in malaria microscopy or mRDT within the past two years'),
+  C('27.2','Are SOPs and job aids available for specimen collection, film preparation, staining, microscopy and RDT use?',
+    ['All available','Some available','None available']),
+  C('27.3','Frequency of supportive supervision sessions conducted',['Quarterly','Semiannual','Annual','None in the past year']),
+  Y('27.4','Has the supply of RDTs and microscopy reagents been uninterrupted in the last 3 months?'),
+  Y('27.5','Are the microscopes functional with spare parts available?'),
+  NUM('27.6','Number of technicians assessed on species identification during this visit'),
+  NUM('27.7','Of those, how many correctly identified the species (Pf, Pv, Pm, Po, mixed)?'),
+  NUM('27.8','Of those, how many performed parasite quantification to WHO standards?'),
+  NUM('27.9','Concordance between technician and supervisor rechecking, as a percentage',
+      'The national target is 90 per cent agreement or better.'),
+  Y('27.10','Is an active internal quality control programme maintained for malaria microscopy?'),
+  NUM('27.11','Number of technicians observed following biosafety and infection prevention measures')
+];
+
 const section3Extra=[
   NUM('3.5','Number of lab staff formally trained on malaria microscopy in the last 2 years'),
   NUM('3.6','Number of lab staff formally trained on malaria RDTs in the last 2 years'),
@@ -708,10 +733,27 @@ function renderMentored(){
 function addMentored(){ mentored.push({name:'',designation:'',organization:'',contact:''}); refreshMentored(); }
 function removeMentored(i){ mentored.splice(i,1); if(!mentored.length) mentored.push({name:'',designation:'',organization:'',contact:''}); refreshMentored(); }
 
+/* One card per cadre with its four counts stacked, rather than a table nobody
+   can read on a phone. The keys are unchanged, so the sheet columns stay put. */
 function renderHR(){
-  return `<div class="matrix"><table class="grid"><thead><tr><th>Cadre</th>${hrCols.map(c=>`<th>${c[1]}</th>`).join('')}</tr></thead><tbody>`+
-    hrCadres.map(cad=>`<tr><td>${escapeHtml(cad)}</td>`+hrCols.map(c=>{ const k=cad+'|'+c[0]; return `<td><input type="number" inputmode="numeric" min="0" value="${escapeHtml(hrData[k]||'')}" data-hrk="${escapeHtml(k)}" oninput="hrData[this.getAttribute('data-hrk')]=this.value"></td>`; }).join('')+`</tr>`).join('')+
-    `</tbody></table></div>`;
+  return hrCadres.map(function(cad){
+    return `<div class="hr-card">
+      <div class="hr-card-head">${escapeHtml(cad)}</div>
+      ${hrCols.map(function(c){
+        const k = cad + '|' + c[0];
+        return `<div class="hr-line">
+          <label class="hr-label" for="hr_${escapeHtml(k)}">${escapeHtml(c[1])}</label>
+          <input class="hr-input" id="hr_${escapeHtml(k)}" type="number" inputmode="numeric" min="0"
+                 placeholder="0" value="${escapeHtml(hrData[k]||'')}" data-hrk="${escapeHtml(k)}"
+                 oninput="hrData[this.getAttribute('data-hrk')]=this.value; updateProgress();">
+        </div>`;
+      }).join('')}
+      <div class="hr-total">Total: <b id="hrtot_${escapeHtml(cad)}">${hrCadreTotal(cad)}</b></div>
+    </div>`;
+  }).join('');
+}
+function hrCadreTotal(cad){
+  return hrCols.reduce(function(sum,c){ return sum + (Number(hrData[cad+'|'+c[0]])||0); }, 0);
 }
 
 function renderRecheck(){
@@ -831,8 +873,8 @@ function buildPage(){
           `<div class="control" id="mentoredHost">${renderMentored()}</div></div>`;
 
   openSection('3. Human Resources — Laboratory Staff');
-  body += `<div class="question-row"><div class="question-text">Laboratory staff counts by cadre.</div>` +
-          `<div class="note">Scroll the table sideways to see all columns.</div>` +
+  body += `<div class="question-row"><div class="question-text">Laboratory staff counts by cadre</div>` +
+          `<div class="note">One card per cadre. Type 0 where there are none.</div>` +
           `<div class="control" id="hrHost">${renderHR()}</div></div>`;
   section3Extra.forEach(it => { body += qRow(it); });
 
@@ -857,9 +899,13 @@ function buildPage(){
 
   sectionsB.forEach(pushSection);
 
+  // the national indicators
+  openSection('27. Laboratory Indicators');
+  indicators.forEach(it => { body += qRow(it); });
+
   // GPS last
-  openSection('27. Location');
-  body += `<div class="question-row"><div class="question-text"><span class="question-num">27.1</span>GPS position of the laboratory</div>` +
+  openSection('28. Location');
+  body += `<div class="question-row"><div class="question-text"><span class="question-num">28.1</span>GPS position of the laboratory</div>` +
           `<div id="gpsPanel" class="gps-panel"></div>` +
           `<button class="btn-tool" style="margin-top:10px;" onclick="captureGps(true)">CAPTURE AGAIN</button></div>`;
 
@@ -877,6 +923,12 @@ function buildPage(){
 /* the tables redraw in place rather than repainting the whole page */
 function refreshMentored(){ const h=document.getElementById('mentoredHost'); if(h){ h.innerHTML=renderMentored(); mentored.forEach((s,i)=>setTimeout(()=>createSignaturePad('mnt_sig_'+i),40)); } updateProgress(); }
 function refreshHR(){ const h=document.getElementById('hrHost'); if(h) h.innerHTML=renderHR(); updateProgress(); }
+function refreshHRTotals(){
+  hrCadres.forEach(function(cad){
+    var el=document.getElementById('hrtot_'+cad);
+    if(el) el.textContent=hrCadreTotal(cad);
+  });
+}
 function refreshRecheck(){ const h=document.getElementById('recheckHost'); if(h) h.innerHTML=renderRecheck(); updateProgress(); }
 
 /* the tabs */
@@ -907,7 +959,9 @@ function isSkippedNumber(n){
 var SKIP_RULES = [
   { match:/^17\.2\.3\.[2-9]$/,   when:function(){ return responses['17.2.3.1'] !== 'No'; } },
   { match:/^17\.2\.4\.[2-9]$/,   when:function(){ return responses['17.2.4.1'] !== 'No'; } },
-  { match:/^17\.2\.11\.(3|4)$/,  when:function(){ return responses['17.2.11.2'] !== 'No'; } }
+  { match:/^17\.2\.11\.(3|4)$/,  when:function(){ return responses['17.2.11.2'] !== 'No'; } },
+  // no technicians assessed means nothing to report about them
+  { match:/^27\.(7|8)$/,          when:function(){ return Number(responses['27.6']) > 0; } }
 ];
 function isSkippedNumber(n){
   n = String(n);
@@ -937,7 +991,7 @@ function applySkips(){
 
 function countFields(){
   let total=0, done=0;
-  const all=[...demoExtra,...section3Extra];
+  const all=[...demoExtra,...section3Extra,...indicators];
   sectionsA.forEach(s=>all.push(...s.items)); section16Pre.forEach(i=>all.push(i)); sectionsB.forEach(s=>all.push(...s.items));
   all.forEach(it=>{ if(it.type==='subhead'||it.type==='note') return;
     if(it.n && isSkippedNumber(it.n)) return;              // does not apply
@@ -1152,9 +1206,26 @@ function discardPending(){
   if(!confirm("Throw away "+n+(n===1?" record":" records")+" that never reached NMDR?\n\nThis cannot be undone.")) return;
   saveOutbox([]);
 }
+/* NMDR answers with JSON. If a web page comes back instead, the deployment is
+   not reachable as data: almost always the web app access is not set to Anyone,
+   or the script was edited without re-deploying a new version. Say so plainly
+   rather than letting a JSON parse error surface. */
+function jsonFrom(res){
+  return res.text().then(function(t){
+    var s = String(t || '').trim();
+    if (s.charAt(0) === '<') {
+      throw new Error('NMDR returned a web page instead of data. In Apps Script, check ' +
+        'Deploy \u25b8 Manage deployments: Execute as Me, Who has access Anyone, then deploy a NEW version ' +
+        'and paste the /exec URL into this form.');
+    }
+    try { return JSON.parse(s); }
+    catch (e) { throw new Error('NMDR sent something this form could not read: ' + s.slice(0, 80)); }
+  });
+}
+
 function postRecord(p){
   return fetch(ENDPOINT,{ method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(p) })
-    .then(function(r){ return r.json(); })
+    .then(function(r){ return jsonFrom(r); })
     .then(function(res){
       if(!res||!res.ok) throw new Error((res&&res.error)?res.error:"NMDR rejected the submission.");
       return res;
@@ -1163,7 +1234,7 @@ function postRecord(p){
 function serverVersions(){
   if(!navigator.onLine) return Promise.resolve(null);
   return fetch(ENDPOINT+"?action=list&t="+Date.now())
-    .then(function(r){ return r.json(); })
+    .then(function(r){ return jsonFrom(r); })
     .then(function(res){
       if(!res||!res.ok) return null;
       var map={};
@@ -1222,8 +1293,8 @@ function toolStatus(kind, text){
 function readyToSubmit(){
   if(typeof validateAllQuestions==="function" && !validateAllQuestions()) return false;
   if(!responses['1.16']){ alert("Please give the date of visit, 1.16"); return false; }
-  if(!sessionStorage.getItem('sig_1.17') && responses['1.18'] !== 'Yes'){
-    alert("1.17: the Head of Laboratory has to sign, or answer 1.18 Unable to sign."); return false;
+  if(!sessionStorage.getItem('sig_1.17')){
+    alert("1.17: the Head of Laboratory has to sign before this can be submitted."); return false;
   }
   var named=(mentored||[]).filter(function(m){ return (m.name||'').trim(); });
   if(!named.length){ alert("Section 2: add at least one laboratory staff member mentored."); return false; }
@@ -1341,7 +1412,7 @@ function pullData(force){
   if(NMDR_CACHE && !force) return Promise.resolve(NMDR_CACHE);
   if(!navigator.onLine) return Promise.reject(new Error("No signal. This needs NMDR."));
   return fetch(ENDPOINT+"?action=data&t="+Date.now())
-    .then(function(r){ return r.json(); })
+    .then(function(r){ return jsonFrom(r); })
     .then(function(res){
       if(!res||!res.ok) throw new Error((res&&res.error)?res.error:"NMDR did not return the data.");
       NMDR_CACHE=res; return res;
@@ -1367,7 +1438,7 @@ function downloadData(){
   if(!navigator.onLine){ toolStatus("bad","No signal. The download needs NMDR."); return; }
   toolStatus("on","Pulling the whole file from NMDR...");
   fetch(ENDPOINT+"?action=export&t="+Date.now())
-    .then(function(r){ return r.json(); })
+    .then(function(r){ return jsonFrom(r); })
     .then(function(res){
       if(!res||!res.ok||!res.b64) throw new Error((res&&res.error)?res.error:"The workbook did not come through.");
       saveFile(res.filename,res.mime,res.b64,true);
@@ -1550,7 +1621,7 @@ function pullData(force){
   if(NMDR_CACHE && !force) return Promise.resolve(NMDR_CACHE);
   if(!navigator.onLine) return Promise.reject(new Error("No signal. This needs NMDR."));
   return fetch(ENDPOINT+"?action=data&t="+Date.now())
-    .then(function(r){ return r.json(); })
+    .then(function(r){ return jsonFrom(r); })
     .then(function(res){
       if(!res||!res.ok) throw new Error((res&&res.error)?res.error:"NMDR did not return the data.");
       NMDR_CACHE=res; return res;
@@ -1576,7 +1647,7 @@ function downloadData(){
   if(!navigator.onLine){ toolStatus("bad","No signal. The download needs NMDR."); return; }
   toolStatus("on","Pulling the whole file from NMDR...");
   fetch(ENDPOINT+"?action=export&t="+Date.now())
-    .then(function(r){ return r.json(); })
+    .then(function(r){ return jsonFrom(r); })
     .then(function(res){
       if(!res||!res.ok||!res.b64) throw new Error((res&&res.error)?res.error:"The workbook did not come through.");
       saveFile(res.filename,res.mime,res.b64,true);
@@ -2017,7 +2088,7 @@ captureGps(false);
 renderPending();
 setTimeout(function(){ flushOutbox(true); }, 1500);
 document.addEventListener('change', function(){ applySkips(); updateProgress(); });
-document.addEventListener('input', function(){ applySkips(); updateProgress(); });
+document.addEventListener('input', function(){ applySkips(); updateProgress(); refreshHRTotals(); });
 </script>
 </body>
 </html>
