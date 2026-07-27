@@ -232,10 +232,14 @@ body {
 .summary-section-title { font-weight: 700; font-size: 14px; color: var(--blue); margin: 16px 0 10px 0; padding-bottom: 6px; border-bottom: 2px solid var(--blue); }
 .btn-cancel { flex: 1; padding: 12px; background: #f0f2f5; color: var(--text-dark); border: 1px solid var(--border); border-radius: 40px; font-weight: 600; cursor: pointer; }
 .btn-confirm { flex: 1; padding: 12px; background: var(--blue); color: white; border: none; border-radius: 40px; font-weight: 600; cursor: pointer; }
-.icn { width: 17px; height: 17px; flex: 0 0 auto; vertical-align: -3px; margin-right: 7px; }
+.icn { width: 15px; height: 15px; flex: 0 0 auto; vertical-align: -3px; margin-right: 6px; }
 .btn-tool { display: inline-flex; align-items: center; justify-content: center; }
 .sig-icn { width: 14px; height: 14px; vertical-align: -2px; }
-.toolbar { position: sticky; top: 0; z-index: 300; background: var(--white); border-bottom: 1px solid var(--border); padding: 12px 16px; box-shadow: 0 2px 6px rgba(0,0,0,.06); }
+.tab-nav { display: flex; flex-wrap: wrap; background: var(--blue-dark); position: sticky; top: 0; z-index: 300; box-shadow: 0 2px 8px rgba(0,0,0,.2); margin: 0 -16px; }
+.tab-btn { flex: 1 1 33%; padding: 12px 6px; color: rgba(255,255,255,.75); font-weight: 700; font-size: 11.5px; border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; letter-spacing: .2px; white-space: nowrap; font-family: inherit; display: inline-flex; align-items: center; justify-content: center; }
+.tab-btn.active { color: #fff; border-bottom: 3px solid var(--gold); background: rgba(255,255,255,.08); }
+.tab-page { display: none; }
+.tab-page.active { display: block; }
 .tool-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .btn-tool { flex: 1 1 30%; min-width: 30%; padding: 11px 8px; font-size: 12px; }
 .rec-row { border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; cursor: pointer; background: #fafbfc; }
@@ -245,7 +249,7 @@ body {
 .btn-tool { flex: 1; padding: 13px 10px; background: var(--white); color: var(--blue-dark); border: 1.5px solid var(--blue); border-radius: 40px; font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit; }
 .btn-tool:active { background: var(--soft-bg); }
 .btn-tool:disabled { opacity: .55; }
-.tool-status { display: none; margin-top: 10px; font-size: 12.5px; font-weight: 600; }
+.tool-status { display: none; margin: 0 -16px; padding: 10px 16px; font-size: 12.5px; font-weight: 600; background: var(--soft-bg); border-bottom: 1px solid var(--border); }
 .tool-status.on { display: block; color: var(--blue-dark); }
 .tool-status.bad { display: block; color: var(--red); }
 .dash-content { max-width: 620px; }
@@ -312,15 +316,16 @@ body {
   <div class="header-sub">FACILITY PROFILE: General Health Facility Information</div>
 </div>
 
-<div class="toolbar">
-  <div class="tool-row">
-    <button class="btn-tool" onclick="downloadData()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>DOWNLOAD DATA</button>
-    <button class="btn-tool" onclick="openEditPicker()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>EDIT A SUBMISSION</button>
-    <button class="btn-tool" onclick="openDashboard()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/></svg>DASHBOARD</button>
-  </div>
-  <div id="toolStatus" class="tool-status"></div>
+<div class="tab-nav">
+  <button class="tab-btn active" data-tab="entry" onclick="switchTab('entry')"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6v3H9z"/><path d="M8 5H6a1 1 0 00-1 1v13a1 1 0 001 1h12a1 1 0 001-1V6a1 1 0 00-1-1h-2"/><path d="M9 12h6"/><path d="M9 16h4"/></svg>DATA ENTRY</button>
+  <button class="tab-btn" data-tab="summary" onclick="switchTab('summary')"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12"/><path d="M8 12h12"/><path d="M8 18h12"/><path d="M4 6h.01"/><path d="M4 12h.01"/><path d="M4 18h.01"/></svg>SUMMARY</button>
+  <button class="tab-btn" onclick="downloadData()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>DOWNLOAD</button>
+  <button class="tab-btn" onclick="openDashboard()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/></svg>DASHBOARD</button>
+  <button class="tab-btn" onclick="openEditPicker()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>EDIT</button>
 </div>
+<div id="toolStatus" class="tool-status"></div>
 
+<div class="tab-page active" id="tab-entry">
 <div class="form-title">FACILITY PROFILE: General Health Facility Information</div>
 
 <!-- Demographics Section: District > Chiefdom > PHU > Facility Type -->
@@ -454,6 +459,13 @@ body {
       <button class="btn-confirm" onclick="openDashboard(true)">REFRESH</button>
     </div>
   </div>
+</div>
+
+</div><!-- end data entry tab -->
+
+<div class="tab-page" id="tab-summary">
+  <div class="form-title">LAST SUBMISSION FROM THIS PHONE</div>
+  <div id="tabSummaryBody"></div>
 </div>
 
 <div id="summaryModal" class="modal">
@@ -1299,6 +1311,7 @@ function afterAccepted(res, queued, fingerprint, payload) {
 
   resetForm();
 
+  renderTabSummary();
   sendStatus(queued ? "working" : "good",
     "<b>" + verb + (queued ? " and queued" : "") + " to NMDR.</b> " + where +
     "<br>" + escapeHtml(wasId) + ", version " + wasVersion +
@@ -1392,6 +1405,61 @@ setTimeout(() => {
   updateRadioVisuals(document.getElementById('incharge_gender_group'));
 }, 100);
 
+
+/* ==================== TABS ====================
+   One bar holds data entry, the summary, and the three tools. */
+function switchTab(tab) {
+  document.querySelectorAll('.tab-page').forEach(function (p) { p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+  var page = document.getElementById('tab-' + tab);
+  if (page) page.classList.add('active');
+  var btn = document.querySelector('.tab-btn[data-tab="' + tab + '"]');
+  if (btn) btn.classList.add('active');
+  if (tab === 'summary') renderTabSummary();
+  window.scrollTo(0, 0);
+}
+
+/* the summary tab shows the most recent record submitted from this phone */
+function renderTabSummary() {
+  var host = document.getElementById('tabSummaryBody');
+  if (!host) return;
+  var list = archiveList();
+  if (!list.length) {
+    host.innerHTML = '<div class="dash-empty">Nothing has been submitted from this phone yet. ' +
+      'Once you submit, the record appears here and can be reopened from EDIT.</div>';
+    return;
+  }
+  var item = archive()[list[0].recordId];
+  var d = item.payload;
+  function row(label, value) {
+    return '<div class="summary-item"><div class="summary-label">' + label + '</div>' +
+      '<div class="summary-value">' + escapeHtml(value === undefined || value === '' ? 'Not given' : String(value)) + '</div></div>';
+  }
+  var html = '<div class="card-body">';
+  html += '<div class="summary-section-title">RECORD</div>';
+  html += row('Reference', d.recordId + ' · version ' + item.version);
+  html += row('Submitted', item.savedAt);
+  html += '<div class="summary-section-title">LOCATION & FACILITY TYPE</div>';
+  html += row('District', d.district) + row('Chiefdom', d.chiefdom) +
+          row('Health Facility (PHU)', d.phu) + row('Facility Type', d.facility_type);
+  html += '<div class="summary-section-title">FACILITY INFORMATION</div>';
+  html += row('HCWs for Malaria', d.hcw_count) + row('In-Charge', d.incharge_name) +
+          row('Gender', d.incharge_gender) + row('Cadre', d.cadre) + row('Visit Date', d.visit_date) +
+          row('GPS', d.gps_lat ? d.gps_lat + ', ' + d.gps_lng : 'Not captured');
+  html += '<div class="summary-section-title">SUPERVISORS (' + (d.supervisors || []).length + ')</div>';
+  (d.supervisors || []).forEach(function (x, i) {
+    html += row('Supervisor #' + (i + 1),
+      [x.name, x.sex, x.designation, x.organization, x.email, x.phone].filter(Boolean).join(' | '));
+  });
+  html += '<div class="summary-section-title">STAFF (' + (d.staff || []).length + ')</div>';
+  (d.staff || []).forEach(function (x, i) {
+    html += row('Staff #' + (i + 1), [x.name, x.sex, x.cadre, x.unit, x.phone].filter(Boolean).join(' | '));
+  });
+  html += '<div class="dash-note">' + list.length +
+    (list.length === 1 ? ' record is' : ' records are') +
+    ' kept on this phone. Use EDIT to open an older one.</div></div>';
+  host.innerHTML = html;
+}
 
 /* ==================== DOWNLOAD DATA AND DASHBOARD ====================
    Both read the same pull from NMDR. Names, emails and phone numbers are
