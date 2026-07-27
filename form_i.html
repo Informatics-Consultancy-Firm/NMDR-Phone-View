@@ -241,6 +241,17 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
   </div>
 </div>
 
+<div id="askModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><span id="askTitle">NAME THIS DRAFT</span><button onclick="closeAsk()">&times;</button></div>
+    <div class="modal-body">
+      <div id="askNote" class="dash-note" style="margin:0 0 12px;"></div>
+      <input id="askInput" class="form-input" type="text" style="width:100%;box-sizing:border-box;">
+    </div>
+    <div class="modal-footer" id="askActions"></div>
+  </div>
+</div>
+
 <div id="draftModal" class="modal">
   <div class="modal-content dash-content">
     <div class="modal-header"><span>DRAFTS ON THIS PHONE</span><button onclick="closeDrafts()">&times;</button></div>
@@ -839,8 +850,8 @@ function accepted(res, queued, fingerprint, p){
 
 /* ---------- clear for the next facility ---------- */
 function newEntry(){
-  if(!confirm("Clear the entry fields and start the next facility?\n\nOnly what is on the screen is cleared. Assessments already submitted from this phone stay on it, and anything waiting in the outbox is still sent.")) return;
-  location.reload();      // the fields are rebuilt empty; the archive and the outbox live in localStorage and are untouched
+  if(!confirm("Clear the entry fields and start the next facility?\n\nOnly what is on the screen is cleared. Drafts, submitted records and anything waiting in the outbox all stay on this phone.")) return;
+  startFreshEntry();      // takes a NEW reference, so it cannot overwrite a draft
 }
 
 /* PMC tally already draws its own summary tab; this fills in what it needs */
@@ -1390,7 +1401,8 @@ function draftEsc(v){
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-var BUILD = "2026-07-27e";     // shown in the DRAFTS panel, so you can tell a stale phone
+var BUILD = "2026-07-27g";     // shown in the DRAFTS panel, so you can tell a stale phone
+var PAGE_RELOADS_FOR_NEW = true;   // how this form clears itself for the next facility
 var DRAFTS_KEY = "mocm_drafts_" + FORM_MARK;
 
 /* Drafts, the outbox and the submitted archive all need this browser's storage.
@@ -1428,9 +1440,13 @@ function draftList(){
   var all = drafts();
   return Object.keys(all).map(function (id) {
     var d = all[id];
-    return { recordId: id, savedAt: d.savedAt, phu: d.phu, chiefdom: d.chiefdom,
-             visitDate: d.visitDate, answered: d.answered, accepted: d.accepted || 0 };
-  }).sort(function (a, b) { return a.recordId < b.recordId ? 1 : -1; });
+    return { recordId: id, name: d.name || '', savedAt: d.savedAt, savedStamp: d.savedStamp || 0,
+             phu: d.phu, chiefdom: d.chiefdom, visitDate: d.visitDate,
+             answered: d.answered, accepted: d.accepted || 0 };
+  }).sort(function (a, b) {
+    if (a.savedStamp !== b.savedStamp) return b.savedStamp - a.savedStamp;   // newest first
+    return a.recordId < b.recordId ? 1 : -1;
+  });
 }
 
 /* what the entry looks like right now, in the same shape a submission uses */
@@ -1473,30 +1489,94 @@ function draftSay(kind, html){
   if (typeof sendStatus === 'function') sendStatus(kind === 'bad' ? 'bad' : 'good', html);
 }
 
-function saveDraft(quiet){
+function saveDraft(quiet, presetName){
   if (!warnIfNoStorage()) return false;
   var snap = draftSnapshot();
   if (!snap) {
     if (!quiet) draftSay("bad", "Nothing could be saved yet. Answer a question or two first.");
     return false;
   }
+
+  var existing = drafts()[RECORD.id];
+  var name = presetName || (existing && existing.name) || '';
+  if (!quiet && !presetName) {
+    var suggestion = name || draftSuggestedName(snap);
+    var typed = prompt("Name this draft, so you can find it again:", suggestion);
+    if (typed === null) return false;              // cancelled, nothing saved
+    name = typed.trim() || suggestion;
+  }
+
   var all = drafts();
   all[RECORD.id] = {
     payload: snap,
+    name: name,
     accepted: RECORD.accepted || 0,
     savedAt: new Date().toLocaleString(),
+    savedStamp: Date.now(),
     phu: snap.phu || '',
     chiefdom: snap.chiefdom || '',
     visitDate: snap.visit_date || '',
     answered: draftAnswered()
   };
   writeDrafts(all);
+
   if (!quiet) {
-    draftSay("good", "<b>Saved as a draft on this phone.</b> " + draftEsc(draftAnswered()) +
-      ".<br>Press NEW ENTRY to start another facility. Your draft is waiting under DRAFTS, " +
-      "and nothing has been sent to NMDR yet.");
+    draftSay("on", "<b>Draft saved:</b> " + draftEsc(name) + "<br>" + draftEsc(draftAnswered()) +
+      " · " + draftEsc(RECORD.id) + " · " + draftEsc(all[RECORD.id].savedAt) +
+      "<br>Nothing has gone to NMDR. Find it again under DRAFTS.");
+    setTimeout(function () {
+      if (confirm("Draft saved as:\n" + name + "\n\nStart a new blank entry now?\n\n" +
+                  "Your draft stays under DRAFTS and can be continued at any time.")) {
+        startFreshEntry();
+      }
+    }, 60);
   }
   return true;
+}
+
+/* a sensible default name: the facility and the visit date, else a numbered one */
+function draftSuggestedName(snap){
+  var bits = [];
+  if (snap && snap.phu) bits.push(snap.phu);
+  if (snap && snap.visit_date) bits.push(snap.visit_date);
+  if (bits.length) return bits.join(' · ');
+  return 'Draft ' + (draftList().length + 1) + ' · ' +
+         new Date().toLocaleDateString();
+}
+
+/* a blank form with a NEW reference, leaving drafts, the outbox and the archive
+   alone. The flag survives the reload, which is what clears the fields. */
+function startFreshEntry(){
+  try { localStorage.setItem('mocm_fresh_' + FORM_MARK, '1'); } catch (e) {}
+  if (typeof resetForm === 'function' && !PAGE_RELOADS_FOR_NEW) {
+    resetForm();
+    takeFreshRecordId();
+    if (typeof updateProgress === 'function') updateProgress();
+    window.scrollTo(0, 0);
+    draftSay("on", "<b>New entry.</b> The form is blank with a new reference. " +
+      "Your drafts and anything queued are untouched.");
+  } else {
+    try { location.reload(); }
+    catch (e) {                         // if a reload is refused, clear by hand
+      if (typeof resetForm === 'function') resetForm();
+      takeFreshRecordId();
+      if (typeof updateProgress === 'function') updateProgress();
+    }
+  }
+}
+
+function takeFreshRecordId(){
+  RECORD = { id: newRecordId(), accepted: 0, hash: null };
+  saveRecord();
+  try { localStorage.removeItem('mocm_fresh_' + FORM_MARK); } catch (e) {}
+}
+
+/* on load, if we came from SAVE DRAFT or NEW ENTRY, take a new reference so the
+   next entry cannot overwrite the draft we just kept */
+function claimFreshStart(){
+  var flag = null;
+  try { flag = localStorage.getItem('mocm_fresh_' + FORM_MARK); } catch (e) {}
+  if (flag) takeFreshRecordId();
 }
 
 function deleteDraft(id){
@@ -1520,19 +1600,26 @@ function openDrafts(){
   var rows = draftList();
   if (!rows.length) {
     body.innerHTML = '<div class="dash-empty">No drafts on this phone. ' +
-      'Press SAVE DRAFT at any point and the entry is kept here, unsent, until you come back to it.</div>';
+      'Press SAVE DRAFT at any point, give it a name, and the entry is kept here, unsent, ' +
+      'until you come back to it. You can keep as many as you like.' +
+      '<div class="dash-note" style="margin-top:14px;">Form ' + FORM_MARK + ' · build ' + BUILD + '</div></div>';
     return;
   }
-  body.innerHTML = '<div class="dash-note" style="margin:0 0 12px;">Unfinished entries kept on this phone. ' +
+  body.innerHTML = '<div class="dash-note" style="margin:0 0 12px;">' + rows.length +
+    (rows.length === 1 ? ' unfinished entry' : ' unfinished entries') + ' kept on this phone, newest first. ' +
     'Nothing here has been sent to NMDR. Form ' + FORM_MARK + ' · build ' + BUILD + '</div>' + rows.map(function (r) {
+    var name = r.name || r.phu || 'Unnamed draft';
     return '<div class="rec-row">' +
-      '<div class="rec-main">' + draftEsc(r.phu || 'Facility not chosen yet') + '</div>' +
-      '<div class="rec-sub">' + draftEsc(r.chiefdom || '') +
-        (r.visitDate ? ' · visit ' + draftEsc(r.visitDate) : '') +
-        (r.answered ? ' · ' + draftEsc(r.answered) : '') + '</div>' +
-      '<div class="rec-sub">' + draftEsc(r.recordId) + ' · saved ' + draftEsc(r.savedAt || '') + '</div>' +
-      '<div class="pend-actions" style="padding:10px 0 0;border:none;">' +
+      '<div class="rec-main">' + draftEsc(name) + '</div>' +
+      '<div class="rec-sub">' + draftEsc(r.phu || 'Facility not chosen yet') +
+        (r.chiefdom ? ' · ' + draftEsc(r.chiefdom) : '') +
+        (r.visitDate ? ' · visit ' + draftEsc(r.visitDate) : '') + '</div>' +
+      '<div class="rec-sub">' + (r.answered ? draftEsc(r.answered) + ' · ' : '') +
+        'saved ' + draftEsc(r.savedAt || '') + '</div>' +
+      '<div class="rec-sub" style="opacity:.75;">' + draftEsc(r.recordId) + '</div>' +
+      '<div class="pend-actions" style="padding:10px 0 0;border:none;flex-wrap:wrap;">' +
         '<button class="btn-tool" onclick="resumeDraft(\'' + draftEsc(r.recordId) + '\')">CONTINUE</button>' +
+        '<button class="btn-tool" onclick="renameDraft(\'' + draftEsc(r.recordId) + '\')">RENAME</button>' +
         '<button class="btn-tool" onclick="dropDraft(\'' + draftEsc(r.recordId) + '\')">DELETE</button>' +
       '</div></div>';
   }).join('');
@@ -1558,10 +1645,21 @@ function resumeDraft(id){
   if (typeof switchTab === 'function') switchTab('entry');
   if (typeof applySkips === 'function') applySkips();
   if (typeof updateProgress === 'function') updateProgress();
-  draftSay("good", "<b>Continuing your draft</b> for " + draftEsc(d.phu || 'this facility') +
-    ", saved " + draftEsc(d.savedAt || '') + ".<br>" + draftEsc(draftAnswered()) +
-    ". Finish it and press SUBMIT DATA, or SAVE DRAFT again to come back later.");
+  draftSay("good", "<b>Continuing:</b> " + draftEsc(d.name || d.phu || 'this draft') +
+    "<br>" + draftEsc(d.phu || '') + " · saved " + draftEsc(d.savedAt || '') +
+    "<br>" + draftEsc(draftAnswered()) + ". Finish it and press SUBMIT DATA, or SAVE DRAFT again.");
   window.scrollTo(0, 0);
+}
+
+function renameDraft(id){
+  var all = drafts();
+  var d = all[id];
+  if (!d) { openDrafts(); return; }
+  var typed = prompt("Rename this draft:", d.name || d.phu || '');
+  if (typed === null) return;
+  d.name = typed.trim() || d.name || d.phu || 'Unnamed draft';
+  writeDrafts(all);
+  openDrafts();
 }
 
 function dropDraft(id){
@@ -1861,6 +1959,7 @@ var USERS = [
 /* everything is declared by this point, so the form can start */
 numberQuestions();
 loadRecord();
+claimFreshStart();
 renderGps();
 captureGps(false);
 renderPending();
@@ -1869,6 +1968,185 @@ updateProgress();
 setTimeout(function(){ flushOutbox(true); }, 1500);
 document.addEventListener('change', function(){ applySkips(); updateProgress(); });
 document.addEventListener('input', function(){ applySkips(); updateProgress(); });
+
+/* ==================== IN-PAGE DIALOGS ====================
+   The first version of SAVE DRAFT used the browser's prompt() and confirm().
+   Inside an app webview, or an iframe without allow-modals, those are simply
+   ignored: prompt returns nothing, so the save was cancelled and the button
+   looked dead. Everything below asks in the page instead, which works
+   everywhere. These definitions come last on purpose, so they replace the
+   earlier ones. */
+
+function askText(opts){
+  var modal = document.getElementById('askModal');
+  if (!modal) {                                   // no markup: fall back quietly
+    var typed = null;
+    try { typed = prompt(opts.title, opts.value || ''); } catch (e) {}
+    if (typed !== null && typed !== undefined && opts.onOk) opts.onOk(String(typed).trim());
+    return;
+  }
+  document.getElementById('askTitle').textContent = opts.title || '';
+  document.getElementById('askNote').innerHTML = opts.note || '';
+  var input = document.getElementById('askInput');
+  input.style.display = '';
+  input.value = opts.value || '';
+  input.placeholder = opts.placeholder || '';
+
+  var actions = document.getElementById('askActions');
+  actions.innerHTML = '';
+  (opts.buttons || []).forEach(function (b) {
+    var el = document.createElement('button');
+    el.className = b.primary ? 'btn-confirm' : 'btn-cancel';
+    el.textContent = b.label;
+    el.onclick = function () {
+      var val = input.value.trim();
+      closeAsk();
+      if (b.act) b.act(val);
+    };
+    actions.appendChild(el);
+  });
+  modal.style.display = 'flex';
+  setTimeout(function () { try { input.focus(); input.select(); } catch (e) {} }, 50);
+}
+
+function askConfirm(opts){
+  var modal = document.getElementById('askModal');
+  if (!modal) {
+    var ok = false;
+    try { ok = confirm(opts.title + '\n\n' + (opts.plain || '')); } catch (e) { ok = true; }
+    if (ok && opts.onYes) opts.onYes();
+    return;
+  }
+  document.getElementById('askTitle').textContent = opts.title || '';
+  document.getElementById('askNote').innerHTML = opts.note || '';
+  document.getElementById('askInput').style.display = 'none';
+  var actions = document.getElementById('askActions');
+  actions.innerHTML = '';
+  (opts.buttons || []).forEach(function (b) {
+    var el = document.createElement('button');
+    el.className = b.primary ? 'btn-confirm' : 'btn-cancel';
+    el.textContent = b.label;
+    el.onclick = function () { closeAsk(); if (b.act) b.act(); };
+    actions.appendChild(el);
+  });
+  modal.style.display = 'flex';
+}
+
+function closeAsk(){
+  var m = document.getElementById('askModal');
+  if (m) m.style.display = 'none';
+}
+
+/* ---------- saving, naming, and straight on to the next facility ---------- */
+
+function saveDraft(quiet, presetName){
+  if (!warnIfNoStorage()) return false;
+  var snap = draftSnapshot();
+  if (!snap) {
+    if (!quiet) draftSay("bad", "Nothing could be saved yet. Answer a question or two first.");
+    return false;
+  }
+
+  var existing = drafts()[RECORD.id];
+
+  /* a quiet autosave, or a name already decided: write it and be done */
+  if (quiet || presetName) {
+    writeDraft(snap, presetName || (existing && existing.name) || draftSuggestedName(snap));
+    return true;
+  }
+
+  /* otherwise ask for the name in the page */
+  askText({
+    title: existing ? 'Rename and save this draft' : 'Name this draft',
+    note: 'It stays on this phone until you finish it. Nothing is sent to NMDR.<br>' +
+          draftEsc(draftAnswered()) + ' · ' + draftEsc(RECORD.id),
+    value: (existing && existing.name) || draftSuggestedName(snap),
+    placeholder: 'e.g. Gerehun CHC, morning visit',
+    buttons: [
+      { label: 'CANCEL' },
+      { label: 'SAVE', act: function (name) {
+          writeDraft(snap, name || draftSuggestedName(snap));
+          draftSay("on", "<b>Draft saved:</b> " + draftEsc(name) + "<br>" +
+            draftEsc(draftAnswered()) + " · saved just now. Find it again under DRAFTS.");
+        } },
+      { label: 'SAVE & NEW ENTRY', primary: true, act: function (name) {
+          writeDraft(snap, name || draftSuggestedName(snap));
+          startFreshEntry();
+        } }
+    ]
+  });
+  return true;
+}
+
+/* the actual write, shared by the quiet and the named paths */
+function writeDraft(snap, name){
+  var all = drafts();
+  all[RECORD.id] = {
+    payload: snap,
+    name: name,
+    accepted: RECORD.accepted || 0,
+    savedAt: new Date().toLocaleString(),
+    savedStamp: Date.now(),
+    phu: snap.phu || '',
+    chiefdom: snap.chiefdom || '',
+    visitDate: snap.visit_date || '',
+    answered: draftAnswered()
+  };
+  writeDrafts(all);
+}
+
+function renameDraft(id){
+  var all = drafts();
+  var d = all[id];
+  if (!d) { openDrafts(); return; }
+  askText({
+    title: 'Rename this draft',
+    note: draftEsc(d.phu || '') + ' · saved ' + draftEsc(d.savedAt || ''),
+    value: d.name || d.phu || '',
+    buttons: [
+      { label: 'CANCEL', act: function () { openDrafts(); } },
+      { label: 'RENAME', primary: true, act: function (name) {
+          var fresh = drafts();
+          if (fresh[id]) {
+            fresh[id].name = name || fresh[id].name || fresh[id].phu || 'Unnamed draft';
+            writeDrafts(fresh);
+          }
+          openDrafts();
+        } }
+    ]
+  });
+}
+
+function dropDraft(id){
+  var d = drafts()[id];
+  if (!d) { openDrafts(); return; }
+  askConfirm({
+    title: 'Delete this draft?',
+    plain: 'It has not been sent to NMDR.',
+    note: '<b>' + draftEsc(d.name || d.phu || 'Unnamed draft') + '</b><br>' +
+          draftEsc(d.answered || '') + ' · saved ' + draftEsc(d.savedAt || '') +
+          '<br><br>It has not been sent to NMDR, so the entry is gone for good.',
+    buttons: [
+      { label: 'KEEP IT', act: function () { openDrafts(); } },
+      { label: 'DELETE', primary: true, act: function () { deleteDraft(id); openDrafts(); } }
+    ]
+  });
+}
+
+function newEntry(){
+  askConfirm({
+    title: 'Start a new facility?',
+    plain: 'Anything on screen that is not submitted or saved as a draft will be cleared.',
+    note: 'Anything typed here that you have not submitted or saved as a draft will be cleared.' +
+          '<br><br>Your drafts, submitted records and anything waiting in the outbox all stay on this phone.',
+    buttons: [
+      { label: 'CANCEL' },
+      { label: 'SAVE AS DRAFT FIRST', act: function () { saveDraft(false); } },
+      { label: 'START NEW', primary: true, act: function () { startFreshEntry(); } }
+    ]
+  });
+}
+
 </script>
 </body>
 </html>
