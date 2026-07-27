@@ -235,8 +235,9 @@ body {
 .icn { width: 17px; height: 17px; flex: 0 0 auto; vertical-align: -3px; margin-right: 7px; }
 .btn-tool { display: inline-flex; align-items: center; justify-content: center; }
 .sig-icn { width: 14px; height: 14px; vertical-align: -2px; }
-.tool-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
-.btn-tool { min-width: 46%; }
+.toolbar { position: sticky; top: 0; z-index: 300; background: var(--white); border-bottom: 1px solid var(--border); padding: 12px 16px; box-shadow: 0 2px 6px rgba(0,0,0,.06); }
+.tool-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn-tool { flex: 1 1 30%; min-width: 30%; padding: 11px 8px; font-size: 12px; }
 .rec-row { border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; cursor: pointer; background: #fafbfc; }
 .rec-row:active { background: var(--soft-bg); border-color: var(--blue); }
 .rec-main { font-weight: 700; color: var(--blue-dark); font-size: 14px; }
@@ -309,6 +310,15 @@ body {
   <div class="header-org">National Malaria Control Programme, Ministry of Health, Sierra Leone</div>
   <div class="header-title">MOCM/OTSS+ Checklist</div>
   <div class="header-sub">FACILITY PROFILE: General Health Facility Information</div>
+</div>
+
+<div class="toolbar">
+  <div class="tool-row">
+    <button class="btn-tool" onclick="downloadData()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>DOWNLOAD DATA</button>
+    <button class="btn-tool" onclick="openEditPicker()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>EDIT A SUBMISSION</button>
+    <button class="btn-tool" onclick="openDashboard()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/></svg>DASHBOARD</button>
+  </div>
+  <div id="toolStatus" class="tool-status"></div>
 </div>
 
 <div class="form-title">FACILITY PROFILE: General Health Facility Information</div>
@@ -424,13 +434,7 @@ body {
 <div id="pendingPanel" class="pending-panel"></div>
 
 <div class="submit-container">
-  <button class="btn-submit" onclick="validateAndSubmit()">REVIEW &amp; SUBMIT TO NMDR</button>
-  <div class="tool-row">
-    <button class="btn-tool" onclick="downloadData()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>DOWNLOAD DATA</button>
-    <button class="btn-tool" onclick="openEditPicker()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>EDIT A SUBMISSION</button>
-    <button class="btn-tool" onclick="openDashboard()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/></svg>DASHBOARD</button>
-  </div>
-  <div id="toolStatus" class="tool-status"></div>
+  <button class="btn-submit" onclick="validateAndSubmit()">SUBMIT DATA</button>
 </div>
 
 <div id="editModal" class="modal">
@@ -1129,6 +1133,7 @@ function closeModal() { document.getElementById("summaryModal").style.display = 
 var ENDPOINT = "https://script.google.com/macros/s/AKfycbwV04trmpmSLJAS5BTdgBHTS4lumCPRd45yIUvOx9Z0BX7147xCGVId9JcoNt_nCUG_/exec";
 
 var OUTBOX_KEY = "mocm_outbox_form_a";
+var ARCHIVE_KEY = "mocm_sent_form_a";     // what this phone has submitted, kept for editing
 var RECORD_KEY = "mocm_record_form_a";
 
 /* which record this page is editing, and how many versions the server has taken */
@@ -1154,6 +1159,32 @@ function loadRecord() {
 }
 function saveRecord() {
   try { sessionStorage.setItem(RECORD_KEY, JSON.stringify(RECORD)); } catch (e) {}
+}
+
+/* ---------- the archive: every record this phone submitted, kept on the phone
+   so a past visit can be reopened and corrected with no signal ---------- */
+function archive() {
+  try { return JSON.parse(localStorage.getItem(ARCHIVE_KEY)) || {}; } catch (e) { return {}; }
+}
+function archiveSave(payload) {
+  var all = archive();
+  all[payload.recordId] = {
+    payload: payload,
+    savedAt: new Date().toLocaleString(),
+    version: payload.revision,
+    phu: payload.phu,
+    chiefdom: payload.chiefdom,
+    visit_date: payload.visit_date
+  };
+  try { localStorage.setItem(ARCHIVE_KEY, JSON.stringify(all)); } catch (e) {}
+}
+function archiveList() {
+  var all = archive();
+  return Object.keys(all).map(function (id) {
+    var it = all[id];
+    return { recordId: id, version: it.version, savedAt: it.savedAt,
+             phu: it.phu, chiefdom: it.chiefdom, visitDate: it.visit_date };
+  }).sort(function (a, b) { return a.recordId < b.recordId ? 1 : -1; });
 }
 
 /* ---------- the outbox, so nothing is lost without a signal ---------- */
@@ -1248,7 +1279,7 @@ function sendStatus(kind, text) {
   el.innerHTML = text;
 }
 
-function afterAccepted(res, queued, fingerprint) {
+function afterAccepted(res, queued, fingerprint, payload) {
   var wasVersion = RECORD.accepted + 1;
   var wasId = RECORD.id;
   var verb = wasVersion > 1 ? "Resubmitted" : "Submitted";
@@ -1262,6 +1293,10 @@ function afterAccepted(res, queued, fingerprint) {
   RECORD.accepted = wasVersion;
   RECORD.hash = fingerprint || null;
   saveRecord();
+
+  // keep a copy on the phone so this visit can be reopened and corrected later
+  if (payload) { payload.revision = wasVersion; archiveSave(payload); }
+
   resetForm();
 
   sendStatus(queued ? "working" : "good",
@@ -1324,16 +1359,16 @@ function confirmSubmit() {
 
   if (!navigator.onLine) {
     queueSubmission(data);
-    afterAccepted(null, true, fingerprint);
+    afterAccepted(null, true, fingerprint, data);
     return;
   }
 
   sendStatus("working", "Submitting data to NMDR. Keep this page open.");
   postRecord(data)
-    .then(function (res) { afterAccepted(res, false, fingerprint); })
+    .then(function (res) { afterAccepted(res, false, fingerprint, data); })
     .catch(function (err) {
       queueSubmission(data);
-      afterAccepted(null, true, fingerprint);
+      afterAccepted(null, true, fingerprint, data);
       sendStatus("working", "<b>Queued.</b> The server could not be reached (" + err.message +
         "). Nothing is lost: it is held on this phone and goes out by itself once there is a signal." +
         "<br>" + escapeHtml(RECORD.id) + ", version " + RECORD.accepted + ". The form is now blank for the next facility.");
@@ -1591,42 +1626,26 @@ function recordFingerprint(data) {
 function openEditPicker() {
   document.getElementById("editModal").style.display = "flex";
   var body = document.getElementById("editBody");
-  body.innerHTML = '<div class="dash-empty">Reading the submitted records from NMDR...</div>';
-  if (!navigator.onLine) {
-    body.innerHTML = '<div class="dash-empty">No signal. Editing a past submission needs NMDR. ' +
-      'The form itself still works offline for a new visit.</div>';
+  var rows = archiveList();
+  if (!rows.length) {
+    body.innerHTML = '<div class="dash-empty">Nothing has been submitted from this phone yet. ' +
+      'Records you submit here are kept on the phone so you can reopen and correct them, with or without a signal.</div>';
     return;
   }
-  fetch(ENDPOINT + "?action=list&t=" + Date.now())
-    .then(function (r) { return r.json(); })
-    .then(function (res) {
-      if (!res || !res.ok) throw new Error((res && res.error) ? res.error : "NMDR did not answer.");
-      renderEditList(res.records || []);
-    })
-    .catch(function (err) {
-      body.innerHTML = '<div class="dash-empty">' + escapeHtml(err.message) + '</div>';
-    });
+  body.innerHTML = '<div class="dash-note" style="margin:0 0 12px;">Records submitted from this phone. ' +
+    'Reopening one is offline work, nothing is read back from the server.</div>' +
+    '<input class="form-input" id="editSearch" type="text" placeholder="Filter by facility, chiefdom or date" ' +
+    'oninput="filterEditList(this.value)" autocapitalize="none" style="margin-bottom:12px;"><div id="editRows"></div>';
+  EDIT_LIST = rows;
+  filterEditList("");
 }
 function closeEditPicker() { document.getElementById("editModal").style.display = "none"; }
 
 var EDIT_LIST = [];
-function renderEditList(records) {
-  EDIT_LIST = records;
-  var body = document.getElementById("editBody");
-  if (!records.length) {
-    body.innerHTML = '<div class="dash-empty">Nothing has been submitted to NMDR yet.</div>';
-    return;
-  }
-  var html = '<input class="form-input" id="editSearch" type="text" placeholder="Filter by facility, chiefdom or date" ' +
-             'oninput="filterEditList(this.value)" autocapitalize="none" style="margin-bottom:12px;">' +
-             '<div id="editRows"></div>';
-  body.innerHTML = html;
-  filterEditList("");
-}
 function filterEditList(term) {
   var t = String(term || "").toLowerCase();
   var rows = EDIT_LIST.filter(function (r) {
-    return !t || (r.phu + " " + r.chiefdom + " " + r.visitDate + " " + r.reference).toLowerCase().indexOf(t) > -1;
+    return !t || (r.phu + " " + r.chiefdom + " " + r.visitDate + " " + r.recordId).toLowerCase().indexOf(t) > -1;
   });
   var host = document.getElementById("editRows");
   if (!rows.length) { host.innerHTML = '<div class="dash-empty">Nothing matches that.</div>'; return; }
@@ -1635,36 +1654,29 @@ function filterEditList(term) {
       '<div class="rec-main">' + escapeHtml(r.phu || 'Facility not given') + '</div>' +
       '<div class="rec-sub">' + escapeHtml(r.chiefdom || '') + ' · visit ' + escapeHtml(r.visitDate || 'not given') +
       ' · version ' + r.version + '</div>' +
-      '<div class="rec-sub">' + escapeHtml(r.recordId) + ' · last updated ' + escapeHtml(r.lastUpdated || '') + '</div>' +
+      '<div class="rec-sub">' + escapeHtml(r.recordId) + ' · submitted ' + escapeHtml(r.savedAt || '') + '</div>' +
       '</div>';
   }).join('');
 }
 
 function loadSubmission(id) {
-  var body = document.getElementById("editBody");
-  body.innerHTML = '<div class="dash-empty">Loading that record...</div>';
-  fetch(ENDPOINT + "?action=record&id=" + encodeURIComponent(id) + "&t=" + Date.now())
-    .then(function (r) { return r.json(); })
-    .then(function (res) {
-      if (!res || !res.ok) throw new Error((res && res.error) ? res.error : "That record would not load.");
-      fillFormFrom(res.record);
-      closeEditPicker();
-      var missing = (res.record.supervisors || []).length;
-      sendStatus("working",
-        "<b>Editing " + escapeHtml(res.record.recordId) + "</b>, version " + res.record.version +
-        ", " + escapeHtml(res.record.phu || '') + ".<br>" +
-        "Change what you need and submit. It updates that same record, it does not create a new one." +
-        (missing ? "<br>Signatures are not stored in NMDR, so each supervisor has to sign again before it will submit." : ""));
-      window.scrollTo(0, 0);
-    })
-    .catch(function (err) {
-      body.innerHTML = '<div class="dash-empty">' + escapeHtml(err.message) + '</div>';
-    });
+  var item = archive()[id];
+  if (!item) {
+    document.getElementById("editBody").innerHTML = '<div class="dash-empty">That record is no longer on this phone.</div>';
+    return;
+  }
+  fillFormFrom(item.payload);
+  closeEditPicker();
+  sendStatus("working",
+    "<b>Editing " + escapeHtml(id) + "</b>, version " + item.version + ", " + escapeHtml(item.phu || '') + "." +
+    "<br>This is the copy kept on this phone, signatures included, so you can correct it with no signal. " +
+    "Submitting sends version " + (item.version + 1) + " and updates that same record.");
+  window.scrollTo(0, 0);
 }
 
 /* put a record back on the screen */
 function fillFormFrom(rec) {
-  RECORD = { id: rec.recordId, accepted: Number(rec.version) || 1, hash: null };
+  RECORD = { id: rec.recordId, accepted: Number(rec.revision || rec.version) || 1, hash: null };
   saveRecord();
 
   var district = document.getElementById("districtSelect");
@@ -1687,9 +1699,11 @@ function fillFormFrom(rec) {
     renderGps();
   }
 
-  // the cards, rebuilt from the record
+  // the cards, rebuilt from the record. The signatures come back too, because
+  // this copy came off the phone rather than the server.
   for (var i = 0; i < 40; i++) sessionStorage.removeItem('sup_sig_' + i);
-  supervisors = (rec.supervisors || []).map(function (s) {
+  supervisors = (rec.supervisors || []).map(function (s, i) {
+    if (s.signature) { try { sessionStorage.setItem('sup_sig_' + i, s.signature); } catch (e) {} }
     return { name: s.name || "", sex: s.sex || "", designation: s.designation || "",
              organization: s.organization || "", email: s.email || "", phone: s.phone || "" };
   });
@@ -1750,9 +1764,12 @@ function resetForm() {
   setStaffCount(0);
   renderSubmittedBy();
 
+  /* Only the entry fields are cleared. Everything this phone has submitted stays
+     in the archive, and anything still queued stays in the outbox. */
   RECORD = { id: newRecordId(), accepted: 0, hash: null };   // a brand new record
   saveRecord();
   captureGps(true);                       // the next facility is somewhere else
+  renderPending();
   window.scrollTo(0, 0);
 }
 
