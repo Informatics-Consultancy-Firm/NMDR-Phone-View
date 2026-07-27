@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Clinical Lab Coaching &amp; Mentorship Tool | NMCP Sierra Leone</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+:root{
+  --blue:#3b78a8; --blue-dark:#2b5f8a; --blue-light:#4a8dbf; --soft-bg:#e7f3ff;
+  --white:#fff; --gold:#ffc107; --green:#28a745; --red:#dc3545;
+  --bg:#eef1f5; --border:#dce3ec; --text-dark:#1a2c3e; --text-light:#6c7a8a; --radius:18px;
+}
+html,body{ height:100%; }
+html{ background:var(--bg); }
+body{
+  font-family:'Agency FB','AgencyFB','Arial Narrow',Arial,sans-serif;
+  background:var(--white); color:var(--text-dark); font-size:15px; line-height:1.5;
+  max-width:480px; margin:0 auto; height:100vh; height:100dvh;
+  display:flex; flex-direction:column; position:relative; overflow:hidden;
+  /* vertical lines framing the app, connecting header to footer */
+  border-left:3px solid var(--gold); border-right:3px solid var(--gold);
+  box-shadow:0 0 24px rgba(0,0,0,.08);
+}
+
+/* ---- header ---- */
+.app-header{
+  flex:none;
+  background:linear-gradient(135deg,var(--blue-dark) 0%,var(--blue) 60%,var(--blue-light) 100%);
+  color:#fff; text-align:center; padding:14px 16px 12px;
+}
+.app-header .logos{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; }
+.app-header img{ height:44px; width:auto; background:#fff; padding:4px 8px; border-radius:8px; object-fit:contain; }
+.app-header .org{ font-size:9.5px; font-weight:600; letter-spacing:.5px; opacity:.9; }
+.app-header .title{ font-size:15px; font-weight:800; text-transform:uppercase; color:var(--gold); letter-spacing:.5px; margin-top:2px; }
+
+/* ---- progress ---- */
+.progress-wrap{ flex:none; background:var(--white); padding:10px 16px 8px; border-bottom:1px solid var(--border); }
+.progress-track{ height:7px; background:var(--soft-bg); border-radius:20px; overflow:hidden; }
+.progress-bar{ height:100%; width:0%; background:linear-gradient(90deg,var(--blue-dark),var(--gold)); transition:width .3s; }
+.progress-text{ font-size:11px; color:var(--text-light); margin-top:5px; font-weight:600; display:flex; justify-content:space-between; }
+
+/* ---- step area ---- */
+.step-scroll{ flex:1 1 auto; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:18px 16px 24px; }
+.step-section{
+  display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:800;
+  text-transform:uppercase; letter-spacing:.5px; color:var(--blue-dark);
+  background:var(--soft-bg); padding:6px 12px; border-radius:30px; margin-bottom:14px;
+}
+.step-section .badge{ background:var(--gold); color:var(--blue-dark); border-radius:6px; padding:1px 8px; font-size:11px; }
+.step-sub{ font-weight:700; color:var(--blue); font-size:12.5px; text-transform:uppercase; letter-spacing:.3px; margin-bottom:8px; }
+.step-q{ font-size:19px; font-weight:700; color:var(--text-dark); line-height:1.35; margin-bottom:4px; }
+.step-qno{ color:var(--blue); font-weight:800; margin-right:6px; }
+.required-star{ color:var(--red); margin-left:3px; }
+.tab-nav{ flex:none; display:flex; flex-wrap:wrap; background:var(--blue-dark); box-shadow:0 2px 8px rgba(0,0,0,.2); }
+.tab-btn{ flex:1 1 33%; padding:12px 6px; color:rgba(255,255,255,.75); font-weight:700; font-size:11.5px; border:none;
+  background:none; cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap; font-family:inherit;
+  display:inline-flex; align-items:center; justify-content:center; }
+.tab-btn.active{ color:#fff; border-bottom:3px solid var(--gold); background:rgba(255,255,255,.08); }
+.icn{ width:15px; height:15px; flex:0 0 auto; margin-right:6px; }
+.tab-page{ display:none; flex:1 1 auto; min-height:0; }
+.tab-page.active{ display:flex; flex-direction:column; }
+.section-block{ background:#fff; border:1px solid var(--border); border-radius:16px; margin-bottom:14px; overflow:hidden; }
+.section-head{ background:var(--soft-bg); color:var(--blue-dark); font-weight:800; font-size:12.5px; text-transform:uppercase;
+  letter-spacing:.4px; padding:12px 14px; border-bottom:1px solid var(--border); }
+.section-body{ padding:14px; }
+.question-row{ padding:12px 0; border-bottom:1px solid var(--border); }
+.question-row:last-child{ border-bottom:none; }
+.question-text{ font-size:14.5px; font-weight:600; color:var(--text-dark); line-height:1.35; }
+.question-num{ color:var(--blue); font-weight:800; margin-right:6px; }
+.question-num::after{ content:' '; }
+.submit-wrap{ padding:18px 0 8px; }
+.btn-submit-final{ width:100%; padding:16px; background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:#fff;
+  border:none; border-radius:40px; font-weight:800; font-size:15px; cursor:pointer; font-family:inherit; }
+.summary-head{ font-weight:800; color:var(--blue-dark); font-size:13px; text-transform:uppercase; letter-spacing:.4px; margin-bottom:12px; }
+.no-data{ padding:24px; text-align:center; color:var(--text-light); font-size:13px; }
+.tool-status{ display:none; flex:none; padding:10px 16px; font-size:12.5px; font-weight:600; background:var(--soft-bg); border-bottom:1px solid var(--border); }
+.tool-status.on{ display:block; color:var(--blue-dark); }
+.tool-status.bad{ display:block; color:var(--red); }
+.send-status{ display:none; margin:12px 0 0; padding:11px 14px; border-radius:12px; font-size:13px; font-weight:600; line-height:1.45; }
+.send-status.working{ display:block; background:var(--soft-bg); border:1px solid #c9dff2; color:var(--blue-dark); }
+.send-status.good{ display:block; background:#d4edda; border:1px solid #b7dfc1; color:#155724; }
+.send-status.bad{ display:block; background:#f8d7da; border:1px solid #f1b5bb; color:#721c24; }
+.gps-panel{ border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; background:#fafbfc; font-size:13px; }
+.gps-panel.good{ border-color:#b7dfc1; background:#f1f9f3; }
+.gps-panel.bad{ border-color:#f1b5bb; background:#fdf2f3; }
+.gps-line{ font-weight:700; color:var(--blue-dark); }
+.gps-sub{ font-size:11.5px; color:var(--text-light); margin-top:3px; }
+.pending-panel{ display:none; margin:12px 0 0; border:1.5px solid var(--gold); border-radius:14px; overflow:hidden; background:#fff8e1; }
+.pending-panel.on{ display:block; }
+.pending-head{ padding:12px 14px; font-size:13px; font-weight:700; color:#7a5600; }
+.pend-row{ padding:11px 14px; border-top:1px solid #f0dca8; background:#fff; }
+.pend-main{ font-weight:700; font-size:13.5px; color:var(--blue-dark); }
+.pend-sub{ font-size:11.5px; color:var(--text-light); margin-top:2px; }
+.pend-actions{ padding:11px 14px; border-top:1px solid #f0dca8; display:flex; gap:10px; }
+.btn-tool{ padding:11px 14px; background:#fff; color:var(--blue-dark); border:1.5px solid var(--blue); border-radius:40px;
+  font-weight:700; font-size:12.5px; cursor:pointer; font-family:inherit; }
+.modal{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:1000; align-items:center; justify-content:center; padding:16px; }
+.modal-content{ background:#fff; border-radius:18px; width:100%; max-width:520px; max-height:86vh; display:flex; flex-direction:column; overflow:hidden; }
+.modal-header{ background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:#fff; padding:14px 16px; font-weight:800;
+  display:flex; justify-content:space-between; align-items:center; }
+.modal-header button{ background:none; border:none; color:#fff; font-size:22px; cursor:pointer; }
+.modal-body{ padding:16px; overflow-y:auto; font-size:13.5px; }
+.modal-footer{ padding:14px 16px; border-top:1px solid var(--border); display:flex; gap:10px; }
+.btn-cancel{ flex:1; padding:13px; background:#eef1f5; border:1px solid var(--border); border-radius:40px; font-weight:700; cursor:pointer; font-family:inherit; }
+.btn-confirm{ flex:1; padding:13px; background:var(--blue); color:#fff; border:none; border-radius:40px; font-weight:700; cursor:pointer; font-family:inherit; }
+.dash-kpis{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.kpi{ background:var(--soft-bg); border-radius:12px; padding:12px 14px; }
+.kpi-val{ font-size:22px; font-weight:800; color:var(--blue-dark); }
+.kpi-lbl{ font-size:10.5px; font-weight:700; letter-spacing:.4px; text-transform:uppercase; color:var(--text-light); margin-top:2px; }
+.dash-block{ margin-top:18px; }
+.dash-title{ font-size:12px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; color:var(--blue);
+  padding-bottom:6px; border-bottom:2px solid var(--soft-bg); margin-bottom:10px; }
+.bar-row{ margin-bottom:9px; }
+.bar-top{ display:flex; justify-content:space-between; font-size:12.5px; margin-bottom:3px; }
+.bar-num{ color:var(--blue-dark); font-weight:700; white-space:nowrap; }
+.bar-track{ height:8px; background:var(--border); border-radius:6px; overflow:hidden; }
+.bar-fill{ height:100%; background:var(--blue); border-radius:6px; }
+.bar-fill.gold{ background:var(--gold); }
+.bar-fill.green{ background:var(--green); }
+.dash-note{ font-size:11.5px; color:var(--text-light); margin-top:8px; line-height:1.5; }
+.dash-empty{ padding:24px; text-align:center; color:var(--text-light); font-size:13px; }
+.rec-row{ border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:10px; cursor:pointer; background:#fafbfc; }
+.rec-main{ font-weight:700; color:var(--blue-dark); font-size:14px; }
+.rec-sub{ font-size:11.5px; color:var(--text-light); margin-top:2px; }
+.summary-item{ display:flex; justify-content:space-between; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.summary-label{ color:var(--text-light); }
+.summary-value{ font-weight:700; color:var(--text-dark); text-align:right; }
+.summary-section-title{ font-weight:800; color:var(--blue); font-size:12px; text-transform:uppercase; letter-spacing:.4px;
+  margin:16px 0 6px; padding-bottom:5px; border-bottom:2px solid var(--soft-bg); }
+.hr-card{ border:1.5px solid var(--border); border-radius:14px; margin-bottom:12px; overflow:hidden; background:#fff; }
+.hr-card-head{ background:var(--soft-bg); color:var(--blue-dark); font-weight:800; font-size:12.5px; padding:10px 12px;
+  text-transform:uppercase; letter-spacing:.3px; }
+.hr-line{ display:flex; align-items:center; gap:10px; padding:8px 12px; border-top:1px solid var(--border); }
+.hr-label{ flex:1 1 auto; font-size:13.5px; color:var(--text-dark); }
+.hr-input{ flex:0 0 92px; padding:11px 12px; border:1.5px solid var(--border); border-radius:12px; font-size:15px;
+  text-align:center; font-family:inherit; }
+.hr-input:focus{ outline:none; border-color:var(--blue); }
+.hr-total{ padding:9px 12px; border-top:1px solid var(--border); background:#fafbfc; font-size:12.5px; color:var(--text-light); }
+.hr-total b{ color:var(--blue-dark); }
+.fixed-site{ padding:15px 16px; border:1.5px solid var(--border); border-radius:14px; background:var(--soft-bg);
+             font-weight:700; color:var(--blue-dark); }
+.note{ font-size:12.5px; color:var(--text-light); font-style:italic; margin:8px 0 4px; padding-left:10px; border-left:3px solid var(--gold); }
+.control{ margin-top:18px; }
+
+/* ---- inputs ---- */
+.form-input,.form-select,textarea.form-input{
+  width:100%; padding:15px 16px; border:1.5px solid var(--border); border-radius:14px;
+  font-size:16px; font-family:inherit; background:var(--white);
+}
+textarea.form-input{ min-height:110px; resize:vertical; }
+.form-input:focus,.form-select:focus{ border-color:var(--blue); outline:none; box-shadow:0 0 0 3px rgba(59,120,168,.12); }
+
+/* ---- big tappable choices ---- */
+.choice-group{ display:flex; flex-direction:column; gap:12px; }
+.choice-option{
+  display:flex; align-items:center; gap:12px; padding:16px 18px;
+  border:1.5px solid var(--border); border-radius:14px; background:var(--white);
+  cursor:pointer; font-weight:600; font-size:16px; transition:all .12s; user-select:none;
+}
+.choice-option::before{ content:''; width:20px; height:20px; border-radius:50%; border:2px solid var(--border); flex-shrink:0; }
+.choice-option:active{ transform:scale(.99); }
+.choice-option.selected{ background:var(--blue); border-color:var(--blue); color:#fff; }
+.choice-option.selected::before{ border-color:#fff; background:#fff; box-shadow:inset 0 0 0 4px var(--blue); }
+.choice-option.sel-yes{ background:var(--green); border-color:var(--green); color:#fff; }
+.choice-option.sel-yes::before{ border-color:#fff; background:#fff; box-shadow:inset 0 0 0 4px var(--green); }
+.choice-option.sel-no{ background:var(--red); border-color:var(--red); color:#fff; }
+.choice-option.sel-no::before{ border-color:#fff; background:#fff; box-shadow:inset 0 0 0 4px var(--red); }
+
+/* ---- matrix / grid ---- */
+.matrix{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+table.grid{ width:100%; border-collapse:collapse; font-size:13px; min-width:430px; }
+table.grid th,table.grid td{ border:1px solid var(--border); padding:6px; text-align:center; }
+table.grid th{ background:var(--soft-bg); color:var(--blue-dark); font-weight:700; font-size:11px; }
+table.grid td:first-child,table.grid th:first-child{ text-align:left; font-size:12px; }
+table.grid input{ width:100%; border:1px solid var(--border); border-radius:8px; padding:8px; font-size:15px; text-align:center; font-family:inherit; }
+
+/* ---- member cards ---- */
+.member-card{ background:#fafbfc; border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:12px; }
+.member-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border); font-weight:700; color:var(--blue-dark); font-size:13px; }
+.remove-btn{ color:var(--red); background:none; border:none; font-size:18px; font-weight:700; cursor:pointer; padding:0 6px; }
+.field-label{ font-weight:600; font-size:13px; margin:10px 0 5px; }
+.add-btn{ background:var(--blue); color:#fff; border:none; border-radius:40px; padding:13px 20px; font-weight:700; font-size:14px; cursor:pointer; width:100%; margin-top:4px; }
+.add-btn:active{ background:var(--blue-dark); }
+
+/* ---- signature ---- */
+.signature-container{ border:1.5px solid var(--border); border-radius:14px; background:#fff; overflow:hidden; }
+.signature-canvas{ display:block; width:100%; height:150px; background:#fff; touch-action:none; cursor:crosshair; }
+.signature-buttons{ display:flex; padding:8px 10px; background:var(--soft-bg); border-top:1px solid var(--border); }
+.signature-btn{ background:var(--red); color:#fff; border:none; border-radius:20px; padding:7px 14px; font-size:12px; font-weight:600; cursor:pointer; }
+
+/* ---- recheck ---- */
+.recheck-row{ border:1px solid var(--border); border-radius:14px; padding:12px; margin-bottom:12px; background:#fafbfc; }
+.recheck-col h5{ font-size:11px; text-transform:uppercase; color:var(--blue-dark); margin:10px 0 6px; letter-spacing:.5px; }
+.recheck-col .form-input{ margin-top:8px; padding:11px; font-size:15px; }
+.mini-choice{ display:flex; gap:8px; }
+.mini-choice .opt{ flex:1; text-align:center; padding:11px; border:1.5px solid var(--border); border-radius:12px; font-weight:700; cursor:pointer; font-size:14px; background:#fff; }
+.mini-choice .opt.pos{ background:var(--green); color:#fff; border-color:var(--green); }
+.mini-choice .opt.neg{ background:var(--red); color:#fff; border-color:var(--red); }
+
+/* ---- review ---- */
+.summary-item{ margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+.summary-label{ font-weight:700; color:var(--blue); font-size:10px; text-transform:uppercase; margin-bottom:3px; }
+.summary-value{ font-size:15px; }
+.summary-title{ font-weight:800; font-size:15px; color:var(--blue); margin:16px 0 10px; padding-bottom:6px; border-bottom:2px solid var(--blue); }
+
+/* ---- bottom nav ---- */
+.nav-bar{
+  flex:none; display:flex; gap:12px; padding:12px 16px;
+  background:#fff; border-top:1px solid var(--border); box-shadow:0 -4px 14px rgba(0,0,0,.05); z-index:100;
+}
+/* ---- branded footer (echoes header, faintly) ---- */
+.app-footer{
+  flex:none; text-align:center;
+  background:linear-gradient(135deg,var(--blue-dark) 0%,var(--blue) 60%,var(--blue-light) 100%);
+  color:#fff; padding:9px 16px calc(9px + env(safe-area-inset-bottom));
+}
+.app-footer .footer-title{ font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; color:var(--gold); opacity:.8; }
+.app-footer .footer-org{ font-size:9px; font-weight:600; letter-spacing:.4px; opacity:.6; margin-top:2px; }
+.btn-nav{ padding:15px; border-radius:40px; font-weight:800; font-size:16px; cursor:pointer; border:none; }
+.btn-back{ flex:0 0 34%; background:#f0f2f5; color:var(--text-dark); border:1.5px solid var(--border); }
+.btn-back:disabled{ opacity:.4; }
+.btn-next{ flex:1; background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:#fff; }
+.btn-next.submit{ background:linear-gradient(135deg,#1e7a34,var(--green)); }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="logos">
+    <img src="NMCP.png" alt="NMCP" onerror="this.style.display='none'">
+    <img src="ICF-SL.jpg" alt="ICF-SL" onerror="this.style.display='none'">
+  </div>
+  <div class="org">National Malaria Control Programme — MoH, Sierra Leone</div>
+  <div class="title">Lab Coaching &amp; Mentorship Tool</div>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" data-tab="entry" onclick="switchTab('entry')"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6v3H9z"/><path d="M8 5H6a1 1 0 00-1 1v13a1 1 0 001 1h12a1 1 0 001-1V6a1 1 0 00-1-1h-2"/><path d="M9 12h6"/><path d="M9 16h4"/></svg>DATA ENTRY</button>
+  <button class="tab-btn" data-tab="summary" onclick="switchTab('summary')"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12"/><path d="M8 12h12"/><path d="M8 18h12"/><path d="M4 6h.01"/><path d="M4 12h.01"/><path d="M4 18h.01"/></svg>SUMMARY</button>
+  <button class="tab-btn" onclick="downloadData()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>DOWNLOAD</button>
+  <button class="tab-btn" onclick="openDashboard()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/></svg>DASHBOARD</button>
+  <button class="tab-btn" onclick="openEditPicker()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>EDIT</button>
+  <button class="tab-btn" onclick="newEntry()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>NEW ENTRY</button>
+</div>
+<div id="toolStatus" class="tool-status"></div>
+
+<div class="progress-wrap">
+  <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="progress-text"><span id="progressStep">Answer every question, then Submit Data at the foot of the page.</span><span id="progressPct">0%</span></div>
+</div>
+
+<div class="tab-page active" id="tab-entry">
+  <div class="step-scroll" id="stepScroll">
+    <div id="pageContainer"></div>
+    <div id="pendingPanel" class="pending-panel"></div>
+    <div id="sendStatus" class="send-status"></div>
+    <div class="submit-wrap">
+      <button class="btn-submit-final" onclick="submitForm()">SUBMIT DATA</button>
+    </div>
+  </div>
+</div>
+
+<div class="tab-page" id="tab-summary">
+  <div class="step-scroll">
+    <div class="summary-head">LAST SUBMISSION FROM THIS PHONE</div>
+    <div id="summary-content"><div class="no-data">Nothing submitted from this phone yet.</div></div>
+  </div>
+</div>
+
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><span>EDIT A SUBMISSION</span><button onclick="closeEditPicker()">&times;</button></div>
+    <div class="modal-body" id="editBody"></div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeEditPicker()">CLOSE</button></div>
+  </div>
+</div>
+
+<div id="dashModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><span>NMDR DASHBOARD · LABORATORY</span><button onclick="closeDashboard()">&times;</button></div>
+    <div class="modal-body" id="dashBody"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeDashboard()">CLOSE</button>
+      <button class="btn-confirm" onclick="openDashboard(true)">REFRESH</button>
+    </div>
+  </div>
+</div>
+
+<div id="confirmModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><span>Confirm Submission</span><button onclick="closeModal()">&times;</button></div>
+    <div class="modal-body">Submit this data to NMDR? You can edit the record afterwards and submit it again; it updates the same record rather than creating a second one.</div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-confirm" onclick="doSubmit()">Submit to NMDR</button>
+    </div>
+  </div>
+</div>
+
+<div class="app-footer">
+  <div class="footer-title">Lab Coaching &amp; Mentorship Tool</div>
+  <div class="footer-org">National Malaria Control Programme — MoH, Sierra Leone · ICF-SL</div>
+</div>
+
+<script>
+/* =========================================================================
+   ICF-SL / NMCP — Clinical Lab Coaching & Mentorship Tool (mobile wizard)
+   ========================================================================= */
+
+/* ---------- state ---------- */
+const responses = {};
+
+/* the position the phone read, filled by captureGps() further down */
+var GPS = { lat:"", lng:"", accuracy:"", taken:"", state:"waiting", note:"" };
+const facilitySel = { district:'', chiefdom:'', phu:'', facilityType:'' };
+let mentored = [{name:'',designation:'',organization:'',contact:''}];
+let recheckRows = [ blankRecheck(), blankRecheck(), blankRecheck() ];
+const hrCadres = ['Laboratory Scientist','Laboratory Technologist','Laboratory Technician','Student / Intern'];
+const hrCols = [['fulltime','Full-Time'],['parttime','Part-Time'],['volunteers','Volunteers'],['intern','Student / Intern']];
+const hrData = {};
+function blankRecheck(){ return {sup_res:'',sup_para:'',sup_species:'',staff_res:'',staff_para:'',staff_species:''}; }
+
+/* ---------- schema builders ---------- */
+const Y=(n,q,note)=>({n,q,note,type:'choice',options:['Yes','No']});
+const YN3=(n,q)=>({n,q,type:'choice',options:['Yes','No','N/A']});
+const C=(n,q,options,note)=>({n,q,options,note,type:'choice'});
+const T=(n,q)=>({n,q,type:'text'});
+const NUM=(n,q,note)=>({n,q,note,type:'num'});
+const TA=(n,q)=>({n,q,type:'textarea'});
+const DATE=(n,q)=>({n,q,type:'date'});
+const AV=(n,q)=>({n,q,type:'choice',options:['Available & in use','Available & not in use','Not available']});
+const SUB=(t)=>({type:'subhead',q:t});
+const NOTE=(t)=>({type:'note',q:t});
+
+const demoExtra=[
+  C('1.6','Level of Health Facility',['Regional Hospital','District Hospital','Tertiary / Teaching Hospital']),
+  C('1.7','Ownership',['Government','Private','FBHF / Mission','Parastatal']),
+  T('1.8','General / Facility Telephone'),
+  T('1.9','General / Facility E-mail'),
+  T('1.10','Head of Health Facility — Name'),
+  T('1.11','Title of In-Charge of Health Facility'),
+  T('1.12','Contact Telephone of In-Charge of Lab'),
+  T('1.13','E-mail of In-Charge of Lab'),
+  T('1.14','Hours of Operation — Weekdays'),
+  T('1.15','Hours of Operation — Weekend'),
+  DATE('1.16','Date of Visit'),
+  {n:'1.17',q:'Head of Laboratory / Lead — Signature',type:'signature'}
+];
+/* the national laboratory indicator list, recorded once per visit */
+const indicators=[
+  NUM('27.1','Percentage of laboratory staff trained in malaria microscopy or mRDT within the past two years'),
+  C('27.2','Are SOPs and job aids available for specimen collection, film preparation, staining, microscopy and RDT use?',
+    ['All available','Some available','None available']),
+  C('27.3','Frequency of supportive supervision sessions conducted',['Quarterly','Semiannual','Annual','None in the past year']),
+  Y('27.4','Has the supply of RDTs and microscopy reagents been uninterrupted in the last 3 months?'),
+  Y('27.5','Are the microscopes functional with spare parts available?'),
+  NUM('27.6','Number of technicians assessed on species identification during this visit'),
+  NUM('27.7','Of those, how many correctly identified the species (Pf, Pv, Pm, Po, mixed)?'),
+  NUM('27.8','Of those, how many performed parasite quantification to WHO standards?'),
+  NUM('27.9','Concordance between technician and supervisor rechecking, as a percentage',
+      'The national target is 90 per cent agreement or better.'),
+  Y('27.10','Is an active internal quality control programme maintained for malaria microscopy?'),
+  NUM('27.11','Number of technicians observed following biosafety and infection prevention measures')
+];
+
+const section3Extra=[
+  NUM('3.5','Number of lab staff formally trained on malaria microscopy in the last 2 years'),
+  NUM('3.6','Number of lab staff formally trained on malaria RDTs in the last 2 years'),
+  NUM('3.7','Total number of lab staff on duty during the assessment'),
+  Y('3.8','Do you receive routine supportive supervision for malaria diagnostics?'),
+  C('3.9','If yes, what is the frequency?',['Quarterly','Every 6 months','Yearly','Irregularly'])
+];
+const sectionsA=[
+  { no:'4', title:'Facility Readiness', items:[
+    Y('4.1','Are facility registration / license details current?'),
+    Y('4.2','Is the organogram / staff structure clearly displayed?'),
+    Y('4.3','Is there an active designated Laboratory Manager / Lead?'),
+    Y('4.4','Are operational hours clearly posted for patients?'),
+    Y('4.5','Is there a record of the last supervisory visit?'),
+    Y('4.6','Is a formal visitor’s logbook available and maintained?'),
+    Y('4.7','Is there a clear protocol for medical waste disposal?'),
+    Y('4.8','Are patient privacy and confidentiality policies in place?'),
+    Y('4.9','Is there an active incident reporting system (injuries, spills)?'),
+    Y('4.10','Is the lab area physically separated from patient waiting / clinical areas?')
+  ]},
+  { no:'5', title:'Power Supply', items:[
+    Y('5.1','Is there a power supply to the laboratory?'),
+    Y('5.2','Any power problem lasting more than one day in the last two weeks that limited malaria microscopy?'),
+    C('5.3','Main source of power (choose one)',['National grid','Generator','Solar'])
+  ]},
+  { no:'6', title:'Infrastructure & Environment', items:[
+    Y('6.1','Is the lab space free from excessive dust?'),
+    Y('6.2','Is the lighting adequate for microscopy and RDT performance?'),
+    Y('6.3','Is the work surface non-porous and easily cleanable?'),
+    Y('6.4','Is there access to a functional sink with running water?'),
+    Y('6.5','Is the room temperature within the recommended range?'),
+    Y('6.6','Adequate storage facilities (shelves / cabinets)?'),
+    Y('6.7','Dedicated area for specimen reception?'),
+    Y('6.8','Is the facility free of pests and rodents?')
+  ]},
+  { no:'7', title:'Stock-outs', items:[
+    Y('7.1','Did this lab experience stock-outs for malaria RDT commodities at any point?'),
+    Y('7.2','Any stock-out / equipment breakdown in the last 3 months affecting malaria microscopy?'),
+    T('7.3','Microscopes — type and brand available'),
+    Y('7.4','Lancets / needles & syringes'),
+    Y('7.5','Methylated spirits / alcohol swabs'),
+    Y('7.6','Glycerol'),
+    Y('7.7','pH meter machine'),
+    Y('7.8','EDTA tubes'),
+    Y('7.9','Giemsa stain solution'),
+    Y('7.10','Buffer solution / tabs'),
+    Y('7.11','Microscope slides (frosted edge)'),
+    Y('7.12','Immersion oil'),
+    Y('7.13','Healthcare waste containers')
+  ]},
+  { no:'8', title:'Microscopes, Spare Parts & Maintenance', items:[
+    NUM('8.1','Number of functional microscopes'),
+    T('8.1b','Functional microscopes — type and brand'),
+    NUM('8.2','Number of non-functional microscopes'),
+    TA('8.3','If non-functional, specify the problem and how long it has persisted'),
+    Y('8.4','Are there microscope repair and / or spare kits?'),
+    SUB('Repair tools available'),
+    Y('8.5','Small screwdrivers (Phillips and flat-head)'),
+    Y('8.6','Allen / hex keys'),
+    Y('8.7','Silicone grease'),
+    SUB('Maintenance items regularly available'),
+    Y('8.8','Dust covers'),
+    Y('8.9','Lens cleaning solution'),
+    Y('8.10','Lens cleaning tissue'),
+    Y('8.11','Soft brush or air blower'),
+    SUB('If available — quantities in stock'),
+    NUM('8.12','Dust covers (qty)'),
+    NUM('8.13','Lens cleaning solution (qty)'),
+    NUM('8.14','Lens cleaning tissue (qty)'),
+    NUM('8.15','Soft brush / air blower (qty)'),
+    TA('8.16','If not available, why?'),
+    NUM('8.17','Number of spare bulbs / LED modules in stock'),
+    NUM('8.18','Number of fuses in stock'),
+    TA('8.19','List other spare parts in stock (with quantity)'),
+    Y('8.20','Does staff conduct routine preventive care / maintenance of the microscope?'),
+    TA('8.21','If yes, confirm from microscope maintenance chart / log'),
+    C('8.22','Are biomedical engineers / contractors available for repair, OR someone trained on-site?',['Yes','No','Don’t know'])
+  ]},
+  { no:'9', title:'Laboratory Equipment & Supplies', items:[
+    AV('9.1','Slide storage boxes'), AV('9.2','Microscope slides (frosted edge)'), AV('9.3','Giemsa stain solution'),
+    AV('9.4','Powder-free gloves'), AV('9.5','Lens cleaning tissues'), AV('9.6','Immersion oil'),
+    AV('9.7','Sharps container'), AV('9.8','Colour-coded waste bins'), AV('9.9','Methanol'),
+    AV('9.10','pH meter machine'), AV('9.11','Staining racks'), AV('9.12','Staining vessels'),
+    AV('9.13','Glass staining dishes'), AV('9.14','Slide drying racks'), AV('9.15','Pasteur pipettes'),
+    AV('9.16','Timers'), AV('9.17','Tally counters'), AV('9.18','Graduated cylinder (50 mL)'),
+    AV('9.19','Graduated cylinder (250 mL)'), AV('9.20','Graduated cylinder (500 mL)'), AV('9.21','Weighing scale'),
+    AV('9.22','Funnel'), AV('9.23','Blood tube roller / mixer'), AV('9.24','Slide preparation template'),
+    TA('9.25','Was the lab able to perform malaria diagnosis without any stock-out in the last 3 months? If No, confirm from the ledger book.')
+  ]},
+  { no:'10', title:'Malaria Reference Material', items:[
+    Y('10.1','MOH guidelines for malaria diagnosis available'),
+    Y('10.2','Is it the most recent version?')
+  ]},
+  { no:'11', title:'Commodity Management — SOPs', items:[
+    Y('11.1','Do you have SOPs for malaria microscopy?'),
+    Y('11.2','Blood collection (capillary / venous)'),
+    Y('11.3','Blood film preparation'),
+    Y('11.4','Blood film staining'),
+    Y('11.5','Stain preparation'),
+    Y('11.6','Examination and reporting of blood films'),
+    Y('11.7','Microscope use, care and maintenance'),
+    Y('11.8','Slide cross-checking'),
+    Y('11.9','Bench aid: microscopy'),
+    Y('11.10','Bench aid: use and interpretation of mRDTs')
+  ]},
+  { no:'12', title:'Internal Quality Control (IQC)', items:[
+    Y('12.1','Does this facility have an IQC program for malaria microscopy?'),
+    Y('12.2','Positive and negative control slides available for testing new stain batches?'),
+    Y('12.3','IQC results recorded in a dedicated IQC register? / Standards used to calibrate the pH meter?'),
+    Y('12.4','Microscopy results cross-checked by another staff before release?'),
+    Y('12.5','Examined slides stored for rereading / cross-checking?'),
+    Y('12.6','Slides for rereading stored in designated slide boxes?'),
+    Y('12.7','Is malaria species identification routinely performed?'),
+    Y('12.8','Is parasite counting performed?'),
+    T('12.9','If yes, which method of counting is performed?')
+  ]},
+  { no:'13', title:'External Quality Assurance (EQA)', items:[
+    Y('13.1','Does the laboratory participate in a malaria EQA scheme?'),
+    NOTE('If yes, complete the following:'),
+    T('13.2','Name of scheme enrolled'),
+    T('13.3','Frequency of participation'),
+    T('13.4','Outcome of immediate last cycle'),
+    TA('13.5','Corrective action records if they failed'),
+    T('13.6','Date of last validation (mm/yyyy)'),
+    Y('13.7','Participate in any other EQA schemes (HIV / TB or others)?'),
+    T('13.8','Name / affiliation of monitors'),
+    T('13.9','Date of last validation (mm/yyyy)'),
+    Y('13.10','Does the facility conduct QC checks on mRDT test kits?'),
+    T('13.11','If yes, date of last validation (mm/yyyy)')
+  ]},
+  { no:'14', title:'Diagnostic Tests & Turnaround Time', items:[
+    Y('14.1','Does this facility use mRDTs for malaria diagnosis (any frequency)?'),
+    C('14.2','If yes, is turnaround time documented in the test register?',['N/A — mRDTs not done','Yes','No']),
+    NUM('14.3','If yes, turnaround time for preparation and recording (minutes)'),
+    T('14.4','mRDT brand used most frequently')
+  ]},
+  { no:'15', title:'Microscopy EQA & Supportive Supervision', items:[
+    Y('15.1','Does this facility participate in malaria microscopy slide rechecking?'),
+    T('15.2','If yes, how was your performance in the last cycle?'),
+    Y('15.3','Does this facility receive supportive supervision and mentorship for malaria diagnosis?'),
+    TA('15.4','If yes, when was the last supervision and was it national or regional?')
+  ]}
+];
+const section16Pre=[ Y('16.0','Were a minimum of 30 slides set aside for EQA rechecking?') ];
+const sectionsB=[
+  { no:'17', title:'Observation 1 — Blood Film Preparation', items:[
+    SUB('17.1 Supervisor — Observed Indicators'),
+    C('17.1.2','Staff performing species ID and counting',['No','Yes','Species ID only','Species counting only']),
+    C('17.1.3','What form of diagnosis does this lab perform?',['mRDT','Microscopy','Both mRDT and Microscopy']),
+    T('17.1.4','If microscopy, what is the reporting format?'),
+    Y('17.1.5','Have clinicians / care givers received orientation on the reporting formats?'),
+    SUB('17.2.1 Healthcare Worker Information'),
+    C('17.2.1.1','Gender',['Male','Female']),
+    C('17.2.1.2','Position',['Laboratory Scientist','Laboratory Technician','Laboratory Assistant']),
+    SUB('17.2.2 Slide Preparation'),
+    YN3('17.2.2.1','Correct patient identification and documentation'),
+    Y('17.2.2.2','Blood collection procedure explained and consent granted'),
+    Y('17.2.2.3','New set of powder-free gloves worn'),
+    Y('17.2.2.4','Used pre-cleaned slide'),
+    Y('17.2.2.5','Slide labelled with date and patient name / ID'),
+    SUB('17.2.3 Specimen Collection — Finger Prick'),
+    Y('17.2.3.1','Was collection via finger prick?','If No, the rest of 17.2.3 is skipped and you go straight to 17.2.4.'),
+    Y('17.2.3.2','Finger cleaned with alcohol and allowed to air dry?'),
+    Y('17.2.3.3','First drop wiped off, subsequent drop placed on slide without touching finger'),
+    SUB('17.2.4 Specimen Collection — Venipuncture'),
+    Y('17.2.4.1','Was collection via venipuncture?','If No, the rest of 17.2.4 is skipped and you go straight to 17.2.5.'),
+    Y('17.2.4.2','Puncture site cleaned with alcohol and allowed to dry'),
+    Y('17.2.4.3','Sterile needle and syringe or vacutainer assembled'),
+    Y('17.2.4.4','Venous blood collected and gently mixed'),
+    Y('17.2.4.5','EDTA tube labelled with date and patient name / number'),
+    SUB('17.2.5 Spreading Thick Blood Film'),
+    Y('17.2.5.1','Pre-cleaned slide placed on a slide preparation template'),
+    Y('17.2.5.2','Both thick and thin smear prepared on the same slide'),
+    Y('17.2.5.3','~6 µl of blood placed at the designated thick-film area'),
+    Y('17.2.5.4','Blood spread into ~1 cm diameter circle (supervisor verifies)'),
+    Y('17.2.5.5','Slide with thick film left to air dry before staining'),
+    C('17.2.5.6','What stain did the technician use?',['Giemsa','Field stain']),
+    SUB('17.2.6 Preparation of Giemsa Working Solution'),
+    Y('17.2.6.1','Is a standard 10% Giemsa solution used?'),
+    T('17.2.6.2','If no, record percentage of solution used'),
+    Y('17.2.6.3','Fresh Giemsa solution prepared properly / on the day of observation?'),
+    Y('17.2.6.4','Were you (supervisor) able to check pH of buffered water?'),
+    C('17.2.6.5','Was pH of the staining solution between 7.2 and 7.4?',['Yes','No','Unable to check — no pH paper / meter']),
+    SUB('17.2.7 Staining — Thick Blood Films'),
+    Y('17.2.7.1','Air-dried thick film placed on staining rack, film side up'),
+    Y('17.2.7.2','Film flooded with 10% Giemsa stain for 10–15 minutes'),
+    Y('17.2.7.3','Slide rinsed carefully with water (thick smears not fixed)'),
+    SUB('17.2.8 Staining — Thin Blood Films (mark N/A if not done)'),
+    YN3('17.2.8.1','Thin film fixed with absolute methanol (2–3 sec) and air dried'),
+    YN3('17.2.8.2','Film flooded with 10% Giemsa stain for 10–15 minutes'),
+    YN3('17.2.8.3','Slide rinsed carefully with water'),
+    SUB('17.2.9 Drying'),
+    Y('17.2.9.1','Stained slide placed on drying rack to air dry (no external heat)'),
+    SUB('17.2.10 Waste Management'),
+    Y('17.2.10.1','Used sharps segregated and disposed in appropriate safety box'),
+    Y('17.2.10.2','Infectious / non-infectious waste segregated into colour-coded containers'),
+    Y('17.2.10.3','Liquid waste appropriately washed off / disinfected'),
+    SUB('17.2.11 Reading Slide'),
+    C('17.2.11.0','What type of slide was prepared?',['Thick smear','Thin smear','Thick & thin smear']),
+    Y('17.2.11.1','Reported slide as positive for malaria parasites'),
+    Y('17.2.11.2','Was speciation performed?','If No, 17.2.11.3 and 17.2.11.4 are skipped and you go straight to 17.2.11.5.'),
+    C('17.2.11.3','Report species of parasites',['Pf','Pm','Po','Pv','Mixed']),
+    C('17.2.11.5','How was quantification performed?',['Plus system','WBC','Parasites/µL']),
+    T('17.2.11.6','Report quantification')
+  ]},
+  { no:'18', title:'Supervisor Confirmation and Mentorship', items:[
+    NOTE('Done independently, using the same method the lab staff used above.'),
+    Y('18.1.1','Report slide as positive for parasites'),
+    C('18.1.2','Evaluation (if done) for parasite species',['Pf','Pm','Po','Pv','Mixed']),
+    C('18.1.3','Was there agreement on quantification?',['Not performed','No','Yes']),
+    Y('18.1.4','Is the quality of stain adequate?'),
+    SUB('18.2 Waste Management'),
+    Y('18.2.1','Sharps waste segregated and disposed in a safety box'),
+    Y('18.2.2','Infectious waste disposed in appropriate waste containers'),
+    Y('18.2.3','Liquid waste appropriately washed off / disinfected')
+  ]},
+  { no:'20', title:'Preparing & Reading RDTs', items:[
+    C('20.1.1','Type of RDT',['Pf (HRP2) only','Pan (LDH)']),
+    T('20.1.2','Brand of RDT'),
+    C('20.1.3','Sex of the laboratory staff being monitored',['Male','Female']),
+    C('20.1.4','Position',['Laboratory Scientist','Laboratory Technician','Laboratory Assistant']),
+    Y('20.1.5','Has this worker been formally trained in RDTs?'),
+    SUB('21.0 RDT Preparation'),
+    Y('21.1','Was the integrity of the RDT pouch checked?'),
+    Y('21.2','Was the expiry date checked?'),
+    Y('21.3','Did the worker label the cassette?'),
+    SUB('22.0 Patient Preparation'),
+    Y('22.1','Patient identified and recorded in register'),
+    Y('22.2','Procedure explained to patient'),
+    C('22.3','New gloves worn',['Yes','No','Gloves not available']),
+    Y('22.4','Puncture site cleaned with alcohol and air dried'),
+    SUB('23.0 Blood Collection & Application'),
+    Y('23.1','Blood harvested correctly'),
+    Y('23.2','Blood dispensed in correct well of RDT device'),
+    SUB('24.0 RDT Procedure'),
+    Y('24.1','Buffer applied to correct well of RDT device'),
+    Y('24.2','Appropriate number of drops of buffer dispensed'),
+    Y('24.3','Worker waited the correct time, 15 to 20 minutes per the manufacturer'),
+    C('24.4','Result of the control line',['Present / valid','Absent / invalid']),
+    Y('24.5','Reads test result correctly (supervisor verifies)'),
+    Y('24.6','Records results correctly in register'),
+    Y('24.7','Any blood splatter on the sample well or test device?'),
+    SUB('25.0 RDT Waste Disposal'),
+    Y('25.1','Used tests / transfer devices / blood-contaminated material disposed appropriately'),
+    Y('25.2','Used lancet disposed in sharps container')
+  ]},
+  { no:'26', title:'Laboratory In-Charge Assessment', items:[
+    SUB('26.1 Pre-analytical Phase'),
+    Y('26.1.1','Patient request forms filled with identifier, sex, age and date?'),
+    TA('26.1.2','If no, discuss obstacles to clinical / lab communication'),
+    Y('26.1.3','Written policies and SOPs available and up to date?'),
+    Y('26.1.4','Staff trained on IQC procedures and interpretation?'),
+    Y('26.1.5','Appropriate control materials consistently available for IQC?'),
+    Y('26.1.6','IQC data analyzed and displayed for monitoring trends?'),
+    SUB('26.2 Supply Forecasting & Inventory'),
+    Y('26.2.1','In-Charge responsible for forecasting consumables and reagents?'),
+    Y('26.2.2','In-Charge received formal training on forecasting / inventory management?'),
+    T('26.2.3','What tools / system support forecasting & stock monitoring?'),
+    T('26.2.4','How often are stock levels reviewed and reported?'),
+    Y('26.2.5','Any recent stock-out of key reagents / consumables in the last 3 months?'),
+    Y('26.2.6','Patient samples labelled with identifier and date of collection?'),
+    Y('26.2.7','Safe disposal of blood collection supplies?'),
+    SUB('26.3 Analytical Phase'),
+    Y('26.3.1','SOPs for RDTs readily available and accessible?'),
+    TA('26.3.2','If no, how can you assist with obtaining the documents?'),
+    Y('26.3.3','Does the lab meet weekly to discuss work issues?'),
+    TA('26.3.4','If no, discuss how this could fit the work schedule'),
+    Y('26.3.5','Plan to report suspected defective RDT lots to national level?'),
+    TA('26.3.6','If no, advise them to develop a reporting plan'),
+    SUB('26.4 Post-analytical Phase'),
+    Y('26.4.1','Results dispatched between lab / clinic and ward in a timely manner?'),
+    Y('26.4.2','Results legible and without transcription mistakes?'),
+    Y('26.4.3','Results complete, with all fields entered per patient?'),
+    NOTE('If the laboratory uses RDTs only, you can submit now. If it uses microscopy, continue.'),
+    SUB('26.5 Pre-analytical (Microscopy)'),
+    Y('26.5.1','Patient request forms filled with identifier, sex, age and date?'),
+    Y('26.5.2','SOPs for blood collection available and accessible?'),
+    Y('26.5.3','Patient samples labelled with identifier and date of collection?'),
+    Y('26.5.4','Safe disposal of blood collection supplies?'),
+    SUB('26.6 Analytical (Microscopy)'),
+    Y('26.6.1','SOPs for diagnostic tests available and accessible?'),
+    Y('26.6.2','SOPs for QC of stains available and accessible?'),
+    Y('26.6.3','SOPs for internal cross-checking of slides available?'),
+    C('26.6.4','One positive film stained daily to check stain quality and recorded?',['Yes','No','Stained daily but not recorded']),
+    Y('26.6.5','Specific acceptance criterion for stain control results?'),
+    Y('26.6.6','Stain labelled with contents, prep date and preparer initials?'),
+    Y('26.6.7','Reagents stored properly and labelled with open date & initials?'),
+    Y('26.6.8','Slides cross-checked weekly by In-Charge and recorded?'),
+    Y('26.6.9','Feedback from cross-checking provided weekly?'),
+    Y('26.6.10','Does the lab meet weekly to discuss work issues?'),
+    Y('26.6.11','Plan to report expired Giemsa stain to National level'),
+    SUB('26.7 Post-analytical (Microscopy)'),
+    Y('26.7.1','Results available to OPD / ward within 2 hours of generating them?'),
+    Y('26.7.2','Results generally legible and without transcription mistakes?'),
+    Y('26.7.3','Results generally complete with all fields entered?')
+  ]}
+];
+
+/* ---------- build flat step list ---------- */
+const steps=[];
+function pushSectionQuestions(sec){
+  let sub=null, pendingNote=null;
+  sec.items.forEach(it=>{
+    if(it.type==='subhead'){ sub=it.q; return; }
+    if(it.type==='note'){ pendingNote=it.q; return; }
+    steps.push({kind:'q', item:it, section:sec.no+'. '+sec.title, sub, note:pendingNote, required:false});
+    pendingNote=null;
+  });
+}
+const SEC1='1. Laboratory Demographic Information';
+steps.push({kind:'district', section:SEC1});
+steps.push({kind:'chiefdom', section:SEC1});
+steps.push({kind:'phu', section:SEC1});
+steps.push({kind:'facilityType', section:SEC1});
+demoExtra.forEach(it=> steps.push({kind:'q', item:it, section:SEC1}));
+steps.push({kind:'mentored', section:'2. List of Laboratory Staff Mentored'});
+steps.push({kind:'hr', section:'3. Human Resources — Laboratory Staff'});
+section3Extra.forEach(it=> steps.push({kind:'q', item:it, section:'3. Human Resources — Laboratory Staff'}));
+sectionsA.forEach(pushSectionQuestions);
+section16Pre.forEach(it=> steps.push({kind:'q', item:it, section:'16. Slides Rechecking EQA'}));
+steps.push({kind:'recheck', section:'16. Slides Rechecking EQA'});
+sectionsB.forEach(pushSectionQuestions);
+steps.push({kind:'review', section:'Review & Submit'});
+
+let current=0;
+
+/* ---------- helpers ---------- */
+function escapeHtml(s){ if(s===undefined||s===null) return ''; return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+function setResp(id,val){ responses[id]=val; }
+
+function buildControl(item){
+  const id=item.n;
+  if(item.type==='text')   return `<input class="form-input" type="text" value="${escapeHtml(responses[id]||'')}" oninput="setResp('${id}',this.value)">`;
+  if(item.type==='num')    return `<input class="form-input" type="number" inputmode="numeric" min="0" value="${escapeHtml(responses[id]||'')}" oninput="setResp('${id}',this.value)">`;
+  if(item.type==='date')   return `<input class="form-input" type="date" value="${escapeHtml(responses[id]||'')}" onchange="setResp('${id}',this.value)">`;
+  if(item.type==='textarea')return `<textarea class="form-input" oninput="setResp('${id}',this.value)">${escapeHtml(responses[id]||'')}</textarea>`;
+  if(item.type==='signature')return `<div class="signature-container"><canvas id="sig_${id}" class="signature-canvas"></canvas><div class="signature-buttons"><button type="button" class="signature-btn" data-clear="sig_${id}">Clear Signature</button></div></div>`;
+  if(item.type==='choice'){
+    return `<div class="choice-group" data-qid="${id}">`+item.options.map(opt=>{
+      const sel=responses[id]===opt; let cls='choice-option';
+      if(sel){ cls+= opt==='Yes'?' sel-yes': opt==='No'?' sel-no':' selected'; }
+      return `<div class="${cls}" data-opt="${escapeHtml(opt)}" onclick="pickOption('${id}',this)">${escapeHtml(opt)}</div>`;
+    }).join('')+`</div>`;
+  }
+  return '';
+}
+function pickOption(id,el){
+  const group=el.parentElement, opt=el.getAttribute('data-opt'), already=responses[id]===opt;
+  group.querySelectorAll('.choice-option').forEach(o=>o.className='choice-option');
+  if(already){ delete responses[id]; }
+  else{ responses[id]=opt; el.className='choice-option'+(opt==='Yes'?' sel-yes':opt==='No'?' sel-no':' selected'); }
+  if(typeof applySkips === 'function') applySkips();
+  if(typeof updateProgress === 'function') updateProgress();
+}
+
+/* ---------- special renderers ---------- */
+function renderMentored(){
+  return mentored.map((s,i)=>`<div class="member-card">
+    <div class="member-header"><span>Staff Mentored #${i+1}</span><button class="remove-btn" onclick="removeMentored(${i})">✕</button></div>
+    <div class="field-label">Full Name</div><input class="form-input" type="text" value="${escapeHtml(s.name||'')}" oninput="mentored[${i}].name=this.value">
+    <div class="field-label">Designation</div><input class="form-input" type="text" value="${escapeHtml(s.designation||'')}" oninput="mentored[${i}].designation=this.value">
+    <div class="field-label">Organization</div><input class="form-input" type="text" value="${escapeHtml(s.organization||'')}" oninput="mentored[${i}].organization=this.value">
+    <div class="field-label">Contact (9 digits)</div><input class="form-input" type="tel" inputmode="numeric" maxlength="9" value="${escapeHtml(s.contact||'')}" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,9);mentored[${i}].contact=this.value">
+    <div class="field-label">Signature</div><div class="signature-container"><canvas id="mnt_sig_${i}" class="signature-canvas"></canvas><div class="signature-buttons"><button type="button" class="signature-btn" data-clear="mnt_sig_${i}">Clear Signature</button></div></div>
+  </div>`).join('')+`<button class="add-btn" onclick="addMentored()">+ Add Staff Mentored</button>`;
+}
+function addMentored(){ mentored.push({name:'',designation:'',organization:'',contact:''}); refreshMentored(); }
+function removeMentored(i){ mentored.splice(i,1); if(!mentored.length) mentored.push({name:'',designation:'',organization:'',contact:''}); refreshMentored(); }
+
+/* One card per cadre with its four counts stacked, rather than a table nobody
+   can read on a phone. The keys are unchanged, so the sheet columns stay put. */
+function renderHR(){
+  return hrCadres.map(function(cad){
+    return `<div class="hr-card">
+      <div class="hr-card-head">${escapeHtml(cad)}</div>
+      ${hrCols.map(function(c){
+        const k = cad + '|' + c[0];
+        return `<div class="hr-line">
+          <label class="hr-label" for="hr_${escapeHtml(k)}">${escapeHtml(c[1])}</label>
+          <input class="hr-input" id="hr_${escapeHtml(k)}" type="number" inputmode="numeric" min="0"
+                 placeholder="0" value="${escapeHtml(hrData[k]||'')}" data-hrk="${escapeHtml(k)}"
+                 oninput="hrData[this.getAttribute('data-hrk')]=this.value; updateProgress();">
+        </div>`;
+      }).join('')}
+      <div class="hr-total">Total: <b id="hrtot_${escapeHtml(cad)}">${hrCadreTotal(cad)}</b></div>
+    </div>`;
+  }).join('');
+}
+function hrCadreTotal(cad){
+  return hrCols.reduce(function(sum,c){ return sum + (Number(hrData[cad+'|'+c[0]])||0); }, 0);
+}
+
+function renderRecheck(){
+  return recheckRows.map((r,i)=>`<div class="recheck-row">
+    <div class="member-header"><span>Slide #${i+1}</span><button class="remove-btn" onclick="removeRecheck(${i})">✕</button></div>
+    <div class="recheck-col"><h5>Supervisor (checks first)</h5>
+      <div class="mini-choice">${['Pos','Neg'].map(o=>`<div class="opt ${r.sup_res===o?(o==='Pos'?'pos':'neg'):''}" onclick="setRecheck(${i},'sup_res','${o}')">${o}</div>`).join('')}</div>
+      <input class="form-input" placeholder="Parasites / µl" value="${escapeHtml(r.sup_para||'')}" oninput="recheckRows[${i}].sup_para=this.value">
+      <input class="form-input" placeholder="Species" value="${escapeHtml(r.sup_species||'')}" oninput="recheckRows[${i}].sup_species=this.value"></div>
+    <div class="recheck-col"><h5>Lab Staff</h5>
+      <div class="mini-choice">${['Pos','Neg'].map(o=>`<div class="opt ${r.staff_res===o?(o==='Pos'?'pos':'neg'):''}" onclick="setRecheck(${i},'staff_res','${o}')">${o}</div>`).join('')}</div>
+      <input class="form-input" placeholder="Parasites / µl" value="${escapeHtml(r.staff_para||'')}" oninput="recheckRows[${i}].staff_para=this.value">
+      <input class="form-input" placeholder="Species" value="${escapeHtml(r.staff_species||'')}" oninput="recheckRows[${i}].staff_species=this.value"></div>
+  </div>`).join('')+`<button class="add-btn" onclick="addRecheck()">+ Add Slide Row</button>`;
+}
+function setRecheck(i,f,v){ recheckRows[i][f]=v; updateProgress(); }
+function addRecheck(){ recheckRows.push(blankRecheck()); refreshRecheck(); }
+function removeRecheck(i){ recheckRows.splice(i,1); if(!recheckRows.length) recheckRows.push(blankRecheck()); refreshRecheck(); }
+
+/* ---------- the site ----------
+   This tool is used at one place only: Bo Government Hospital, Bo City, Bo
+   District. The four location questions are filled in and read only, so nobody
+   can record a lab assessment against the wrong facility. Widen SITE if the
+   tool is ever used at a second hospital. */
+const SITE = { district:'Bo', chiefdom:'Bo City', phu:'Bo Government Hospital', facilityType:'Government Hospital' };
+
+let csvLoaded=true, manualMode=false;
+const districtsSet=new Set([SITE.district]);
+const chiefdomMap=new Map([[SITE.district, new Set([SITE.chiefdom])]]);
+const phuMap=new Map([[SITE.district+'|'+SITE.chiefdom, [SITE.phu]]]);
+const facilityTypeMap=new Map([[SITE.district+'|'+SITE.chiefdom+'|'+SITE.phu, SITE.facilityType]]);
+
+async function loadCSV(){
+  // nothing to load: the site is fixed above
+  facilitySel.district = SITE.district;
+  facilitySel.chiefdom = SITE.chiefdom;
+  facilitySel.phu = SITE.phu;
+  facilitySel.facilityType = SITE.facilityType;
+}
+function facilityTypeOptions(){ return ['CHC','CHP (Community Health Post)','MCH Aid Post','Peripheral Health Unit (PHU)','District Hospital','Regional Hospital','Government Hospital','Mission Hospital','Tertiary / Teaching Hospital']; }
+
+function renderCascade(kind){
+  const labels = { district:SITE.district, chiefdom:SITE.chiefdom, phu:SITE.phu, facilityType:SITE.facilityType };
+  return `<div class="fixed-site">${escapeHtml(labels[kind]||'')}</div>` +
+         `<div class="note">Fixed for this tool. The laboratory assessment is only done at ` +
+         `${escapeHtml(SITE.phu)}, ${escapeHtml(SITE.chiefdom)}.</div>`;
+}
+
+
+/* ---------- signature ---------- */
+function createSignaturePad(canvasId){
+  const canvas=document.getElementById(canvasId); if(!canvas) return;
+  const ctx=canvas.getContext('2d'); let drawing=false;
+  function coords(e){ const r=canvas.getBoundingClientRect(); const sx=canvas.width/r.width, sy=canvas.height/r.height; const cx=e.touches?e.touches[0].clientX:e.clientX, cy=e.touches?e.touches[0].clientY:e.clientY; return {x:(cx-r.left)*sx,y:(cy-r.top)*sy}; }
+  function start(e){ drawing=true; const c=coords(e); ctx.beginPath(); ctx.moveTo(c.x,c.y); ctx.lineTo(c.x,c.y); ctx.stroke(); e.preventDefault(); }
+  function move(e){ if(!drawing) return; const c=coords(e); ctx.lineTo(c.x,c.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(c.x,c.y); e.preventDefault(); }
+  function stop(){ if(!drawing) return; drawing=false; ctx.beginPath(); sessionStorage.setItem(canvasId,canvas.toDataURL()); }
+  ctx.lineWidth=2; ctx.lineCap='round'; ctx.strokeStyle='#1a2c3e';
+  canvas.addEventListener('mousedown',start); canvas.addEventListener('mousemove',move); canvas.addEventListener('mouseup',stop); canvas.addEventListener('mouseleave',stop);
+  canvas.addEventListener('touchstart',start,{passive:false}); canvas.addEventListener('touchmove',move,{passive:false}); canvas.addEventListener('touchend',stop);
+  canvas.width=canvas.offsetWidth*2; canvas.height=canvas.offsetHeight*2; ctx.scale(2,2); ctx.lineWidth=2; ctx.lineCap='round'; ctx.strokeStyle='#1a2c3e';
+  const saved=sessionStorage.getItem(canvasId);
+  if(saved){ const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,canvas.offsetWidth,canvas.offsetHeight); img.src=saved; }
+}
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-clear]'); if(b){ const id=b.getAttribute('data-clear'); const cv=document.getElementById(id); if(cv){ cv.getContext('2d').clearRect(0,0,cv.width,cv.height); sessionStorage.removeItem(id); } } });
+
+/* ---------- render a step ---------- */
+function reviewHTML(){
+  let h=`<div class="summary-title">FACILITY</div>`;
+  h+=`<div class="summary-item"><div class="summary-label">District</div><div class="summary-value">${escapeHtml(facilitySel.district)||'—'}</div></div>`;
+  h+=`<div class="summary-item"><div class="summary-label">Chiefdom</div><div class="summary-value">${escapeHtml(facilitySel.chiefdom)||'—'}</div></div>`;
+  h+=`<div class="summary-item"><div class="summary-label">Facility (PHU)</div><div class="summary-value">${escapeHtml(facilitySel.phu)||'—'}</div></div>`;
+  h+=`<div class="summary-item"><div class="summary-label">Facility Type</div><div class="summary-value">${escapeHtml(facilitySel.facilityType)||'—'}</div></div>`;
+  h+=`<div class="summary-item"><div class="summary-label">Date of Visit</div><div class="summary-value">${escapeHtml(responses['1.16'])||'—'}</div></div>`;
+  const {total,done}=countFields();
+  h+=`<div class="summary-title">COMPLETION</div>`;
+  h+=`<div class="summary-item"><div class="summary-value"><b>${done}</b> of <b>${total}</b> fields completed (${Math.round(done/total*100)}%)</div></div>`;
+  h+=`<div class="summary-item"><div class="summary-label">Staff Mentored</div><div class="summary-value">${mentored.filter(s=>s.name).length} recorded</div></div>`;
+  h+=`<div class="summary-item"><div class="summary-label">Slides Rechecked</div><div class="summary-value">${recheckRows.filter(r=>r.sup_res||r.staff_res).length} of ${recheckRows.length} rows</div></div>`;
+  h+=`<div class="note" style="margin-top:16px">Tap <b>Submit</b> to record this assessment. A JSON copy will be downloaded for your records.</div>`;
+  return h;
+}
+/* ==================== ONE PAGE ====================
+   Every section is rendered at once, in order, with each question numbered as
+   it is in the national tool. */
+function buildPage(){
+  const host = document.getElementById('pageContainer');
+  let html = '';
+  let secNo = null, body = '';
+
+  function openSection(title){
+    if(secNo !== null) html += `<div class="section-block"><div class="section-head">${escapeHtml(secNo)}</div><div class="section-body">${body}</div></div>`;
+    secNo = title; body = '';
+  }
+  function qRow(it, sub, note){
+    let h = '';
+    if(sub) h += `<div class="step-sub">${escapeHtml(sub)}</div>`;
+    h += `<div class="question-row" data-qn="${escapeHtml(it.n||'')}">`;
+    h += `<div class="question-text">${it.n?`<span class="question-num">${escapeHtml(it.n)}</span>`:''}${escapeHtml(it.q)}<span class="required-star">*</span></div>`;
+    if(note || it.note) h += `<div class="note">${escapeHtml(note || it.note)}</div>`;
+    h += `<div class="control">${buildControl(it)}</div></div>`;
+    return h;
+  }
+
+  // 1. demographics, with the site fixed
+  openSection(SEC1);
+  [['1.1','District','district'],['1.2','Chiefdom','chiefdom'],
+   ['1.3','Name of Health Facility (PHU)','phu'],['1.4','Health Facility Type','facilityType']].forEach(function(row){
+    body += `<div class="question-row"><div class="question-text"><span class="question-num">${row[0]}</span>${row[1]}</div>` +
+            `<div class="control">${renderCascade(row[2])}</div></div>`;
+  });
+  demoExtra.forEach(it => { body += qRow(it); });
+
+  // 2 and 3, the tables
+  openSection('2. List of Laboratory Staff Mentored');
+  body += `<div class="question-row"><div class="question-text">Add each laboratory staff member mentored during this visit.</div>` +
+          `<div class="control" id="mentoredHost">${renderMentored()}</div></div>`;
+
+  openSection('3. Human Resources — Laboratory Staff');
+  body += `<div class="question-row"><div class="question-text">Laboratory staff counts by cadre</div>` +
+          `<div class="note">One card per cadre. Type 0 where there are none.</div>` +
+          `<div class="control" id="hrHost">${renderHR()}</div></div>`;
+  section3Extra.forEach(it => { body += qRow(it); });
+
+  // the scored and observational sections
+  function pushSection(sec){
+    openSection(sec.no + '. ' + sec.title);
+    let sub = null, note = null;
+    sec.items.forEach(it => {
+      if(it.type === 'subhead'){ sub = it.q; return; }
+      if(it.type === 'note'){ note = it.q; return; }
+      body += qRow(it, sub, note);
+      sub = null; note = null;
+    });
+  }
+  sectionsA.forEach(pushSection);
+
+  openSection('16. Slides Rechecking EQA');
+  section16Pre.forEach(it => { body += qRow(it); });
+  body += `<div class="question-row"><div class="question-text">Slide rechecking, supervisor against lab staff.</div>` +
+          `<div class="note">At least two negatives and two weak positives; 30 or more slides recommended for EQA.</div>` +
+          `<div class="control" id="recheckHost">${renderRecheck()}</div></div>`;
+
+  sectionsB.forEach(pushSection);
+
+  // the national indicators
+  openSection('27. Laboratory Indicators');
+  indicators.forEach(it => { body += qRow(it); });
+
+  // GPS last
+  openSection('28. Location');
+  body += `<div class="question-row"><div class="question-text"><span class="question-num">28.1</span>GPS position of the laboratory</div>` +
+          `<div id="gpsPanel" class="gps-panel"></div>` +
+          `<button class="btn-tool" style="margin-top:10px;" onclick="captureGps(true)">CAPTURE AGAIN</button></div>`;
+
+  openSection(null);          // flush the last one
+  host.innerHTML = html;
+
+  // the signature pads and the tables need wiring once the page exists
+  document.querySelectorAll('.control canvas').forEach(function(c){
+    if(c.id) setTimeout(function(){ createSignaturePad(c.id); }, 40);
+  });
+  applySkips();
+  updateProgress();
+}
+
+/* the tables redraw in place rather than repainting the whole page */
+function refreshMentored(){ const h=document.getElementById('mentoredHost'); if(h){ h.innerHTML=renderMentored(); mentored.forEach((s,i)=>setTimeout(()=>createSignaturePad('mnt_sig_'+i),40)); } updateProgress(); }
+function refreshHR(){ const h=document.getElementById('hrHost'); if(h) h.innerHTML=renderHR(); updateProgress(); }
+function refreshHRTotals(){
+  hrCadres.forEach(function(cad){
+    var el=document.getElementById('hrtot_'+cad);
+    if(el) el.textContent=hrCadreTotal(cad);
+  });
+}
+function refreshRecheck(){ const h=document.getElementById('recheckHost'); if(h) h.innerHTML=renderRecheck(); updateProgress(); }
+
+/* the tabs */
+function switchTab(tab){
+  document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const page=document.getElementById('tab-'+tab);
+  if(page) page.classList.add('active');
+  const btn=document.querySelector('.tab-btn[data-tab="'+tab+'"]');
+  if(btn) btn.classList.add('active');
+  if(tab==='summary') renderSummaryTab();
+  window.scrollTo(0,0);
+}
+
+/* ---------- progress ---------- */
+function isSkippedNumber(n){
+  n = String(n);
+  for(var r=0; r<SKIP_RULES.length; r++){
+    if(SKIP_RULES[r].match.test(n) && !SKIP_RULES[r].when()) return true;
+  }
+  return false;
+}
+/* ---------- skip logic ----------
+   A question that cannot apply is hidden and its answer cleared, so nothing
+   stale travels with the record. Hidden rows are ignored by the required check
+   and left out of the answered count, and a section whose every question is
+   skipped disappears heading and all. */
+var SKIP_RULES = [
+  { match:/^17\.2\.3\.[2-9]$/,   when:function(){ return responses['17.2.3.1'] !== 'No'; } },
+  { match:/^17\.2\.4\.[2-9]$/,   when:function(){ return responses['17.2.4.1'] !== 'No'; } },
+  { match:/^17\.2\.11\.(3|4)$/,  when:function(){ return responses['17.2.11.2'] !== 'No'; } },
+  // no technicians assessed means nothing to report about them
+  { match:/^27\.(7|8)$/,          when:function(){ return Number(responses['27.6']) > 0; } }
+];
+function isSkippedNumber(n){
+  n = String(n);
+  for(var r=0; r<SKIP_RULES.length; r++){
+    if(SKIP_RULES[r].match.test(n) && !SKIP_RULES[r].when()) return true;
+  }
+  return false;
+}
+function applySkips(){
+  document.querySelectorAll('#pageContainer .question-row').forEach(function(row){
+    var n = row.dataset.qn;
+    if(!n) return;
+    if(isSkippedNumber(n)){
+      if(row.style.display !== 'none' && responses[n] !== undefined) delete responses[n];
+      row.style.display = 'none';
+    } else {
+      row.style.display = '';
+    }
+  });
+  document.querySelectorAll('#pageContainer .section-block').forEach(function(block){
+    var rows = block.querySelectorAll('.question-row');
+    var live = 0;
+    rows.forEach(function(r){ if(r.style.display !== 'none') live++; });
+    block.style.display = (rows.length && !live) ? 'none' : '';
+  });
+}
+
+function countFields(){
+  let total=0, done=0;
+  const all=[...demoExtra,...section3Extra,...indicators];
+  sectionsA.forEach(s=>all.push(...s.items)); section16Pre.forEach(i=>all.push(i)); sectionsB.forEach(s=>all.push(...s.items));
+  all.forEach(it=>{ if(it.type==='subhead'||it.type==='note') return;
+    if(it.n && isSkippedNumber(it.n)) return;              // does not apply
+    total++;
+    if(it.type==='signature'){ if(sessionStorage.getItem('sig_'+it.n)) done++; }
+    else if(responses[it.n]!==undefined && responses[it.n]!=='') done++; });
+  ['district','chiefdom','phu','facilityType'].forEach(k=>{ total++; if(facilitySel[k]) done++; });
+  return {total,done};
+}
+function updateProgress(){
+  const c = countFields();
+  const pct = c.total ? Math.round(c.done / c.total * 100) : 0;
+  const bar = document.getElementById('progressBar');
+  const step = document.getElementById('progressStep');
+  const p = document.getElementById('progressPct');
+  if(bar) bar.style.width = pct + '%';
+  if(step) step.textContent = c.done + ' of ' + c.total + ' questions answered. Every one is required.';
+  if(p) p.textContent = pct + '%';
+}
+
+/* ---------- submit ---------- */
+function getFormData(){
+  const sigs={}; if(sessionStorage.getItem('sig_1.17')) sigs['1.17']=sessionStorage.getItem('sig_1.17');
+  return {
+    tool:'Clinical Laboratories Onsite Coaching & Mentorship Tool for Malaria Diagnosis',
+    submittedAt:new Date().toLocaleString(),
+    facility:{...facilitySel},
+    responses, hrData,
+    staffMentored: mentored.map((s,i)=>({...s, signature: sessionStorage.getItem('mnt_sig_'+i)||''})),
+    slideRecheck: recheckRows,
+    headOfLabSignature: sigs['1.17']||''
+  };
+}
+function submitForm(){
+  const data=getFormData();
+  console.log('SUBMISSION →', data);
+  /* TODO (ICF-SL): POST to your GAS proxy here, e.g.
+     fetch(GAS_URL,{method:'POST',body:JSON.stringify(data)}); */
+  downloadJSON(data);
+  alert('Assessment recorded successfully. A JSON copy has been downloaded for your records.');
+}
+function downloadJSON(data){
+  data=data||getFormData();
+  const fac=(data.facility.phu||'facility').replace(/[^a-z0-9]+/gi,'_');
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=`LabMentorship_${fac}_${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ==================== NMDR: SUBMIT, QUEUE, EDIT ====================
+   The same machinery as the Facility Profile form, so the two behave alike:
+   works with no signal, queues what cannot go out, syncs by itself, updates a
+   record instead of duplicating it, and refuses an unchanged resubmission.
+   Paste the Apps Script /exec URL for laboratory assessment here. */
+var FORM_MARK = "H";          // which form this is, for the router
+var ENDPOINT = "https://script.google.com/macros/s/AKfycbwV04trmpmSLJAS5BTdgBHTS4lumCPRd45yIUvOx9Z0BX7147xCGVId9JcoNt_nCUG_/exec";
+
+var OUTBOX_KEY = "mocm_outbox_form_h";
+var ARCHIVE_KEY = "mocm_sent_form_h";     // what this phone has submitted, kept for editing
+var RECORD_KEY = "mocm_record_form_h";
+
+var RECORD = { id: null, accepted: 0, hash: null };
+
+function pad2(n){ return (n<10?"0":"")+n; }
+function newRecordId(){
+  var d=new Date();
+  return "FH-" + d.getFullYear()+pad2(d.getMonth()+1)+pad2(d.getDate()) + "-" +
+         pad2(d.getHours())+pad2(d.getMinutes())+pad2(d.getSeconds()) + "-" +
+         Math.random().toString(36).slice(2,7).toUpperCase();
+}
+function loadRecord(){
+  try { var r=JSON.parse(sessionStorage.getItem(RECORD_KEY)); if(r&&r.id) RECORD=r; } catch(e){}
+  if(!RECORD.id){ RECORD={id:newRecordId(),accepted:0,hash:null}; saveRecord(); }
+}
+function saveRecord(){ try{ sessionStorage.setItem(RECORD_KEY, JSON.stringify(RECORD)); }catch(e){} }
+
+/* ---------- GPS ---------- */
+function renderGps(){
+  var el=document.getElementById("gpsPanel");
+  if(!el) return;
+  if(GPS.state==="ok"){
+    el.className="gps-panel good";
+    el.innerHTML='<div class="gps-line">'+GPS.lat+', '+GPS.lng+'</div>'+
+      '<div class="gps-sub">Accurate to about '+Math.round(Number(GPS.accuracy))+' m · read at '+escapeHtml(GPS.taken)+'</div>';
+  } else if(GPS.state==="waiting"){
+    el.className="gps-panel";
+    el.innerHTML='<div class="gps-line">Reading the position...</div>'+
+      '<div class="gps-sub">Stand outside or near a window. This takes a few seconds.</div>';
+  } else {
+    el.className="gps-panel bad";
+    el.innerHTML='<div class="gps-line">No position yet</div>'+
+      '<div class="gps-sub">'+escapeHtml(GPS.note||"The phone did not give a position.")+
+      ' You can still submit, and the record will say the GPS was not captured.</div>';
+  }
+}
+function captureGps(again){
+  if(!navigator.geolocation){ GPS.state="fail"; GPS.note="This phone does not offer GPS to the browser."; renderGps(); return; }
+  if(again){ GPS.state="waiting"; renderGps(); }
+  navigator.geolocation.getCurrentPosition(function(pos){
+    GPS.lat=pos.coords.latitude.toFixed(6);
+    GPS.lng=pos.coords.longitude.toFixed(6);
+    GPS.accuracy=String(Math.round(pos.coords.accuracy));
+    GPS.taken=new Date().toLocaleString();
+    GPS.state="ok"; GPS.note=""; renderGps();
+  }, function(err){
+    GPS.state="fail";
+    GPS.note = (err&&err.code===1) ? "Location permission was refused for this page."
+      : "The phone could not get a fix ("+((err&&err.message)||"no signal")+").";
+    renderGps();
+  }, { enableHighAccuracy:true, timeout:20000, maximumAge:60000 });
+}
+
+/* ---------- the payload: every question with its own label ----------
+   Read off the page, so a question reworded in the form arrives with its new
+   wording and no change here. */
+function labelledRows(){
+  var out = [];
+  document.querySelectorAll('#pageContainer .question-row').forEach(function(row){
+    var n = row.dataset.qn;
+    if(!n) return;
+    var text = (row.querySelector('.question-text') || {textContent:''}).textContent
+                 .replace(/\s+/g,' ').replace(/\*$/,'').trim();
+    if(text.indexOf(n) === 0) text = text.slice(n.length).trim();
+    var block = row.closest('.section-block');
+    var v;
+    if(row.style.display === 'none' || (block && block.style.display === 'none')) v = 'Skipped';
+    else if(row.querySelector('canvas')) v = sessionStorage.getItem('sig_' + n) ? 'Signed' : '';
+    else v = responses[n];
+    out.push({ n:n, label:n + ' ' + text, value:(v === undefined ? '' : v) });
+  });
+  return out;
+}
+
+function getPayload(){
+  var rows = labelledRows();
+  return {
+    form: FORM_MARK,
+    recordId: RECORD.id,
+    revision: RECORD.accepted + 1,
+    resubmission: RECORD.accepted > 0,
+    submittedAt: new Date().toLocaleString(),
+    submittedBy: responses['1.10'] || '',
+    district: facilitySel.district, chiefdom: facilitySel.chiefdom,
+    phu: facilitySel.phu, facility_type: facilitySel.facilityType,
+    visit_date: responses['1.16'] || '',
+    gps_lat: GPS.lat, gps_lng: GPS.lng, gps_accuracy: GPS.accuracy, gps_taken: GPS.taken,
+    rows: rows,
+    answered: rows.filter(function(r){ return r.value && r.value !== 'Skipped'; }).length,
+    skipped: rows.filter(function(r){ return r.value === 'Skipped'; }).length,
+    questions: rows.length,
+    mentored: JSON.parse(JSON.stringify(mentored)),
+    hr: JSON.parse(JSON.stringify(hrData)),
+    recheck: JSON.parse(JSON.stringify(recheckRows)),
+    signature: sessionStorage.getItem('sig_1.17') || ''
+  };
+}
+
+function recordFingerprint(p){
+  var parts = [p.district, p.chiefdom, p.phu, p.facility_type, p.visit_date, p.submittedBy];
+  p.rows.forEach(function(r){ parts.push(r.label + '=' + r.value); });
+  parts.push(JSON.stringify(p.mentored));
+  parts.push(JSON.stringify(p.hr));
+  parts.push(JSON.stringify(p.recheck));
+  return parts.join('|');            // GPS and the signature left out
+}
+
+/* ---------- the archive: every assessment this phone submitted, kept on the
+   phone so a past visit can be reopened and corrected with no signal ---------- */
+function archive(){ try{ return JSON.parse(localStorage.getItem(ARCHIVE_KEY))||{}; }catch(e){ return {}; } }
+function archiveSave(p){
+  var all=archive();
+  all[p.recordId]={ payload:p, savedAt:new Date().toLocaleString(), version:p.revision,
+                    phu:p.phu, chiefdom:p.chiefdom, visit_date:p.visit_date, pct:p.overall_pct };
+  try{ localStorage.setItem(ARCHIVE_KEY, JSON.stringify(all)); }catch(e){}
+}
+function archiveList(){
+  var all=archive();
+  return Object.keys(all).map(function(id){
+    var it=all[id];
+    return { recordId:id, version:it.version, savedAt:it.savedAt, phu:it.phu,
+             chiefdom:it.chiefdom, visitDate:it.visit_date, pct:it.pct };
+  }).sort(function(a,b){ return a.recordId<b.recordId?1:-1; });
+}
+
+/* ---------- the outbox ---------- */
+function outbox(){ try{ return JSON.parse(localStorage.getItem(OUTBOX_KEY))||[]; }catch(e){ return []; } }
+function saveOutbox(list){ try{ localStorage.setItem(OUTBOX_KEY, JSON.stringify(list)); }catch(e){} renderPending(); }
+function queueSubmission(p){
+  var list=outbox().filter(function(i){ return i.payload.recordId!==p.recordId; });
+  list.push({ payload:p, queuedAt:new Date().toLocaleString() });
+  saveOutbox(list);
+}
+function renderPending(){
+  var el=document.getElementById("pendingPanel");
+  if(!el) return;
+  var list=outbox();
+  if(!list.length){ el.className="pending-panel"; el.innerHTML=""; return; }
+  el.className="pending-panel on";
+  el.innerHTML='<div class="pending-head">'+list.length+(list.length===1?" record is":" records are")+
+    " on this phone and not yet in NMDR. "+(navigator.onLine?"Sending now.":"They go by themselves once there is a signal.")+'</div>'+
+    list.map(function(i){
+      var p=i.payload;
+      return '<div class="pend-row"><div class="pend-main">'+escapeHtml(p.phu||"Facility not given")+'</div>'+
+        '<div class="pend-sub">Visit '+escapeHtml(p.visit_date||"not given")+' · version '+p.revision+' · queued '+escapeHtml(i.queuedAt)+'</div>'+
+        '<div class="pend-sub">'+escapeHtml(p.recordId)+'</div></div>';
+    }).join('')+
+    '<div class="pend-actions"><button class="btn-tool" onclick="flushOutbox(false)">SEND NOW</button>'+
+    '<button class="btn-tool" onclick="discardPending()">DISCARD</button></div>';
+}
+function discardPending(){
+  var n=outbox().length;
+  if(!n) return;
+  if(!confirm("Throw away "+n+(n===1?" record":" records")+" that never reached NMDR?\n\nThis cannot be undone.")) return;
+  saveOutbox([]);
+}
+/* NMDR answers with JSON. If a web page comes back instead, the deployment is
+   not reachable as data: almost always the web app access is not set to Anyone,
+   or the script was edited without re-deploying a new version. Say so plainly
+   rather than letting a JSON parse error surface. */
+function jsonFrom(res){
+  return res.text().then(function(t){
+    var s = String(t || '').trim();
+    if (s.charAt(0) === '<') {
+      throw new Error('NMDR returned a web page instead of data. In Apps Script, check ' +
+        'Deploy \u25b8 Manage deployments: Execute as Me, Who has access Anyone, then deploy a NEW version ' +
+        'and paste the /exec URL into this form.');
+    }
+    try { return JSON.parse(s); }
+    catch (e) { throw new Error('NMDR sent something this form could not read: ' + s.slice(0, 80)); }
+  });
+}
+
+function postRecord(p){
+  /* Stamp the form letter on the way out, not only when the payload is built,
+     so anything queued by an older copy of this form still reaches the right
+     form when it finally goes. */
+  p.form = FORM_MARK;
+  return fetch(ENDPOINT,{ method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(p) })
+    .then(function(r){ return jsonFrom(r); })
+    .then(function(res){
+      if(!res||!res.ok) throw new Error((res&&res.error)?res.error:"NMDR rejected the submission.");
+      return res;
+    });
+}
+function serverVersions(){
+  if(!navigator.onLine) return Promise.resolve(null);
+  return fetch(ENDPOINT+"?form="+FORM_MARK+"&action=list&t="+Date.now())
+    .then(function(r){ return jsonFrom(r); })
+    .then(function(res){
+      if(!res||!res.ok) return null;
+      var map={};
+      (res.records||[]).forEach(function(r){ map[r.recordId]=Number(r.version)||0; });
+      return map;
+    }).catch(function(){ return null; });
+}
+var flushing=false;
+function flushOutbox(quiet){
+  if(flushing||!outbox().length||!navigator.onLine) return Promise.resolve();
+  flushing=true;
+  var sent=0, skipped=0;
+  return serverVersions().then(function(have){
+    function step(){
+      var list=outbox();
+      if(!list.length) return Promise.resolve(true);
+      var item=list[0], id=item.payload.recordId;
+      if(have && have[id]!==undefined && have[id]>=item.payload.revision){
+        skipped++; saveOutbox(outbox().slice(1)); return step();
+      }
+      return postRecord(item.payload)
+        .then(function(){ sent++; saveOutbox(outbox().slice(1)); return step(); })
+        .catch(function(){ return false; });
+    }
+    return step();
+  }).then(function(allSent){
+    flushing=false; renderPending();
+    if(!quiet||(allSent&&(sent||skipped))){
+      var bits=[];
+      if(sent) bits.push(sent+(sent===1?" record":" records")+" sent to NMDR");
+      if(skipped) bits.push(skipped+(skipped===1?" was":" were")+" already there, so not sent again");
+      sendStatus(allSent?"good":"working", allSent
+        ? (bits.length?bits.join(", ")+". Nothing is waiting now.":"Nothing was waiting.")
+        : (bits.length?bits.join(", ")+". ":"")+"Some records are still waiting. They will try again by themselves.");
+    }
+  });
+}
+window.addEventListener("online", function(){ flushOutbox(true); });
+setInterval(function(){ flushOutbox(true); }, 60000);
+
+/* ---------- status strip ---------- */
+function sendStatus(kind, text){
+  var el=document.getElementById("sendStatus");
+  if(!el) return;
+  el.className="send-status "+kind;
+  el.innerHTML=text;
+}
+function toolStatus(kind, text){
+  var el=document.getElementById("toolStatus");
+  if(!el) return;
+  el.className="tool-status "+(kind||"");
+  el.textContent=text||"";
+}
+
+/* ---------- submit ---------- */
+function readyToSubmit(){
+  if(typeof validateAllQuestions==="function" && !validateAllQuestions()) return false;
+  if(!responses['1.16']){ alert("Please give the date of visit, 1.16"); return false; }
+  if(!sessionStorage.getItem('sig_1.17')){
+    alert("1.17: the Head of Laboratory has to sign before this can be submitted."); return false;
+  }
+  var named=(mentored||[]).filter(function(m){ return (m.name||'').trim(); });
+  if(!named.length){ alert("Section 2: add at least one laboratory staff member mentored."); return false; }
+  return true;
+}
+
+function submitForm(){
+  if(!readyToSubmit()) return;
+  document.getElementById('confirmModal').style.display='flex';
+}
+function closeModal(){ document.getElementById('confirmModal').style.display='none'; }
+
+function doSubmit(){
+  closeModal();
+  if(!readyToSubmit()) return;
+  if(!ENDPOINT || ENDPOINT.indexOf("http")!==0){
+    sendStatus("bad","This copy of the form has no NMDR address yet. Give it to the ICF-SL team before using it in the field.");
+    renderSummaryNow();
+    return;
+  }
+
+  var p=getPayload();
+  var fingerprint=recordFingerprint(p);
+  if(RECORD.accepted>0 && RECORD.hash && fingerprint===RECORD.hash){
+    sendStatus("good","<b>No changes made.</b> This data is already submitted to NMDR as "+escapeHtml(RECORD.id)+
+      ", version "+RECORD.accepted+".<br>Edit something first, or start a new entry.");
+    switchTab('summary');
+    return;
+  }
+  try {
+    var u=JSON.parse(sessionStorage.getItem("mocm_user"));
+    if(u) p.signedInAs=u.name+" ("+u.username+")";
+  } catch(e){}
+
+  sendStatus("working","Submitting data to NMDR. Keep this page open.");
+
+  if(!navigator.onLine){
+    queueSubmission(p);
+    accepted(null,true,fingerprint,p);
+    return;
+  }
+  postRecord(p)
+    .then(function(res){ accepted(res,false,fingerprint,p); })
+    .catch(function(err){
+      queueSubmission(p);
+      accepted(null,true,fingerprint,p);
+      sendStatus("working","<b>Queued.</b> NMDR could not be reached ("+escapeHtml(err.message)+
+        "). Nothing is lost: it is held on this phone and goes out by itself once there is a signal.");
+    });
+}
+
+function accepted(res, queued, fingerprint, p){
+  var version=RECORD.accepted+1, id=RECORD.id;
+  RECORD.accepted=version; RECORD.hash=fingerprint; saveRecord();
+  if(p){ p.revision=version; archiveSave(p); }   // kept on the phone for editing
+  renderSummaryTab();
+  switchTab('summary');
+
+  var verb=version>1?"Resubmitted":"Submitted";
+  sendStatus(queued?"working":"good",
+    "<b>"+verb+(queued?" and queued":"")+" to NMDR.</b> "+
+    (queued ? "Held in this phone's outbox. It goes to NMDR by itself once there is a signal."
+            : "Reference "+escapeHtml((res&&res.reference)||id)+". The summary and its PDF have been emailed.")+
+    "<br>"+escapeHtml(id)+", version "+version+". Press NEW ENTRY when you are ready for the next facility.");
+}
+
+/* ---------- clear for the next facility ---------- */
+function newEntry(){
+  if(!confirm("Clear the entry fields and start the next facility?\n\nOnly what is on the screen is cleared. Assessments already submitted from this phone stay on it, and anything waiting in the outbox is still sent.")) return;
+  location.reload();      // the fields are rebuilt empty; the archive and the outbox live in localStorage and are untouched
+}
+
+/* laboratory assessment already draws its own summary tab; this fills in what it needs */
+function renderSummaryNow(){ renderSummaryTab(); }
+
+/* the summary tab shows the last record submitted from this phone */
+function renderSummaryTab(){
+  var host = document.getElementById('summary-content');
+  if(!host) return;
+  var list = archiveList();
+  if(!list.length){
+    host.innerHTML = '<div class="no-data">Nothing has been submitted from this phone yet. ' +
+      'Once you submit, the record appears here and can be reopened from EDIT.</div>';
+    return;
+  }
+  var item = archive()[list[0].recordId];
+  var p = item.payload;
+  function row(l,v){ return '<div class="summary-item"><div class="summary-label">'+l+
+    '</div><div class="summary-value">'+escapeHtml(v===undefined||v===''?'Not given':String(v))+'</div></div>'; }
+  var h = '<div class="summary-section-title">RECORD</div>';
+  h += row('Reference', p.recordId + ' · version ' + item.version);
+  h += row('Submitted', item.savedAt);
+  h += '<div class="summary-section-title">LABORATORY</div>';
+  h += row('District', p.district) + row('Chiefdom', p.chiefdom) + row('Facility', p.phu) +
+       row('Facility type', p.facility_type) + row('Date of visit', p.visit_date) +
+       row('GPS', p.gps_lat ? p.gps_lat + ', ' + p.gps_lng : 'Not captured');
+  h += '<div class="summary-section-title">CONTENT</div>';
+  h += row('Questions answered', p.answered + ' of ' + p.questions);
+  h += row('Skipped as not applicable', p.skipped);
+  h += row('Staff mentored', (p.mentored||[]).length);
+  h += row('Slides rechecked', (p.recheck||[]).filter(function(r){ return r.sup_res || r.staff_res; }).length);
+  h += row('Head of Laboratory signature', p.signature ? 'Captured' : 'Not captured');
+  h += '<div class="dash-note">' + list.length + (list.length === 1 ? ' record is' : ' records are') +
+       ' kept on this phone. Use EDIT to open an older one.</div>';
+  host.innerHTML = h;
+}
+
+
+/* ==================== DOWNLOAD, DASHBOARD, EDIT ====================
+   Same three tools as the Facility Profile form. The dashboard and the CSV
+   fallback read a de-identified pull; the Excel download is the whole file. */
+var NMDR_CACHE = null;
+
+function pullData(force){
+  if(NMDR_CACHE && !force) return Promise.resolve(NMDR_CACHE);
+  if(!navigator.onLine) return Promise.reject(new Error("No signal. This needs NMDR."));
+  return fetch(ENDPOINT+"?form="+FORM_MARK+"&action=data&t="+Date.now())
+    .then(function(r){ return jsonFrom(r); })
+    .then(function(res){
+      if(!res||!res.ok) throw new Error((res&&res.error)?res.error:"NMDR did not return the data.");
+      NMDR_CACHE=res; return res;
+    });
+}
+function csvCell(v){ var s=(v===undefined||v===null)?"":String(v); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
+function toCsv(tab){ return [tab.headers].concat(tab.rows).map(function(r){ return r.map(csvCell).join(","); }).join("\r\n"); }
+function saveFile(name, mime, data, isB64){
+  var blob;
+  if(isB64){
+    var bin=atob(data), bytes=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+    blob=new Blob([bytes],{type:mime});
+  } else {
+    blob=new Blob(["\ufeff"+data],{type:mime});
+  }
+  var url=URL.createObjectURL(blob), a=document.createElement("a");
+  a.href=url; a.download=name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 6000);
+}
+function downloadData(){
+  if(!navigator.onLine){ toolStatus("bad","No signal. The download needs NMDR."); return; }
+  toolStatus("on","Pulling the whole file from NMDR...");
+  fetch(ENDPOINT+"?form="+FORM_MARK+"&action=export&t="+Date.now())
+    .then(function(r){ return jsonFrom(r); })
+    .then(function(res){
+      if(!res||!res.ok||!res.b64) throw new Error((res&&res.error)?res.error:"The workbook did not come through.");
+      saveFile(res.filename,res.mime,res.b64,true);
+      toolStatus("on","Downloaded the whole file, "+(res.sheets||[]).length+" sheets: "+(res.sheets||[]).join(", ")+".");
+    })
+    .catch(function(err){
+      toolStatus("on","The Excel export did not work ("+err.message+"). Falling back to one CSV per sheet...");
+      pullData(true).then(function(res){
+        var stamp=new Date().toISOString().slice(0,10), n=0;
+        Object.keys(res.tabs||{}).forEach(function(name){
+          var tab=res.tabs[name];
+          if(!tab||!tab.rows.length) return;
+          var file="nmdr-"+name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+"-"+stamp+".csv";
+          setTimeout(function(){ saveFile(file,"text/csv;charset=utf-8",toCsv(tab),false); }, n*800);
+          n++;
+        });
+        toolStatus(n?"on":"bad", n ? n+(n===1?" sheet":" sheets")+" downloading as CSV." : "There is nothing in NMDR to download yet.");
+      }).catch(function(e){ toolStatus("bad","Download failed: "+e.message); });
+    });
+}
+
+/* ---------- edit a past submission ---------- */
+var EDIT_LIST=[];
+function openEditPicker(){
+  document.getElementById("editModal").style.display="flex";
+  var body=document.getElementById("editBody");
+  var rows=archiveList();
+  if(!rows.length){
+    body.innerHTML='<div class="dash-empty">Nothing has been submitted from this phone yet. '+
+      'Assessments you submit here are kept on the phone so you can reopen and correct them, with or without a signal.</div>';
+    return;
+  }
+  body.innerHTML='<div class="dash-note" style="margin:0 0 12px;">Assessments submitted from this phone. '+
+    'Reopening one is offline work, nothing is read back from the server.</div>'+
+    '<input class="form-input" type="text" placeholder="Filter by facility, chiefdom or date" '+
+    'oninput="filterEditList(this.value)" style="margin-bottom:12px;"><div id="editRows"></div>';
+  EDIT_LIST=rows;
+  filterEditList("");
+}
+function closeEditPicker(){ document.getElementById("editModal").style.display="none"; }
+function filterEditList(term){
+  var t=String(term||"").toLowerCase();
+  var rows=EDIT_LIST.filter(function(r){ return !t || (r.phu+" "+r.chiefdom+" "+r.visitDate+" "+r.recordId).toLowerCase().indexOf(t)>-1; });
+  var host=document.getElementById("editRows");
+  if(!rows.length){ host.innerHTML='<div class="dash-empty">Nothing matches that.</div>'; return; }
+  host.innerHTML=rows.map(function(r){
+    return '<div class="rec-row" onclick="loadSubmission(\''+escapeHtml(r.recordId)+'\')">'+
+      '<div class="rec-main">'+escapeHtml(r.phu||"Facility not given")+'</div>'+
+      '<div class="rec-sub">'+escapeHtml(r.chiefdom||"")+' · visit '+escapeHtml(r.visitDate||"not given")+
+      ' · version '+r.version+(r.pct!==undefined?' · '+r.pct+'%':'')+'</div>'+
+      '<div class="rec-sub">'+escapeHtml(r.recordId)+' · submitted '+escapeHtml(r.savedAt||"")+'</div></div>';
+  }).join('');
+}
+function loadSubmission(id){
+  var item=archive()[id];
+  if(!item){ document.getElementById("editBody").innerHTML='<div class="dash-empty">That assessment is no longer on this phone.</div>'; return; }
+  applyRecord(item.payload);
+  closeEditPicker();
+  switchTab('entry');
+  sendStatus("working","<b>Editing "+escapeHtml(id)+"</b>, version "+item.version+", "+escapeHtml(item.phu||"")+"."+
+    "<br>This is the copy kept on this phone, so you can correct it with no signal. "+
+    "Submitting sends version "+(item.version+1)+" and updates that same record.");
+  window.scrollTo(0,0);
+}
+
+/* put a record back on the screen, from the copy kept on this phone */
+function applyRecord(rec){
+  RECORD = { id: rec.recordId, accepted: Number(rec.revision || rec.version) || 1, hash: null };
+  saveRecord();
+
+  (rec.rows || []).forEach(function(r){
+    if(r.value === 'Skipped' || r.value === '' || r.value === 'Signed') return;
+    responses[r.n] = r.value;
+  });
+  if(rec.signature){ try{ sessionStorage.setItem('sig_1.17', rec.signature); }catch(e){} }
+  if(rec.mentored && rec.mentored.length) mentored = rec.mentored;
+  if(rec.hr){ Object.keys(rec.hr).forEach(function(k){ hrData[k] = rec.hr[k]; }); }
+  if(rec.recheck && rec.recheck.length) recheckRows = rec.recheck;
+  if(rec.gps_lat && rec.gps_lng){
+    GPS = { lat:String(rec.gps_lat), lng:String(rec.gps_lng), accuracy:String(rec.gps_accuracy||''),
+            taken:String(rec.gps_taken||''), state:'ok', note:'' };
+  }
+
+  buildPage();
+  renderGps();
+  RECORD.hash = recordFingerprint(getPayload());
+  saveRecord();
+  window.scrollTo(0,0);
+}
+
+/* ---------- dashboard ---------- */
+function openDashboard(force){
+  document.getElementById("dashModal").style.display="flex";
+  document.getElementById("dashBody").innerHTML='<div class="dash-empty">Reading the data from NMDR...</div>';
+  pullData(force).then(function(res){
+    document.getElementById("dashBody").innerHTML=dashboardHtml(res);
+  }).catch(function(err){
+    document.getElementById("dashBody").innerHTML='<div class="dash-empty">'+escapeHtml(err.message)+'</div>';
+  });
+}
+function closeDashboard(){ document.getElementById("dashModal").style.display="none"; }
+
+function asObjects(tab){
+  if(!tab||!tab.headers) return [];
+  return tab.rows.map(function(row){
+    var o={}; tab.headers.forEach(function(h,i){ o[h]=row[i]; }); return o;
+  });
+}
+function pick(o, needle){
+  for(var k in o){ if(k.toLowerCase().indexOf(needle.toLowerCase())>-1) return o[k]; }
+  return "";
+}
+function tally(list, fn){
+  var map={};
+  list.forEach(function(x){ var k=String(fn(x)||"").trim()||"Not given"; map[k]=(map[k]||0)+1; });
+  return Object.keys(map).map(function(k){ return {k:k,n:map[k]}; })
+    .sort(function(a,b){ return b.n-a.n || a.k.localeCompare(b.k); });
+}
+function bars(rows,total,tone){
+  if(!rows.length) return '<div class="dash-note">Nothing recorded yet.</div>';
+  var max=rows[0].n||1;
+  return rows.map(function(r){
+    var pct=Math.round(r.n/(total||max)*100);
+    return '<div class="bar-row"><div class="bar-top"><span>'+escapeHtml(r.k)+'</span>'+
+      '<span class="bar-num">'+r.n+(total?' · '+pct+'%':'')+'</span></div>'+
+      '<div class="bar-track"><div class="bar-fill '+(tone||'')+'" style="width:'+Math.max(2,Math.round(r.n/max*100))+'%"></div></div></div>';
+  }).join('');
+}
+function block(t,inner){ return '<div class="dash-block"><div class="dash-title">'+t+'</div>'+inner+'</div>'; }
+function kpi(v,l){ return '<div class="kpi"><div class="kpi-val">'+v+'</div><div class="kpi-lbl">'+l+'</div></div>'; }
+function nums(l){ return l.map(Number).filter(function(n){ return !isNaN(n); }); }
+function mean(l){ return l.length ? l.reduce(function(a,b){ return a+b; },0)/l.length : 0; }
+
+function dashboardHtml(res){
+  var main=null;
+  Object.keys(res.tabs||{}).forEach(function(n){ if(/^laboratory assessment$/i.test(n)) main=res.tabs[n]; });
+  var visits=asObjects(main);
+  if(!visits.length) return '<div class="dash-empty">No assessment has reached NMDR yet.</div>';
+
+  var facilities={};
+  visits.forEach(function(v){ var f=pick(v,'Health Facility (PHU)'); if(f) facilities[f]=1; });
+  var pct=nums(visits.map(function(v){ return pick(v,'Overall %'); }));
+  var resub=visits.filter(function(v){ return String(v['Status'])==='Resubmitted'; }).length;
+
+  var h='<div class="dash-kpis">'+
+    kpi(visits.length,'Assessments in NMDR')+
+    kpi(Object.keys(facilities).length+' of 10','Pilot facilities covered')+
+    kpi(pct.length?Math.round(mean(pct))+'%':'0%','Mean readiness score')+
+    kpi(resub,'Records resubmitted')+'</div>';
+
+  h+=block('Readiness score by facility',
+    bars(visits.map(function(v){ return { k:String(pick(v,'Health Facility (PHU)')||'Not given'),
+      n:Number(pick(v,'Overall %'))||0 }; }).sort(function(a,b){ return b.n-a.n; }), 100, 'green'));
+
+  ['Reporting Forms','Reference Material','Antimalarials','Essential Drugs','Basic Tools','Referral','Waste'].forEach(function(name){
+    var vals=nums(visits.map(function(v){ return pick(v, name+' %'); }));
+    if(!vals.length) return;
+    h+=block(name+' , mean '+Math.round(mean(vals))+'%',
+      bars(visits.map(function(v){ return { k:String(pick(v,'Health Facility (PHU)')||'Not given'),
+        n:Number(pick(v,name+' %'))||0 }; }).sort(function(a,b){ return b.n-a.n; }), 100));
+  });
+
+  h+=block('Assessments by chiefdom', bars(tally(visits,function(v){ return pick(v,'Chiefdom'); }), visits.length));
+  h+=block('Assessments by facility type', bars(tally(visits,function(v){ return pick(v,'Health Facility Type'); }), visits.length, 'gold'));
+  h+=block('Supervisor rating given', bars(tally(visits,function(v){ return pick(v,'10.2'); }), visits.length));
+  h+=block('Assessments by date', bars(tally(visits,function(v){ return String(pick(v,'Date of Visit')).slice(0,10); }), 0, 'gold'));
+  h+=block('Data quality',
+    '<div class="dash-note">Pulled '+escapeHtml(res.pulled||'')+'. Names and phone numbers stay in NMDR and never reach this screen, '+
+    'so this dashboard counts scores and categories only.</div>');
+  return h;
+}
+
+
+/* ==================== DOWNLOAD, DASHBOARD, EDIT ====================
+   Same three tools as the Facility Profile form. The dashboard and the CSV
+   fallback read a de-identified pull; the Excel download is the whole file. */
+var NMDR_CACHE = null;
+
+function pullData(force){
+  if(NMDR_CACHE && !force) return Promise.resolve(NMDR_CACHE);
+  if(!navigator.onLine) return Promise.reject(new Error("No signal. This needs NMDR."));
+  return fetch(ENDPOINT+"?form="+FORM_MARK+"&action=data&t="+Date.now())
+    .then(function(r){ return jsonFrom(r); })
+    .then(function(res){
+      if(!res||!res.ok) throw new Error((res&&res.error)?res.error:"NMDR did not return the data.");
+      NMDR_CACHE=res; return res;
+    });
+}
+function csvCell(v){ var s=(v===undefined||v===null)?"":String(v); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
+function toCsv(tab){ return [tab.headers].concat(tab.rows).map(function(r){ return r.map(csvCell).join(","); }).join("\r\n"); }
+function saveFile(name, mime, data, isB64){
+  var blob;
+  if(isB64){
+    var bin=atob(data), bytes=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+    blob=new Blob([bytes],{type:mime});
+  } else {
+    blob=new Blob(["\ufeff"+data],{type:mime});
+  }
+  var url=URL.createObjectURL(blob), a=document.createElement("a");
+  a.href=url; a.download=name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 6000);
+}
+function downloadData(){
+  if(!navigator.onLine){ toolStatus("bad","No signal. The download needs NMDR."); return; }
+  toolStatus("on","Pulling the whole file from NMDR...");
+  fetch(ENDPOINT+"?form="+FORM_MARK+"&action=export&t="+Date.now())
+    .then(function(r){ return jsonFrom(r); })
+    .then(function(res){
+      if(!res||!res.ok||!res.b64) throw new Error((res&&res.error)?res.error:"The workbook did not come through.");
+      saveFile(res.filename,res.mime,res.b64,true);
+      toolStatus("on","Downloaded the whole file, "+(res.sheets||[]).length+" sheets: "+(res.sheets||[]).join(", ")+".");
+    })
+    .catch(function(err){
+      toolStatus("on","The Excel export did not work ("+err.message+"). Falling back to one CSV per sheet...");
+      pullData(true).then(function(res){
+        var stamp=new Date().toISOString().slice(0,10), n=0;
+        Object.keys(res.tabs||{}).forEach(function(name){
+          var tab=res.tabs[name];
+          if(!tab||!tab.rows.length) return;
+          var file="nmdr-"+name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+"-"+stamp+".csv";
+          setTimeout(function(){ saveFile(file,"text/csv;charset=utf-8",toCsv(tab),false); }, n*800);
+          n++;
+        });
+        toolStatus(n?"on":"bad", n ? n+(n===1?" sheet":" sheets")+" downloading as CSV." : "There is nothing in NMDR to download yet.");
+      }).catch(function(e){ toolStatus("bad","Download failed: "+e.message); });
+    });
+}
+
+var EDIT_LIST=[];
+function openEditPicker(){
+  document.getElementById("editModal").style.display="flex";
+  var body=document.getElementById("editBody");
+  var rows=archiveList();
+  if(!rows.length){
+    body.innerHTML='<div class="dash-empty">Nothing has been submitted from this phone yet. '+
+      'Assessments you submit here are kept on the phone so you can reopen and correct them, with or without a signal.</div>';
+    return;
+  }
+  body.innerHTML='<div class="dash-note" style="margin:0 0 12px;">laboratory assessments submitted from this phone. '+
+    'Reopening one is offline work, nothing is read back from the server.</div>'+
+    '<input class="form-input" type="text" placeholder="Filter by facility, chiefdom or date" '+
+    'oninput="filterEditList(this.value)" style="margin-bottom:12px;"><div id="editRows"></div>';
+  EDIT_LIST=rows;
+  filterEditList("");
+}
+function closeEditPicker(){ document.getElementById("editModal").style.display="none"; }
+function filterEditList(term){
+  var t=String(term||"").toLowerCase();
+  var rows=EDIT_LIST.filter(function(r){ return !t || (r.phu+" "+r.chiefdom+" "+r.visitDate+" "+r.recordId).toLowerCase().indexOf(t)>-1; });
+  var host=document.getElementById("editRows");
+  if(!rows.length){ host.innerHTML='<div class="dash-empty">Nothing matches that.</div>'; return; }
+  host.innerHTML=rows.map(function(r){
+    return '<div class="rec-row" onclick="loadSubmission(\''+escapeHtml(r.recordId)+'\')">'+
+      '<div class="rec-main">'+escapeHtml(r.phu||"Facility not given")+'</div>'+
+      '<div class="rec-sub">'+escapeHtml(r.chiefdom||"")+' · visit '+escapeHtml(r.visitDate||"not given")+
+      ' · version '+r.version+(r.pct!==undefined?' · '+r.pct+'%':'')+'</div>'+
+      '<div class="rec-sub">'+escapeHtml(r.recordId)+' · submitted '+escapeHtml(r.savedAt||"")+'</div></div>';
+  }).join('');
+}
+function loadSubmission(id){
+  var item=archive()[id];
+  if(!item){ document.getElementById("editBody").innerHTML='<div class="dash-empty">That assessment is no longer on this phone.</div>'; return; }
+  applyRecord(item.payload);
+  closeEditPicker();
+  switchTab('entry');
+  sendStatus("working","<b>Editing "+escapeHtml(id)+"</b>, version "+item.version+", "+escapeHtml(item.phu||"")+"."+
+    "<br>This is the copy kept on this phone, so you can correct it with no signal. "+
+    "Submitting sends version "+(item.version+1)+" and updates that same record.");
+  window.scrollTo(0,0);
+}
+
+/* ---------- dashboard ---------- */
+function openDashboard(force){
+  document.getElementById("dashModal").style.display="flex";
+  document.getElementById("dashBody").innerHTML='<div class="dash-empty">Reading the data from NMDR...</div>';
+  pullData(force).then(function(res){
+    document.getElementById("dashBody").innerHTML=dashboardHtml(res);
+  }).catch(function(err){
+    document.getElementById("dashBody").innerHTML='<div class="dash-empty">'+escapeHtml(err.message)+'</div>';
+  });
+}
+function closeDashboard(){ document.getElementById("dashModal").style.display="none"; }
+
+function asObjects(tab){
+  if(!tab||!tab.headers) return [];
+  return tab.rows.map(function(row){
+    var o={}; tab.headers.forEach(function(h,i){ o[h]=row[i]; }); return o;
+  });
+}
+function pick(o, needle){
+  for(var k in o){ if(k.toLowerCase().indexOf(needle.toLowerCase())>-1) return o[k]; }
+  return "";
+}
+function tally(list, fn){
+  var map={};
+  list.forEach(function(x){ var k=String(fn(x)||"").trim()||"Not given"; map[k]=(map[k]||0)+1; });
+  return Object.keys(map).map(function(k){ return {k:k,n:map[k]}; })
+    .sort(function(a,b){ return b.n-a.n || a.k.localeCompare(b.k); });
+}
+function bars(rows,total,tone){
+  if(!rows.length) return '<div class="dash-note">Nothing recorded yet.</div>';
+  var max=rows[0].n||1;
+  return rows.map(function(r){
+    var pct=Math.round(r.n/(total||max)*100);
+    return '<div class="bar-row"><div class="bar-top"><span>'+escapeHtml(r.k)+'</span>'+
+      '<span class="bar-num">'+r.n+(total?' · '+pct+'%':'')+'</span></div>'+
+      '<div class="bar-track"><div class="bar-fill '+(tone||'')+'" style="width:'+Math.max(2,Math.round(r.n/max*100))+'%"></div></div></div>';
+  }).join('');
+}
+function block(t,inner){ return '<div class="dash-block"><div class="dash-title">'+t+'</div>'+inner+'</div>'; }
+function kpi(v,l){ return '<div class="kpi"><div class="kpi-val">'+v+'</div><div class="kpi-lbl">'+l+'</div></div>'; }
+function nums(l){ return l.map(Number).filter(function(n){ return !isNaN(n); }); }
+function mean(l){ return l.length ? l.reduce(function(a,b){ return a+b; },0)/l.length : 0; }
+
+function dashboardHtml(res){
+  var main=null;
+  Object.keys(res.tabs||{}).forEach(function(n){ if(/^Form H$/i.test(n)) main=res.tabs[n]; });
+  var visits=asObjects(main);
+  if(!visits.length) return '<div class="dash-empty">No laboratory assessment has reached NMDR yet.</div>';
+
+  var facilities={};
+  visits.forEach(function(v){ var f=pick(v,'Health Facility (PHU)'); if(f) facilities[f]=1; });
+  var pct=nums(visits.map(function(v){ return pick(v,'Overall %'); }));
+  var resub=visits.filter(function(v){ return String(v['Status'])==='Resubmitted'; }).length;
+
+  var h='<div class="dash-kpis">'+
+    kpi(visits.length,'Assessments in NMDR')+
+    kpi(Object.keys(facilities).length+' of 10','Pilot facilities covered')+
+    kpi(pct.length?Math.round(mean(pct))+'%':'0%','Mean questions answered')+
+    kpi(resub,'Records resubmitted')+'</div>';
+
+  h+=block('Assessments by date',
+    bars(visits.map(function(v){ return { k:String(pick(v,'Health Facility (PHU)')||'Not given'),
+      n:Number(pick(v,'Overall %'))||0 }; }).sort(function(a,b){ return b.n-a.n; }), 100, 'green'));
+
+  [].forEach(function(name){
+    var vals=nums(visits.map(function(v){ return pick(v, name+' %'); }));
+    if(!vals.length) return;
+    h+=block(name+' , mean '+Math.round(mean(vals))+'%',
+      bars(visits.map(function(v){ return { k:String(pick(v,'Health Facility (PHU)')||'Not given'),
+        n:Number(pick(v,name+' %'))||0 }; }).sort(function(a,b){ return b.n-a.n; }), 100));
+  });
+
+  h+=block('Assessments by chiefdom', bars(tally(visits,function(v){ return pick(v,'Chiefdom'); }), visits.length));
+  h+=block('Assessments by facility type', bars(tally(visits,function(v){ return pick(v,'Health Facility Type'); }), visits.length, 'gold'));
+  h+=block('Supervisor rating given', bars(tally(visits,function(v){ return pick(v,'Rating'); }), visits.length));
+  h+=block('Assessments by date', bars(tally(visits,function(v){ return String(pick(v,'Date of Visit')).slice(0,10); }), 0, 'gold'));
+  h+=block('Data quality',
+    '<div class="dash-note">Pulled '+escapeHtml(res.pulled||'')+'. Names and phone numbers stay in NMDR and never reach this screen, '+
+    'so this dashboard counts scores and categories only.</div>');
+  return h;
+}
+
+
+
+
+
+
+
+/* ==================== REQUIRE EVERY QUESTION ====================
+   Set REQUIRE_ALL to false to go back to checking only the key fields. */
+var REQUIRE_ALL = true;
+
+var _RA_STYLE = document.createElement('style');
+_RA_STYLE.textContent =
+  '.ra-missing input,.ra-missing select,.ra-missing textarea{border-color:#dc3545 !important;box-shadow:0 0 0 3px rgba(220,53,69,.15) !important;}' +
+  '.ra-missing .options-group-vertical,.ra-missing .options-group-check,.ra-missing .options-group-h{outline:2px solid #dc3545;outline-offset:4px;border-radius:12px;}' +
+  '.ra-flag{color:#dc3545;font-weight:700;font-size:12px;margin-top:6px;}';
+document.head.appendChild(_RA_STYLE);
+
+function _raVisible(el){
+  // a row is skipped when it, its wrapper, or the whole section it sits in is
+  // hidden by the skip logic. Everything else counts as on screen.
+  var n = el;
+  while (n && n !== document.body) {
+    if (n.style && n.style.display === 'none') return false;
+    if (n.classList && n.classList.contains('tab-page')) return true;
+    n = n.parentElement;
+  }
+  return true;
+}
+
+function _raLabel(row){
+  var t = row.querySelector('.question-text');
+  var s = 'this question';
+  if (t) {
+    var num = t.querySelector('.question-num');
+    var n = num ? num.textContent.trim() : '';
+    s = t.textContent.replace(/\s+/g,' ').replace(/\*$/,'').trim();
+    if (n && s.indexOf(n) === 0) s = n + ' ' + s.slice(n.length).trim();
+  }
+  return s.length > 90 ? s.slice(0,90) + '…' : s;
+}
+
+/* an "Other, specify" box only counts when an Other option is ticked */
+function _raOtherRequired(row){
+  var ticked = row.querySelectorAll('input[type=radio]:checked, input[type=checkbox]:checked');
+  for (var i = 0; i < ticked.length; i++) {
+    if (/other/i.test(ticked[i].value || '')) return true;
+  }
+  var sels = row.querySelectorAll('select');
+  for (var j = 0; j < sels.length; j++) {
+    if (/other/i.test(sels[j].value || '')) return true;
+  }
+  return false;
+}
+
+function _raRowAnswered(row){
+  var radios = row.querySelectorAll('input[type=radio]');
+  if (radios.length) {
+    var names = {};
+    for (var i = 0; i < radios.length; i++) names[radios[i].name] = true;
+    for (var nm in names) {
+      if (!row.querySelector('input[type=radio][name="' + nm + '"]:checked')) return false;
+    }
+  }
+  var boxes = row.querySelectorAll('input[type=checkbox]');
+  if (boxes.length && !row.querySelector('input[type=checkbox]:checked')) return false;
+
+  var fields = row.querySelectorAll('select, textarea, input[type=text], input[type=number], input[type=date], input[type=month], input[type=tel], input[type=email]');
+  for (var j = 0; j < fields.length; j++) {
+    var f = fields[j];
+    if (f.disabled) continue;
+    if (/other/i.test(f.placeholder || '') && !_raOtherRequired(row)) continue;
+    if (String(f.value).trim() === '') return false;
+  }
+  return true;
+}
+
+function validateAllQuestions(){
+  document.querySelectorAll('.ra-missing').forEach(function(e){ e.classList.remove('ra-missing'); });
+  document.querySelectorAll('.ra-flag').forEach(function(e){ e.remove(); });
+
+  var rows = document.querySelectorAll('.question-row');
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    if (!_raVisible(row)) continue;
+    if (!row.querySelector('input, select, textarea')) continue;   // heading-only rows
+    if (row.querySelector('#mentoredHost, #hrHost, #recheckHost')) continue;  // tables, checked separately
+    if (_raRowAnswered(row)) continue;
+
+    // bring it on screen: right tab, right wizard section
+    if (typeof switchTab === 'function') {
+      var tab = row.closest('.tab-page');
+      if (tab && !tab.classList.contains('active')) switchTab('entry');
+    }
+    var page = row.closest('.section-page');
+    if (page && typeof showSection === 'function') {
+      var all = Array.prototype.slice.call(document.querySelectorAll('.section-page'));
+      var idx = all.indexOf(page);
+      if (idx > -1) showSection(idx);
+    }
+    row.classList.add('ra-missing');
+    var flag = document.createElement('div');
+    flag.className = 'ra-flag';
+    flag.textContent = 'This question is required.';
+    row.appendChild(flag);
+    row.scrollIntoView({ behavior:'smooth', block:'center' });
+    alert('Please answer: ' + _raLabel(row));
+    return false;
+  }
+  return true;
+}
+
+/* run the full check before whatever the form already did */
+(function(){
+  var _origSubmit = window.submitForm;
+  window.submitForm = function(){
+    if (REQUIRE_ALL && !validateAllQuestions()) return;
+    return _origSubmit.apply(this, arguments);
+  };
+})();
+
+
+/* ==================== SIGN IN ====================
+   Add or change users here. Three slots; fill the empty two when ready. */
+var USERS = [
+  { username: "msk", password: "1234", name: "Mohamed Sillah Kanu" },
+  { username: "",    password: "",     name: "" },   // second user — fill in
+  { username: "",    password: "",     name: "" }    // third user — fill in
+];
+
+(function(){
+  var KEY = "mocm_user";
+
+  function currentUser(){
+    try { return JSON.parse(sessionStorage.getItem(KEY)); } catch(e){ return null; }
+  }
+
+  var css = document.createElement('style');
+  css.textContent =
+    '#lgOverlay{position:fixed;inset:0;z-index:3000;background:linear-gradient(160deg,#2b5f8a,#1e4a6d);' +
+    'display:flex;align-items:center;justify-content:center;padding:20px;font-family:inherit;}' +
+    '#lgCard{background:#fff;border-radius:20px;width:100%;max-width:330px;padding:26px 22px 24px;text-align:center;' +
+    'box-shadow:0 24px 48px rgba(0,0,0,.3);}' +
+    '#lgCard .lgIcon{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#2b5f8a,#3b78a8);' +
+    'margin:0 auto 14px;display:flex;align-items:center;justify-content:center;}' +
+    '#lgCard .lgIcon svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;}' +
+    '#lgCard h3{font-size:17px;font-weight:800;color:#2b5f8a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}' +
+    '#lgCard p{font-size:12px;color:#6c7a8a;margin-bottom:18px;}' +
+    '#lgCard input{width:100%;padding:13px 14px;border:1.5px solid #e0e6ed;border-radius:12px;font-size:15px;' +
+    'font-family:inherit;margin-bottom:10px;}' +
+    '#lgCard input:focus{border-color:#3b78a8;outline:2px solid rgba(59,120,168,.2);}' +
+    '#lgErr{color:#dc3545;font-size:12px;font-weight:600;min-height:16px;margin-bottom:8px;display:none;}' +
+    '#lgBtn{width:100%;padding:14px;background:#2b5f8a;color:#fff;border:none;border-radius:12px;' +
+    'font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;}' +
+    '.lgWho{font-size:10.5px;font-weight:600;letter-spacing:.4px;opacity:.9;margin-top:8px;}' +
+    '.lgWho a{color:#ffc107;text-decoration:underline;cursor:pointer;margin-left:8px;}' +
+    '.lgStamp{background:#e7f3ff;border:1px solid #c9dff2;border-radius:12px;padding:11px 14px;margin:0 0 12px;}' +
+    '.lgStamp b{color:#2b5f8a;}' +
+    '@keyframes lgShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}';
+  document.head.appendChild(css);
+
+  function showWho(){
+    var u = currentUser(); if(!u) return;
+    document.querySelectorAll('.page-header, .header-sub').length;
+    var host = document.querySelector('.page-header');
+    if(!host || host.querySelector('.lgWho')) return;
+    var d = document.createElement('div');
+    d.className = 'lgWho';
+    d.innerHTML = 'Signed in: ' + u.name + ' (' + u.username + ')<a id="lgOut">Sign out</a>';
+    host.appendChild(d);
+    d.querySelector('#lgOut').onclick = function(){
+      sessionStorage.removeItem(KEY);
+      location.reload();
+    };
+  }
+
+  function gate(){
+    if (currentUser()) { showWho(); return; }
+    var o = document.createElement('div');
+    o.id = 'lgOverlay';
+    o.innerHTML =
+      '<div id="lgCard">' +
+      '<div class="lgIcon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/>' +
+      '<path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>' +
+      '<h3>Sign in</h3><p>MOCM / OTSS+ supervision · NMCP Sierra Leone</p>' +
+      '<input id="lgUser" type="text" placeholder="Username" autocomplete="off" autocapitalize="none">' +
+      '<input id="lgPass" type="password" placeholder="Password">' +
+      '<div id="lgErr">Wrong username or password.</div>' +
+      '<button id="lgBtn">Sign in</button></div>';
+    document.body.appendChild(o);
+
+    var uEl = o.querySelector('#lgUser'), pEl = o.querySelector('#lgPass'), err = o.querySelector('#lgErr');
+    function attempt(){
+      var u = uEl.value.trim().toLowerCase(), p = pEl.value;
+      for (var i = 0; i < USERS.length; i++) {
+        var acc = USERS[i];
+        if (acc.username && acc.username.toLowerCase() === u && acc.password === p) {
+          sessionStorage.setItem(KEY, JSON.stringify({ username: acc.username, name: acc.name, at: new Date().toLocaleString() }));
+          o.remove();
+          showWho();
+          return;
+        }
+      }
+      err.style.display = 'block';
+      var card = o.querySelector('#lgCard');
+      card.style.animation = 'lgShake .3s';
+      setTimeout(function(){ card.style.animation = ''; }, 320);
+      pEl.value = ''; uEl.focus();
+    }
+    o.querySelector('#lgBtn').onclick = attempt;
+    pEl.onkeydown = function(e){ if (e.key === 'Enter') attempt(); };
+    uEl.onkeydown = function(e){ if (e.key === 'Enter') pEl.focus(); };
+    setTimeout(function(){ uEl.focus(); }, 60);
+  }
+
+  /* the summary carries who submitted it */
+  function stamp(){
+    var u = currentUser(); if(!u) return;
+    var host = document.getElementById('summary-content') || document.getElementById('summaryBody');
+    if(!host || host.querySelector('.lgStamp')) return;
+    var d = document.createElement('div');
+    d.className = 'lgStamp';
+    d.innerHTML = 'Submitted by <b>' + u.name + '</b> (' + u.username + ')';
+    host.insertBefore(d, host.firstChild);
+  }
+  ['renderSummary','showSummary'].forEach(function(fnName){
+    if (typeof window[fnName] === 'function') {
+      var orig = window[fnName];
+      window[fnName] = function(){ var r = orig.apply(this, arguments); stamp(); return r; };
+    }
+  });
+  if (typeof window.doSubmit === 'function') {
+    var _ds = window.doSubmit;
+    window.doSubmit = function(){ var r = _ds.apply(this, arguments); stamp(); return r; };
+  }
+  if (typeof window.confirmSubmit === 'function') {
+    var _cs = window.confirmSubmit;
+    window.confirmSubmit = function(){ stamp(); return _cs.apply(this, arguments); };
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gate);
+  else gate();
+})();
+
+
+/* ---------- show the star on every question the form enforces ---------- */
+(function(){
+  function isOtherBox(f){ return /other/i.test(f.placeholder || ''); }
+
+  function markRequired(){
+    var rows = document.querySelectorAll('.question-row');
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var fields = row.querySelectorAll('input, select, textarea');
+      if (!fields.length) continue;                     // heading-only row
+
+      // a row holding nothing but an "If Other, specify" box stays unstarred
+      var onlyOther = true;
+      for (var j = 0; j < fields.length; j++) {
+        if (!isOtherBox(fields[j])) { onlyOther = false; break; }
+      }
+      if (onlyOther) continue;
+
+      var label = row.querySelector('.question-text');
+      if (!label || label.querySelector('.required-star')) continue;
+      var star = document.createElement('span');
+      star.className = 'required-star';
+      star.textContent = '*';
+      label.appendChild(star);
+    }
+  }
+
+  var pending = null;
+  function schedule(){
+    clearTimeout(pending);
+    pending = setTimeout(markRequired, 120);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', schedule);
+  else schedule();
+  new MutationObserver(schedule).observe(document.body, { childList:true, subtree:true });
+})();
+
+
+
+/* ---------- init ---------- */
+responses['1.16']=new Date().toISOString().split('T')[0];
+loadCSV();
+buildPage();
+loadRecord();
+renderGps();
+captureGps(false);
+renderPending();
+setTimeout(function(){ flushOutbox(true); }, 1500);
+document.addEventListener('change', function(){ applySkips(); updateProgress(); });
+document.addEventListener('input', function(){ applySkips(); updateProgress(); refreshHRTotals(); });
+</script>
+</body>
+</html>

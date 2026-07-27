@@ -527,7 +527,7 @@ function updateProgress() {
   const fill = document.getElementById('progressFill');
   const text = document.getElementById('progressText');
   if (fill) fill.style.width = (total ? Math.round(done / total * 100) : 0) + '%';
-  if (text) text.innerText = done + ' of ' + total + ' questions answered. Every one is required.';
+  if (text) text.textContent = done + ' of ' + total + ' questions answered. Every one is required.';
 }
 function updateObservation(idx, field, val) { if (!observations[idx]) observations[idx] = {}; observations[idx][field] = val; updateProgress(); }
 /* no add button any more: the count in section 3 opens the cards */
@@ -1267,7 +1267,8 @@ function hideEmptySections(){
    works with no signal, queues what cannot go out, syncs by itself, updates a
    record instead of duplicating it, and refuses an unchanged resubmission.
    Paste the Apps Script /exec URL for mRDT assessment here. */
-var ENDPOINT = "PASTE_YOUR_FORM_C_WEB_APP_EXEC_URL_HERE";
+var FORM_MARK = "C";          // which form this is, for the router
+var ENDPOINT = "https://script.google.com/macros/s/AKfycbwV04trmpmSLJAS5BTdgBHTS4lumCPRd45yIUvOx9Z0BX7147xCGVId9JcoNt_nCUG_/exec";
 
 var OUTBOX_KEY = "mocm_outbox_form_c";
 var ARCHIVE_KEY = "mocm_sent_form_c";     // what this phone has submitted, kept for editing
@@ -1401,6 +1402,7 @@ function getPayload(){
   var scored = 0, possible = 0;
   Object.keys(sc).forEach(function(k){ scored += sc[k].scored; possible += sc[k].total; });
   return {
+    form: FORM_MARK,
     recordId: RECORD.id,
     revision: RECORD.accepted + 1,
     resubmission: RECORD.accepted > 0,
@@ -1477,9 +1479,30 @@ function discardPending(){
   if(!confirm("Throw away "+n+(n===1?" record":" records")+" that never reached NMDR?\n\nThis cannot be undone.")) return;
   saveOutbox([]);
 }
+/* NMDR answers with JSON. If a web page comes back instead, the deployment is
+   not reachable as data: almost always the web app access is not set to Anyone,
+   or the script was edited without re-deploying a new version. Say so plainly
+   rather than letting a JSON parse error surface. */
+function jsonFrom(res){
+  return res.text().then(function(t){
+    var s = String(t || '').trim();
+    if (s.charAt(0) === '<') {
+      throw new Error('NMDR returned a web page instead of data. In Apps Script, check ' +
+        'Deploy \u25b8 Manage deployments: Execute as Me, Who has access Anyone, then deploy a NEW version ' +
+        'and paste the /exec URL into this form.');
+    }
+    try { return JSON.parse(s); }
+    catch (e) { throw new Error('NMDR sent something this form could not read: ' + s.slice(0, 80)); }
+  });
+}
+
 function postRecord(p){
+  /* Stamp the form letter on the way out, not only when the payload is built,
+     so anything queued by an older copy of this form still reaches the right
+     form when it finally goes. */
+  p.form = FORM_MARK;
   return fetch(ENDPOINT,{ method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(p) })
-    .then(function(r){ return r.json(); })
+    .then(function(r){ return jsonFrom(r); })
     .then(function(res){
       if(!res||!res.ok) throw new Error((res&&res.error)?res.error:"NMDR rejected the submission.");
       return res;
@@ -1487,8 +1510,8 @@ function postRecord(p){
 }
 function serverVersions(){
   if(!navigator.onLine) return Promise.resolve(null);
-  return fetch(ENDPOINT+"?action=list&t="+Date.now())
-    .then(function(r){ return r.json(); })
+  return fetch(ENDPOINT+"?form="+FORM_MARK+"&action=list&t="+Date.now())
+    .then(function(r){ return jsonFrom(r); })
     .then(function(res){
       if(!res||!res.ok) return null;
       var map={};
@@ -1652,8 +1675,8 @@ var NMDR_CACHE = null;
 function pullData(force){
   if(NMDR_CACHE && !force) return Promise.resolve(NMDR_CACHE);
   if(!navigator.onLine) return Promise.reject(new Error("No signal. This needs NMDR."));
-  return fetch(ENDPOINT+"?action=data&t="+Date.now())
-    .then(function(r){ return r.json(); })
+  return fetch(ENDPOINT+"?form="+FORM_MARK+"&action=data&t="+Date.now())
+    .then(function(r){ return jsonFrom(r); })
     .then(function(res){
       if(!res||!res.ok) throw new Error((res&&res.error)?res.error:"NMDR did not return the data.");
       NMDR_CACHE=res; return res;
@@ -1678,8 +1701,8 @@ function saveFile(name, mime, data, isB64){
 function downloadData(){
   if(!navigator.onLine){ toolStatus("bad","No signal. The download needs NMDR."); return; }
   toolStatus("on","Pulling the whole file from NMDR...");
-  fetch(ENDPOINT+"?action=export&t="+Date.now())
-    .then(function(r){ return r.json(); })
+  fetch(ENDPOINT+"?form="+FORM_MARK+"&action=export&t="+Date.now())
+    .then(function(r){ return jsonFrom(r); })
     .then(function(res){
       if(!res||!res.ok||!res.b64) throw new Error((res&&res.error)?res.error:"The workbook did not come through.");
       saveFile(res.filename,res.mime,res.b64,true);
@@ -1933,8 +1956,8 @@ var NMDR_CACHE = null;
 function pullData(force){
   if(NMDR_CACHE && !force) return Promise.resolve(NMDR_CACHE);
   if(!navigator.onLine) return Promise.reject(new Error("No signal. This needs NMDR."));
-  return fetch(ENDPOINT+"?action=data&t="+Date.now())
-    .then(function(r){ return r.json(); })
+  return fetch(ENDPOINT+"?form="+FORM_MARK+"&action=data&t="+Date.now())
+    .then(function(r){ return jsonFrom(r); })
     .then(function(res){
       if(!res||!res.ok) throw new Error((res&&res.error)?res.error:"NMDR did not return the data.");
       NMDR_CACHE=res; return res;
@@ -1959,8 +1982,8 @@ function saveFile(name, mime, data, isB64){
 function downloadData(){
   if(!navigator.onLine){ toolStatus("bad","No signal. The download needs NMDR."); return; }
   toolStatus("on","Pulling the whole file from NMDR...");
-  fetch(ENDPOINT+"?action=export&t="+Date.now())
-    .then(function(r){ return r.json(); })
+  fetch(ENDPOINT+"?form="+FORM_MARK+"&action=export&t="+Date.now())
+    .then(function(r){ return jsonFrom(r); })
     .then(function(res){
       if(!res||!res.ok||!res.b64) throw new Error((res&&res.error)?res.error:"The workbook did not come through.");
       saveFile(res.filename,res.mime,res.b64,true);

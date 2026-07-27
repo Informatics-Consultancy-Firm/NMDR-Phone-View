@@ -758,7 +758,8 @@ function renderSummary(){
    works with no signal, queues what cannot go out, syncs by itself, updates a
    record instead of duplicating it, and refuses an unchanged resubmission.
    Paste the Apps Script /exec URL for case management observation here. */
-var ENDPOINT = "PASTE_YOUR_FORM_D_WEB_APP_EXEC_URL_HERE";
+var FORM_MARK = "D";          // which form this is, for the router
+var ENDPOINT = "https://script.google.com/macros/s/AKfycbwV04trmpmSLJAS5BTdgBHTS4lumCPRd45yIUvOx9Z0BX7147xCGVId9JcoNt_nCUG_/exec";
 
 var OUTBOX_KEY = "mocm_outbox_form_d";
 var ARCHIVE_KEY = "mocm_sent_form_d";     // what this phone has submitted, kept for editing
@@ -875,6 +876,7 @@ function keyOf(row){
 function getPayload(){
   var d = getDemographics();
   return {
+    form: FORM_MARK,
     recordId: RECORD.id,
     revision: RECORD.accepted + 1,
     resubmission: RECORD.accepted > 0,
@@ -968,6 +970,10 @@ function jsonFrom(res){
 }
 
 function postRecord(p){
+  /* Stamp the form letter on the way out, not only when the payload is built,
+     so anything queued by an older copy of this form still reaches the right
+     form when it finally goes. */
+  p.form = FORM_MARK;
   return fetch(ENDPOINT,{ method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(p) })
     .then(function(r){ return jsonFrom(r); })
     .then(function(res){
@@ -977,7 +983,7 @@ function postRecord(p){
 }
 function serverVersions(){
   if(!navigator.onLine) return Promise.resolve(null);
-  return fetch(ENDPOINT+"?action=list&t="+Date.now())
+  return fetch(ENDPOINT+"?form="+FORM_MARK+"&action=list&t="+Date.now())
     .then(function(r){ return jsonFrom(r); })
     .then(function(res){
       if(!res||!res.ok) return null;
@@ -1143,7 +1149,7 @@ var NMDR_CACHE = null;
 function pullData(force){
   if(NMDR_CACHE && !force) return Promise.resolve(NMDR_CACHE);
   if(!navigator.onLine) return Promise.reject(new Error("No signal. This needs NMDR."));
-  return fetch(ENDPOINT+"?action=data&t="+Date.now())
+  return fetch(ENDPOINT+"?form="+FORM_MARK+"&action=data&t="+Date.now())
     .then(function(r){ return jsonFrom(r); })
     .then(function(res){
       if(!res||!res.ok) throw new Error((res&&res.error)?res.error:"NMDR did not return the data.");
@@ -1169,7 +1175,7 @@ function saveFile(name, mime, data, isB64){
 function downloadData(){
   if(!navigator.onLine){ toolStatus("bad","No signal. The download needs NMDR."); return; }
   toolStatus("on","Pulling the whole file from NMDR...");
-  fetch(ENDPOINT+"?action=export&t="+Date.now())
+  fetch(ENDPOINT+"?form="+FORM_MARK+"&action=export&t="+Date.now())
     .then(function(r){ return jsonFrom(r); })
     .then(function(res){
       if(!res||!res.ok||!res.b64) throw new Error((res&&res.error)?res.error:"The workbook did not come through.");
@@ -1425,7 +1431,7 @@ var NMDR_CACHE = null;
 function pullData(force){
   if(NMDR_CACHE && !force) return Promise.resolve(NMDR_CACHE);
   if(!navigator.onLine) return Promise.reject(new Error("No signal. This needs NMDR."));
-  return fetch(ENDPOINT+"?action=data&t="+Date.now())
+  return fetch(ENDPOINT+"?form="+FORM_MARK+"&action=data&t="+Date.now())
     .then(function(r){ return jsonFrom(r); })
     .then(function(res){
       if(!res||!res.ok) throw new Error((res&&res.error)?res.error:"NMDR did not return the data.");
@@ -1451,7 +1457,7 @@ function saveFile(name, mime, data, isB64){
 function downloadData(){
   if(!navigator.onLine){ toolStatus("bad","No signal. The download needs NMDR."); return; }
   toolStatus("on","Pulling the whole file from NMDR...");
-  fetch(ENDPOINT+"?action=export&t="+Date.now())
+  fetch(ENDPOINT+"?form="+FORM_MARK+"&action=export&t="+Date.now())
     .then(function(r){ return jsonFrom(r); })
     .then(function(res){
       if(!res||!res.ok||!res.b64) throw new Error((res&&res.error)?res.error:"The workbook did not come through.");

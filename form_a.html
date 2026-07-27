@@ -1064,6 +1064,7 @@ function validateForm() {
 
 function getFormData() {
   return {
+    form: FORM_MARK,
     recordId: RECORD.id,
     revision: RECORD.accepted + 1,
     resubmission: RECORD.accepted > 0,
@@ -1142,6 +1143,7 @@ function closeModal() { document.getElementById("summaryModal").style.display = 
    this phone's outbox and sent by itself once there is a signal. Editing a
    record and submitting again updates the same record on the server, it does
    not create a second one. */
+var FORM_MARK = "A";          // which form this is, for the router
 var ENDPOINT = "https://script.google.com/macros/s/AKfycbwV04trmpmSLJAS5BTdgBHTS4lumCPRd45yIUvOx9Z0BX7147xCGVId9JcoNt_nCUG_/exec";
 
 var OUTBOX_KEY = "mocm_outbox_form_a";
@@ -1228,13 +1230,34 @@ function renderOutbox() {
   renderPending();
 }
 
+/* NMDR answers with JSON. If a web page comes back instead, the deployment is
+   not reachable as data: almost always the web app access is not set to Anyone,
+   or the script was edited without re-deploying a new version. Say so plainly
+   rather than letting a JSON parse error surface. */
+function jsonFrom(res){
+  return res.text().then(function(t){
+    var s = String(t || '').trim();
+    if (s.charAt(0) === '<') {
+      throw new Error('NMDR returned a web page instead of data. In Apps Script, check ' +
+        'Deploy \u25b8 Manage deployments: Execute as Me, Who has access Anyone, then deploy a NEW version ' +
+        'and paste the /exec URL into this form.');
+    }
+    try { return JSON.parse(s); }
+    catch (e) { throw new Error('NMDR sent something this form could not read: ' + s.slice(0, 80)); }
+  });
+}
+
 function postRecord(payload) {
+  /* Stamp the form letter on the way out, not only when the payload is built.
+     Anything already sitting in this phone's outbox from an older copy of the
+     form therefore still reaches the right form when it finally goes. */
+  payload.form = FORM_MARK;
   return fetch(ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
     body: JSON.stringify(payload)
   })
-  .then(function (r) { return r.json(); })
+  .then(function (r) { return jsonFrom(r); })
   .then(function (res) {
     if (!res || !res.ok) throw new Error((res && res.error) ? res.error : "The server rejected the submission.");
     return res;
@@ -1479,8 +1502,8 @@ function pullData(force) {
   if (!navigator.onLine) {
     return Promise.reject(new Error("No signal. The download and the dashboard both need NMDR."));
   }
-  return fetch(ENDPOINT + "?action=data&t=" + Date.now())
-    .then(function (r) { return r.json(); })
+  return fetch(ENDPOINT + "?form=" + FORM_MARK + "&action=data&t=" + Date.now())
+    .then(function (r) { return jsonFrom(r); })
     .then(function (res) {
       if (!res || !res.ok) throw new Error((res && res.error) ? res.error : "NMDR did not return the data.");
       NMDR_CACHE = res;
@@ -1933,8 +1956,8 @@ function discardPending() {
 /* which record ids NMDR already holds, and at what version */
 function serverVersions() {
   if (!navigator.onLine) return Promise.resolve(null);
-  return fetch(ENDPOINT + "?action=list&t=" + Date.now())
-    .then(function (r) { return r.json(); })
+  return fetch(ENDPOINT + "?form=" + FORM_MARK + "&action=list&t=" + Date.now())
+    .then(function (r) { return jsonFrom(r); })
     .then(function (res) {
       if (!res || !res.ok) return null;
       var map = {};
@@ -1965,8 +1988,8 @@ function downloadData() {
   }
   toolStatus("on", "Pulling the whole file from NMDR...");
 
-  fetch(ENDPOINT + "?action=export&t=" + Date.now())
-    .then(function (r) { return r.json(); })
+  fetch(ENDPOINT + "?form=" + FORM_MARK + "&action=export&t=" + Date.now())
+    .then(function (r) { return jsonFrom(r); })
     .then(function (res) {
       if (!res || !res.ok || !res.b64) throw new Error((res && res.error) ? res.error : "The workbook did not come through.");
       saveBase64(res.filename, res.mime, res.b64);
