@@ -19,6 +19,9 @@
 html { font-size:16px; }
 body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-dark); font-size:15px; line-height:1.55; margin:0; overflow-x:hidden; }
 
+.icn { width: 16px; height: 16px; flex: 0 0 auto; margin-right: 7px; }
+.tab-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0; }
+.btn-submit, .summary-refresh { display: inline-flex; align-items: center; justify-content: center; }
 /* TAB NAV */
 .tab-nav { display:flex; background:var(--blue-dark); position:sticky; top:0; z-index:200; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
 .tab-btn { flex:1; padding:16px 8px; color:rgba(255,255,255,0.65); font-weight:700; font-size:14px; border:none; background:none; cursor:pointer; border-bottom:3px solid transparent; transition:all 0.2s; letter-spacing:0.3px; }
@@ -197,6 +200,49 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
 .btn-cancel { flex:1; padding:12px; background:#f0f2f5; color:var(--text-dark); border:1px solid var(--border); border-radius:40px; font-weight:600; cursor:pointer; }
 .btn-confirm { flex:1; padding:12px; background:var(--green); color:white; border:none; border-radius:40px; font-weight:600; cursor:pointer; }
 
+.icn { width:16px; height:16px; flex:0 0 auto; margin-right:7px; }
+.toolbar { position:sticky; top:52px; z-index:190; background:#fff; border-bottom:1px solid var(--border); padding:12px 16px; box-shadow:0 2px 6px rgba(0,0,0,.06); }
+.tool-row { display:flex; flex-wrap:wrap; gap:8px; }
+.btn-tool { flex:1 1 22%; min-width:22%; padding:13px 10px; background:#fff; color:var(--blue-dark); border:1.5px solid var(--blue); border-radius:40px; font-weight:700; font-size:13px; cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; justify-content:center; }
+.btn-tool:active { background:var(--soft-bg); }
+.tool-status { display:none; margin-top:10px; font-size:12.5px; font-weight:600; }
+.tool-status.on { display:block; color:var(--blue-dark); }
+.tool-status.bad { display:block; color:var(--red); }
+.send-status { display:none; margin:12px 16px 0; padding:11px 14px; border-radius:12px; font-size:13px; font-weight:600; line-height:1.45; }
+.send-status.working { display:block; background:var(--soft-bg); border:1px solid #c9dff2; color:var(--blue-dark); }
+.send-status.good { display:block; background:#d4edda; border:1px solid #b7dfc1; color:#155724; }
+.send-status.bad { display:block; background:#f8d7da; border:1px solid #f1b5bb; color:#721c24; }
+.gps-panel { border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; background:#fafbfc; font-size:13px; }
+.gps-panel.good { border-color:#b7dfc1; background:#f1f9f3; }
+.gps-panel.bad { border-color:#f1b5bb; background:#fdf2f3; }
+.gps-line { font-weight:700; color:var(--blue-dark); }
+.gps-sub { font-size:11.5px; color:var(--text-light); margin-top:3px; }
+.pending-panel { display:none; margin:12px 16px 0; border:1.5px solid var(--gold); border-radius:14px; overflow:hidden; background:#fff8e1; }
+.pending-panel.on { display:block; }
+.pending-head { padding:12px 14px; font-size:13px; font-weight:700; color:#7a5600; }
+.pend-row { padding:11px 14px; border-top:1px solid #f0dca8; background:#fff; }
+.pend-main { font-weight:700; font-size:13.5px; color:var(--blue-dark); }
+.pend-sub { font-size:11.5px; color:var(--text-light); margin-top:2px; }
+.pend-actions { padding:11px 14px; border-top:1px solid #f0dca8; display:flex; gap:10px; }
+.dash-content { max-width:620px; }
+.dash-kpis { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.kpi { background:var(--soft-bg); border-radius:12px; padding:12px 14px; }
+.kpi-val { font-size:22px; font-weight:800; color:var(--blue-dark); }
+.kpi-lbl { font-size:10.5px; font-weight:700; letter-spacing:.4px; text-transform:uppercase; color:var(--text-light); margin-top:2px; }
+.dash-block { margin-top:18px; }
+.dash-title { font-size:12px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; color:var(--blue); padding-bottom:6px; border-bottom:2px solid var(--soft-bg); margin-bottom:10px; }
+.bar-row { margin-bottom:9px; }
+.bar-top { display:flex; justify-content:space-between; font-size:12.5px; margin-bottom:3px; }
+.bar-num { color:var(--blue-dark); font-weight:700; white-space:nowrap; }
+.bar-track { height:8px; background:var(--border); border-radius:6px; overflow:hidden; }
+.bar-fill { height:100%; background:var(--blue); border-radius:6px; }
+.bar-fill.gold { background:var(--gold); }
+.bar-fill.green { background:var(--green); }
+.dash-note { font-size:11.5px; color:var(--text-light); margin-top:8px; line-height:1.5; }
+.dash-empty { padding:24px; text-align:center; color:var(--text-light); font-size:13px; }
+.rec-row { border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:10px; cursor:pointer; background:#fafbfc; }
+.rec-main { font-weight:700; color:var(--blue-dark); font-size:14px; }
+.rec-sub { font-size:11.5px; color:var(--text-light); margin-top:2px; }
 .px16 { padding:0 16px; }
 .px20 { padding:0 16px; }
 </style>
@@ -205,8 +251,8 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
 
 <!-- TAB NAVIGATION -->
 <div class="tab-nav">
-  <button class="tab-btn active" onclick="switchTab('entry')">📋 DATA ENTRY</button>
-  <button class="tab-btn" onclick="switchTab('summary')">📊 SUMMARY</button>
+  <button class="tab-btn active" onclick="switchTab('entry')"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6v3H9z"/><path d="M8 5H6a1 1 0 00-1 1v13a1 1 0 001 1h12a1 1 0 001-1V6a1 1 0 00-1-1h-2"/><path d="M9 12h6"/><path d="M9 16h4"/></svg>DATA ENTRY</button>
+  <button class="tab-btn" onclick="switchTab('summary')"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/></svg>SUMMARY</button>
 </div>
 
 <!-- ==================== DATA ENTRY TAB ==================== -->
@@ -220,6 +266,16 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
     <div class="header-title">MOCM/OTSS+ Checklist</div>
     <div class="header-sub">FORM B: Checklist for Assessing HF Readiness</div>
   </div>
+  <div class="toolbar">
+  <div class="tool-row">
+    <button class="btn-tool" onclick="downloadData()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>DOWNLOAD DATA</button>
+    <button class="btn-tool" onclick="openEditPicker()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>EDIT A SUBMISSION</button>
+    <button class="btn-tool" onclick="openDashboard()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/></svg>DASHBOARD</button>
+    <button class="btn-tool" onclick="newEntry()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>NEW ENTRY</button>
+  </div>
+  <div id="toolStatus" class="tool-status"></div>
+  </div>
+
   <div class="form-title">FORM B: CHECKLIST FOR ASSESSING HF READINESS</div>
 
   <!-- DEMOGRAPHICS: District > Chiefdom > PHU > Facility Type -->
@@ -280,7 +336,7 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
   <div class="section-card"><div class="card-body" id="sec_reporting"></div></div>
   <div class="score-row"><span class="score-label">Reporting Forms Score</span><span class="score-badge" id="score_reporting">0/22</span></div>
 
-  <div class="subsection-header">1.4 Malaria Reference Material</div>
+  <div class="subsection-header">1.3 Malaria Reference Material</div>
   <div class="section-card"><div class="card-body" id="sec_reference"></div></div>
   <div class="score-row"><span class="score-label">Reference Material Score</span><span class="score-badge" id="score_reference">0/14</span></div>
 
@@ -331,63 +387,76 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
   <div class="section-header">11. Additional Comments</div>
   <div class="section-card"><div class="card-body">
     <div class="question-row">
-      <div class="question-text">Additional comments on the observations</div>
+      <div class="question-text"><span class="question-num">11.1</span>Additional comments on the observations</div>
       <textarea class="form-textarea" id="q_comments" rows="4" placeholder="Additional comments on the observations..." oninput="ans.comments=this.value"></textarea>
     </div>
   </div></div>
 
   <!-- ====== SECTION 12-14 ====== -->
-  <div class="section-header">12 to 14. Gap Analysis &amp; Previous Visit Follow-up</div>
+  <div class="section-header">12. Previous Visit Follow-up</div>
   <div class="section-card"><div class="card-body">
     <div class="question-row">
-      <div class="question-text">12. Biggest gap(s) identified during the last HF visit</div>
+      <div class="question-text"><span class="question-num">12.1</span>Biggest gap(s) identified during the last HF visit</div>
       <textarea class="form-textarea" id="q_lastgaps" rows="3" placeholder="1) ... 2) ... 3) ..." oninput="ans.lastgaps=this.value"></textarea>
     </div>
     <div class="question-row">
-      <div class="question-text">13. Action plan from the previous visit</div>
+      <div class="question-text"><span class="question-num">12.2</span>Action plan from the previous visit</div>
       <textarea class="form-textarea" id="q_prevplan" rows="3" placeholder="Describe the action plan..." oninput="ans.prevplan=this.value"></textarea>
     </div>
     <div class="question-row">
-      <div class="question-text">14. Were these gaps addressed?</div>
+      <div class="question-text"><span class="question-num">12.3</span>Were these gaps addressed?</div>
       <div class="options-group-vertical" id="group_gapaddr"></div>
     </div>
   </div></div>
 
   <!-- ====== SECTION 15-17 ====== -->
-  <div class="section-header">15 to 17. Current Visit Gaps &amp; Feedback</div>
+  <div class="section-header">13. Current Visit Gaps &amp; Feedback</div>
   <div class="section-card"><div class="card-body">
     <div class="question-row">
-      <div class="question-text">15. Biggest gap(s) identified today</div>
+      <div class="question-text"><span class="question-num">13.1</span>Biggest gap(s) identified today</div>
       <textarea class="form-textarea" id="q_todaygaps" rows="3" placeholder="1) ... 2) ..." oninput="ans.todaygaps=this.value"></textarea>
     </div>
     <div class="question-row">
-      <div class="question-text">16. Was immediate feedback provided?</div>
+      <div class="question-text"><span class="question-num">13.2</span>Was immediate feedback provided?</div>
       <div class="options-group-vertical" id="group_immfeedback"></div>
     </div>
     <div class="question-row" id="feedbackhow_row" style="display:none">
-      <div class="question-text">17. How was the feedback provided? (select all that apply)</div>
+      <div class="question-text"><span class="question-num">13.3</span>How was the feedback provided? (select all that apply)</div>
       <div class="options-group-check" id="group_feedbackhow"></div>
     </div>
   </div></div>
 
   <!-- ====== SECTION 18 - ACTION PLAN TABLE ====== -->
-  <div class="section-header">18. Action Plan for Addressing Gaps</div>
+  <div class="section-header">14. Action Plan for Addressing Gaps</div>
   <div class="section-card"><div class="card-body">
     <div class="question-row">
-      <div class="question-text"><span class="question-num">18.1</span>How many gaps were identified?</div>
+      <div class="question-text"><span class="question-num">14.1</span>How many gaps were identified?</div>
       <input class="form-input" id="gap_count" type="number" min="0" max="20" step="1" placeholder="Type a number" oninput="onGapCount()">
       <div class="count-note" id="gap_note"></div>
       <div class="count-hint" id="gap_hint">Type the number and one block will open for each gap.</div>
     </div>
     <div id="actionPlanBody"></div>
     <div class="question-row" style="margin-top:16px;">
-      <div class="question-text">Supervisor Comments</div>
+      <div class="question-text"><span class="question-num">14.2</span>Supervisor Comments</div>
       <textarea class="form-textarea" id="q_supcomments" rows="3" placeholder="Supervisor comments..." oninput="ans.supcomments=this.value"></textarea>
     </div>
   </div></div>
 
+  <!-- GPS: captured by the phone, not typed -->
+  <div class="section-header">15. Location</div>
+  <div class="section-card"><div class="card-body">
+    <div class="question-row" style="margin-bottom:0;">
+      <div class="question-text"><span class="question-num">15.1</span>GPS position of the facility</div>
+      <div id="gpsPanel" class="gps-panel"></div>
+      <button class="btn-tool" style="margin-top:10px;" onclick="captureGps(true)"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.1 7-11a7 7 0 10-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="11" r="2.5"/></svg>CAPTURE AGAIN</button>
+    </div>
+  </div></div>
+
+  <div id="pendingPanel" class="pending-panel"></div>
+  <div id="sendStatus" class="send-status"></div>
+
   <div class="px20">
-    <button class="btn-submit" onclick="submitForm()">✅ SUBMIT DATA</button>
+    <button class="btn-submit" onclick="submitForm()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>SUBMIT DATA</button>
   </div>
 </div>
 <!-- END DATA ENTRY TAB -->
@@ -398,20 +467,39 @@ body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-da
   <div class="summary-header">
     <h2>FORM B, SUBMISSION SUMMARY</h2>
     <p id="sum_date">No submission yet</p>
-    <button class="summary-refresh" onclick="renderSummary()">🔄 Refresh Summary</button>
+    <button class="summary-refresh" onclick="renderSummary()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 11-2.34-5.66"/><path d="M20 4v4h-4"/></svg>Refresh Summary</button>
   </div>
-  <div id="summary-content"><div class="no-data" style="padding:40px;">Complete the data entry form and press Submit Data to see results here.</div></div>
+  <div id="summary-content"><div class="no-data" style="padding:40px;">Complete the data entry form and press Submit Data to NMDR to see results here.</div></div>
 </div>
 <!-- END SUMMARY TAB -->
+
+<div id="editModal" class="modal">
+  <div class="modal-content dash-content">
+    <div class="modal-header"><span>EDIT A SUBMISSION</span><button onclick="closeEditPicker()">&times;</button></div>
+    <div class="modal-body" id="editBody"></div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeEditPicker()">CLOSE</button></div>
+  </div>
+</div>
+
+<div id="dashModal" class="modal">
+  <div class="modal-content dash-content">
+    <div class="modal-header"><span>NMDR DASHBOARD · HF READINESS</span><button onclick="closeDashboard()">&times;</button></div>
+    <div class="modal-body" id="dashBody"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeDashboard()">CLOSE</button>
+      <button class="btn-confirm" onclick="openDashboard(true)">REFRESH</button>
+    </div>
+  </div>
+</div>
 
 <!-- CONFIRM MODAL -->
 <div id="confirmModal" class="modal">
   <div class="modal-content">
     <div class="modal-header"><span>Confirm Submission</span><button onclick="closeModal()">×</button></div>
-    <div class="modal-body">Are you sure you want to submit this data? You can still edit it afterwards.</div>
+    <div class="modal-body">Submit this data to NMDR? You can edit the record afterwards and submit it again; it updates the same record rather than creating a second one.</div>
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-confirm" onclick="doSubmit()">Submit Data</button>
+      <button class="btn-confirm" onclick="doSubmit()">Submit to NMDR</button>
     </div>
   </div>
 </div>
@@ -560,40 +648,40 @@ const secReporting = [
   {k:"r4",n:"1.2.4",t:"Above-5 or General register",
    q:"Is the Above-5 or General register available?", f:"Can it serve for up to six months?"},
   {k:"r5",n:"1.2.5",t:"MFRHC",
-   q:"Is the Monthly Facility Report for Health Commodities (MFRHC) available?", f:"Can it serve for up to six months?"},
+   q:"Is the MFRHC available?", f:"Can it serve for up to six months?"},
   {k:"r6",n:"1.2.6",t:"Stock card / ICC",
-   q:"Is the Stock card / ICC available?", f:"Can it serve for up to the next supply?"},
+   q:"Is the Stock card / ICC available?", f:"Can it serve for up to six months?"},
   {k:"r7",n:"1.2.7",t:"ITN register",
-   q:"Is the Routine ITN register available?", f:"Can it serve for up to the next supply?"},
+   q:"Is the ITN register available?", f:"Can it serve for up to six months?"},
   {k:"r8",n:"1.2.8",t:"HF1 Morbidity Register",
-   q:"Is the HF1 Morbidity Register available?", f:"Can it serve for up to the next supply?"},
+   q:"Is the HF1 Morbidity Register available?", f:"Can it serve for up to six months?"},
   {k:"r9",n:"1.2.9",t:"HF2 Child Preventive Services form",
-   q:"Is the HF2 Child Preventive Services form available?", f:"Can it serve for up to the next supply?"},
+   q:"Is the HF2 Child Preventive Services form available?", f:"Can it serve for up to six months?"},
   {k:"r10",n:"1.2.10",t:"HF3 Reproductive Health Services form",
-   q:"Is the HF3 Reproductive Health Services form available?", f:"Can it serve for up to the next supply?"},
+   q:"Is the HF3 Reproductive Health Services form available?", f:"Can it serve for up to six months?"},
   {k:"r11",n:"1.2.11",t:"HF4 Community Services form",
-   q:"Is the HF4 Community Services form available?", f:"Can it serve for up to the next supply?"},
+   q:"Is the HF4 Community Services form available?", f:"Can it serve for up to six months?"},
 ];
 const secReference = [
-  {k:"ref1",n:"1.4.1",t:"Most recent malaria treatment guidelines for case management",
+  {k:"ref1",n:"1.3.1",t:"Most recent malaria treatment guidelines for case management",
    q:"Do you have the most recent malaria treatment guidelines for case management?",
    f:"Have you been trained on it?"},
-  {k:"ref2",n:"1.4.2",t:"Most recent algorithms for case management in OPD",
+  {k:"ref2",n:"1.3.2",t:"Most recent algorithms for case management in OPD",
    q:"Do you have the most recent algorithms for case management in OPD?",
    f:"Have you been trained on it?"},
-  {k:"ref3",n:"1.4.3",t:"Most recent job aids on malaria case management",
+  {k:"ref3",n:"1.3.3",t:"Most recent job aids on malaria case management",
    q:"Do you have the most recent job aids on malaria case management?",
    f:"Have you been trained on it?"},
-  {k:"ref4",n:"1.4.4",t:"IV holder",
+  {k:"ref4",n:"1.3.4",t:"IV holder",
    q:"Do you have an IV holder in the health facility?",
    f:"Have you been trained on it?"},
-  {k:"ref5",n:"1.4.5",t:"Updated IMNCI guidelines and chart note for classification of malaria",
+  {k:"ref5",n:"1.3.5",t:"Updated IMNCI guidelines and chart note for classification of malaria",
    q:"Do you have the updated IMNCI guidelines and chart note for classification of malaria?",
    f:"Have you been trained on it?"},
-  {k:"ref6",n:"1.4.6",t:"Most recent IMNCI Chart Booklet",
+  {k:"ref6",n:"1.3.6",t:"Most recent IMNCI Chart Booklet",
    q:"Do you have the most recent IMNCI Chart Booklet for diagnosis and management?",
    f:"Have you been trained on it?"},
-  {k:"ref7",n:"1.4.7",t:"Maternal and child health handbook",
+  {k:"ref7",n:"1.3.7",t:"Maternal and child health handbook",
    q:"Do you have the maternal and child health handbook?",
    f:"Have you been trained on it?"},
 ];
@@ -645,9 +733,9 @@ const secEssential = [
   {k:"e9",n:"3.9",t:"Injectable Diazepam",
    q:"Is Injectable Diazepam available?", u:"ampoules", f:"Will this take you up to the next supply?"},
   {k:"e10",n:"3.10",t:"IV Ringers Lactate",
-   q:"Is IV Ringers Lactate available?", u:"bags", f:"Will this take you up to the next supply?"},
+   q:"Is IV Ringers Lactate available?", u:"bottles", f:"Will this take you up to the next supply?"},
   {k:"e11",n:"3.11",t:"IV Normal Saline",
-   q:"Is IV Normal Saline available?", u:"bags", f:"Will this take you up to the next supply?"},
+   q:"Is IV Normal Saline available?", u:"bottles", f:"Will this take you up to the next supply?"},
 ];
 /* every parent key in sections 2 and 3: a quantity and a next supply follow up */
 const THREE_PART = {};
@@ -655,24 +743,23 @@ secAntimalarial.concat(secEssential).forEach(function(q){ THREE_PART[q.k] = q; }
 
 const secPharmacy = [
   {k:"p1",n:"4.1",t:"Does this facility use mSupply for Inventory Management?",opts:["Yes","No"]},
-  {k:"p3",n:"4.3a",t:"Is the Invoice for the last drug supply available?",opts:["Yes","No"]},
-  {k:"p4",n:"4.3b",t:"Is First to Expire First Out (FEFO) method observed?",opts:["Yes","No"]},
-  {k:"p5",n:"4.4",t:"Can emergency requests be honored within 72hrs?",opts:["Yes","No"]},
+  {k:"p3",n:"4.3",t:"Is the Invoice for the last drug supply available?",opts:["Yes","No"]},
+  {k:"p4",n:"4.4",t:"Is First to Expire First Out (FEFO) method observed?",opts:["Yes","No"]},
+  {k:"p5",n:"4.5",t:"Can emergency requests be honored within 72hrs?",opts:["Yes","No"]},
 ];
 const secPharmacyStorage = ["Ventilation","Security","Dry","Size","None"];
 
 const secTools = [
   {k:"t1",n:"5.1",t:"Is there a thermometer in working order in all the Units?",opts:["Yes","No"],scored:true},
   {k:"t2",n:"5.2",t:"Is there a working scale (both hanging and standing scales)?",opts:["Yes","No"],scored:true},
-  {k:"t3",n:"5.3",t:"Is there a working clinical examination kit?",opts:["Yes","No"],scored:true},
-  {k:"t5",n:"5.5",t:"Is there an IV holder in the health facility?",opts:["Yes","No"],scored:true},
-  {k:"t6",n:"5.6",t:"Are there IMNCI guides for diagnosis and management?",opts:["Yes","No"],scored:true},
-  {k:"t7",n:"5.7",t:"Are coma assessment sheets (Glasgow Coma Scale) available?",opts:["Yes","No"],scored:true},
+  {k:"t3",n:"5.3",t:"Is there a working clinical examination kit?",opts:["Yes","No","Not Applicable"],scored:true},
+  {k:"t5",n:"5.4",t:"Is there an IV holder in the health facility?",opts:["Yes","No"],scored:true},
+  {k:"t7",n:"5.5",t:"Are coma assessment sheets (Glasgow Coma Scale) available?",opts:["Yes","No","Not Applicable"],scored:true},
 ];
 const secToolsCheck = ["BP monitor","Glucometer and strips","Ambu bag","Face mask"];
 
 const secReferral = [
-  {k:"rf1",n:"6.1",t:"Does this health facility have overnight/inpatient beds?",opts:["Yes","No"]},
+  {k:"rf1",n:"6.1",t:"Does this health facility have overnight/inpatient beds?",opts:["Yes","No","Not Applicable"]},
   {k:"rf2",n:"6.2",t:"Does this health facility generally refer patients with Severe Malaria to a higher-level health facility?",opts:["Yes","No"],scored:true},
   {k:"rf4",n:"6.4",t:"Do you have a phone number for the referral health facility?",opts:["Yes","No"],scored:true},
   {k:"rf5",n:"6.5",t:'Do you usually call the referral health facility before sending a severely ill patient?',opts:["Yes","No"],scored:true},
@@ -759,11 +846,11 @@ function renderThreePart(containerId, items){
       ${radioGroup(q.k, ["Yes","No"], 'updateRadio')}
     </div>
     <div class="question-row followup-row" id="row_${q.k}_qty" style="display:none">
-      <div class="question-text"><span class="question-num">${q.n}b</span>How many ${q.u} are available currently?</div>
+      <div class="question-text"><span class="question-num">${q.n}a</span>How many ${q.u} are available currently?</div>
       <input class="form-input" type="number" min="0" step="1" id="qty_${q.k}" placeholder="Type a number" oninput="updateQty('${q.k}', this.value)">
     </div>
     <div class="question-row followup-row" id="row_${q.k}_c" style="display:none">
-      <div class="question-text"><span class="question-num">${q.n}c</span>${q.f}</div>
+      <div class="question-text"><span class="question-num">${q.n}b</span>${q.f}</div>
       ${radioGroup(q.k + 'c', ["Yes","No"], 'updateRadio')}
     </div>`).join('');
 }
@@ -843,21 +930,28 @@ function updateCheckStorage(key, val, el){
 }
 
 // ===================== SCORING =====================
+/* One mark for Yes, one for Not Applicable, none for No. A facility is not
+   marked down for a thing it is not meant to have, and every section keeps a
+   fixed total so two facilities can be compared straight off. */
+function isNA(v){ return v==='Not Applicable' || v==='N/A'; }
+function marks(v){ return (v==='Yes' || v==='Sufficient' || isNA(v)) ? 1 : 0; }
+
 function calcScore(items){
-  let scored=0, total=0;
+  let scored=0, total=0, na=0;
   items.filter(q=>q.scored).forEach(q=>{
     total++;
-    if(ans[q.k]==='Sufficient'||ans[q.k]==='Yes') scored++;
+    if(isNA(ans[q.k])) na++;
+    scored += marks(ans[q.k]);
   });
-  return {scored, total};
+  return {scored, total, na};
 }
 /* 1 point for the first Yes, 1 more for the follow up Yes, 2 per item */
 function calcTwoPart(items){
   let scored=0;
   items.forEach(q=>{
-    if(ans[q.k]==='Yes'){
+    if(marks(ans[q.k])){
       scored++;
-      if(ans[q.k+'b']==='Yes') scored++;
+      if(marks(ans[q.k+'b'])) scored++;
     }
   });
   return {scored, total: items.length*2};
@@ -866,9 +960,9 @@ function calcTwoPart(items){
 function calcThreePart(items){
   let scored=0;
   items.forEach(q=>{
-    if(ans[q.k]==='Yes'){
+    if(marks(ans[q.k])){
       scored++;
-      if(ans[q.k+'c']==='Yes') scored++;
+      if(marks(ans[q.k+'c'])) scored++;
     }
   });
   return {scored, total: items.length*2};
@@ -877,8 +971,11 @@ function toolsScore(){
   // six radio questions plus the four items ticked in 5.4
   return calcScore(secTools).scored + (ans.toolsCheck ? ans.toolsCheck.length : 0);
 }
+/* fixed totals: every scored question counts, whatever the answer */
+function toolsTotal(){ return secTools.filter(q=>q.scored).length + secToolsCheck.length; }
+function referralTotal(){ return secReferral.filter(q=>q.scored).length; }
 function wasteScoreNow(){
-  return (ans.w2==='Yes'?1:0) + (ans.wasteDisposal&&ans.wasteDisposal.length?1:0);
+  return marks(ans.w2) + (ans.wasteDisposal&&ans.wasteDisposal.length?1:0);
 }
 function scoreClass(s,t){ const p=t?s/t:0; return p>=0.95?'good':p>=0.5?'fair':'poor'; }
 
@@ -893,8 +990,8 @@ function updateScores(){
   setBadge('score_reference', calcTwoPart(secReference).scored, 14);
   setBadge('score_antimalarial', calcThreePart(secAntimalarial).scored, 22);
   setBadge('score_essential', calcThreePart(secEssential).scored, 22);
-  setBadge('score_tools', toolsScore(), 10);
-  setBadge('score_referral', calcScore(secReferral).scored, 6);
+  setBadge('score_tools', toolsScore(), toolsTotal());
+  setBadge('score_referral', calcScore(secReferral).scored, referralTotal());
   setBadge('score_waste', wasteScoreNow(), 2);
 }
 
@@ -913,7 +1010,7 @@ function buildPharmacy(){
     }
   });
   html+=`<div class="question-row">
-    <div class="question-text"><span class="question-num">4.3c</span>Is the storage condition optimal? (Select all that apply. None cannot be combined with the others.)</div>
+    <div class="question-text"><span class="question-num">4.6</span>Is the storage condition optimal? (Select all that apply. None cannot be combined with the others.)</div>
     ${checkGroup('storageCondition', secPharmacyStorage,'updateCheckStorage')}
   </div>`;
   c.innerHTML=html;
@@ -927,7 +1024,7 @@ function buildTools(){
     html+=`<div class="question-row"><div class="question-text"><span class="question-num">${q.n}</span>${q.t}</div>${radioGroup(q.k,q.opts,'updateRadio')}</div>`;
   });
   html+=`<div class="question-row">
-    <div class="question-text"><span class="question-num">5.4</span>Are the following available at the health facility? (Select all that apply)</div>
+    <div class="question-text"><span class="question-num">5.6</span>Are the following available at the health facility? (Select all that apply)</div>
     ${checkGroup('toolsCheck', secToolsCheck,'updateCheckTools')}
   </div>`;
   c.innerHTML=html;
@@ -1245,16 +1342,6 @@ function renderActionRows(){
 function updateAction(i,field,val){ if(actionRows[i]) actionRows[i][field]=val; }
 
 // ===================== SUBMIT =====================
-function submitForm(){
-  const d=getDemographics();
-  if(!d.district){ alert("Please select District"); return; }
-  if(!d.chiefdom){ alert("Please select Chiefdom"); return; }
-  if(!d.phu){ alert("Please select Health Facility (PHU)"); return; }
-  if(!d.facility_type){ alert("Please select Health Facility Type"); return; }
-  if(!validateTrainedStaff()) return;
-  document.getElementById('confirmModal').style.display='flex';
-}
-
 /* every staff card the count opened must be complete, trainings included */
 function validateTrainedStaff(){
   const names={ malariaTrain:'malaria case management', hmisTrain:'HMIS' };
@@ -1284,18 +1371,6 @@ function validateTrainedStaff(){
   return true;
 }
 
-function closeModal(){ document.getElementById('confirmModal').style.display='none'; }
-function doSubmit(){
-  closeModal();
-  ans._submitted = new Date().toLocaleString();
-  ans._demographics = getDemographics();
-  ans._malariaTrain = JSON.parse(JSON.stringify(trainStaff.malariaTrain));
-  ans._hmisTrain = JSON.parse(JSON.stringify(trainStaff.hmisTrain));
-  ans._actionRows = JSON.parse(JSON.stringify(actionRows));
-  submitted = true;
-  renderSummary();
-  switchTab('summary');
-}
 function getDemographics(){
   return {
     district: document.getElementById("district").value,
@@ -1318,10 +1393,13 @@ function renderSummary(){
   const scA = calcThreePart(secAntimalarial);
   const scE = calcThreePart(secEssential);
   const scT = toolsScore();
+  const scTtot = toolsTotal();
   const scRf = calcScore(secReferral);
+  const scRfTot = referralTotal();
   const waste = wasteScoreNow();
   const totalScored = scR.scored+scRef.scored+scA.scored+scE.scored+scT+scRf.scored+waste;
-  const totalPossible = 22+14+22+22+10+6+2;
+  // anything answered Not Applicable is out of the total as well as out of the score
+  const totalPossible = 22+14+22+22+scTtot+scRfTot+2;
   const overallPct = Math.round(totalScored/totalPossible*100);
   const overallCls = overallPct>=95?'good':overallPct>=50?'fair':'poor';
 
@@ -1341,10 +1419,17 @@ function renderSummary(){
     ${scoreCard('Reference Material', scRef.scored, 14)}
     ${scoreCard('Antimalarials', scA.scored, 22)}
     ${scoreCard('Essential Drugs', scE.scored, 22)}
-    ${scoreCard('Basic Tools', scT, 10)}
+    ${scoreCard('Basic Tools', scT, scTtot)}
     ${scoreCard('Inpatient & Referral', scRf.scored, 6)}
     ${scoreCard('Waste Mgmt', waste, 2)}
   </div>`;
+
+  const naCount = calcScore(secTools).na + calcScore(secReferral).na;
+  if(naCount){
+    html += `<div class="summary-section"><div class="summary-section-title">Not Applicable</div>` +
+      summaryItem(`${naCount} scored question${naCount===1?'':'s'} answered Not Applicable`,
+                  `Each one scores 1, the same as a Yes, so the facility is not marked down for it`) + '</div>';
+  }
 
   html += `<div class="summary-section">
     <div class="summary-section-title">Facility Demographics</div>
@@ -1355,6 +1440,8 @@ function renderSummary(){
       ${demoItem('Facility Type', demo.facility_type)}
       ${demoItem('Supervisor', demo.supervisor)}
       ${demoItem('Date of Visit', demo.visitdate)}
+      ${demoItem('GPS', (ans._gps && ans._gps.lat) ? (ans._gps.lat + ', ' + ans._gps.lng + ' (about ' + Math.round(Number(ans._gps.accuracy||0)) + ' m)') : 'Not captured')}
+      ${demoItem('Record', (ans._record ? ans._record.id + ' · version ' + ans._record.version : 'Not submitted yet'))}
     </div>
   </div>`;
 
@@ -1362,7 +1449,7 @@ function renderSummary(){
   html += staffSection('1.1.2 Trained on HMIS', ans._hmisTrain||[]);
 
   html += twoPartSection('1.2 Reporting Forms Readiness', secReporting, `${scR.scored}/22`);
-  html += twoPartSection('1.4 Malaria Reference Material', secReference, `${scRef.scored}/14`);
+  html += twoPartSection('1.3 Malaria Reference Material', secReference, `${scRef.scored}/14`);
 
   html += threePartSection('2. Antimalarial Commodities', secAntimalarial, `${scA.scored}/22`);
   html += threePartSection('3. Essential Drugs', secEssential, `${scE.scored}/22`);
@@ -1375,12 +1462,12 @@ function renderSummary(){
   html+=summaryItem('Storage Condition', (ans.storageCondition||[]).join(', ')||'Not given');
   html+='</div>';
 
-  html += `<div class="summary-section"><div class="summary-section-title">5. Basic Tools <span class="badge">${scT}/10</span></div>`;
+  html += `<div class="summary-section"><div class="summary-section-title">5. Basic Tools <span class="badge">${scT}/${scTtot}</span></div>`;
   secTools.forEach(q=>{ html+=summaryItem(q.t, ans[q.k]); });
   html+=summaryItem('Available at facility (5.4)', (ans.toolsCheck||[]).join(', ')||'None ticked');
   html+='</div>';
 
-  html += `<div class="summary-section"><div class="summary-section-title">6. Inpatient Services & Referral <span class="badge">${scRf.scored}/6</span></div>`;
+  html += `<div class="summary-section"><div class="summary-section-title">6. Inpatient Services & Referral <span class="badge">${scRf.scored}/${scRfTot}</span></div>`;
   secReferral.forEach(q=>{ html+=summaryItem(q.t, ans[q.k]); });
   html+=summaryItem('Referral facility level', (ans.referralLevel||[]).join(', ')||'Not given');
   html+=summaryItem('Transport modes', (ans.transportMode||[]).join(', ')||'Not given');
@@ -1427,7 +1514,7 @@ function renderSummary(){
 
   const ar=ans._actionRows||[];
   if(ar.length){
-    html+=`<div class="summary-section"><div class="summary-section-title">18. Action Plan <span class="badge">${ar.length} gap${ar.length===1?'':'s'}</span></div>
+    html+=`<div class="summary-section"><div class="summary-section-title">14. Action Plan <span class="badge">${ar.length} gap${ar.length===1?'':'s'}</span></div>
       <div style="overflow-x:auto;padding:12px;">
         <table class="trainee-table"><thead><tr>
           <th>Gap</th><th>Action</th><th>Responsible</th><th>Timeline</th><th>Status</th>
@@ -1538,8 +1625,667 @@ function init(){
   setStaffCount('hmisTrain', 0);
   setGapCount(0);
   updateScores();
+  loadRecord();
+  renderGps();
+  captureGps(false);
+  renderPending();
+  setTimeout(function(){ flushOutbox(true); }, 1500);
 }
-init();
+/* init() is called at the very foot of this script, once everything it needs
+   has been declared. */
+
+
+/* ==================== NMDR: SUBMIT, QUEUE, EDIT ====================
+   The same machinery as the Facility Profile form, so the two behave alike:
+   works with no signal, queues what cannot go out, syncs by itself, updates a
+   record instead of duplicating it, and refuses an unchanged resubmission.
+   Paste the Apps Script /exec URL for Form B here. */
+var ENDPOINT = "PASTE_YOUR_FORM_B_WEB_APP_EXEC_URL_HERE";
+
+var OUTBOX_KEY = "mocm_outbox_form_b";
+var ARCHIVE_KEY = "mocm_sent_form_b";     // what this phone has submitted, kept for editing
+var RECORD_KEY = "mocm_record_form_b";
+
+var RECORD = { id: null, accepted: 0, hash: null };
+var GPS = { lat: "", lng: "", accuracy: "", taken: "", state: "waiting", note: "" };
+
+function pad2(n){ return (n<10?"0":"")+n; }
+function newRecordId(){
+  var d=new Date();
+  return "FB-" + d.getFullYear()+pad2(d.getMonth()+1)+pad2(d.getDate()) + "-" +
+         pad2(d.getHours())+pad2(d.getMinutes())+pad2(d.getSeconds()) + "-" +
+         Math.random().toString(36).slice(2,7).toUpperCase();
+}
+function loadRecord(){
+  try { var r=JSON.parse(sessionStorage.getItem(RECORD_KEY)); if(r&&r.id) RECORD=r; } catch(e){}
+  if(!RECORD.id){ RECORD={id:newRecordId(),accepted:0,hash:null}; saveRecord(); }
+}
+function saveRecord(){ try{ sessionStorage.setItem(RECORD_KEY, JSON.stringify(RECORD)); }catch(e){} }
+
+/* ---------- GPS ---------- */
+function renderGps(){
+  var el=document.getElementById("gpsPanel");
+  if(!el) return;
+  if(GPS.state==="ok"){
+    el.className="gps-panel good";
+    el.innerHTML='<div class="gps-line">'+GPS.lat+', '+GPS.lng+'</div>'+
+      '<div class="gps-sub">Accurate to about '+Math.round(Number(GPS.accuracy))+' m · read at '+esc(GPS.taken)+'</div>';
+  } else if(GPS.state==="waiting"){
+    el.className="gps-panel";
+    el.innerHTML='<div class="gps-line">Reading the position...</div>'+
+      '<div class="gps-sub">Stand outside or near a window. This takes a few seconds.</div>';
+  } else {
+    el.className="gps-panel bad";
+    el.innerHTML='<div class="gps-line">No position yet</div>'+
+      '<div class="gps-sub">'+esc(GPS.note||"The phone did not give a position.")+
+      ' You can still submit, and the record will say the GPS was not captured.</div>';
+  }
+}
+function captureGps(again){
+  if(!navigator.geolocation){ GPS.state="fail"; GPS.note="This phone does not offer GPS to the browser."; renderGps(); return; }
+  if(again){ GPS.state="waiting"; renderGps(); }
+  navigator.geolocation.getCurrentPosition(function(pos){
+    GPS.lat=pos.coords.latitude.toFixed(6);
+    GPS.lng=pos.coords.longitude.toFixed(6);
+    GPS.accuracy=String(Math.round(pos.coords.accuracy));
+    GPS.taken=new Date().toLocaleString();
+    GPS.state="ok"; GPS.note=""; renderGps();
+  }, function(err){
+    GPS.state="fail";
+    GPS.note = (err&&err.code===1) ? "Location permission was refused for this page."
+      : "The phone could not get a fix ("+((err&&err.message)||"no signal")+").";
+    renderGps();
+  }, { enableHighAccuracy:true, timeout:20000, maximumAge:60000 });
+}
+
+/* ---------- the payload: every question with its own label ---------- */
+function labelledRows(){
+  var out=[];
+  function push(n,label,value){ out.push({ n:n, label:(n?n+" ":"")+label, value:(value===undefined?"":value) }); }
+
+  var d=getDemographics();
+  push("", "District", d.district);
+  push("", "Chiefdom", d.chiefdom);
+  push("", "Health Facility (PHU)", d.phu);
+  push("", "Health Facility Type", d.facility_type);
+  push("", "Supervisor Name", d.supervisor);
+  push("", "Date of Visit", d.visitdate);
+
+  secReporting.forEach(function(q){
+    push(q.n, q.t, ans[q.k]);
+    push(q.n+"b", "Can it serve for up to six months?", ans[q.k+"b"]);
+  });
+  secReference.forEach(function(q){
+    push(q.n, q.t, ans[q.k]);
+    push(q.n+"b", "Have you been trained on it?", ans[q.k+"b"]);
+  });
+  [secAntimalarial, secEssential].forEach(function(list){
+    list.forEach(function(q){
+      push(q.n, q.q, ans[q.k]);
+      push(q.n+"a", "How many "+q.u+" are available currently?", ans[q.k+"_qty"]);
+      push(q.n+"b", q.f, ans[q.k+"c"]);
+    });
+  });
+  secPharmacy.forEach(function(q){ push(q.n, q.t, ans[q.k]); });
+  push("4.5", "Is the storage condition optimal?", (ans.storageCondition||[]).join(", "));
+  secTools.forEach(function(q){ push(q.n, q.t, ans[q.k]); });
+  push("5.4", "Are the following available at the health facility?", (ans.toolsCheck||[]).join(", "));
+  secReferral.forEach(function(q){ push(q.n, q.t, ans[q.k]); });
+  push("6.3", "Level of the referral health facility", (ans.referralLevel||[]).join(", "));
+  push("6.8", "Transport model available", (ans.transportMode||[]).join(", "));
+  push("7.1", "How is medical waste finally disposed of?", (ans.wasteDisposal||[]).join(", "));
+  if(ans.wasteOther) push("7.1", "Other disposal method, specified", ans.wasteOther);
+  secWaste.forEach(function(q){ push(q.n, q.t, ans[q.k]); });
+  issuesList.forEach(function(q){ push(q.n, q.t, ans[q.k]); });
+  push("8", "Intervention type", (ans.interventionType||[]).join(", "));
+  issuesList.forEach(function(q){ push(q.n.replace("8.","9."), "Staff reached: "+q.t, ans["staff_"+q.k]); });
+  secFeedback.forEach(function(q){ push(q.n, q.t, ans[q.k]); });
+  push("11.1", "Additional comments on the observations", ans.comments);
+  push("12.1", "Biggest gap(s) identified during the last HF visit", ans.lastgaps);
+  push("12.2", "Action plan from the previous visit", ans.prevplan);
+  push("12.3", "Were these gaps addressed?", ans.gapaddr);
+  push("13.1", "Biggest gap(s) identified today", ans.todaygaps);
+  push("13.2", "Was immediate feedback provided?", ans.immfeedback);
+  push("13.3", "How was the feedback provided?", (ans.feedbackHow||[]).join(", "));
+  push("14.2", "Supervisor Comments", ans.supcomments);
+  return out;
+}
+
+function scoreBlock(){
+  return {
+    reporting:    { scored: calcTwoPart(secReporting).scored,   total: 22 },
+    reference:    { scored: calcTwoPart(secReference).scored,   total: 14 },
+    antimalarial: { scored: calcThreePart(secAntimalarial).scored, total: 22 },
+    essential:    { scored: calcThreePart(secEssential).scored, total: 22 },
+    tools:        { scored: toolsScore(),                       total: toolsTotal() },
+    referral:     { scored: calcScore(secReferral).scored,      total: referralTotal() },
+    waste:        { scored: wasteScoreNow(),                    total: 2 }
+  };
+}
+
+function getPayload(){
+  var d=getDemographics();
+  var sc=scoreBlock();
+  var totalScored=0, totalPossible=0;
+  Object.keys(sc).forEach(function(k){ totalScored+=sc[k].scored; totalPossible+=sc[k].total; });
+  return {
+    recordId: RECORD.id,
+    revision: RECORD.accepted+1,
+    resubmission: RECORD.accepted>0,
+    submittedAt: new Date().toLocaleString(),
+    submittedBy: d.supervisor,
+    district: d.district, chiefdom: d.chiefdom, phu: d.phu, facility_type: d.facility_type,
+    visit_date: d.visitdate,
+    gps_lat: GPS.lat, gps_lng: GPS.lng, gps_accuracy: GPS.accuracy, gps_taken: GPS.taken,
+    rows: labelledRows(),
+    scores: sc,
+    total_scored: totalScored,
+    total_possible: totalPossible,
+    overall_pct: totalPossible ? Math.round(totalScored/totalPossible*100) : 0,
+    rating: ans.fb2 || "",
+    trainees_malaria: JSON.parse(JSON.stringify(trainStaff.malariaTrain)),
+    trainees_hmis: JSON.parse(JSON.stringify(trainStaff.hmisTrain)),
+    gaps: JSON.parse(JSON.stringify(actionRows))
+  };
+}
+
+function recordFingerprint(p){
+  var parts=[p.district,p.chiefdom,p.phu,p.facility_type,p.visit_date,p.submittedBy];
+  p.rows.forEach(function(r){ parts.push(r.label+"="+r.value); });
+  parts.push(JSON.stringify(p.trainees_malaria));
+  parts.push(JSON.stringify(p.trainees_hmis));
+  parts.push(JSON.stringify(p.gaps));
+  return parts.join("|");   // GPS left out, it drifts on its own
+}
+
+/* ---------- the archive: every assessment this phone submitted, kept on the
+   phone so a past visit can be reopened and corrected with no signal ---------- */
+function archive(){ try{ return JSON.parse(localStorage.getItem(ARCHIVE_KEY))||{}; }catch(e){ return {}; } }
+function archiveSave(p){
+  var all=archive();
+  all[p.recordId]={ payload:p, savedAt:new Date().toLocaleString(), version:p.revision,
+                    phu:p.phu, chiefdom:p.chiefdom, visit_date:p.visit_date, pct:p.overall_pct };
+  try{ localStorage.setItem(ARCHIVE_KEY, JSON.stringify(all)); }catch(e){}
+}
+function archiveList(){
+  var all=archive();
+  return Object.keys(all).map(function(id){
+    var it=all[id];
+    return { recordId:id, version:it.version, savedAt:it.savedAt, phu:it.phu,
+             chiefdom:it.chiefdom, visitDate:it.visit_date, pct:it.pct };
+  }).sort(function(a,b){ return a.recordId<b.recordId?1:-1; });
+}
+
+/* ---------- the outbox ---------- */
+function outbox(){ try{ return JSON.parse(localStorage.getItem(OUTBOX_KEY))||[]; }catch(e){ return []; } }
+function saveOutbox(list){ try{ localStorage.setItem(OUTBOX_KEY, JSON.stringify(list)); }catch(e){} renderPending(); }
+function queueSubmission(p){
+  var list=outbox().filter(function(i){ return i.payload.recordId!==p.recordId; });
+  list.push({ payload:p, queuedAt:new Date().toLocaleString() });
+  saveOutbox(list);
+}
+function renderPending(){
+  var el=document.getElementById("pendingPanel");
+  if(!el) return;
+  var list=outbox();
+  if(!list.length){ el.className="pending-panel"; el.innerHTML=""; return; }
+  el.className="pending-panel on";
+  el.innerHTML='<div class="pending-head">'+list.length+(list.length===1?" record is":" records are")+
+    " on this phone and not yet in NMDR. "+(navigator.onLine?"Sending now.":"They go by themselves once there is a signal.")+'</div>'+
+    list.map(function(i){
+      var p=i.payload;
+      return '<div class="pend-row"><div class="pend-main">'+esc(p.phu||"Facility not given")+'</div>'+
+        '<div class="pend-sub">Visit '+esc(p.visit_date||"not given")+' · version '+p.revision+' · queued '+esc(i.queuedAt)+'</div>'+
+        '<div class="pend-sub">'+esc(p.recordId)+'</div></div>';
+    }).join('')+
+    '<div class="pend-actions"><button class="btn-tool" onclick="flushOutbox(false)">SEND NOW</button>'+
+    '<button class="btn-tool" onclick="discardPending()">DISCARD</button></div>';
+}
+function discardPending(){
+  var n=outbox().length;
+  if(!n) return;
+  if(!confirm("Throw away "+n+(n===1?" record":" records")+" that never reached NMDR?\n\nThis cannot be undone.")) return;
+  saveOutbox([]);
+}
+function postRecord(p){
+  return fetch(ENDPOINT,{ method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(p) })
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      if(!res||!res.ok) throw new Error((res&&res.error)?res.error:"NMDR rejected the submission.");
+      return res;
+    });
+}
+function serverVersions(){
+  if(!navigator.onLine) return Promise.resolve(null);
+  return fetch(ENDPOINT+"?action=list&t="+Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      if(!res||!res.ok) return null;
+      var map={};
+      (res.records||[]).forEach(function(r){ map[r.recordId]=Number(r.version)||0; });
+      return map;
+    }).catch(function(){ return null; });
+}
+var flushing=false;
+function flushOutbox(quiet){
+  if(flushing||!outbox().length||!navigator.onLine) return Promise.resolve();
+  flushing=true;
+  var sent=0, skipped=0;
+  return serverVersions().then(function(have){
+    function step(){
+      var list=outbox();
+      if(!list.length) return Promise.resolve(true);
+      var item=list[0], id=item.payload.recordId;
+      if(have && have[id]!==undefined && have[id]>=item.payload.revision){
+        skipped++; saveOutbox(outbox().slice(1)); return step();
+      }
+      return postRecord(item.payload)
+        .then(function(){ sent++; saveOutbox(outbox().slice(1)); return step(); })
+        .catch(function(){ return false; });
+    }
+    return step();
+  }).then(function(allSent){
+    flushing=false; renderPending();
+    if(!quiet||(allSent&&(sent||skipped))){
+      var bits=[];
+      if(sent) bits.push(sent+(sent===1?" record":" records")+" sent to NMDR");
+      if(skipped) bits.push(skipped+(skipped===1?" was":" were")+" already there, so not sent again");
+      sendStatus(allSent?"good":"working", allSent
+        ? (bits.length?bits.join(", ")+". Nothing is waiting now.":"Nothing was waiting.")
+        : (bits.length?bits.join(", ")+". ":"")+"Some records are still waiting. They will try again by themselves.");
+    }
+  });
+}
+window.addEventListener("online", function(){ flushOutbox(true); });
+setInterval(function(){ flushOutbox(true); }, 60000);
+
+/* ---------- status strip ---------- */
+function sendStatus(kind, text){
+  var el=document.getElementById("sendStatus");
+  if(!el) return;
+  el.className="send-status "+kind;
+  el.innerHTML=text;
+}
+function toolStatus(kind, text){
+  var el=document.getElementById("toolStatus");
+  if(!el) return;
+  el.className="tool-status "+(kind||"");
+  el.textContent=text||"";
+}
+
+/* ---------- submit ---------- */
+function readyToSubmit(){
+  if(typeof validateAllQuestions==="function" && !validateAllQuestions()) return false;
+  var d=getDemographics();
+  if(!d.district){ alert("Please select District"); return false; }
+  if(!d.chiefdom){ alert("Please select Chiefdom"); return false; }
+  if(!d.phu){ alert("Please select Health Facility (PHU)"); return false; }
+  if(!d.facility_type){ alert("Please select Health Facility Type"); return false; }
+  if(!validateTrainedStaff()) return false;
+  return true;
+}
+
+function submitForm(){
+  if(!readyToSubmit()) return;
+  document.getElementById('confirmModal').style.display='flex';
+}
+function closeModal(){ document.getElementById('confirmModal').style.display='none'; }
+
+function doSubmit(){
+  closeModal();
+  if(!readyToSubmit()) return;
+  if(!ENDPOINT || ENDPOINT.indexOf("http")!==0){
+    sendStatus("bad","This copy of the form has no NMDR address yet. Give it to the ICF-SL team before using it in the field.");
+    renderSummaryNow();
+    return;
+  }
+
+  var p=getPayload();
+  var fingerprint=recordFingerprint(p);
+  if(RECORD.accepted>0 && RECORD.hash && fingerprint===RECORD.hash){
+    sendStatus("good","<b>No changes made.</b> This data is already submitted to NMDR as "+esc(RECORD.id)+
+      ", version "+RECORD.accepted+".<br>Edit something first, or start a new entry.");
+    switchTab('summary');
+    return;
+  }
+  try {
+    var u=JSON.parse(sessionStorage.getItem("mocm_user"));
+    if(u) p.signedInAs=u.name+" ("+u.username+")";
+  } catch(e){}
+
+  sendStatus("working","Submitting data to NMDR. Keep this page open.");
+  switchTab('summary');
+  renderSummaryNow();
+
+  if(!navigator.onLine){
+    queueSubmission(p);
+    accepted(null,true,fingerprint,p);
+    return;
+  }
+  postRecord(p)
+    .then(function(res){ accepted(res,false,fingerprint,p); })
+    .catch(function(err){
+      queueSubmission(p);
+      accepted(null,true,fingerprint,p);
+      sendStatus("working","<b>Queued.</b> NMDR could not be reached ("+esc(err.message)+
+        "). Nothing is lost: it is held on this phone and goes out by itself once there is a signal.");
+    });
+}
+
+function accepted(res, queued, fingerprint, p){
+  var version=RECORD.accepted+1, id=RECORD.id;
+  RECORD.accepted=version; RECORD.hash=fingerprint; saveRecord();
+  if(p){ p.revision=version; archiveSave(p); }   // kept on the phone for editing
+  ans._submitted=new Date().toLocaleString();
+  ans._record={ id:id, version:version };
+  renderSummaryNow();
+
+  var verb=version>1?"Resubmitted":"Submitted";
+  sendStatus(queued?"working":"good",
+    "<b>"+verb+(queued?" and queued":"")+" to NMDR.</b> "+
+    (queued ? "Held in this phone's outbox. It goes to NMDR by itself once there is a signal."
+            : "Reference "+esc((res&&res.reference)||id)+". The summary and its PDF have been emailed.")+
+    "<br>"+esc(id)+", version "+version+". Press NEW ENTRY when you are ready for the next facility.");
+}
+
+/* ---------- clear for the next facility ---------- */
+function newEntry(){
+  if(!confirm("Clear the entry fields and start the next facility?\n\nOnly what is on the screen is cleared. Assessments already submitted from this phone stay on it, and anything waiting in the outbox is still sent.")) return;
+  location.reload();      // the fields are rebuilt empty; the archive and the outbox live in localStorage and are untouched
+}
+
+/* Form B already draws its own summary tab; this fills in what it needs */
+function renderSummaryNow(){
+  ans._demographics = getDemographics();
+  ans._malariaTrain = JSON.parse(JSON.stringify(trainStaff.malariaTrain));
+  ans._hmisTrain = JSON.parse(JSON.stringify(trainStaff.hmisTrain));
+  ans._actionRows = JSON.parse(JSON.stringify(actionRows));
+  ans._gps = { lat:GPS.lat, lng:GPS.lng, accuracy:GPS.accuracy, taken:GPS.taken };
+  submitted = true;
+  renderSummary();
+}
+
+
+/* ==================== DOWNLOAD, DASHBOARD, EDIT ====================
+   Same three tools as the Facility Profile form. The dashboard and the CSV
+   fallback read a de-identified pull; the Excel download is the whole file. */
+var NMDR_CACHE = null;
+
+function pullData(force){
+  if(NMDR_CACHE && !force) return Promise.resolve(NMDR_CACHE);
+  if(!navigator.onLine) return Promise.reject(new Error("No signal. This needs NMDR."));
+  return fetch(ENDPOINT+"?action=data&t="+Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      if(!res||!res.ok) throw new Error((res&&res.error)?res.error:"NMDR did not return the data.");
+      NMDR_CACHE=res; return res;
+    });
+}
+function csvCell(v){ var s=(v===undefined||v===null)?"":String(v); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
+function toCsv(tab){ return [tab.headers].concat(tab.rows).map(function(r){ return r.map(csvCell).join(","); }).join("\r\n"); }
+function saveFile(name, mime, data, isB64){
+  var blob;
+  if(isB64){
+    var bin=atob(data), bytes=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+    blob=new Blob([bytes],{type:mime});
+  } else {
+    blob=new Blob(["\ufeff"+data],{type:mime});
+  }
+  var url=URL.createObjectURL(blob), a=document.createElement("a");
+  a.href=url; a.download=name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 6000);
+}
+function downloadData(){
+  if(!navigator.onLine){ toolStatus("bad","No signal. The download needs NMDR."); return; }
+  toolStatus("on","Pulling the whole file from NMDR...");
+  fetch(ENDPOINT+"?action=export&t="+Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      if(!res||!res.ok||!res.b64) throw new Error((res&&res.error)?res.error:"The workbook did not come through.");
+      saveFile(res.filename,res.mime,res.b64,true);
+      toolStatus("on","Downloaded the whole file, "+(res.sheets||[]).length+" sheets: "+(res.sheets||[]).join(", ")+".");
+    })
+    .catch(function(err){
+      toolStatus("on","The Excel export did not work ("+err.message+"). Falling back to one CSV per sheet...");
+      pullData(true).then(function(res){
+        var stamp=new Date().toISOString().slice(0,10), n=0;
+        Object.keys(res.tabs||{}).forEach(function(name){
+          var tab=res.tabs[name];
+          if(!tab||!tab.rows.length) return;
+          var file="nmdr-"+name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+"-"+stamp+".csv";
+          setTimeout(function(){ saveFile(file,"text/csv;charset=utf-8",toCsv(tab),false); }, n*800);
+          n++;
+        });
+        toolStatus(n?"on":"bad", n ? n+(n===1?" sheet":" sheets")+" downloading as CSV." : "There is nothing in NMDR to download yet.");
+      }).catch(function(e){ toolStatus("bad","Download failed: "+e.message); });
+    });
+}
+
+/* ---------- edit a past submission ---------- */
+var EDIT_LIST=[];
+function openEditPicker(){
+  document.getElementById("editModal").style.display="flex";
+  var body=document.getElementById("editBody");
+  var rows=archiveList();
+  if(!rows.length){
+    body.innerHTML='<div class="dash-empty">Nothing has been submitted from this phone yet. '+
+      'Assessments you submit here are kept on the phone so you can reopen and correct them, with or without a signal.</div>';
+    return;
+  }
+  body.innerHTML='<div class="dash-note" style="margin:0 0 12px;">Assessments submitted from this phone. '+
+    'Reopening one is offline work, nothing is read back from the server.</div>'+
+    '<input class="form-input" type="text" placeholder="Filter by facility, chiefdom or date" '+
+    'oninput="filterEditList(this.value)" style="margin-bottom:12px;"><div id="editRows"></div>';
+  EDIT_LIST=rows;
+  filterEditList("");
+}
+function closeEditPicker(){ document.getElementById("editModal").style.display="none"; }
+function filterEditList(term){
+  var t=String(term||"").toLowerCase();
+  var rows=EDIT_LIST.filter(function(r){ return !t || (r.phu+" "+r.chiefdom+" "+r.visitDate+" "+r.recordId).toLowerCase().indexOf(t)>-1; });
+  var host=document.getElementById("editRows");
+  if(!rows.length){ host.innerHTML='<div class="dash-empty">Nothing matches that.</div>'; return; }
+  host.innerHTML=rows.map(function(r){
+    return '<div class="rec-row" onclick="loadSubmission(\''+esc(r.recordId)+'\')">'+
+      '<div class="rec-main">'+esc(r.phu||"Facility not given")+'</div>'+
+      '<div class="rec-sub">'+esc(r.chiefdom||"")+' · visit '+esc(r.visitDate||"not given")+
+      ' · version '+r.version+(r.pct!==undefined?' · '+r.pct+'%':'')+'</div>'+
+      '<div class="rec-sub">'+esc(r.recordId)+' · submitted '+esc(r.savedAt||"")+'</div></div>';
+  }).join('');
+}
+function loadSubmission(id){
+  var item=archive()[id];
+  if(!item){ document.getElementById("editBody").innerHTML='<div class="dash-empty">That assessment is no longer on this phone.</div>'; return; }
+  applyRecord(item.payload);
+  closeEditPicker();
+  switchTab('entry');
+  sendStatus("working","<b>Editing "+esc(id)+"</b>, version "+item.version+", "+esc(item.phu||"")+"."+
+    "<br>This is the copy kept on this phone, so you can correct it with no signal. "+
+    "Submitting sends version "+(item.version+1)+" and updates that same record.");
+  window.scrollTo(0,0);
+}
+
+/* put a record back on the screen. The answers come back keyed by their own
+   question number, so a renumbering never silently drops one. */
+function applyRecord(rec){
+  RECORD={ id:rec.recordId, accepted:Number(rec.revision||rec.version)||1, hash:null };
+  saveRecord();
+
+  document.getElementById("district").value=rec.district||"Bo"; updateChiefdoms();
+  if(rec.chiefdom){ document.getElementById("chiefdom").value=rec.chiefdom; updatePHUs(); }
+  if(rec.phu){ document.getElementById("phu").value=rec.phu; updateFacilityType(); }
+  document.getElementById("supervisor").value=rec.submittedBy||"";
+  document.getElementById("visitdate").value=rec.visit_date||"";
+
+  if(rec.gps_lat && rec.gps_lng){
+    GPS={ lat:String(rec.gps_lat), lng:String(rec.gps_lng), accuracy:String(rec.gps_accuracy||""),
+          taken:String(rec.gps_taken||""), state:"ok", note:"" };
+    renderGps();
+  }
+
+  // answers by question number, matched against what the form renders now
+  var byNumber={};
+  (rec.rows||[]).forEach(function(r){ byNumber[String(r.n)]=r.value; });
+  function put(key, num){
+    var v=byNumber[num];
+    if(v===undefined||v==="") return;
+    ans[key]=v;
+  }
+  secReporting.forEach(function(q){ put(q.k,q.n); put(q.k+'b',q.n+'b'); });
+  secReference.forEach(function(q){ put(q.k,q.n); put(q.k+'b',q.n+'b'); });
+  [secAntimalarial,secEssential].forEach(function(list){
+    list.forEach(function(q){ put(q.k,q.n); put(q.k+'_qty',q.n+'a'); put(q.k+'c',q.n+'b'); });
+  });
+  secPharmacy.forEach(function(q){ put(q.k,q.n); });
+  secTools.forEach(function(q){ put(q.k,q.n); });
+  secReferral.forEach(function(q){ put(q.k,q.n); });
+  secWaste.forEach(function(q){ put(q.k,q.n); });
+  issuesList.forEach(function(q){ put(q.k,q.n); put('staff_'+q.k, q.n.replace('8.','9.')); });
+  secFeedback.forEach(function(q){ put(q.k,q.n); });
+  ['comments|11.1','lastgaps|12.1','prevplan|12.2','gapaddr|12.3','todaygaps|13.1',
+   'immfeedback|13.2','supcomments|14.2'].forEach(function(pair){
+    var bits=pair.split('|'); put(bits[0],bits[1]);
+  });
+  ['storageCondition|4.5','toolsCheck|5.4','referralLevel|6.3','transportMode|6.8',
+   'wasteDisposal|7.1','interventionType|8','feedbackHow|13.3'].forEach(function(pair){
+    var bits=pair.split('|'), v=byNumber[bits[1]];
+    if(v) ans[bits[0]]=String(v).split(',').map(function(x){ return x.trim(); }).filter(Boolean);
+  });
+
+  trainStaff.malariaTrain=(rec.trainees_malaria||[]);
+  trainStaff.hmisTrain=(rec.trainees_hmis||[]);
+  ['malariaTrain','hmisTrain'].forEach(function(tn){
+    var box=document.getElementById(tn+'_count');
+    if(box){ box.value=String(trainStaff[tn].length); }   // 0 is an answer, not a blank
+    setStaffCount(tn, trainStaff[tn].length);
+  });
+  actionRows=(rec.gaps||[]);
+  var gb=document.getElementById('gap_count');
+  if(gb){ gb.value=String(actionRows.length); }           // 0 gaps is an answer too
+  setGapCount(actionRows.length);
+
+  redrawAllAnswers();
+  RECORD.hash=recordFingerprint(getPayload());
+  saveRecord();
+}
+
+/* the radios and boxes are rebuilt, so paint the stored answers back on */
+function redrawAllAnswers(){
+  Object.keys(ans).forEach(function(key){
+    if(key.charAt(0)==='_') return;
+    var v=ans[key];
+    if(Array.isArray(v)){
+      var g=document.getElementById('checkgroup_'+key);
+      if(g) g.querySelectorAll('input[type=checkbox]').forEach(function(b){
+        b.checked = v.indexOf(b.value)>-1;
+        b.closest('.check-option').classList.toggle('selected', b.checked);
+      });
+      return;
+    }
+    var grp=document.getElementById('group_'+key);
+    if(grp){
+      var hit=grp.querySelector('input[value="'+String(v).replace(/"/g,'&quot;')+'"]');
+      if(hit){ hit.checked=true; updateRadio(key, String(v), hit); }
+      return;
+    }
+    var radios=document.querySelectorAll('input[type=radio][name="'+key+'"]');
+    if(radios.length){
+      radios.forEach(function(r){ if(r.value===String(v)){ r.checked=true; updateRadio(key,String(v),r); } });
+      return;
+    }
+    var qty=document.getElementById('qty_'+key.replace('_qty',''));
+    if(key.indexOf('_qty')>-1 && qty){ qty.value=v; }
+    var box=document.getElementById('q_'+key);
+    if(box) box.value=v;
+    var reach=document.getElementById('reach_'+key.replace('staff_',''));
+    if(reach) reach.value=v;
+  });
+  updateScores();
+}
+
+/* ---------- dashboard ---------- */
+function openDashboard(force){
+  document.getElementById("dashModal").style.display="flex";
+  document.getElementById("dashBody").innerHTML='<div class="dash-empty">Reading the data from NMDR...</div>';
+  pullData(force).then(function(res){
+    document.getElementById("dashBody").innerHTML=dashboardHtml(res);
+  }).catch(function(err){
+    document.getElementById("dashBody").innerHTML='<div class="dash-empty">'+esc(err.message)+'</div>';
+  });
+}
+function closeDashboard(){ document.getElementById("dashModal").style.display="none"; }
+
+function asObjects(tab){
+  if(!tab||!tab.headers) return [];
+  return tab.rows.map(function(row){
+    var o={}; tab.headers.forEach(function(h,i){ o[h]=row[i]; }); return o;
+  });
+}
+function pick(o, needle){
+  for(var k in o){ if(k.toLowerCase().indexOf(needle.toLowerCase())>-1) return o[k]; }
+  return "";
+}
+function tally(list, fn){
+  var map={};
+  list.forEach(function(x){ var k=String(fn(x)||"").trim()||"Not given"; map[k]=(map[k]||0)+1; });
+  return Object.keys(map).map(function(k){ return {k:k,n:map[k]}; })
+    .sort(function(a,b){ return b.n-a.n || a.k.localeCompare(b.k); });
+}
+function bars(rows,total,tone){
+  if(!rows.length) return '<div class="dash-note">Nothing recorded yet.</div>';
+  var max=rows[0].n||1;
+  return rows.map(function(r){
+    var pct=Math.round(r.n/(total||max)*100);
+    return '<div class="bar-row"><div class="bar-top"><span>'+esc(r.k)+'</span>'+
+      '<span class="bar-num">'+r.n+(total?' · '+pct+'%':'')+'</span></div>'+
+      '<div class="bar-track"><div class="bar-fill '+(tone||'')+'" style="width:'+Math.max(2,Math.round(r.n/max*100))+'%"></div></div></div>';
+  }).join('');
+}
+function block(t,inner){ return '<div class="dash-block"><div class="dash-title">'+t+'</div>'+inner+'</div>'; }
+function kpi(v,l){ return '<div class="kpi"><div class="kpi-val">'+v+'</div><div class="kpi-lbl">'+l+'</div></div>'; }
+function nums(l){ return l.map(Number).filter(function(n){ return !isNaN(n); }); }
+function mean(l){ return l.length ? l.reduce(function(a,b){ return a+b; },0)/l.length : 0; }
+
+function dashboardHtml(res){
+  var main=null;
+  Object.keys(res.tabs||{}).forEach(function(n){ if(/^Form B$/i.test(n)) main=res.tabs[n]; });
+  var visits=asObjects(main);
+  if(!visits.length) return '<div class="dash-empty">No assessment has reached NMDR yet.</div>';
+
+  var facilities={};
+  visits.forEach(function(v){ var f=pick(v,'Health Facility (PHU)'); if(f) facilities[f]=1; });
+  var pct=nums(visits.map(function(v){ return pick(v,'Overall %'); }));
+  var resub=visits.filter(function(v){ return String(v['Status'])==='Resubmitted'; }).length;
+
+  var h='<div class="dash-kpis">'+
+    kpi(visits.length,'Assessments in NMDR')+
+    kpi(Object.keys(facilities).length+' of 10','Pilot facilities covered')+
+    kpi(pct.length?Math.round(mean(pct))+'%':'0%','Mean readiness score')+
+    kpi(resub,'Records resubmitted')+'</div>';
+
+  h+=block('Readiness score by facility',
+    bars(visits.map(function(v){ return { k:String(pick(v,'Health Facility (PHU)')||'Not given'),
+      n:Number(pick(v,'Overall %'))||0 }; }).sort(function(a,b){ return b.n-a.n; }), 100, 'green'));
+
+  ['Reporting Forms','Reference Material','Antimalarials','Essential Drugs','Basic Tools','Referral','Waste'].forEach(function(name){
+    var vals=nums(visits.map(function(v){ return pick(v, name+' %'); }));
+    if(!vals.length) return;
+    h+=block(name+' , mean '+Math.round(mean(vals))+'%',
+      bars(visits.map(function(v){ return { k:String(pick(v,'Health Facility (PHU)')||'Not given'),
+        n:Number(pick(v,name+' %'))||0 }; }).sort(function(a,b){ return b.n-a.n; }), 100));
+  });
+
+  h+=block('Assessments by chiefdom', bars(tally(visits,function(v){ return pick(v,'Chiefdom'); }), visits.length));
+  h+=block('Assessments by facility type', bars(tally(visits,function(v){ return pick(v,'Health Facility Type'); }), visits.length, 'gold'));
+  h+=block('Supervisor rating given', bars(tally(visits,function(v){ return pick(v,'10.2'); }), visits.length));
+  h+=block('Assessments by date', bars(tally(visits,function(v){ return String(pick(v,'Date of Visit')).slice(0,10); }), 0, 'gold'));
+  h+=block('Data quality',
+    '<div class="dash-note">Pulled '+esc(res.pulled||'')+'. Names and phone numbers stay in NMDR and never reach this screen, '+
+    'so this dashboard counts scores and categories only.</div>');
+  return h;
+}
 
 /* ==================== REQUIRE EVERY QUESTION ====================
    Set REQUIRE_ALL to false to go back to checking only the key fields. */
@@ -1808,6 +2554,9 @@ var USERS = [
   else schedule();
   new MutationObserver(schedule).observe(document.body, { childList:true, subtree:true });
 })();
+
+/* everything is declared by this point, so the form can start */
+init();
 
 </script>
 </body>
