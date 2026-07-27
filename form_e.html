@@ -1473,7 +1473,10 @@ var ROW_RULES = [
   { key:'sp_administered', when:function(){ return ans.sulphur_med === 'Yes'; } },
   { key:'correct_dose',    when:function(){ return ans.sulphur_med === 'No'; } },
   // the ITN follow-up only when no net was given today
+  // 5.2 only when no net was handed over today, since already having one is the reason
   { key:'itn_received',    when:function(){ return ans.itn_given === 'No'; } },
+  // 5.3 only when the child did not get one at Penta 3 either
+  { key:'itn_reasons',     when:function(){ return ans.itn_given === 'No' && ans.itn_received === 'No'; } },
   // the reasons only when no feedback was given
   { key:'fb_reasons',      when:function(){ return ans.feedback_provided === 'No'; } }
 ];
@@ -1503,6 +1506,7 @@ function clearAnswer(key, row){
   if(Array.isArray(ans[key])) ans[key] = [];
   else delete ans[key];
   if(key === 'fb_reasons') delete ans.fb_other;
+  if(key === 'itn_reasons') delete ans.itn_other;
   if(!row) return;
   row.querySelectorAll('input[type=radio], input[type=checkbox]').forEach(function(i){
     i.checked = false;
