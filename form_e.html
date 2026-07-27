@@ -31,8 +31,8 @@ body {
   margin: 0;
   padding: 0;
 }
-.tab-nav { display: flex; flex-wrap: wrap; background: var(--blue-dark); position: sticky; top: 0; z-index: 200; }
-.tab-btn { flex: 1 1 33%; padding: 12px 6px; color: rgba(255,255,255,.75); font-weight: 700; font-size: 11.5px; border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; font-family: inherit; display: inline-flex; align-items: center; justify-content: center; }
+.tab-nav { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); background:var(--blue-dark); position:sticky; top:0; z-index:300; box-shadow:0 2px 8px rgba(0,0,0,.2); width:100%; box-sizing:border-box;  }
+.tab-btn { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; min-width:0; padding:9px 3px; color:rgba(255,255,255,.78); font-weight:700; font-size:9.5px; letter-spacing:.2px; line-height:1.15; text-align:center; white-space:normal; overflow-wrap:anywhere; border:none; background:none; cursor:pointer; border-bottom:3px solid transparent; font-family:inherit; box-sizing:border-box; }
 .tab-btn.active { color: white; border-bottom: 3px solid var(--gold); background: rgba(255,255,255,0.08); }
 .tab-page { display: none; width: 100%; padding-bottom: 20px; }
 .tab-page.active { display: block; }
@@ -57,7 +57,7 @@ body {
 .question-row { margin-bottom: 20px; }
 .question-text { font-weight: 600; font-size: 14px; margin-bottom: 10px; color: var(--text-dark); }
 .required-star { color: var(--red); margin-left: 4px; }
-.icn { width:15px; height:15px; flex:0 0 auto; margin-right:6px; }
+.icn { width:15px; height:15px; flex:0 0 auto; }
 .question-num { color: var(--blue); font-weight: 700; margin-right: 6px; }
 .question-num::after { content: ' '; }
 .member-tag { color: var(--text-light); font-size: 11px; font-weight: 600; }
@@ -65,7 +65,7 @@ body {
 .count-note { display:none; margin-top:8px; background:#fdecea; border:1px solid #f5c2bd; border-radius:10px; padding:9px 12px; color:var(--red); font-size:12px; font-weight:600; }
 .form-input.bad-entry { border-color:var(--red); box-shadow:0 0 0 3px rgba(220,53,69,.12); }
 .btn-tool { padding:11px 14px; background:#fff; color:var(--blue-dark); border:1.5px solid var(--blue); border-radius:40px; font-weight:700; font-size:12.5px; cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; justify-content:center; }
-.tool-status { display:none; margin:0; padding:10px 16px; font-size:12.5px; font-weight:600; background:var(--soft-bg); border-bottom:1px solid var(--border); }
+.tool-status { display:none; margin:0; padding:11px 16px; font-size:13px; font-weight:600; background:var(--soft-bg); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:250; line-height:1.4; }
 .tool-status.on { display:block; color:var(--blue-dark); }
 .tool-status.bad { display:block; color:var(--red); }
 .send-status { display:none; margin:12px 16px 0; padding:11px 14px; border-radius:12px; font-size:13px; font-weight:600; line-height:1.45; }
@@ -143,6 +143,16 @@ body {
 .btn-cancel { flex: 1; padding: 12px; background: #f0f2f5; border: 1px solid var(--border); border-radius: 40px; font-weight: 600; cursor: pointer; }
 .btn-confirm { flex: 1; padding: 12px; background: var(--green); color: white; border: none; border-radius: 40px; font-weight: 600; cursor: pointer; }
 .no-data { text-align: center; padding: 40px; color: var(--text-light); }
+
+
+@media (max-width: 340px) {
+  .tab-nav { grid-template-columns:repeat(3, minmax(0, 1fr)); }
+  .tab-btn { font-size:9px; padding:8px 2px; }
+}
+@media (min-width: 620px) {
+  .tab-nav { grid-template-columns:repeat(8, minmax(0, 1fr)); }
+  .tab-btn { font-size:10.5px; }
+}
 </style>
 </head>
 <body>
@@ -150,6 +160,8 @@ body {
 <div class="tab-nav">
   <button class="tab-btn active" data-tab="entry" onclick="switchTab('entry')"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6v3H9z"/><path d="M8 5H6a1 1 0 00-1 1v13a1 1 0 001 1h12a1 1 0 001-1V6a1 1 0 00-1-1h-2"/><path d="M9 12h6"/><path d="M9 16h4"/></svg>DATA ENTRY</button>
   <button class="tab-btn" data-tab="summary" onclick="switchTab('summary')"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12"/><path d="M8 12h12"/><path d="M8 18h12"/><path d="M4 6h.01"/><path d="M4 12h.01"/><path d="M4 18h.01"/></svg>SUMMARY</button>
+  <button class="tab-btn" onclick="saveDraft(false)"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>SAVE DRAFT</button>
+  <button class="tab-btn" data-draft-btn data-label="DRAFTS" onclick="openDrafts()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16a1 1 0 001-1V9a1 1 0 00-1-1h-7l-2-3H4a1 1 0 00-1 1v13a1 1 0 001 1z"/></svg>DRAFTS</button>
   <button class="tab-btn" onclick="downloadData()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>DOWNLOAD</button>
   <button class="tab-btn" onclick="openDashboard()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/></svg>DASHBOARD</button>
   <button class="tab-btn" onclick="openEditPicker()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>EDIT</button>
@@ -181,6 +193,17 @@ body {
     <div class="modal-header"><span>EDIT A SUBMISSION</span><button onclick="closeEditPicker()">&times;</button></div>
     <div class="modal-body" id="editBody"></div>
     <div class="modal-footer"><button class="btn-cancel" onclick="closeEditPicker()">CLOSE</button></div>
+  </div>
+</div>
+
+<div id="draftModal" class="modal">
+  <div class="modal-content dash-content">
+    <div class="modal-header"><span>DRAFTS ON THIS PHONE</span><button onclick="closeDrafts()">&times;</button></div>
+    <div class="modal-body" id="draftBody"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeDrafts()">CLOSE</button>
+      <button class="btn-confirm" onclick="saveDraft(false); closeDrafts();">SAVE THIS ONE</button>
+    </div>
   </div>
 </div>
 
@@ -775,7 +798,9 @@ function archiveList(){
 
 /* ---------- the outbox ---------- */
 function outbox(){ try{ return JSON.parse(localStorage.getItem(OUTBOX_KEY))||[]; }catch(e){ return []; } }
-function saveOutbox(list){ try{ localStorage.setItem(OUTBOX_KEY, JSON.stringify(list)); }catch(e){} renderPending(); }
+function saveOutbox(list){ try{ localStorage.setItem(OUTBOX_KEY, JSON.stringify(list)); }catch(e){} renderPending();
+renderDraftBadge();
+warnIfNoStorage(); }
 function queueSubmission(p){
   var list=outbox().filter(function(i){ return i.payload.recordId!==p.recordId; });
   list.push({ payload:p, queuedAt:new Date().toLocaleString() });
@@ -965,6 +990,7 @@ function accepted(res, queued, fingerprint, p){
   var version=RECORD.accepted+1, id=RECORD.id;
   RECORD.accepted=version; RECORD.hash=fingerprint; saveRecord();
   if(p){ p.revision=version; archiveSave(p); }   // kept on the phone for editing
+  deleteDraft(id);                               // in NMDR now, so the draft is done
   ans._submitted=new Date().toLocaleString();
   ans._record={ id:id, version:version };
   renderSummaryNow();
@@ -1188,7 +1214,7 @@ function redrawAnswers(){
       if(h.indexOf("updateAns('"+key+"'") > -1) f.value = v;
     });
   });
-  updateScores();
+  if (typeof updateScores === "function") updateScores();
 }
 
 /* ---------- dashboard ---------- */
@@ -1550,6 +1576,212 @@ function applySkips(){
   });
 }
 
+
+
+/* ==================== DRAFTS: SAVE AND CONTINUE LATER ====================
+   A draft is the whole entry as it stands, saved on this phone with no
+   validation, so a supervisor can stop half way, start another facility, and
+   come back to it. Drafts live beside the submitted archive and the outbox, and
+   none of them touch the others: starting a new entry never loses a draft.
+   A draft is removed by itself once that record reaches NMDR. */
+
+/* its own escaper, since the forms name theirs differently */
+function draftEsc(v){
+  return String(v === undefined || v === null ? '' : v)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+var BUILD = "2026-07-27e";     // shown in the DRAFTS panel, so you can tell a stale phone
+var DRAFTS_KEY = "mocm_drafts_" + FORM_MARK;
+
+/* Drafts, the outbox and the submitted archive all need this browser's storage.
+   Opening the form as a downloaded file rather than from the portal can leave
+   storage switched off, and then saving looks like it does nothing. Say so once,
+   loudly, instead of failing quietly. */
+function storageWorks(){
+  try {
+    localStorage.setItem('__mocm_probe', '1');
+    localStorage.removeItem('__mocm_probe');
+    return true;
+  } catch (e) { return false; }
+}
+function warnIfNoStorage(){
+  if (storageWorks()) return true;
+  var el = document.getElementById('toolStatus');
+  if (el) {
+    el.className = 'tool-status bad';
+    el.innerHTML = '<b>This phone will not let the form save anything.</b> Drafts, the offline ' +
+      'queue and EDIT A SUBMISSION all need browser storage. Open the form from the portal link ' +
+      'rather than a downloaded copy, and do not use a private or incognito tab.';
+  }
+  return false;
+}
+
+function drafts(){
+  try { return JSON.parse(localStorage.getItem(DRAFTS_KEY)) || {}; }
+  catch (e) { return {}; }
+}
+function writeDrafts(all){
+  try { localStorage.setItem(DRAFTS_KEY, JSON.stringify(all)); } catch (e) {}
+  renderDraftBadge();
+}
+function draftList(){
+  var all = drafts();
+  return Object.keys(all).map(function (id) {
+    var d = all[id];
+    return { recordId: id, savedAt: d.savedAt, phu: d.phu, chiefdom: d.chiefdom,
+             visitDate: d.visitDate, answered: d.answered, accepted: d.accepted || 0 };
+  }).sort(function (a, b) { return a.recordId < b.recordId ? 1 : -1; });
+}
+
+/* what the entry looks like right now, in the same shape a submission uses */
+function draftSnapshot(){
+  try {
+    return (typeof getPayload === 'function') ? getPayload() : getFormData();
+  } catch (e) {
+    return null;                       // a half filled card can throw; nothing to save yet
+  }
+}
+
+/* how many questions are answered, for the draft list */
+function draftAnswered(){
+  var host = document.querySelector('#sections-container') || document.getElementById('pageContainer')
+             || document.getElementById('tab-entry');
+  if (!host) return '';
+  var total = 0, done = 0;
+  host.querySelectorAll('.question-row').forEach(function (row) {
+    if (!row.querySelector('input, select, textarea')) return;
+    if (row.style.display === 'none') return;
+    total++;
+    if (typeof _raRowAnswered === 'function' && _raRowAnswered(row)) done++;
+  });
+  return total ? (done + ' of ' + total + ' answered') : '';
+}
+
+/* a message where the supervisor is actually looking: the strip under the tab
+   bar, which is on screen wherever they have scrolled to */
+function draftSay(kind, html){
+  var el = document.getElementById('toolStatus');
+  if (el) {
+    el.className = 'tool-status ' + (kind === 'bad' ? 'bad' : 'on');
+    el.innerHTML = html;
+    if (el.scrollIntoView) el.scrollIntoView({ block: 'nearest' });
+    clearTimeout(window.__draftMsgTimer);
+    window.__draftMsgTimer = setTimeout(function () {
+      if (el.innerHTML === html) { el.className = 'tool-status'; el.innerHTML = ''; }
+    }, 9000);
+  }
+  if (typeof sendStatus === 'function') sendStatus(kind === 'bad' ? 'bad' : 'good', html);
+}
+
+function saveDraft(quiet){
+  if (!warnIfNoStorage()) return false;
+  var snap = draftSnapshot();
+  if (!snap) {
+    if (!quiet) draftSay("bad", "Nothing could be saved yet. Answer a question or two first.");
+    return false;
+  }
+  var all = drafts();
+  all[RECORD.id] = {
+    payload: snap,
+    accepted: RECORD.accepted || 0,
+    savedAt: new Date().toLocaleString(),
+    phu: snap.phu || '',
+    chiefdom: snap.chiefdom || '',
+    visitDate: snap.visit_date || '',
+    answered: draftAnswered()
+  };
+  writeDrafts(all);
+  if (!quiet) {
+    draftSay("good", "<b>Saved as a draft on this phone.</b> " + draftEsc(draftAnswered()) +
+      ".<br>Press NEW ENTRY to start another facility. Your draft is waiting under DRAFTS, " +
+      "and nothing has been sent to NMDR yet.");
+  }
+  return true;
+}
+
+function deleteDraft(id){
+  var all = drafts();
+  if (all[id]) { delete all[id]; writeDrafts(all); }
+}
+
+/* the count on the DRAFTS button, so an unfinished visit is not forgotten */
+function renderDraftBadge(){
+  var n = draftList().length;
+  document.querySelectorAll('[data-draft-btn]').forEach(function (b) {
+    var label = b.getAttribute('data-label') || 'DRAFTS';
+    b.innerHTML = b.innerHTML.replace(/(<\/svg>)[\s\S]*$/, '$1' + label + (n ? ' (' + n + ')' : ''));
+  });
+}
+
+/* ---------- the picker ---------- */
+function openDrafts(){
+  document.getElementById('draftModal').style.display = 'flex';
+  var body = document.getElementById('draftBody');
+  var rows = draftList();
+  if (!rows.length) {
+    body.innerHTML = '<div class="dash-empty">No drafts on this phone. ' +
+      'Press SAVE DRAFT at any point and the entry is kept here, unsent, until you come back to it.</div>';
+    return;
+  }
+  body.innerHTML = '<div class="dash-note" style="margin:0 0 12px;">Unfinished entries kept on this phone. ' +
+    'Nothing here has been sent to NMDR. Form ' + FORM_MARK + ' · build ' + BUILD + '</div>' + rows.map(function (r) {
+    return '<div class="rec-row">' +
+      '<div class="rec-main">' + draftEsc(r.phu || 'Facility not chosen yet') + '</div>' +
+      '<div class="rec-sub">' + draftEsc(r.chiefdom || '') +
+        (r.visitDate ? ' · visit ' + draftEsc(r.visitDate) : '') +
+        (r.answered ? ' · ' + draftEsc(r.answered) : '') + '</div>' +
+      '<div class="rec-sub">' + draftEsc(r.recordId) + ' · saved ' + draftEsc(r.savedAt || '') + '</div>' +
+      '<div class="pend-actions" style="padding:10px 0 0;border:none;">' +
+        '<button class="btn-tool" onclick="resumeDraft(\'' + draftEsc(r.recordId) + '\')">CONTINUE</button>' +
+        '<button class="btn-tool" onclick="dropDraft(\'' + draftEsc(r.recordId) + '\')">DELETE</button>' +
+      '</div></div>';
+  }).join('');
+}
+function closeDrafts(){ document.getElementById('draftModal').style.display = 'none'; }
+
+function resumeDraft(id){
+  var d = drafts()[id];
+  if (!d) { openDrafts(); return; }
+
+  /* save whatever is on the screen first, so switching never loses work */
+  if (RECORD.id !== id && anyAnswerYet()) saveDraft(true);
+
+  if (typeof applyRecord === 'function') applyRecord(d.payload);
+  else if (typeof fillFormFrom === 'function') fillFormFrom(d.payload);
+
+  /* a draft that has never been submitted is still a new record, so put the
+     version back to what it was rather than what applyRecord assumed */
+  RECORD = { id: id, accepted: d.accepted || 0, hash: null };
+  saveRecord();
+
+  closeDrafts();
+  if (typeof switchTab === 'function') switchTab('entry');
+  if (typeof applySkips === 'function') applySkips();
+  if (typeof updateProgress === 'function') updateProgress();
+  draftSay("good", "<b>Continuing your draft</b> for " + draftEsc(d.phu || 'this facility') +
+    ", saved " + draftEsc(d.savedAt || '') + ".<br>" + draftEsc(draftAnswered()) +
+    ". Finish it and press SUBMIT DATA, or SAVE DRAFT again to come back later.");
+  window.scrollTo(0, 0);
+}
+
+function dropDraft(id){
+  if (!confirm("Delete this draft?\n\nIt has not been sent to NMDR, so the entry is gone for good.")) return;
+  deleteDraft(id);
+  openDrafts();
+}
+
+/* a quiet save every minute, so a flat battery does not cost the visit */
+setInterval(function () {
+  if (!draftList().length && !anyAnswerYet()) return;
+  if (drafts()[RECORD.id] || anyAnswerYet()) saveDraft(true);
+}, 60000);
+
+function anyAnswerYet(){
+  var a = draftAnswered();
+  var m = a.match(/^(\d+) of/);
+  return m ? Number(m[1]) > 0 : false;
+}
 
 /* ==================== REQUIRE EVERY QUESTION ====================
    Set REQUIRE_ALL to false to go back to checking only the key fields. */
