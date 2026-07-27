@@ -232,6 +232,10 @@ body {
 .summary-section-title { font-weight: 700; font-size: 14px; color: var(--blue); margin: 16px 0 10px 0; padding-bottom: 6px; border-bottom: 2px solid var(--blue); }
 .btn-cancel { flex: 1; padding: 12px; background: #f0f2f5; color: var(--text-dark); border: 1px solid var(--border); border-radius: 40px; font-weight: 600; cursor: pointer; }
 .btn-confirm { flex: 1; padding: 12px; background: var(--blue); color: white; border: none; border-radius: 40px; font-weight: 600; cursor: pointer; }
+.send-status { display:none; margin: 0 20px 4px 20px; padding: 11px 14px; border-radius: 12px; font-size: 13px; font-weight: 600; line-height: 1.45; }
+.send-status.working { display:block; background: var(--soft-bg); border: 1px solid #c9dff2; color: var(--blue-dark); }
+.send-status.good { display:block; background: #d4edda; border: 1px solid #b7dfc1; color: #155724; }
+.send-status.bad { display:block; background: #f8d7da; border: 1px solid #f1b5bb; color: #721c24; }
 .loading-indicator { text-align: center; padding: 20px; color: var(--blue); font-weight: 600; }
 </style>
 </head>
@@ -239,8 +243,13 @@ body {
 
 <div class="page-header">
   <div class="header-logos">
-    <img src="ICF-SL.jpg" class="header-logo" alt="ICF-SL" onerror="this.style.display='none'">
-    <img src="NMCP.png" class="header-logo" alt="NMCP" onerror="this.style.display='none'">
+    <!-- the local file is used when the form sits beside it; otherwise it falls back to the repo copy -->
+    <img src="ICF-SL.jpg" class="header-logo" alt="ICF-SL"
+         data-fallback="https://raw.githubusercontent.com/Informatics-Consultancy-Firm/NMDR-Phone-View/6bb327e58e3fcf17b05c9af591d9ab47425800a7/ICF-SL.jpg"
+         onerror="if(this.dataset.fallback){this.src=this.dataset.fallback;this.removeAttribute('data-fallback');}else{this.style.display='none';}">
+    <img src="NMCP.png" class="header-logo" alt="NMCP"
+         data-fallback="https://raw.githubusercontent.com/Informatics-Consultancy-Firm/NMDR-Phone-View/6bb327e58e3fcf17b05c9af591d9ab47425800a7/NMCP.png"
+         onerror="if(this.dataset.fallback){this.src=this.dataset.fallback;this.removeAttribute('data-fallback');}else{this.style.display='none';}">
   </div>
   <div class="header-org">National Malaria Control Programme, Ministry of Health, Sierra Leone</div>
   <div class="header-title">MOCM/OTSS+ Checklist</div>
@@ -259,7 +268,7 @@ body {
     </select>
   </div>
   <div class="question-row">
-    <div class="question-text">2. Chiefdom / Zone / City <span class="required-star">*</span></div>
+    <div class="question-text">2. Chiefdom <span class="required-star">*</span></div>
     <select class="form-select" id="chiefdomSelect" onchange="updatePHU()" disabled>
       <option value="">Select District first</option>
     </select>
@@ -312,9 +321,9 @@ body {
   <div class="card-body">
     <div class="question-row">
       <div class="question-text">10. Number of supervisors on this visit <span class="required-star">*</span></div>
-      <input class="form-input" id="supervisor_count" type="number" min="1" max="10" step="1" value="1" oninput="onSupervisorCountInput()">
+      <input class="form-input" id="supervisor_count" type="number" min="1" max="10" step="1" placeholder="Type a number" oninput="onSupervisorCountInput()">
       <div class="count-note" id="supervisor_count_note"></div>
-      <div class="count-hint">One card opens for each supervisor. Cards open now: <span id="supervisor_count_echo">1</span>. Every card must be completed.</div>
+      <div class="count-hint" id="supervisor_count_hint">Type the number and one card will open for each supervisor.</div>
     </div>
     <div id="supervisors-container"></div>
   </div>
@@ -326,9 +335,9 @@ body {
   <div class="card-body">
     <div class="question-row">
       <div class="question-text">11. Number of staff members you met <span class="required-star">*</span></div>
-      <input class="form-input" id="staff_count" type="number" min="1" max="30" step="1" value="1" oninput="onStaffCountInput()">
+      <input class="form-input" id="staff_count" type="number" min="1" max="30" step="1" placeholder="Type a number" oninput="onStaffCountInput()">
       <div class="count-note" id="staff_count_note"></div>
-      <div class="count-hint">One card opens for each staff member. Cards open now: <span id="staff_count_echo">1</span>. Every card must be completed.</div>
+      <div class="count-hint" id="staff_count_hint">Type the number and one card will open for each staff member.</div>
     </div>
     <div id="staff-container"></div>
   </div>
@@ -342,7 +351,8 @@ body {
   <div class="modal-content">
     <div class="modal-header"><span>FORM A - SUBMISSION SUMMARY</span><button onclick="closeModal()">&times;</button></div>
     <div class="modal-body" id="summaryBody"></div>
-    <div class="modal-footer"><button class="btn-cancel" onclick="closeModal()">CANCEL</button><button class="btn-confirm" onclick="confirmSubmit()">CONFIRM SUBMIT</button></div>
+    <div id="sendStatus" class="send-status"></div>
+    <div class="modal-footer"><button class="btn-cancel" id="btnCancel" onclick="closeModal()">CANCEL</button><button class="btn-confirm" id="btnConfirm" onclick="confirmSubmit()">CONFIRM SUBMIT</button></div>
   </div>
 </div>
 
@@ -595,26 +605,31 @@ let staffMembers = [];
 function blankSupervisor() { return { name: "", sex: "", designation: "", organization: "", phone: "" }; }
 function blankStaff() { return { name: "", sex: "", cadre: "", cadreOther: "", unit: "", phone: "" }; }
 
-/* the number typed in question 10 decides how many supervisor cards exist */
+/* the number typed in question 10 decides how many supervisor cards exist.
+   Nothing is typed yet means nothing is open. */
 function setSupervisorCount(n) {
-  n = Math.max(1, Math.min(MAX_SUPERVISORS, n));
+  n = Math.max(0, Math.min(MAX_SUPERVISORS, n));
   while (supervisors.length < n) supervisors.push(blankSupervisor());
   while (supervisors.length > n) {
     sessionStorage.removeItem('sup_sig_' + (supervisors.length - 1));
     supervisors.pop();
   }
-  document.getElementById("supervisor_count").value = supervisors.length;
-  document.getElementById("supervisor_count_echo").textContent = supervisors.length;
+  if (n > 0) document.getElementById("supervisor_count").value = supervisors.length;
+  document.getElementById("supervisor_count_hint").textContent = supervisors.length
+    ? "Cards open now: " + supervisors.length + ". Every card must be completed."
+    : "Type the number and one card will open for each supervisor.";
   renderSupervisors();
 }
 
 /* the number typed in question 11 decides how many staff cards exist */
 function setStaffCount(n) {
-  n = Math.max(1, Math.min(MAX_STAFF, n));
+  n = Math.max(0, Math.min(MAX_STAFF, n));
   while (staffMembers.length < n) staffMembers.push(blankStaff());
   while (staffMembers.length > n) staffMembers.pop();
-  document.getElementById("staff_count").value = staffMembers.length;
-  document.getElementById("staff_count_echo").textContent = staffMembers.length;
+  if (n > 0) document.getElementById("staff_count").value = staffMembers.length;
+  document.getElementById("staff_count_hint").textContent = staffMembers.length
+    ? "Cards open now: " + staffMembers.length + ". Every card must be completed."
+    : "Type the number and one card will open for each staff member.";
   renderStaff();
 }
 
@@ -634,12 +649,16 @@ function countNotice(inputId, noteId, message) {
 
 function onSupervisorCountInput() {
   var raw = document.getElementById("supervisor_count").value.trim();
-  if (raw === "") { countNotice("supervisor_count", "supervisor_count_note", ""); return; }
+  if (raw === "") {
+    countNotice("supervisor_count", "supervisor_count_note", "");
+    setSupervisorCount(0);
+    return;
+  }
   var n = Number(raw);
   if (!Number.isInteger(n) || n < 1 || n > MAX_SUPERVISORS) {
     countNotice("supervisor_count", "supervisor_count_note",
       "Wrong entry. Type a whole number between 1 and " + MAX_SUPERVISORS + ".");
-    document.getElementById("supervisor_count").value = supervisors.length;
+    document.getElementById("supervisor_count").value = supervisors.length || "";
     return;
   }
   countNotice("supervisor_count", "supervisor_count_note", "");
@@ -648,12 +667,16 @@ function onSupervisorCountInput() {
 
 function onStaffCountInput() {
   var raw = document.getElementById("staff_count").value.trim();
-  if (raw === "") { countNotice("staff_count", "staff_count_note", ""); return; }
+  if (raw === "") {
+    countNotice("staff_count", "staff_count_note", "");
+    setStaffCount(0);
+    return;
+  }
   var n = Number(raw);
   if (!Number.isInteger(n) || n < 1 || n > MAX_STAFF) {
     countNotice("staff_count", "staff_count_note",
       "Wrong entry. Type a whole number between 1 and " + MAX_STAFF + ".");
-    document.getElementById("staff_count").value = staffMembers.length;
+    document.getElementById("staff_count").value = staffMembers.length || "";
     return;
   }
   countNotice("staff_count", "staff_count_note", "");
@@ -842,7 +865,9 @@ function validateForm() {
   if (document.getElementById("cadre").value === "Other" && !document.getElementById("cadre_other").value.trim()) { alert("Please specify the In-Charge Cadre"); return false; }
 
   // every supervisor card the count opened must be complete
-  if (!document.getElementById("supervisor_count").value.trim()) { alert("Please enter the number of supervisors"); return false; }
+  if (!document.getElementById("supervisor_count").value.trim() || supervisors.length === 0) {
+    alert("Please enter the number of supervisors on this visit"); return false;
+  }
   for (let i = 0; i < supervisors.length; i++) {
     const s = supervisors[i];
     if (!s.name || !s.sex || !s.designation || !s.organization) {
@@ -853,7 +878,9 @@ function validateForm() {
   }
 
   // every staff card the count opened must be complete
-  if (!document.getElementById("staff_count").value.trim()) { alert("Please enter the number of staff members you met"); return false; }
+  if (!document.getElementById("staff_count").value.trim() || staffMembers.length === 0) {
+    alert("Please enter the number of staff members you met"); return false;
+  }
   for (let i = 0; i < staffMembers.length; i++) {
     const s = staffMembers[i];
     if (!s.name || !s.sex || !s.cadre || !s.unit) {
@@ -903,19 +930,76 @@ function showSummary() {
   html += `<div class="summary-section-title">SUPERVISORS (${data.supervisor_count})</div>` + data.supervisors.map((s,i) => `<div class="summary-item"><div class="summary-label">Supervisor #${i+1}</div><div class="summary-value">${s.name} | ${s.sex} | ${s.designation} | ${s.organization} | Phone: ${s.phone} | Sig: ${s.signature ? '✓' : '✗'}</div></div>`).join('');
   html += `<div class="summary-section-title">STAFF (${data.staff_count})</div>` + data.staff.map((s,i) => `<div class="summary-item"><div class="summary-label">Staff #${i+1}</div><div class="summary-value">${s.name || '-'} | ${s.sex || '-'} | ${s.cadre || '-'} | ${s.unit || '-'} | Phone: ${s.phone || '-'}</div></div>`).join('');
   document.getElementById("summaryBody").innerHTML = html;
+  var st = document.getElementById("sendStatus");
+  if (st) { st.className = "send-status"; st.innerHTML = ""; }
+  var cb = document.getElementById("btnConfirm");
+  if (cb) { cb.disabled = false; cb.textContent = "CONFIRM SUBMIT"; }
+  var xb = document.getElementById("btnCancel");
+  if (xb) xb.textContent = "CANCEL";
   document.getElementById("summaryModal").style.display = "flex";
 }
 
 function validateAndSubmit() { if (validateForm()) showSummary(); }
 function closeModal() { document.getElementById("summaryModal").style.display = "none"; }
-function confirmSubmit() { closeModal(); alert("FORM A submitted successfully!"); console.log(getFormData()); }
+
+/* ==================== SEND TO THE ICF-SL SERVER ====================
+   Paste the Apps Script web app URL here, the one ending in /exec.
+   Deploy ▸ New deployment ▸ Web app ▸ Execute as: Me ▸ Access: Anyone. */
+var ENDPOINT = "https://script.google.com/macros/s/AKfycbwV04trmpmSLJAS5BTdgBHTS4lumCPRd45yIUvOx9Z0BX7147xCGVId9JcoNt_nCUG_/exec";
+
+function sendStatus(kind, text) {
+  var el = document.getElementById("sendStatus");
+  el.className = "send-status " + kind;
+  el.innerHTML = text;
+}
+
+function confirmSubmit() {
+  if (!ENDPOINT || ENDPOINT.indexOf("http") !== 0) {
+    sendStatus("bad", "This copy of the form has no server address yet. Give it to the ICF-SL team before using it in the field.");
+    return;
+  }
+
+  var data = getFormData();
+  try {
+    var u = JSON.parse(sessionStorage.getItem("mocm_user"));
+    if (u) data.submittedBy = u.name + " (" + u.username + ")";
+  } catch (e) { /* not signed in */ }
+
+  var confirmBtn = document.getElementById("btnConfirm");
+  confirmBtn.disabled = true;
+  confirmBtn.textContent = "SENDING...";
+  sendStatus("working", "Sending to the ICF-SL server. Keep this page open.");
+
+  fetch(ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(data)
+  })
+  .then(function (r) { return r.json(); })
+  .then(function (res) {
+    if (res && res.ok) {
+      sendStatus("good", "Submitted. Reference " + res.reference +
+        ".<br>The summary and its PDF have been emailed.");
+      confirmBtn.textContent = "SUBMITTED";
+      document.getElementById("btnCancel").textContent = "CLOSE";
+    } else {
+      throw new Error((res && res.error) ? res.error : "The server rejected the submission.");
+    }
+  })
+  .catch(function (err) {
+    sendStatus("bad", "Not sent: " + err.message +
+      "<br>Nothing has been lost. Stay on this page, check the network, then press CONFIRM SUBMIT again.");
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = "CONFIRM SUBMIT";
+  });
+}
 
 // Initialize
 document.getElementById("visit_date").value = new Date().toISOString().split('T')[0];
 fillInChargeCadre();
 loadCSV();
-setSupervisorCount(Number(document.getElementById("supervisor_count").value) || 1);
-setStaffCount(Number(document.getElementById("staff_count").value) || 1);
+setSupervisorCount(0);
+setStaffCount(0);
 
 setTimeout(() => {
   updateRadioVisuals(document.getElementById('incharge_gender_group'));
