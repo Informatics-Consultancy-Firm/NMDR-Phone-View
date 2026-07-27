@@ -232,6 +232,43 @@ body {
 .summary-section-title { font-weight: 700; font-size: 14px; color: var(--blue); margin: 16px 0 10px 0; padding-bottom: 6px; border-bottom: 2px solid var(--blue); }
 .btn-cancel { flex: 1; padding: 12px; background: #f0f2f5; color: var(--text-dark); border: 1px solid var(--border); border-radius: 40px; font-weight: 600; cursor: pointer; }
 .btn-confirm { flex: 1; padding: 12px; background: var(--blue); color: white; border: none; border-radius: 40px; font-weight: 600; cursor: pointer; }
+.icn { width: 17px; height: 17px; flex: 0 0 auto; vertical-align: -3px; margin-right: 7px; }
+.btn-tool { display: inline-flex; align-items: center; justify-content: center; }
+.sig-icn { width: 14px; height: 14px; vertical-align: -2px; }
+.tool-row { display: flex; gap: 10px; margin-top: 12px; }
+.btn-tool { flex: 1; padding: 13px 10px; background: var(--white); color: var(--blue-dark); border: 1.5px solid var(--blue); border-radius: 40px; font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit; }
+.btn-tool:active { background: var(--soft-bg); }
+.btn-tool:disabled { opacity: .55; }
+.tool-status { display: none; margin-top: 10px; font-size: 12.5px; font-weight: 600; }
+.tool-status.on { display: block; color: var(--blue-dark); }
+.tool-status.bad { display: block; color: var(--red); }
+.dash-content { max-width: 620px; }
+.dash-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 6px; }
+.kpi { background: var(--soft-bg); border-radius: 12px; padding: 12px 14px; }
+.kpi-val { font-size: 22px; font-weight: 800; color: var(--blue-dark); }
+.kpi-lbl { font-size: 10.5px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; color: var(--text-light); margin-top: 2px; }
+.dash-block { margin-top: 18px; }
+.dash-title { font-size: 12px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: var(--blue); padding-bottom: 6px; border-bottom: 2px solid var(--soft-bg); margin-bottom: 10px; }
+.bar-row { margin-bottom: 9px; }
+.bar-top { display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 3px; }
+.bar-lbl { color: var(--text-dark); padding-right: 8px; }
+.bar-num { color: var(--blue-dark); font-weight: 700; white-space: nowrap; }
+.bar-track { height: 8px; background: var(--border); border-radius: 6px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--blue); border-radius: 6px; }
+.bar-fill.gold { background: var(--gold); }
+.bar-fill.green { background: var(--green); }
+.dash-note { font-size: 11.5px; color: var(--text-light); margin-top: 8px; line-height: 1.5; }
+.dash-empty { padding: 24px; text-align: center; color: var(--text-light); font-size: 13px; }
+.submitted-by { border: 1.5px solid var(--border); border-radius: 12px; overflow: hidden; background: #fafbfc; }
+.sb-row { padding: 11px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.sb-row:last-child { border-bottom: none; }
+.sb-name { font-weight: 700; color: var(--blue-dark); }
+.sb-email { color: var(--text-light); font-size: 12px; word-break: break-all; }
+.sb-email.missing { color: var(--red); font-weight: 600; }
+.sb-empty { padding: 14px; font-size: 13px; color: var(--text-light); }
+.sb-note { padding: 10px 14px; background: var(--soft-bg); font-size: 12px; color: var(--blue-dark); font-weight: 600; }
+.outbox-strip { display: none; margin: 0 20px; padding: 12px 14px; border-radius: 12px; background: #fff8e1; border: 1px solid var(--gold); color: #7a5600; font-size: 13px; font-weight: 600; }
+.outbox-strip.on { display: block; }
 .send-status { display:none; margin: 0 20px 4px 20px; padding: 11px 14px; border-radius: 12px; font-size: 13px; font-weight: 600; line-height: 1.45; }
 .send-status.working { display:block; background: var(--soft-bg); border: 1px solid #c9dff2; color: var(--blue-dark); }
 .send-status.good { display:block; background: #d4edda; border: 1px solid #b7dfc1; color: #155724; }
@@ -253,10 +290,10 @@ body {
   </div>
   <div class="header-org">National Malaria Control Programme, Ministry of Health, Sierra Leone</div>
   <div class="header-title">MOCM/OTSS+ Checklist</div>
-  <div class="header-sub">FORM A: General Health Facility Information</div>
+  <div class="header-sub">FACILITY PROFILE: General Health Facility Information</div>
 </div>
 
-<div class="form-title">FORM A: General Health Facility Information</div>
+<div class="form-title">FACILITY PROFILE: General Health Facility Information</div>
 
 <!-- Demographics Section: District > Chiefdom > PHU > Facility Type -->
 <div class="demographics">
@@ -343,13 +380,42 @@ body {
   </div>
 </div>
 
+<!-- Submitted by: taken from the supervisor cards -->
+<div class="section-card">
+  <div class="card-header">SUBMITTED BY</div>
+  <div class="card-body">
+    <div class="question-row" style="margin-bottom:0;">
+      <div class="question-text">12. Submitted by</div>
+      <div id="submittedByPanel" class="submitted-by"></div>
+    </div>
+  </div>
+</div>
+
+<div id="outboxStrip" class="outbox-strip"></div>
+
 <div class="submit-container">
-  <button class="btn-submit" onclick="validateAndSubmit()">REVIEW &amp; SUBMIT FORM A</button>
+  <button class="btn-submit" onclick="validateAndSubmit()">REVIEW &amp; SUBMIT TO NMDR</button>
+  <div class="tool-row">
+    <button class="btn-tool" onclick="downloadData()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>DOWNLOAD DATA</button>
+    <button class="btn-tool" onclick="openDashboard()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/></svg>DASHBOARD</button>
+  </div>
+  <div id="toolStatus" class="tool-status"></div>
+</div>
+
+<div id="dashModal" class="modal">
+  <div class="modal-content dash-content">
+    <div class="modal-header"><span>NMDR DASHBOARD · FACILITY PROFILE</span><button onclick="closeDashboard()">&times;</button></div>
+    <div class="modal-body" id="dashBody"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeDashboard()">CLOSE</button>
+      <button class="btn-confirm" onclick="openDashboard(true)">REFRESH</button>
+    </div>
+  </div>
 </div>
 
 <div id="summaryModal" class="modal">
   <div class="modal-content">
-    <div class="modal-header"><span>FORM A - SUBMISSION SUMMARY</span><button onclick="closeModal()">&times;</button></div>
+    <div class="modal-header"><span>FACILITY PROFILE · SUBMISSION SUMMARY</span><button onclick="closeModal()">&times;</button></div>
     <div class="modal-body" id="summaryBody"></div>
     <div id="sendStatus" class="send-status"></div>
     <div class="modal-footer"><button class="btn-cancel" id="btnCancel" onclick="closeModal()">CANCEL</button><button class="btn-confirm" id="btnConfirm" onclick="confirmSubmit()">CONFIRM SUBMIT</button></div>
@@ -602,7 +668,7 @@ function updateFacilityType() {
 let supervisors = [];
 let staffMembers = [];
 
-function blankSupervisor() { return { name: "", sex: "", designation: "", organization: "", phone: "" }; }
+function blankSupervisor() { return { name: "", sex: "", designation: "", organization: "", email: "", phone: "" }; }
 function blankStaff() { return { name: "", sex: "", cadre: "", cadreOther: "", unit: "", phone: "" }; }
 
 /* the number typed in question 10 decides how many supervisor cards exist.
@@ -756,6 +822,7 @@ function createSignaturePad(canvasId, clearBtnId, storageKey) {
 }
 
 function renderSupervisors() {
+  setTimeout(renderSubmittedBy, 0);
   const container = document.getElementById("supervisors-container");
   if (!container) return;
   let html = '';
@@ -766,6 +833,7 @@ function renderSupervisors() {
       <div class="question-row"><div class="question-text">Sex <span class="required-star">*</span></div><div class="options-group-vertical" id="sup_sex_group_${i}"><label class="radio-option-vertical"><input type="radio" name="sup_sex_${i}" value="Male" ${s.sex === 'Male' ? 'checked' : ''}> Male</label><label class="radio-option-vertical"><input type="radio" name="sup_sex_${i}" value="Female" ${s.sex === 'Female' ? 'checked' : ''}> Female</label></div></div>
       <div class="question-row"><div class="question-text">Designation <span class="required-star">*</span></div><input class="form-input" type="text" id="sup_designation_${i}" value="${escapeHtml(s.designation || '')}" placeholder="Designation"></div>
       <div class="question-row"><div class="question-text">Organization <span class="required-star">*</span></div><input class="form-input" type="text" id="sup_org_${i}" value="${escapeHtml(s.organization || '')}" placeholder="Organization"></div>
+      <div class="question-row"><div class="question-text">Email <span class="required-star">*</span></div><input class="form-input" type="email" id="sup_email_${i}" value="${escapeHtml(s.email || '')}" placeholder="name@example.com" autocapitalize="none" spellcheck="false"><div class="count-hint">The summary and its PDF are emailed to this address.</div></div>
       <div class="question-row"><div class="question-text">Phone Number (9 digits) <span class="required-star">*</span></div><input class="form-input" type="tel" id="sup_phone_${i}" value="${escapeHtml(s.phone || '')}" placeholder="099177283" maxlength="9" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,9)"></div>
       <div class="question-row"><div class="question-text">Signature <span class="required-star">*</span></div><div class="signature-container"><canvas id="sup_sig_canvas_${i}" class="signature-canvas"></canvas><div class="signature-buttons"><button type="button" class="signature-btn clear" id="sup_sig_clear_${i}">Clear Signature</button></div></div></div>
     </div>`;
@@ -774,10 +842,11 @@ function renderSupervisors() {
 
   supervisors.forEach((s, i) => {
     setTimeout(() => createSignaturePad(`sup_sig_canvas_${i}`, `sup_sig_clear_${i}`, `sup_sig_${i}`), 50);
-    document.getElementById(`sup_name_${i}`).addEventListener('input', (e) => { supervisors[i].name = e.target.value; });
+    document.getElementById(`sup_name_${i}`).addEventListener('input', (e) => { supervisors[i].name = e.target.value; renderSubmittedBy(); });
     document.querySelectorAll(`input[name="sup_sex_${i}"]`).forEach(r => r.addEventListener('change', (e) => { if(e.target.checked) supervisors[i].sex = e.target.value; updateRadioVisuals(document.getElementById(`sup_sex_group_${i}`)); }));
     document.getElementById(`sup_designation_${i}`).addEventListener('input', (e) => { supervisors[i].designation = e.target.value; });
     document.getElementById(`sup_org_${i}`).addEventListener('input', (e) => { supervisors[i].organization = e.target.value; });
+    document.getElementById(`sup_email_${i}`).addEventListener('input', (e) => { supervisors[i].email = e.target.value.trim(); renderSubmittedBy(); });
     document.getElementById(`sup_phone_${i}`).addEventListener('input', (e) => { supervisors[i].phone = e.target.value; });
     updateRadioVisuals(document.getElementById(`sup_sex_group_${i}`));
   });
@@ -852,7 +921,50 @@ function cadreValue() {
 
 function escapeHtml(str) { if (!str) return ''; return String(str).replace(/[&<>"]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[m])); }
 function validatePhone(phone) { return phone && String(phone).replace(/\D/g, '').length === 9; }
+function validateEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(email || '').trim()); }
 function supervisorSignature(i) { return sessionStorage.getItem('sup_sig_' + i) || ""; }
+
+/* Submitted by is not typed: it is the supervision team from the cards above */
+function submittedByList() {
+  return supervisors.map(function (s, i) {
+    return { n: i + 1, name: (s.name || '').trim(), email: (s.email || '').trim() };
+  });
+}
+function submittedByNames() {
+  return submittedByList().filter(function (s) { return s.name; })
+    .map(function (s) { return s.name; }).join(', ');
+}
+function submittedByEmails() {
+  var seen = {}, out = [];
+  submittedByList().forEach(function (s) {
+    var e = s.email.toLowerCase();
+    if (validateEmail(e) && !seen[e]) { seen[e] = true; out.push(s.email); }
+  });
+  return out;
+}
+
+function renderSubmittedBy() {
+  var el = document.getElementById('submittedByPanel');
+  if (!el) return;
+  var list = submittedByList();
+  if (!list.length) {
+    el.innerHTML = '<div class="sb-empty">Answer question 10 and fill the supervisor cards. Their names and emails appear here.</div>';
+    return;
+  }
+  var html = list.map(function (s) {
+    var email = validateEmail(s.email)
+      ? '<div class="sb-email">' + escapeHtml(s.email) + '</div>'
+      : '<div class="sb-email missing">Email still needed on supervisor card #' + s.n + '</div>';
+    return '<div class="sb-row"><div class="sb-name">' +
+      (s.name ? escapeHtml(s.name) : 'Supervisor #' + s.n + ', name still needed') +
+      '</div>' + email + '</div>';
+  }).join('');
+  var ready = submittedByEmails().length;
+  html += '<div class="sb-note">' + (ready
+    ? 'The summary and its PDF go to ' + ready + (ready === 1 ? ' address' : ' addresses') + ' above, plus the ICF-SL inbox.'
+    : 'No email is ready yet. Every supervisor needs one.') + '</div>';
+  el.innerHTML = html;
+}
 
 function validateForm() {
   if (!document.getElementById("districtSelect").value) { alert("Please select District"); return false; }
@@ -873,6 +985,7 @@ function validateForm() {
     if (!s.name || !s.sex || !s.designation || !s.organization) {
       alert(`Supervisor #${i+1}: Name, Sex, Designation and Organization are all required.`); return false;
     }
+    if (!validateEmail(s.email)) { alert(`Supervisor #${i+1}: A valid email address is required, for example name@example.com`); return false; }
     if (!validatePhone(s.phone)) { alert(`Supervisor #${i+1}: Phone must be 9 digits`); return false; }
     if (!supervisorSignature(i)) { alert(`Supervisor #${i+1}: Signature is required`); return false; }
   }
@@ -896,6 +1009,11 @@ function validateForm() {
 
 function getFormData() {
   return {
+    recordId: RECORD.id,
+    revision: RECORD.accepted + 1,
+    resubmission: RECORD.accepted > 0,
+    submittedBy: submittedByNames(),
+    supervisorEmails: submittedByEmails(),
     submittedAt: new Date().toLocaleString(),
     district: document.getElementById("districtSelect").value,
     chiefdom: document.getElementById("chiefdomSelect").value,
@@ -913,6 +1031,10 @@ function getFormData() {
   };
 }
 
+/* inline SVG, so the marks render the same on every phone and print */
+var SIG_YES = "<svg class='sig-icn' viewBox='0 0 24 24' fill='none' stroke='#28a745' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6L9 17l-5-5'/></svg>";
+var SIG_NO  = "<svg class='sig-icn' viewBox='0 0 24 24' fill='none' stroke='#dc3545' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M18 6L6 18'/><path d='M6 6l12 12'/></svg>";
+
 function showSummary() {
   const data = getFormData();
   let html = `<div class="summary-item"><div class="summary-label">Submitted At</div><div class="summary-value">${data.submittedAt}</div></div>`;
@@ -927,71 +1049,225 @@ function showSummary() {
   html += `<div class="summary-item"><div class="summary-label">Gender</div><div class="summary-value">${data.incharge_gender}</div></div>`;
   html += `<div class="summary-item"><div class="summary-label">Cadre</div><div class="summary-value">${data.cadre}</div></div>`;
   html += `<div class="summary-item"><div class="summary-label">Visit Date</div><div class="summary-value">${data.visit_date}</div></div>`;
-  html += `<div class="summary-section-title">SUPERVISORS (${data.supervisor_count})</div>` + data.supervisors.map((s,i) => `<div class="summary-item"><div class="summary-label">Supervisor #${i+1}</div><div class="summary-value">${s.name} | ${s.sex} | ${s.designation} | ${s.organization} | Phone: ${s.phone} | Sig: ${s.signature ? '✓' : '✗'}</div></div>`).join('');
+  html += `<div class="summary-section-title">SUPERVISORS (${data.supervisor_count})</div>` + data.supervisors.map((s,i) => `<div class="summary-item"><div class="summary-label">Supervisor #${i+1}</div><div class="summary-value">${s.name} | ${s.sex} | ${s.designation} | ${s.organization} | ${s.email || 'no email'} | Phone: ${s.phone} | Sig: ${s.signature ? SIG_YES : SIG_NO}</div></div>`).join('');
   html += `<div class="summary-section-title">STAFF (${data.staff_count})</div>` + data.staff.map((s,i) => `<div class="summary-item"><div class="summary-label">Staff #${i+1}</div><div class="summary-value">${s.name || '-'} | ${s.sex || '-'} | ${s.cadre || '-'} | ${s.unit || '-'} | Phone: ${s.phone || '-'}</div></div>`).join('');
+  html += `<div class="summary-section-title">SUBMITTED BY</div>`;
+  html += `<div class="summary-item"><div class="summary-label">Supervision team</div><div class="summary-value">${escapeHtml(data.submittedBy || 'Not given')}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Emailed to</div><div class="summary-value">${escapeHtml((data.supervisorEmails || []).join(', ') || 'No supervisor email')}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Record</div><div class="summary-value">${escapeHtml(data.recordId)} · version ${data.revision}${data.resubmission ? ' · resubmission' : ''}</div></div>`;
   document.getElementById("summaryBody").innerHTML = html;
   var st = document.getElementById("sendStatus");
   if (st) { st.className = "send-status"; st.innerHTML = ""; }
+  var sent = RECORD.accepted > 0;
   var cb = document.getElementById("btnConfirm");
-  if (cb) { cb.disabled = false; cb.textContent = "CONFIRM SUBMIT"; }
+  if (cb) { cb.disabled = false; cb.textContent = sent ? "SUBMIT AGAIN" : "CONFIRM SUBMIT"; }
   var xb = document.getElementById("btnCancel");
-  if (xb) xb.textContent = "CANCEL";
+  if (xb) xb.textContent = sent ? "EDIT THIS RECORD" : "CANCEL";
+  if (sent) {
+    sendStatus("working", "This record has been submitted " + RECORD.accepted +
+      (RECORD.accepted === 1 ? " time" : " times") +
+      ". Submitting again sends version " + (RECORD.accepted + 1) +
+      " and updates the same record in NMDR.");
+  }
   document.getElementById("summaryModal").style.display = "flex";
 }
 
-function validateAndSubmit() { if (validateForm()) showSummary(); }
+function validateAndSubmit() { if (readyToSubmit()) showSummary(); }
 function closeModal() { document.getElementById("summaryModal").style.display = "none"; }
 
 /* ==================== SEND TO THE ICF-SL SERVER ====================
    Paste the Apps Script web app URL here, the one ending in /exec.
-   Deploy ▸ New deployment ▸ Web app ▸ Execute as: Me ▸ Access: Anyone. */
+   Deploy ▸ New deployment ▸ Web app ▸ Execute as: Me ▸ Access: Anyone.
+
+   The form works with no network. A submission that cannot go out is kept in
+   this phone's outbox and sent by itself once there is a signal. Editing a
+   record and submitting again updates the same record on the server, it does
+   not create a second one. */
 var ENDPOINT = "https://script.google.com/macros/s/AKfycbwV04trmpmSLJAS5BTdgBHTS4lumCPRd45yIUvOx9Z0BX7147xCGVId9JcoNt_nCUG_/exec";
 
+var OUTBOX_KEY = "mocm_outbox_form_a";
+var RECORD_KEY = "mocm_record_form_a";
+
+/* which record this page is editing, and how many versions the server has taken */
+var RECORD = { id: null, accepted: 0 };
+
+function pad2(n) { return (n < 10 ? "0" : "") + n; }
+function newRecordId() {
+  var d = new Date();
+  var stamp = d.getFullYear() + pad2(d.getMonth() + 1) + pad2(d.getDate()) + "-" +
+              pad2(d.getHours()) + pad2(d.getMinutes()) + pad2(d.getSeconds());
+  return "FA-" + stamp + "-" + Math.random().toString(36).slice(2, 7).toUpperCase();
+}
+
+function loadRecord() {
+  try {
+    var r = JSON.parse(sessionStorage.getItem(RECORD_KEY));
+    if (r && r.id) RECORD = r;
+  } catch (e) { /* first time in this tab */ }
+  if (!RECORD.id) { RECORD.id = newRecordId(); RECORD.accepted = 0; saveRecord(); }
+}
+function saveRecord() {
+  try { sessionStorage.setItem(RECORD_KEY, JSON.stringify(RECORD)); } catch (e) {}
+}
+
+/* ---------- the outbox, so nothing is lost without a signal ---------- */
+function outbox() {
+  try { return JSON.parse(localStorage.getItem(OUTBOX_KEY)) || []; } catch (e) { return []; }
+}
+function saveOutbox(list) {
+  try { localStorage.setItem(OUTBOX_KEY, JSON.stringify(list)); } catch (e) {}
+  renderOutbox();
+}
+function queueSubmission(payload) {
+  var list = outbox().filter(function (item) {
+    // an edit of a record still waiting replaces the older version of it
+    return item.payload.recordId !== payload.recordId;
+  });
+  list.push({ payload: payload, queuedAt: new Date().toLocaleString() });
+  saveOutbox(list);
+}
+function renderOutbox() {
+  var el = document.getElementById("outboxStrip");
+  if (!el) return;
+  var n = outbox().length;
+  if (!n) { el.className = "outbox-strip"; el.innerHTML = ""; return; }
+  el.className = "outbox-strip on";
+  el.innerHTML = n + (n === 1 ? " submission is" : " submissions are") +
+    " waiting in this phone's outbox and will go out by itself once there is a signal. " +
+    "Do not clear this site's browser data until the message disappears.";
+}
+
+function postRecord(payload) {
+  return fetch(ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(function (r) { return r.json(); })
+  .then(function (res) {
+    if (!res || !res.ok) throw new Error((res && res.error) ? res.error : "The server rejected the submission.");
+    return res;
+  });
+}
+
+/* send what is waiting, oldest first, stopping at the first failure */
+var flushing = false;
+function flushOutbox(quiet) {
+  if (flushing || !outbox().length || !navigator.onLine) return Promise.resolve();
+  flushing = true;
+
+  function step() {
+    var list = outbox();
+    if (!list.length) return Promise.resolve(true);
+    return postRecord(list[0].payload)
+      .then(function () { saveOutbox(outbox().slice(1)); return step(); })
+      .catch(function () { return false; });
+  }
+
+  return step().then(function (allSent) {
+    flushing = false;
+    renderOutbox();
+    if (allSent && !quiet) {
+      sendStatus("good", "The outbox is empty. Everything held on this phone has reached NMDR.");
+    }
+  });
+}
+
+window.addEventListener("online", function () { flushOutbox(true); });
+setInterval(function () { flushOutbox(true); }, 60000);
+
+/* ---------- the submit button ---------- */
 function sendStatus(kind, text) {
   var el = document.getElementById("sendStatus");
+  if (!el) return;
   el.className = "send-status " + kind;
   el.innerHTML = text;
 }
 
+function afterAccepted(res, queued) {
+  RECORD.accepted += 1;
+  saveRecord();
+
+  var verb = RECORD.accepted > 1 ? "Resubmitted" : "Submitted";
+  var where = queued
+    ? "Held in this phone's outbox. It goes to NMDR by itself once there is a signal."
+    : "Reference " + ((res && res.reference) ? res.reference : RECORD.id) +
+      ".<br>The summary and its PDF have been emailed to the supervision team and to ICF-SL.";
+  sendStatus(queued ? "working" : "good",
+    "<b>" + verb + (queued ? " and queued" : "") + " to NMDR.</b> " + where +
+    "<br>Version " + RECORD.accepted + " of this record. Editing and submitting again updates it, " +
+    "it does not create a second record in NMDR.");
+
+  var confirmBtn = document.getElementById("btnConfirm");
+  var cancelBtn = document.getElementById("btnCancel");
+  confirmBtn.disabled = false;
+  confirmBtn.textContent = "SUBMIT AGAIN";
+  cancelBtn.textContent = "EDIT THIS RECORD";
+  if (!document.getElementById("btnNewRecord")) {
+    var nb = document.createElement("button");
+    nb.id = "btnNewRecord";
+    nb.className = "btn-cancel";
+    nb.textContent = "NEW RECORD";
+    nb.onclick = startNewRecord;
+    cancelBtn.parentElement.appendChild(nb);
+  }
+}
+
+function startNewRecord() {
+  if (!confirm("Start a blank Form A for the next facility?\n\nThis record has already been sent, so nothing is lost. Anything typed since the last submit is cleared.")) return;
+  sessionStorage.removeItem(RECORD_KEY);
+  for (var i = 0; i < 40; i++) sessionStorage.removeItem("sup_sig_" + i);
+  location.reload();
+}
+
+/* every compulsory question answered, and the formats valid. Used by the review
+   button and again by the submit button, so nothing can reach NMDR half filled. */
+function readyToSubmit() {
+  if (typeof validateAllQuestions === "function" && !validateAllQuestions()) return false;
+  return validateForm();
+}
+
 function confirmSubmit() {
+  // checked again here: the modal may have been open while a field was cleared,
+  // and SUBMIT AGAIN after an edit comes straight back to this function
+  if (!readyToSubmit()) {
+    closeModal();
+    var btn = document.getElementById("btnConfirm");
+    if (btn) { btn.disabled = false; btn.textContent = RECORD.accepted > 0 ? "SUBMIT AGAIN" : "CONFIRM SUBMIT"; }
+    return;
+  }
+
   if (!ENDPOINT || ENDPOINT.indexOf("http") !== 0) {
-    sendStatus("bad", "This copy of the form has no server address yet. Give it to the ICF-SL team before using it in the field.");
+    sendStatus("bad", "This copy of the form has no NMDR address yet. Give it to the ICF-SL team before using it in the field.");
     return;
   }
 
   var data = getFormData();
   try {
     var u = JSON.parse(sessionStorage.getItem("mocm_user"));
-    if (u) data.submittedBy = u.name + " (" + u.username + ")";
+    if (u) data.signedInAs = u.name + " (" + u.username + ")";
   } catch (e) { /* not signed in */ }
 
   var confirmBtn = document.getElementById("btnConfirm");
   confirmBtn.disabled = true;
   confirmBtn.textContent = "SENDING...";
-  sendStatus("working", "Sending to the ICF-SL server. Keep this page open.");
 
-  fetch(ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(data)
-  })
-  .then(function (r) { return r.json(); })
-  .then(function (res) {
-    if (res && res.ok) {
-      sendStatus("good", "Submitted. Reference " + res.reference +
-        ".<br>The summary and its PDF have been emailed.");
-      confirmBtn.textContent = "SUBMITTED";
-      document.getElementById("btnCancel").textContent = "CLOSE";
-    } else {
-      throw new Error((res && res.error) ? res.error : "The server rejected the submission.");
-    }
-  })
-  .catch(function (err) {
-    sendStatus("bad", "Not sent: " + err.message +
-      "<br>Nothing has been lost. Stay on this page, check the network, then press CONFIRM SUBMIT again.");
-    confirmBtn.disabled = false;
-    confirmBtn.textContent = "CONFIRM SUBMIT";
-  });
+  if (!navigator.onLine) {
+    queueSubmission(data);
+    afterAccepted(null, true);
+    return;
+  }
+
+  sendStatus("working", "Submitting data to NMDR. Keep this page open.");
+  postRecord(data)
+    .then(function (res) { afterAccepted(res, false); })
+    .catch(function (err) {
+      queueSubmission(data);
+      afterAccepted(null, true);
+      sendStatus("working", "<b>Queued.</b> The server could not be reached (" + err.message +
+        "). Nothing is lost: it is held on this phone and goes out by itself once there is a signal." +
+        "<br>Version " + RECORD.accepted + " of this record.");
+    });
 }
 
 // Initialize
@@ -1000,10 +1276,244 @@ fillInChargeCadre();
 loadCSV();
 setSupervisorCount(0);
 setStaffCount(0);
+loadRecord();
+renderSubmittedBy();
+renderOutbox();
+setTimeout(function () { flushOutbox(true); }, 1500);
 
 setTimeout(() => {
   updateRadioVisuals(document.getElementById('incharge_gender_group'));
 }, 100);
+
+
+/* ==================== DOWNLOAD DATA AND DASHBOARD ====================
+   Both read the same pull from NMDR. Names, emails and phone numbers are
+   left behind on the server, so nothing here identifies a person. */
+
+var NMDR_CACHE = null;
+
+function toolStatus(kind, text) {
+  var el = document.getElementById("toolStatus");
+  if (!el) return;
+  el.className = "tool-status " + (kind || "");
+  el.textContent = text || "";
+}
+
+function pullData(force) {
+  if (NMDR_CACHE && !force) return Promise.resolve(NMDR_CACHE);
+  if (!navigator.onLine) {
+    return Promise.reject(new Error("No signal. The download and the dashboard both need NMDR."));
+  }
+  return fetch(ENDPOINT + "?action=data&t=" + Date.now())
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+      if (!res || !res.ok) throw new Error((res && res.error) ? res.error : "NMDR did not return the data.");
+      NMDR_CACHE = res;
+      return res;
+    });
+}
+
+/* ---------- download: one CSV per tab ---------- */
+function csvCell(v) {
+  var s = (v === undefined || v === null) ? "" : String(v);
+  return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+function toCsv(tab) {
+  return [tab.headers].concat(tab.rows)
+    .map(function (row) { return row.map(csvCell).join(","); })
+    .join("\r\n");
+}
+function saveCsv(name, text) {
+  var blob = new Blob(["\ufeff" + text], { type: "text/csv;charset=utf-8" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+}
+
+function downloadData() {
+  toolStatus("on", "Pulling the data from NMDR...");
+  pullData(true).then(function (res) {
+    var stamp = new Date().toISOString().slice(0, 10);
+    var files = [
+      ["facility-profile-" + stamp + ".csv", res.tabs["Form A"]],
+      ["facility-profile-supervisors-" + stamp + ".csv", res.tabs["Form A_Supervisor"]],
+      ["facility-profile-staff-" + stamp + ".csv", res.tabs["Form A_Staff"]]
+    ];
+    var written = 0;
+    files.forEach(function (f, i) {
+      if (!f[1] || !f[1].rows.length) return;
+      setTimeout(function () { saveCsv(f[0], toCsv(f[1])); }, i * 700);
+      written++;
+    });
+    toolStatus("on", written
+      ? written + (written === 1 ? " file" : " files") + " downloading. Names, emails and phone numbers are not included."
+      : "There is nothing in NMDR to download yet.");
+  }).catch(function (err) {
+    toolStatus("bad", "Download failed: " + err.message);
+  });
+}
+
+/* ---------- dashboard ---------- */
+function openDashboard(force) {
+  document.getElementById("dashModal").style.display = "flex";
+  document.getElementById("dashBody").innerHTML =
+    '<div class="dash-empty">Reading the data from NMDR...</div>';
+  pullData(force).then(function (res) {
+    document.getElementById("dashBody").innerHTML = dashboardHtml(res);
+  }).catch(function (err) {
+    document.getElementById("dashBody").innerHTML =
+      '<div class="dash-empty">' + escapeHtml(err.message) + '</div>';
+  });
+}
+function closeDashboard() { document.getElementById("dashModal").style.display = "none"; }
+
+/* rows as objects, so a renamed or reordered column does not break anything */
+function asObjects(tab) {
+  if (!tab || !tab.headers) return [];
+  return tab.rows.map(function (row) {
+    var o = {};
+    tab.headers.forEach(function (h, i) { o[h] = row[i]; });
+    return o;
+  });
+}
+function pick(o, needle) {
+  for (var k in o) { if (k.toLowerCase().indexOf(needle.toLowerCase()) > -1) return o[k]; }
+  return "";
+}
+function tally(list, fn) {
+  var map = {};
+  list.forEach(function (item) {
+    var k = String(fn(item) || "").trim();
+    if (!k) k = "Not given";
+    map[k] = (map[k] || 0) + 1;
+  });
+  return Object.keys(map).map(function (k) { return { k: k, n: map[k] }; })
+    .sort(function (a, b) { return b.n - a.n || a.k.localeCompare(b.k); });
+}
+function bars(rows, total, tone) {
+  if (!rows.length) return '<div class="dash-note">Nothing recorded yet.</div>';
+  var max = rows[0].n || 1;
+  return rows.map(function (r) {
+    var pct = Math.round(r.n / (total || max) * 100);
+    return '<div class="bar-row"><div class="bar-top">' +
+      '<span class="bar-lbl">' + escapeHtml(r.k) + '</span>' +
+      '<span class="bar-num">' + r.n + (total ? ' · ' + pct + '%' : '') + '</span></div>' +
+      '<div class="bar-track"><div class="bar-fill ' + (tone || '') + '" style="width:' +
+      Math.max(2, Math.round(r.n / max * 100)) + '%"></div></div></div>';
+  }).join('');
+}
+function block(title, inner) {
+  return '<div class="dash-block"><div class="dash-title">' + title + '</div>' + inner + '</div>';
+}
+function kpi(val, label) {
+  return '<div class="kpi"><div class="kpi-val">' + val + '</div><div class="kpi-lbl">' + label + '</div></div>';
+}
+function nums(list) { return list.map(Number).filter(function (n) { return !isNaN(n); }); }
+function mean(list) { return list.length ? (list.reduce(function (a, b) { return a + b; }, 0) / list.length) : 0; }
+function median(list) {
+  if (!list.length) return 0;
+  var s = list.slice().sort(function (a, b) { return a - b; });
+  var m = Math.floor(s.length / 2);
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+}
+
+function dashboardHtml(res) {
+  var visits = asObjects(res.tabs["Form A"]);
+  var sups   = asObjects(res.tabs["Form A_Supervisor"]);
+  var staff  = asObjects(res.tabs["Form A_Staff"]);
+
+  if (!visits.length) {
+    return '<div class="dash-empty">No visit has reached NMDR yet. Submit a Facility Profile and open this again.</div>';
+  }
+
+  var facilities = {};
+  visits.forEach(function (v) { var f = pick(v, 'Health Facility (PHU)'); if (f) facilities[f] = 1; });
+  var resub = visits.filter(function (v) { return String(v['Status']) === 'Resubmitted'; }).length;
+  var hcw = nums(visits.map(function (v) { return pick(v, 'health care workers'); }));
+  var supPer = nums(visits.map(function (v) { return pick(v, 'Number of supervisors'); }));
+  var staffPer = nums(visits.map(function (v) { return pick(v, 'Number of staff members'); }));
+  var signed = sups.filter(function (s) { return String(pick(s, 'Signature')) === 'Captured'; }).length;
+
+  var h = '';
+
+  h += '<div class="dash-kpis">' +
+    kpi(visits.length, 'Visits in NMDR') +
+    kpi(Object.keys(facilities).length + ' of 10', 'Pilot facilities covered') +
+    kpi(sups.length, 'Supervisor records') +
+    kpi(staff.length, 'Staff met, records') +
+    '</div>';
+
+  h += block('Coverage of the 10 pilot facilities',
+    bars(tally(visits, function (v) { return pick(v, 'Health Facility (PHU)'); }), 0, 'green') +
+    '<div class="dash-note">' + Object.keys(facilities).length + ' facilities visited, ' +
+    (10 - Object.keys(facilities).length) + ' still to visit.</div>');
+
+  h += block('Visits by chiefdom',
+    bars(tally(visits, function (v) { return pick(v, 'Chiefdom'); }), visits.length));
+
+  h += block('Visits by facility type',
+    bars(tally(visits, function (v) { return pick(v, 'Health Facility Type'); }), visits.length));
+
+  h += block('Visits by date',
+    bars(tally(visits, function (v) { return String(pick(v, 'Date of visit')).slice(0, 10); }), 0, 'gold'));
+
+  h += block('Health workers for malaria services',
+    '<div class="dash-kpis">' +
+      kpi(hcw.length ? mean(hcw).toFixed(1) : '0', 'Mean per facility') +
+      kpi(hcw.length ? median(hcw) : 0, 'Median') +
+      kpi(hcw.length ? Math.min.apply(null, hcw) : 0, 'Lowest') +
+      kpi(hcw.length ? Math.max.apply(null, hcw) : 0, 'Highest') +
+    '</div>' +
+    bars(tally(visits, function (v) { return pick(v, 'health care workers'); }), 0));
+
+  h += block('In-Charge cadre',
+    bars(tally(visits, function (v) { return pick(v, 'Cadre of In-Charge'); }), visits.length));
+
+  h += block('In-Charge gender',
+    bars(tally(visits, function (v) { return pick(v, 'Gender of health facility'); }), visits.length, 'gold'));
+
+  h += block('Supervision team',
+    '<div class="dash-kpis">' +
+      kpi(supPer.length ? mean(supPer).toFixed(1) : '0', 'Supervisors per visit') +
+      kpi(sups.length ? Math.round(signed / sups.length * 100) + '%' : '0%', 'Signatures captured') +
+    '</div>' +
+    bars(tally(sups, function (s) { return pick(s, 'Designation'); }), sups.length));
+
+  h += block('Supervisors by organization',
+    bars(tally(sups, function (s) { return pick(s, 'Organization'); }), sups.length));
+
+  h += block('Supervisors by sex',
+    bars(tally(sups, function (s) { return pick(s, 'Sex'); }), sups.length, 'gold'));
+
+  h += block('Staff met, by cadre',
+    '<div class="dash-kpis">' +
+      kpi(staffPer.length ? mean(staffPer).toFixed(1) : '0', 'Staff met per visit') +
+      kpi(staff.length, 'Staff records') +
+    '</div>' +
+    bars(tally(staff, function (s) { return pick(s, 'Cadre'); }), staff.length));
+
+  h += block('Staff met, by unit',
+    bars(tally(staff, function (s) { return pick(s, 'Unit'); }), staff.length));
+
+  h += block('Staff met, by sex',
+    bars(tally(staff, function (s) { return pick(s, 'Sex'); }), staff.length, 'gold'));
+
+  h += block('Data quality',
+    '<div class="dash-kpis">' +
+      kpi(resub, 'Records resubmitted') +
+      kpi(visits.length ? Math.round(resub / visits.length * 100) + '%' : '0%', 'Share resubmitted') +
+    '</div>' +
+    '<div class="dash-note">Pulled ' + escapeHtml(res.pulled || '') +
+    '. Names, emails and phone numbers stay in NMDR and are never sent to this screen, ' +
+    'so this dashboard counts records and categories only.</div>');
+
+  return h;
+}
 
 /* ==================== REQUIRE EVERY QUESTION ====================
    Set REQUIRE_ALL to false to go back to checking only the key fields. */
@@ -1112,11 +1622,15 @@ function validateAllQuestions(){
   };
 })();
 
+/* the last gate before anything leaves the phone. confirmSubmit checks this
+   itself as well; this wrapper keeps the guarantee even if that call is edited
+   out one day. validateAndSubmit already runs readyToSubmit(). */
 (function(){
-  var _origVAS = window.validateAndSubmit;
-  window.validateAndSubmit = function(){
-    if (REQUIRE_ALL && !validateAllQuestions()) return;
-    return _origVAS.apply(this, arguments);
+  var _origConfirm = window.confirmSubmit;
+  if (typeof _origConfirm !== 'function') return;
+  window.confirmSubmit = function(){
+    if (REQUIRE_ALL && !validateAllQuestions()) { closeModal(); return; }
+    return _origConfirm.apply(this, arguments);
   };
 })();
 
