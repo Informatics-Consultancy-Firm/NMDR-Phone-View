@@ -235,7 +235,12 @@ body {
 .icn { width: 17px; height: 17px; flex: 0 0 auto; vertical-align: -3px; margin-right: 7px; }
 .btn-tool { display: inline-flex; align-items: center; justify-content: center; }
 .sig-icn { width: 14px; height: 14px; vertical-align: -2px; }
-.tool-row { display: flex; gap: 10px; margin-top: 12px; }
+.tool-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.btn-tool { min-width: 46%; }
+.rec-row { border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; cursor: pointer; background: #fafbfc; }
+.rec-row:active { background: var(--soft-bg); border-color: var(--blue); }
+.rec-main { font-weight: 700; color: var(--blue-dark); font-size: 14px; }
+.rec-sub { font-size: 11.5px; color: var(--text-light); margin-top: 2px; }
 .btn-tool { flex: 1; padding: 13px 10px; background: var(--white); color: var(--blue-dark); border: 1.5px solid var(--blue); border-radius: 40px; font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit; }
 .btn-tool:active { background: var(--soft-bg); }
 .btn-tool:disabled { opacity: .55; }
@@ -267,6 +272,19 @@ body {
 .sb-email.missing { color: var(--red); font-weight: 600; }
 .sb-empty { padding: 14px; font-size: 13px; color: var(--text-light); }
 .sb-note { padding: 10px 14px; background: var(--soft-bg); font-size: 12px; color: var(--blue-dark); font-weight: 600; }
+.gps-panel { border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 14px; background: #fafbfc; font-size: 13px; }
+.gps-panel.good { border-color: #b7dfc1; background: #f1f9f3; }
+.gps-panel.bad { border-color: #f1b5bb; background: #fdf2f3; }
+.gps-line { font-weight: 700; color: var(--blue-dark); }
+.gps-sub { font-size: 11.5px; color: var(--text-light); margin-top: 3px; }
+.pending-panel { display: none; margin: 0 20px; border: 1.5px solid var(--gold); border-radius: 14px; overflow: hidden; background: #fff8e1; }
+.pending-panel.on { display: block; }
+.pending-head { padding: 12px 14px; font-size: 13px; font-weight: 700; color: #7a5600; }
+.pend-row { padding: 11px 14px; border-top: 1px solid #f0dca8; background: var(--white); }
+.pend-main { font-weight: 700; font-size: 13.5px; color: var(--blue-dark); }
+.pend-sub { font-size: 11.5px; color: var(--text-light); margin-top: 2px; }
+.pend-actions { padding: 11px 14px; border-top: 1px solid #f0dca8; display: flex; gap: 10px; }
+.pend-actions .btn-tool { min-width: 0; padding: 10px; font-size: 12px; }
 .outbox-strip { display: none; margin: 0 20px; padding: 12px 14px; border-radius: 12px; background: #fff8e1; border: 1px solid var(--gold); color: #7a5600; font-size: 13px; font-weight: 600; }
 .outbox-strip.on { display: block; }
 .send-status { display:none; margin: 0 20px 4px 20px; padding: 11px 14px; border-radius: 12px; font-size: 13px; font-weight: 600; line-height: 1.45; }
@@ -391,15 +409,36 @@ body {
   </div>
 </div>
 
-<div id="outboxStrip" class="outbox-strip"></div>
+<!-- GPS: captured by the phone, not typed -->
+<div class="section-card">
+  <div class="card-header">LOCATION</div>
+  <div class="card-body">
+    <div class="question-row" style="margin-bottom:0;">
+      <div class="question-text">13. GPS position of the facility</div>
+      <div id="gpsPanel" class="gps-panel"></div>
+      <button class="btn-tool" style="margin-top:10px;" onclick="captureGps(true)"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.1 7-11a7 7 0 10-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="11" r="2.5"/></svg>CAPTURE AGAIN</button>
+    </div>
+  </div>
+</div>
+
+<div id="pendingPanel" class="pending-panel"></div>
 
 <div class="submit-container">
   <button class="btn-submit" onclick="validateAndSubmit()">REVIEW &amp; SUBMIT TO NMDR</button>
   <div class="tool-row">
     <button class="btn-tool" onclick="downloadData()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>DOWNLOAD DATA</button>
+    <button class="btn-tool" onclick="openEditPicker()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>EDIT A SUBMISSION</button>
     <button class="btn-tool" onclick="openDashboard()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/></svg>DASHBOARD</button>
   </div>
   <div id="toolStatus" class="tool-status"></div>
+</div>
+
+<div id="editModal" class="modal">
+  <div class="modal-content dash-content">
+    <div class="modal-header"><span>EDIT A SUBMISSION</span><button onclick="closeEditPicker()">&times;</button></div>
+    <div class="modal-body" id="editBody"></div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeEditPicker()">CLOSE</button></div>
+  </div>
 </div>
 
 <div id="dashModal" class="modal">
@@ -1024,6 +1063,10 @@ function getFormData() {
     incharge_gender: document.querySelector('input[name="incharge_gender"]:checked')?.value || "",
     cadre: cadreValue(),
     visit_date: document.getElementById("visit_date").value,
+    gps_lat: GPS.lat,
+    gps_lng: GPS.lng,
+    gps_accuracy: GPS.accuracy,
+    gps_taken: GPS.taken,
     supervisor_count: supervisors.length,
     staff_count: staffMembers.length,
     supervisors: supervisors.map((s, i) => ({ ...s, signature: supervisorSignature(i) })),
@@ -1049,6 +1092,7 @@ function showSummary() {
   html += `<div class="summary-item"><div class="summary-label">Gender</div><div class="summary-value">${data.incharge_gender}</div></div>`;
   html += `<div class="summary-item"><div class="summary-label">Cadre</div><div class="summary-value">${data.cadre}</div></div>`;
   html += `<div class="summary-item"><div class="summary-label">Visit Date</div><div class="summary-value">${data.visit_date}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">GPS</div><div class="summary-value">${data.gps_lat ? escapeHtml(data.gps_lat + ', ' + data.gps_lng + ' (about ' + Math.round(Number(data.gps_accuracy || 0)) + ' m)') : 'Not captured'}</div></div>`;
   html += `<div class="summary-section-title">SUPERVISORS (${data.supervisor_count})</div>` + data.supervisors.map((s,i) => `<div class="summary-item"><div class="summary-label">Supervisor #${i+1}</div><div class="summary-value">${s.name} | ${s.sex} | ${s.designation} | ${s.organization} | ${s.email || 'no email'} | Phone: ${s.phone} | Sig: ${s.signature ? SIG_YES : SIG_NO}</div></div>`).join('');
   html += `<div class="summary-section-title">STAFF (${data.staff_count})</div>` + data.staff.map((s,i) => `<div class="summary-item"><div class="summary-label">Staff #${i+1}</div><div class="summary-value">${s.name || '-'} | ${s.sex || '-'} | ${s.cadre || '-'} | ${s.unit || '-'} | Phone: ${s.phone || '-'}</div></div>`).join('');
   html += `<div class="summary-section-title">SUBMITTED BY</div>`;
@@ -1058,16 +1102,15 @@ function showSummary() {
   document.getElementById("summaryBody").innerHTML = html;
   var st = document.getElementById("sendStatus");
   if (st) { st.className = "send-status"; st.innerHTML = ""; }
-  var sent = RECORD.accepted > 0;
+  var editing = RECORD.accepted > 0;
   var cb = document.getElementById("btnConfirm");
-  if (cb) { cb.disabled = false; cb.textContent = sent ? "SUBMIT AGAIN" : "CONFIRM SUBMIT"; }
+  if (cb) { cb.disabled = false; cb.textContent = editing ? "SUBMIT THE CHANGES" : "CONFIRM SUBMIT"; }
   var xb = document.getElementById("btnCancel");
-  if (xb) xb.textContent = sent ? "EDIT THIS RECORD" : "CANCEL";
-  if (sent) {
-    sendStatus("working", "This record has been submitted " + RECORD.accepted +
-      (RECORD.accepted === 1 ? " time" : " times") +
-      ". Submitting again sends version " + (RECORD.accepted + 1) +
-      " and updates the same record in NMDR.");
+  if (xb) xb.textContent = editing ? "KEEP EDITING" : "CANCEL";
+  if (editing) {
+    sendStatus("working", "Editing " + escapeHtml(RECORD.id) + ", already in NMDR at version " +
+      RECORD.accepted + ". Submitting sends version " + (RECORD.accepted + 1) +
+      " and updates that same record.");
   }
   document.getElementById("summaryModal").style.display = "flex";
 }
@@ -1089,7 +1132,10 @@ var OUTBOX_KEY = "mocm_outbox_form_a";
 var RECORD_KEY = "mocm_record_form_a";
 
 /* which record this page is editing, and how many versions the server has taken */
-var RECORD = { id: null, accepted: 0 };
+var RECORD = { id: null, accepted: 0, hash: null };
+
+/* the position the phone read, filled by captureGps() further down */
+var GPS = { lat: "", lng: "", accuracy: "", taken: "", state: "waiting", note: "" };
 
 function pad2(n) { return (n < 10 ? "0" : "") + n; }
 function newRecordId() {
@@ -1104,7 +1150,7 @@ function loadRecord() {
     var r = JSON.parse(sessionStorage.getItem(RECORD_KEY));
     if (r && r.id) RECORD = r;
   } catch (e) { /* first time in this tab */ }
-  if (!RECORD.id) { RECORD.id = newRecordId(); RECORD.accepted = 0; saveRecord(); }
+  if (!RECORD.id) { RECORD.id = newRecordId(); RECORD.accepted = 0; RECORD.hash = null; saveRecord(); }
 }
 function saveRecord() {
   try { sessionStorage.setItem(RECORD_KEY, JSON.stringify(RECORD)); } catch (e) {}
@@ -1128,13 +1174,15 @@ function queueSubmission(payload) {
 }
 function renderOutbox() {
   var el = document.getElementById("outboxStrip");
-  if (!el) return;
-  var n = outbox().length;
-  if (!n) { el.className = "outbox-strip"; el.innerHTML = ""; return; }
-  el.className = "outbox-strip on";
-  el.innerHTML = n + (n === 1 ? " submission is" : " submissions are") +
-    " waiting in this phone's outbox and will go out by itself once there is a signal. " +
-    "Do not clear this site's browser data until the message disappears.";
+  if (el) {
+    var n = outbox().length;
+    if (!n) { el.className = "outbox-strip"; el.innerHTML = ""; }
+    else {
+      el.className = "outbox-strip on";
+      el.innerHTML = "Do not clear this site's browser data while records are still waiting below.";
+    }
+  }
+  renderPending();
 }
 
 function postRecord(payload) {
@@ -1150,25 +1198,41 @@ function postRecord(payload) {
   });
 }
 
-/* send what is waiting, oldest first, stopping at the first failure */
+/* send what is waiting, oldest first, stopping at the first failure. Anything
+   NMDR already holds at that version or later is dropped rather than sent twice. */
 var flushing = false;
 function flushOutbox(quiet) {
   if (flushing || !outbox().length || !navigator.onLine) return Promise.resolve();
   flushing = true;
+  var skipped = 0, sent = 0;
 
-  function step() {
-    var list = outbox();
-    if (!list.length) return Promise.resolve(true);
-    return postRecord(list[0].payload)
-      .then(function () { saveOutbox(outbox().slice(1)); return step(); })
-      .catch(function () { return false; });
-  }
+  return serverVersions().then(function (have) {
+    function step() {
+      var list = outbox();
+      if (!list.length) return Promise.resolve(true);
+      var item = list[0];
+      var id = item.payload.recordId;
 
-  return step().then(function (allSent) {
+      if (have && have[id] !== undefined && have[id] >= item.payload.revision) {
+        skipped++;                       // already in NMDR at this version or later
+        saveOutbox(outbox().slice(1));
+        return step();
+      }
+      return postRecord(item.payload)
+        .then(function () { sent++; saveOutbox(outbox().slice(1)); return step(); })
+        .catch(function () { return false; });
+    }
+    return step();
+  }).then(function (allSent) {
     flushing = false;
     renderOutbox();
-    if (allSent && !quiet) {
-      sendStatus("good", "The outbox is empty. Everything held on this phone has reached NMDR.");
+    if (!quiet || (allSent && (sent || skipped))) {
+      var bits = [];
+      if (sent) bits.push(sent + (sent === 1 ? " record" : " records") + " sent to NMDR");
+      if (skipped) bits.push(skipped + (skipped === 1 ? " was" : " were") + " already there, so not sent again");
+      sendStatus(allSent ? "good" : "working", allSent
+        ? (bits.length ? bits.join(", ") + ". Nothing is waiting now." : "Nothing was waiting.")
+        : (bits.length ? bits.join(", ") + ". " : "") + "Some records are still waiting. They will try again by themselves.");
     }
   });
 }
@@ -1184,40 +1248,33 @@ function sendStatus(kind, text) {
   el.innerHTML = text;
 }
 
-function afterAccepted(res, queued) {
-  RECORD.accepted += 1;
-  saveRecord();
-
-  var verb = RECORD.accepted > 1 ? "Resubmitted" : "Submitted";
+function afterAccepted(res, queued, fingerprint) {
+  var wasVersion = RECORD.accepted + 1;
+  var wasId = RECORD.id;
+  var verb = wasVersion > 1 ? "Resubmitted" : "Submitted";
   var where = queued
     ? "Held in this phone's outbox. It goes to NMDR by itself once there is a signal."
-    : "Reference " + ((res && res.reference) ? res.reference : RECORD.id) +
+    : "Reference " + ((res && res.reference) ? res.reference : wasId) +
       ".<br>The summary and its PDF have been emailed to the supervision team and to ICF-SL.";
+
+  // the form is cleared straight away, ready for the next facility. To change
+  // this record later, use EDIT A SUBMISSION and pick it out of NMDR.
+  RECORD.accepted = wasVersion;
+  RECORD.hash = fingerprint || null;
+  saveRecord();
+  resetForm();
+
   sendStatus(queued ? "working" : "good",
     "<b>" + verb + (queued ? " and queued" : "") + " to NMDR.</b> " + where +
-    "<br>Version " + RECORD.accepted + " of this record. Editing and submitting again updates it, " +
-    "it does not create a second record in NMDR.");
+    "<br>" + escapeHtml(wasId) + ", version " + wasVersion +
+    ". The form is now blank for the next facility." +
+    "<br>To change this visit later, press EDIT A SUBMISSION and pick it from the list.");
 
   var confirmBtn = document.getElementById("btnConfirm");
   var cancelBtn = document.getElementById("btnCancel");
-  confirmBtn.disabled = false;
-  confirmBtn.textContent = "SUBMIT AGAIN";
-  cancelBtn.textContent = "EDIT THIS RECORD";
-  if (!document.getElementById("btnNewRecord")) {
-    var nb = document.createElement("button");
-    nb.id = "btnNewRecord";
-    nb.className = "btn-cancel";
-    nb.textContent = "NEW RECORD";
-    nb.onclick = startNewRecord;
-    cancelBtn.parentElement.appendChild(nb);
-  }
-}
-
-function startNewRecord() {
-  if (!confirm("Start a blank Form A for the next facility?\n\nThis record has already been sent, so nothing is lost. Anything typed since the last submit is cleared.")) return;
-  sessionStorage.removeItem(RECORD_KEY);
-  for (var i = 0; i < 40; i++) sessionStorage.removeItem("sup_sig_" + i);
-  location.reload();
+  confirmBtn.disabled = true;
+  confirmBtn.textContent = "SUBMITTED";
+  cancelBtn.textContent = "START THE NEXT ENTRY";
 }
 
 /* every compulsory question answered, and the formats valid. Used by the review
@@ -1243,6 +1300,19 @@ function confirmSubmit() {
   }
 
   var data = getFormData();
+
+  // nothing to send if not a single answer has changed
+  var fingerprint = recordFingerprint(data);
+  if (RECORD.accepted > 0 && RECORD.hash && fingerprint === RECORD.hash) {
+    sendStatus("good", "<b>No changes made.</b> This data is already submitted to NMDR as " +
+      escapeHtml(RECORD.id) + ", version " + RECORD.accepted + "." +
+      "<br>Edit something first, or close this and start a new entry.");
+    var b = document.getElementById("btnConfirm");
+    if (b) { b.disabled = false; b.textContent = "SUBMIT AGAIN"; }
+    return;
+  }
+  data.fingerprint = fingerprint;
+
   try {
     var u = JSON.parse(sessionStorage.getItem("mocm_user"));
     if (u) data.signedInAs = u.name + " (" + u.username + ")";
@@ -1254,19 +1324,19 @@ function confirmSubmit() {
 
   if (!navigator.onLine) {
     queueSubmission(data);
-    afterAccepted(null, true);
+    afterAccepted(null, true, fingerprint);
     return;
   }
 
   sendStatus("working", "Submitting data to NMDR. Keep this page open.");
   postRecord(data)
-    .then(function (res) { afterAccepted(res, false); })
+    .then(function (res) { afterAccepted(res, false, fingerprint); })
     .catch(function (err) {
       queueSubmission(data);
-      afterAccepted(null, true);
+      afterAccepted(null, true, fingerprint);
       sendStatus("working", "<b>Queued.</b> The server could not be reached (" + err.message +
         "). Nothing is lost: it is held on this phone and goes out by itself once there is a signal." +
-        "<br>Version " + RECORD.accepted + " of this record.");
+        "<br>" + escapeHtml(RECORD.id) + ", version " + RECORD.accepted + ". The form is now blank for the next facility.");
     });
 }
 
@@ -1278,6 +1348,8 @@ setSupervisorCount(0);
 setStaffCount(0);
 loadRecord();
 renderSubmittedBy();
+renderGps();
+captureGps(false);
 renderOutbox();
 setTimeout(function () { flushOutbox(true); }, 1500);
 
@@ -1333,29 +1405,6 @@ function saveCsv(name, text) {
   a.click();
   document.body.removeChild(a);
   setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
-}
-
-function downloadData() {
-  toolStatus("on", "Pulling the data from NMDR...");
-  pullData(true).then(function (res) {
-    var stamp = new Date().toISOString().slice(0, 10);
-    var files = [
-      ["facility-profile-" + stamp + ".csv", res.tabs["Form A"]],
-      ["facility-profile-supervisors-" + stamp + ".csv", res.tabs["Form A_Supervisor"]],
-      ["facility-profile-staff-" + stamp + ".csv", res.tabs["Form A_Staff"]]
-    ];
-    var written = 0;
-    files.forEach(function (f, i) {
-      if (!f[1] || !f[1].rows.length) return;
-      setTimeout(function () { saveCsv(f[0], toCsv(f[1])); }, i * 700);
-      written++;
-    });
-    toolStatus("on", written
-      ? written + (written === 1 ? " file" : " files") + " downloading. Names, emails and phone numbers are not included."
-      : "There is nothing in NMDR to download yet.");
-  }).catch(function (err) {
-    toolStatus("bad", "Download failed: " + err.message);
-  });
 }
 
 /* ---------- dashboard ---------- */
@@ -1515,6 +1564,356 @@ function dashboardHtml(res) {
   return h;
 }
 
+
+/* ==================== NO POINTLESS RESUBMISSION ====================
+   A fingerprint of everything that matters in the record. Volatile fields, the
+   timestamp and the version, are left out, so two submissions with the same
+   answers give the same fingerprint and the second one is refused. */
+function recordFingerprint(data) {
+  var parts = [
+    data.district, data.chiefdom, data.phu, data.facility_type,
+    data.hcw_count, data.incharge_name, data.incharge_gender, data.cadre,
+    data.visit_date, data.submittedBy
+  ];
+  // GPS is left out: the reading moves a few metres on its own and that is not an edit
+  // the signature is left out on purpose: a record loaded back from NMDR has to
+  // be signed again, and re-signing on its own is not a change to the answers
+  (data.supervisors || []).forEach(function (s) {
+    parts.push([s.name, s.sex, s.designation, s.organization, s.email, s.phone].join('~'));
+  });
+  (data.staff || []).forEach(function (s) {
+    parts.push([s.name, s.sex, s.cadre, s.unit, s.phone].join('~'));
+  });
+  return parts.join('|');
+}
+
+/* ==================== LOAD A PAST SUBMISSION AND EDIT IT ==================== */
+function openEditPicker() {
+  document.getElementById("editModal").style.display = "flex";
+  var body = document.getElementById("editBody");
+  body.innerHTML = '<div class="dash-empty">Reading the submitted records from NMDR...</div>';
+  if (!navigator.onLine) {
+    body.innerHTML = '<div class="dash-empty">No signal. Editing a past submission needs NMDR. ' +
+      'The form itself still works offline for a new visit.</div>';
+    return;
+  }
+  fetch(ENDPOINT + "?action=list&t=" + Date.now())
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+      if (!res || !res.ok) throw new Error((res && res.error) ? res.error : "NMDR did not answer.");
+      renderEditList(res.records || []);
+    })
+    .catch(function (err) {
+      body.innerHTML = '<div class="dash-empty">' + escapeHtml(err.message) + '</div>';
+    });
+}
+function closeEditPicker() { document.getElementById("editModal").style.display = "none"; }
+
+var EDIT_LIST = [];
+function renderEditList(records) {
+  EDIT_LIST = records;
+  var body = document.getElementById("editBody");
+  if (!records.length) {
+    body.innerHTML = '<div class="dash-empty">Nothing has been submitted to NMDR yet.</div>';
+    return;
+  }
+  var html = '<input class="form-input" id="editSearch" type="text" placeholder="Filter by facility, chiefdom or date" ' +
+             'oninput="filterEditList(this.value)" autocapitalize="none" style="margin-bottom:12px;">' +
+             '<div id="editRows"></div>';
+  body.innerHTML = html;
+  filterEditList("");
+}
+function filterEditList(term) {
+  var t = String(term || "").toLowerCase();
+  var rows = EDIT_LIST.filter(function (r) {
+    return !t || (r.phu + " " + r.chiefdom + " " + r.visitDate + " " + r.reference).toLowerCase().indexOf(t) > -1;
+  });
+  var host = document.getElementById("editRows");
+  if (!rows.length) { host.innerHTML = '<div class="dash-empty">Nothing matches that.</div>'; return; }
+  host.innerHTML = rows.map(function (r) {
+    return '<div class="rec-row" onclick="loadSubmission(\'' + escapeHtml(r.recordId) + '\')">' +
+      '<div class="rec-main">' + escapeHtml(r.phu || 'Facility not given') + '</div>' +
+      '<div class="rec-sub">' + escapeHtml(r.chiefdom || '') + ' · visit ' + escapeHtml(r.visitDate || 'not given') +
+      ' · version ' + r.version + '</div>' +
+      '<div class="rec-sub">' + escapeHtml(r.recordId) + ' · last updated ' + escapeHtml(r.lastUpdated || '') + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function loadSubmission(id) {
+  var body = document.getElementById("editBody");
+  body.innerHTML = '<div class="dash-empty">Loading that record...</div>';
+  fetch(ENDPOINT + "?action=record&id=" + encodeURIComponent(id) + "&t=" + Date.now())
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+      if (!res || !res.ok) throw new Error((res && res.error) ? res.error : "That record would not load.");
+      fillFormFrom(res.record);
+      closeEditPicker();
+      var missing = (res.record.supervisors || []).length;
+      sendStatus("working",
+        "<b>Editing " + escapeHtml(res.record.recordId) + "</b>, version " + res.record.version +
+        ", " + escapeHtml(res.record.phu || '') + ".<br>" +
+        "Change what you need and submit. It updates that same record, it does not create a new one." +
+        (missing ? "<br>Signatures are not stored in NMDR, so each supervisor has to sign again before it will submit." : ""));
+      window.scrollTo(0, 0);
+    })
+    .catch(function (err) {
+      body.innerHTML = '<div class="dash-empty">' + escapeHtml(err.message) + '</div>';
+    });
+}
+
+/* put a record back on the screen */
+function fillFormFrom(rec) {
+  RECORD = { id: rec.recordId, accepted: Number(rec.version) || 1, hash: null };
+  saveRecord();
+
+  var district = document.getElementById("districtSelect");
+  if (rec.district) { district.value = rec.district; updateChiefdom(); }
+  var chief = document.getElementById("chiefdomSelect");
+  if (rec.chiefdom) { chief.value = rec.chiefdom; updatePHU(); }
+  var phu = document.getElementById("phuSelect");
+  if (rec.phu) { phu.value = rec.phu; updateFacilityType(); }
+
+  document.getElementById("hcw_count").value = rec.hcw_count || "";
+  document.getElementById("incharge_name").value = rec.incharge_name || "";
+  var g = document.querySelector('input[name="incharge_gender"][value="' + (rec.incharge_gender || '') + '"]');
+  if (g) { g.checked = true; updateRadioVisuals(document.getElementById('incharge_gender_group')); }
+  setCadreFromLabel(rec.cadre || "");
+  document.getElementById("visit_date").value = rec.visit_date || "";
+  if (rec.gps_lat && rec.gps_lng) {
+    GPS = { lat: String(rec.gps_lat), lng: String(rec.gps_lng),
+            accuracy: String(rec.gps_accuracy || ""), taken: String(rec.gps_taken || ""),
+            state: "ok", note: "" };
+    renderGps();
+  }
+
+  // the cards, rebuilt from the record
+  for (var i = 0; i < 40; i++) sessionStorage.removeItem('sup_sig_' + i);
+  supervisors = (rec.supervisors || []).map(function (s) {
+    return { name: s.name || "", sex: s.sex || "", designation: s.designation || "",
+             organization: s.organization || "", email: s.email || "", phone: s.phone || "" };
+  });
+  if (!supervisors.length) supervisors = [];
+  document.getElementById("supervisor_count").value = supervisors.length || "";
+  setSupervisorCount(supervisors.length);
+
+  staffMembers = (rec.staff || []).map(function (s) {
+    var m = { name: s.name || "", sex: s.sex || "", cadre: "", cadreOther: "", unit: s.unit || "", phone: s.phone || "" };
+    var c = String(s.cadre || "");
+    if (c.indexOf("Other: ") === 0) { m.cadre = "Other"; m.cadreOther = c.slice(7); }
+    else if (c === "Other") { m.cadre = "Other"; }
+    else if (CADRES.indexOf(c) > -1) { m.cadre = c; }
+    return m;
+  });
+  document.getElementById("staff_count").value = staffMembers.length || "";
+  setStaffCount(staffMembers.length);
+
+  renderSubmittedBy();
+  RECORD.hash = recordFingerprint(getFormData());   // so an untouched load is refused
+  saveRecord();
+}
+
+/* the sheet stores "Other: <text>", the dropdown needs both halves back */
+function setCadreFromLabel(label) {
+  var sel = document.getElementById("cadre");
+  var box = document.getElementById("cadre_other");
+  if (label.indexOf("Other: ") === 0) {
+    sel.value = "Other"; toggleCadreOther(); box.value = label.slice(7);
+  } else if (label === "Other") {
+    sel.value = "Other"; toggleCadreOther();
+  } else {
+    sel.value = CADRES.indexOf(label) > -1 ? label : "";
+    toggleCadreOther();
+  }
+}
+
+/* ==================== CLEAR FOR THE NEXT ENTRY ==================== */
+function resetForm() {
+  ["hcw_count", "incharge_name", "cadre_other", "supervisor_count", "staff_count"]
+    .forEach(function (id) { var el = document.getElementById(id); if (el) el.value = ""; });
+
+  document.querySelectorAll('input[name="incharge_gender"]').forEach(function (r) { r.checked = false; });
+  updateRadioVisuals(document.getElementById('incharge_gender_group'));
+
+  document.getElementById("cadre").value = "";
+  toggleCadreOther();
+  document.getElementById("visit_date").value = new Date().toISOString().split('T')[0];
+
+  var district = document.getElementById("districtSelect");
+  updateChiefdom();                    // relists the chiefdoms, clears PHU and type
+  if (district.options.length === 2) district.selectedIndex = 1;
+
+  for (var i = 0; i < 40; i++) sessionStorage.removeItem('sup_sig_' + i);
+  supervisors = [];
+  staffMembers = [];
+  setSupervisorCount(0);
+  setStaffCount(0);
+  renderSubmittedBy();
+
+  RECORD = { id: newRecordId(), accepted: 0, hash: null };   // a brand new record
+  saveRecord();
+  captureGps(true);                       // the next facility is somewhere else
+  window.scrollTo(0, 0);
+}
+
+
+/* ==================== GPS, CAPTURED BY THE PHONE ====================
+   Read on load and again on demand. It is a place, not a person, so it travels
+   to NMDR and stays in the download and the dashboard. */
+function renderGps() {
+  var el = document.getElementById("gpsPanel");
+  if (!el) return;
+  if (GPS.state === "ok") {
+    el.className = "gps-panel good";
+    el.innerHTML = '<div class="gps-line">' + GPS.lat + ', ' + GPS.lng + '</div>' +
+      '<div class="gps-sub">Accurate to about ' + Math.round(Number(GPS.accuracy)) +
+      ' m · read at ' + escapeHtml(GPS.taken) + '</div>';
+  } else if (GPS.state === "waiting") {
+    el.className = "gps-panel";
+    el.innerHTML = '<div class="gps-line">Reading the position...</div>' +
+      '<div class="gps-sub">Stand outside or near a window. This takes a few seconds.</div>';
+  } else {
+    el.className = "gps-panel bad";
+    el.innerHTML = '<div class="gps-line">No position yet</div>' +
+      '<div class="gps-sub">' + escapeHtml(GPS.note || "The phone did not give a position.") +
+      ' You can still submit, and the record will say the GPS was not captured.</div>';
+  }
+}
+
+function captureGps(again) {
+  if (!navigator.geolocation) {
+    GPS.state = "fail";
+    GPS.note = "This phone does not offer GPS to the browser.";
+    renderGps();
+    return;
+  }
+  if (again) { GPS.state = "waiting"; renderGps(); }
+  navigator.geolocation.getCurrentPosition(
+    function (pos) {
+      GPS.lat = pos.coords.latitude.toFixed(6);
+      GPS.lng = pos.coords.longitude.toFixed(6);
+      GPS.accuracy = String(Math.round(pos.coords.accuracy));
+      GPS.taken = new Date().toLocaleString();
+      GPS.state = "ok";
+      GPS.note = "";
+      renderGps();
+    },
+    function (err) {
+      GPS.state = "fail";
+      GPS.note = err && err.code === 1
+        ? "Location permission was refused for this page."
+        : "The phone could not get a fix (" + ((err && err.message) || "no signal") + ").";
+      renderGps();
+    },
+    { enableHighAccuracy: true, timeout: 20000, maximumAge: 60000 }
+  );
+}
+
+/* ==================== WHAT IS WAITING TO GO ====================
+   The queued records, listed rather than just counted, so nobody wonders what
+   is still on the phone. */
+function renderPending() {
+  var el = document.getElementById("pendingPanel");
+  if (!el) return;
+  var list = outbox();
+  if (!list.length) { el.className = "pending-panel"; el.innerHTML = ""; return; }
+
+  el.className = "pending-panel on";
+  var head = '<div class="pending-head">' + list.length +
+    (list.length === 1 ? " record is" : " records are") + " on this phone and not yet in NMDR. " +
+    (navigator.onLine ? "Sending now." : "They go by themselves once there is a signal.") + '</div>';
+  var rows = list.map(function (item) {
+    var p = item.payload;
+    return '<div class="pend-row">' +
+      '<div class="pend-main">' + escapeHtml(p.phu || "Facility not given") + '</div>' +
+      '<div class="pend-sub">Visit ' + escapeHtml(p.visit_date || "not given") +
+      ' · version ' + p.revision + ' · queued ' + escapeHtml(item.queuedAt) + '</div>' +
+      '<div class="pend-sub">' + escapeHtml(p.recordId) + '</div>' +
+      '</div>';
+  }).join('');
+  var actions = '<div class="pend-actions">' +
+    '<button class="btn-tool" onclick="flushOutbox(false)">SEND NOW</button>' +
+    '<button class="btn-tool" onclick="discardPending()">DISCARD</button></div>';
+  el.innerHTML = head + rows + actions;
+}
+
+function discardPending() {
+  var n = outbox().length;
+  if (!n) return;
+  if (!confirm("Throw away " + n + (n === 1 ? " record" : " records") +
+    " that never reached NMDR?\n\nThis cannot be undone.")) return;
+  saveOutbox([]);
+}
+
+/* which record ids NMDR already holds, and at what version */
+function serverVersions() {
+  if (!navigator.onLine) return Promise.resolve(null);
+  return fetch(ENDPOINT + "?action=list&t=" + Date.now())
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+      if (!res || !res.ok) return null;
+      var map = {};
+      (res.records || []).forEach(function (r) { map[r.recordId] = Number(r.version) || 0; });
+      return map;
+    })
+    .catch(function () { return null; });
+}
+
+/* ==================== DOWNLOAD THE WHOLE FILE ====================
+   One Excel file holding every sheet. If the workbook export is unavailable,
+   it falls back to one CSV per sheet so nothing is lost. */
+function saveBase64(name, mime, b64) {
+  var bin = atob(b64);
+  var bytes = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  var url = URL.createObjectURL(new Blob([bytes], { type: mime }));
+  var a = document.createElement("a");
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function () { URL.revokeObjectURL(url); }, 6000);
+}
+
+function downloadData() {
+  if (!navigator.onLine) {
+    toolStatus("bad", "No signal. The download needs NMDR.");
+    return;
+  }
+  toolStatus("on", "Pulling the whole file from NMDR...");
+
+  fetch(ENDPOINT + "?action=export&t=" + Date.now())
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+      if (!res || !res.ok || !res.b64) throw new Error((res && res.error) ? res.error : "The workbook did not come through.");
+      saveBase64(res.filename, res.mime, res.b64);
+      toolStatus("on", "Downloaded the whole file, " + (res.sheets || []).length +
+        " sheets: " + (res.sheets || []).join(", ") + ".");
+    })
+    .catch(function (err) {
+      toolStatus("on", "The Excel export did not work (" + err.message + "). Falling back to one CSV per sheet...");
+      downloadCsvFallback();
+    });
+}
+
+function downloadCsvFallback() {
+  pullData(true).then(function (res) {
+    var stamp = new Date().toISOString().slice(0, 10);
+    var names = Object.keys(res.tabs || {});
+    var written = 0;
+    names.forEach(function (name) {
+      var tab = res.tabs[name];
+      if (!tab || !tab.rows.length) return;
+      var file = "nmdr-" + name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + "-" + stamp + ".csv";
+      setTimeout(function () { saveCsv(file, toCsv(tab)); }, written * 800);
+      written++;
+    });
+    toolStatus(written ? "on" : "bad", written
+      ? written + (written === 1 ? " sheet" : " sheets") + " downloading as CSV. Names, emails and phone numbers are not in these."
+      : "There is nothing in NMDR to download yet.");
+  }).catch(function (err) {
+    toolStatus("bad", "Download failed: " + err.message);
+  });
+}
+
 /* ==================== REQUIRE EVERY QUESTION ====================
    Set REQUIRE_ALL to false to go back to checking only the key fields. */
 var REQUIRE_ALL = true;
@@ -1669,8 +2068,6 @@ var USERS = [
     'font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;}' +
     '.lgWho{font-size:10.5px;font-weight:600;letter-spacing:.4px;opacity:.9;margin-top:8px;}' +
     '.lgWho a{color:#ffc107;text-decoration:underline;cursor:pointer;margin-left:8px;}' +
-    '.lgStamp{background:#e7f3ff;border:1px solid #c9dff2;border-radius:12px;padding:11px 14px;margin:0 0 12px;}' +
-    '.lgStamp b{color:#2b5f8a;}' +
     '@keyframes lgShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}';
   document.head.appendChild(css);
 
@@ -1725,31 +2122,6 @@ var USERS = [
     pEl.onkeydown = function(e){ if (e.key === 'Enter') attempt(); };
     uEl.onkeydown = function(e){ if (e.key === 'Enter') pEl.focus(); };
     setTimeout(function(){ uEl.focus(); }, 60);
-  }
-
-  /* the summary carries who submitted it */
-  function stamp(){
-    var u = currentUser(); if(!u) return;
-    var host = document.getElementById('summary-content') || document.getElementById('summaryBody');
-    if(!host || host.querySelector('.lgStamp')) return;
-    var d = document.createElement('div');
-    d.className = 'lgStamp';
-    d.innerHTML = 'Submitted by <b>' + u.name + '</b> (' + u.username + ')';
-    host.insertBefore(d, host.firstChild);
-  }
-  ['renderSummary','showSummary'].forEach(function(fnName){
-    if (typeof window[fnName] === 'function') {
-      var orig = window[fnName];
-      window[fnName] = function(){ var r = orig.apply(this, arguments); stamp(); return r; };
-    }
-  });
-  if (typeof window.doSubmit === 'function') {
-    var _ds = window.doSubmit;
-    window.doSubmit = function(){ var r = _ds.apply(this, arguments); stamp(); return r; };
-  }
-  if (typeof window.confirmSubmit === 'function') {
-    var _cs = window.confirmSubmit;
-    window.confirmSubmit = function(){ stamp(); return _cs.apply(this, arguments); };
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gate);
