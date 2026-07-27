@@ -31,12 +31,12 @@ body {
   margin: 0;
   padding: 0;
 }
-.tab-nav { display: flex; background: var(--blue-dark); position: sticky; top: 0; z-index: 200; }
-.tab-btn { flex: 1; padding: 14px 8px; color: rgba(255,255,255,0.65); font-weight: 700; font-size: 14px; border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; text-align: center; }
+.tab-nav { display: flex; flex-wrap: wrap; background: var(--blue-dark); position: sticky; top: 0; z-index: 200; }
+.tab-btn { flex: 1 1 33%; padding: 12px 6px; color: rgba(255,255,255,.75); font-weight: 700; font-size: 11.5px; border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; font-family: inherit; display: inline-flex; align-items: center; justify-content: center; }
 .tab-btn.active { color: white; border-bottom: 3px solid var(--gold); background: rgba(255,255,255,0.08); }
 .tab-page { display: none; width: 100%; padding-bottom: 20px; }
 .tab-page.active { display: block; }
-.progress-container { background: var(--blue-dark); padding: 10px 16px; position: sticky; top: 52px; z-index: 100; }
+.progress-container { background: var(--blue-dark); padding: 10px 16px; position: sticky; top: 0; z-index: 100; }
 .progress-bar { background: rgba(255,255,255,0.2); border-radius: 20px; height: 6px; overflow: hidden; }
 .progress-fill { background: var(--gold); height: 100%; width: 0%; transition: width 0.3s ease; }
 .progress-text { color: white; font-size: 11px; margin-top: 6px; text-align: center; font-weight: 500; }
@@ -47,7 +47,7 @@ body {
 .header-title { font-size: 16px; font-weight: 800; text-transform: uppercase; color: var(--gold); }
 .header-sub { font-size: 10px; font-weight: 500; opacity: 0.85; }
 .form-title { background: linear-gradient(90deg, var(--blue-dark), var(--blue)); color: white; padding: 10px 16px; font-weight: 700; font-size: 13px; border-left: 4px solid var(--gold); }
-.section-page { display: none; background: white; margin: 12px; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.section-page { display: block; background: white; margin: 12px; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
 .section-page.active { display: block; }
 .section-header { background: var(--soft-bg); color: var(--blue-dark); padding: 14px 16px; font-weight: 700; font-size: 14px; text-transform: uppercase; border-left: 4px solid var(--blue); }
 .section-card { padding: 16px; }
@@ -57,6 +57,51 @@ body {
 .question-row { margin-bottom: 20px; }
 .question-text { font-weight: 600; font-size: 14px; margin-bottom: 10px; color: var(--text-dark); }
 .required-star { color: var(--red); margin-left: 4px; }
+.icn { width:15px; height:15px; flex:0 0 auto; margin-right:6px; }
+.question-num { color: var(--blue); font-weight: 700; margin-right: 6px; }
+.question-num::after { content: ' '; }
+.member-tag { color: var(--text-light); font-size: 11px; font-weight: 600; }
+.count-hint { font-size:12px; color:var(--text-light); margin-top:8px; font-weight:500; }
+.count-note { display:none; margin-top:8px; background:#fdecea; border:1px solid #f5c2bd; border-radius:10px; padding:9px 12px; color:var(--red); font-size:12px; font-weight:600; }
+.form-input.bad-entry { border-color:var(--red); box-shadow:0 0 0 3px rgba(220,53,69,.12); }
+.btn-tool { padding:11px 14px; background:#fff; color:var(--blue-dark); border:1.5px solid var(--blue); border-radius:40px; font-weight:700; font-size:12.5px; cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; justify-content:center; }
+.tool-status { display:none; margin:0; padding:10px 16px; font-size:12.5px; font-weight:600; background:var(--soft-bg); border-bottom:1px solid var(--border); }
+.tool-status.on { display:block; color:var(--blue-dark); }
+.tool-status.bad { display:block; color:var(--red); }
+.send-status { display:none; margin:12px 16px 0; padding:11px 14px; border-radius:12px; font-size:13px; font-weight:600; line-height:1.45; }
+.send-status.working { display:block; background:var(--soft-bg); border:1px solid #c9dff2; color:var(--blue-dark); }
+.send-status.good { display:block; background:#d4edda; border:1px solid #b7dfc1; color:#155724; }
+.send-status.bad { display:block; background:#f8d7da; border:1px solid #f1b5bb; color:#721c24; }
+.gps-panel { border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; background:#fafbfc; font-size:13px; }
+.gps-panel.good { border-color:#b7dfc1; background:#f1f9f3; }
+.gps-panel.bad { border-color:#f1b5bb; background:#fdf2f3; }
+.gps-line { font-weight:700; color:var(--blue-dark); }
+.gps-sub { font-size:11.5px; color:var(--text-light); margin-top:3px; }
+.pending-panel { display:none; margin:12px 16px 0; border:1.5px solid var(--gold); border-radius:14px; overflow:hidden; background:#fff8e1; }
+.pending-panel.on { display:block; }
+.pending-head { padding:12px 14px; font-size:13px; font-weight:700; color:#7a5600; }
+.pend-row { padding:11px 14px; border-top:1px solid #f0dca8; background:#fff; }
+.pend-main { font-weight:700; font-size:13.5px; color:var(--blue-dark); }
+.pend-sub { font-size:11.5px; color:var(--text-light); margin-top:2px; }
+.pend-actions { padding:11px 14px; border-top:1px solid #f0dca8; display:flex; gap:10px; }
+.dash-kpis { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.kpi { background:var(--soft-bg); border-radius:12px; padding:12px 14px; }
+.kpi-val { font-size:22px; font-weight:800; color:var(--blue-dark); }
+.kpi-lbl { font-size:10.5px; font-weight:700; letter-spacing:.4px; text-transform:uppercase; color:var(--text-light); margin-top:2px; }
+.dash-block { margin-top:18px; }
+.dash-title { font-size:12px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; color:var(--blue); padding-bottom:6px; border-bottom:2px solid var(--soft-bg); margin-bottom:10px; }
+.bar-row { margin-bottom:9px; }
+.bar-top { display:flex; justify-content:space-between; font-size:12.5px; margin-bottom:3px; }
+.bar-num { color:var(--blue-dark); font-weight:700; white-space:nowrap; }
+.bar-track { height:8px; background:var(--border); border-radius:6px; overflow:hidden; }
+.bar-fill { height:100%; background:var(--blue); border-radius:6px; }
+.bar-fill.gold { background:var(--gold); }
+.bar-fill.green { background:var(--green); }
+.dash-note { font-size:11.5px; color:var(--text-light); margin-top:8px; line-height:1.5; }
+.dash-empty { padding:24px; text-align:center; color:var(--text-light); font-size:13px; }
+.rec-row { border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:10px; cursor:pointer; background:#fafbfc; }
+.rec-main { font-weight:700; color:var(--blue-dark); font-size:14px; }
+.rec-sub { font-size:11.5px; color:var(--text-light); margin-top:2px; }
 .options-group-vertical { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
 .radio-option { display: flex; align-items: center; gap: 12px; background: white; padding: 10px 14px; border-radius: 12px; border: 1.5px solid var(--border); cursor: pointer; font-weight: 500; font-size: 14px; }
 .radio-option input { width: 18px; height: 18px; accent-color: var(--blue); cursor: pointer; margin: 0; }
@@ -109,9 +154,14 @@ body {
 <body>
 
 <div class="tab-nav">
-  <button class="tab-btn active" onclick="switchTab('entry')">📋 DATA ENTRY</button>
-  <button class="tab-btn" onclick="switchTab('summary')">📊 SUMMARY</button>
+  <button class="tab-btn active" data-tab="entry" onclick="switchTab('entry')"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6v3H9z"/><path d="M8 5H6a1 1 0 00-1 1v13a1 1 0 001 1h12a1 1 0 001-1V6a1 1 0 00-1-1h-2"/><path d="M9 12h6"/><path d="M9 16h4"/></svg>DATA ENTRY</button>
+  <button class="tab-btn" data-tab="summary" onclick="switchTab('summary')"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12"/><path d="M8 12h12"/><path d="M8 18h12"/><path d="M4 6h.01"/><path d="M4 12h.01"/><path d="M4 18h.01"/></svg>SUMMARY</button>
+  <button class="tab-btn" onclick="downloadData()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>DOWNLOAD</button>
+  <button class="tab-btn" onclick="openDashboard()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/></svg>DASHBOARD</button>
+  <button class="tab-btn" onclick="openEditPicker()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>EDIT</button>
+  <button class="tab-btn" onclick="newEntry()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>NEW ENTRY</button>
 </div>
+<div id="toolStatus" class="tool-status"></div>
 
 <div class="tab-page active" id="tab-entry">
   <div class="page-header">
@@ -121,8 +171,10 @@ body {
     <div class="header-sub">FORM G: OTSS/MOCM Data Management Checklist</div>
   </div>
   <div class="form-title">FORM G: OTSS/MOCM DATA MANAGEMENT CHECKLIST</div>
-  <div class="progress-container"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div><div class="progress-text" id="progressText">Section 1 of 12</div></div>
+  <div class="progress-container"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div><div class="progress-text" id="progressText">Answer every question, then press Submit Data at the foot of the page.</div></div>
   <div id="sections-container"></div>
+  <div id="pendingPanel" class="pending-panel"></div>
+  <div id="sendStatus" class="send-status"></div>
 </div>
 
 <div class="tab-page" id="tab-summary">
@@ -130,7 +182,27 @@ body {
   <div id="summary-content"><div class="no-data">Complete the form and click "Save &amp; View Summary".</div></div>
 </div>
 
-<div id="confirmModal" class="modal"><div class="modal-content"><div class="modal-header"><span>Confirm Submission</span><button onclick="closeModal()">×</button></div><div class="modal-body">Save this form? You can still edit after saving.</div><div class="modal-footer"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-confirm" onclick="doSubmit()">Save &amp; View Summary</button></div></div></div>
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><span>EDIT A SUBMISSION</span><button onclick="closeEditPicker()">&times;</button></div>
+    <div class="modal-body" id="editBody"></div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeEditPicker()">CLOSE</button></div>
+  </div>
+</div>
+
+<div id="dashModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><span>NMDR DASHBOARD · DATA MANAGEMENT</span><button onclick="closeDashboard()">&times;</button></div>
+    <div class="modal-body" id="dashBody"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeDashboard()">CLOSE</button>
+      <button class="btn-confirm" onclick="openDashboard(true)">REFRESH</button>
+    </div>
+  </div>
+</div>
+
+<div id="confirmModal" class="modal"><div class="modal-content"><div class="modal-header"><span>Confirm Submission</span><button onclick="closeModal()">×</button></div><div class="modal-body">Submit this data to NMDR? You can edit the record afterwards and submit it again; it updates the same record rather than creating a second one.</div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-confirm" onclick="doSubmit()">Submit to NMDR</button></div></div></div>
 
 <script>
 // ==================== FACILITY LIST ====================
@@ -220,7 +292,7 @@ function updateFacilityType() {
 
 let ans = {}, submitted = false;
 let currentSection = 0;
-const sections = ["Facility Demographics", "Staff & Training", "Data Knowledge", "Training Others", "DHIS2 Access & Use", "Reporting Tools Availability", "Data Submission Status", "Data Verification Triangle", "Immediate Corrective Actions", "Staff Reached", "Supervisor Feedback", "Gap Analysis & Action Plan"];
+const sections = ["Facility Demographics", "Staff & Training", "Data Knowledge", "Training Others", "DHIS2 Access & Use", "Reporting Tools Availability", "Data Submission Status", "Data Verification Triangle", "Immediate Corrective Actions", "Staff Reached", "Supervisor Feedback", "Gap Analysis & Action Plan", "Location"];
 
 // keys for the generated question blocks
 const KNOW_ITEMS = ["Identify all the malaria reporting forms","Identify a suspected malaria case in the CR register","Identify suspected malaria cases tested","Identify suspected malaria cases tested positive","Identify suspected malaria cases not tested but treated","Identify Total number of malaria cases prescribed ACTs","Identify a confirmed malaria case","Differentiate between new and old malaria cases","Differentiate between provisional and additional diagnosis"];
@@ -240,8 +312,11 @@ const ISSUE_AREAS = ["Capacity/Training","Completion of Consulting room register
 const ISSUE_KEYS = ['issue1','issue2','issue3','issue4','issue5','issue6'];
 const STAFF_KEYS = ['staff1','staff2','staff3','staff4','staff5','staff6'];
 
-function updateAns(key, val) { ans[key] = val; }
-function updateCheck(key, val, el) { if(!ans[key]) ans[key]=[]; if(el.checked){ if(!ans[key].includes(val)) ans[key].push(val); el.closest('.check-option').classList.add('selected'); } else{ ans[key]=ans[key].filter(v=>v!==val); el.closest('.check-option').classList.remove('selected'); } }
+/* the position the phone read, filled by captureGps() further down */
+var GPS = { lat:"", lng:"", accuracy:"", taken:"", state:"waiting", note:"" };
+
+function updateAns(key, val) { ans[key] = val; applySkips(); updateProgress(); }
+function updateCheck(key, val, el) { if(!ans[key]) ans[key]=[]; if(el.checked){ if(!ans[key].includes(val)) ans[key].push(val); el.closest('.check-option').classList.add('selected'); } else{ ans[key]=ans[key].filter(v=>v!==val); el.closest('.check-option').classList.remove('selected'); } applySkips(); updateProgress(); }
 function updateRadioVisuals(groupId) { const g = document.getElementById(groupId); if(!g) return; g.querySelectorAll('.radio-option').forEach(r => { const inp = r.querySelector('input'); if(inp && inp.checked) r.classList.add('selected'); else r.classList.remove('selected'); }); }
 
 // ---------- data verification triangle ----------
@@ -270,7 +345,7 @@ function buildAllSections() {
   // SECTION 0: Demographics — District > Chiefdom > PHU > Facility Type
   html += `<div class="section-page" id="section0"><div class="section-header">1. FACILITY DEMOGRAPHICS</div><div class="section-card">
     <div class="question-row"><div class="question-text">District <span class="required-star">*</span></div><select class="form-select" id="districtSelect" onchange="updateChiefdom()"><option>${DISTRICT}</option></select></div>
-    <div class="question-row"><div class="question-text">Chiefdom / Zone / City <span class="required-star">*</span></div><select class="form-select" id="chiefdomSelect" onchange="updatePHU()" disabled><option value="">Select District first</option></select></div>
+    <div class="question-row"><div class="question-text">Chiefdom <span class="required-star">*</span></div><select class="form-select" id="chiefdomSelect" onchange="updatePHU()" disabled><option value="">Select District first</option></select></div>
     <div class="question-row"><div class="question-text">Health Facility (PHU) <span class="required-star">*</span></div><select class="form-select" id="phuSelect" onchange="updateFacilityType()" disabled><option value="">Select Chiefdom first</option></select></div>
     <div class="question-row"><div class="question-text">Health Facility Type <span class="required-star">*</span></div><select class="form-select" id="facilityTypeSelect" disabled><option value="">Select PHU first</option></select></div>
     <div class="question-row"><div class="question-text">Number of staff supervised during this round of OTSS - MALE</div><input class="form-input" id="staff_male" type="number" min="0" placeholder="0" oninput="updateAns('staff_male',this.value)"></div>
@@ -367,36 +442,80 @@ function buildAllSections() {
     <div class="question-row"><div class="question-text">Supervisor Comments</div><textarea class="form-textarea" id="supcomments" rows="3" placeholder="Supervisor comments..." oninput="updateAns('supcomments',this.value)"></textarea></div>
   </div></div>`;
 
+  html += `<div class="section-page" id="section12"><div class="section-header">13. LOCATION</div><div class="section-card">
+    <div class="question-row" style="margin-bottom:0;">
+      <div class="question-text"><span class="question-num">13.1</span>GPS position of the facility</div>
+      <div id="gpsPanel" class="gps-panel"></div>
+      <button class="btn-tool" style="margin-top:10px;" onclick="captureGps(true)">CAPTURE AGAIN</button>
+    </div>
+  </div></div>`;
+
   container.innerHTML = html;
 
-  for(let i = 0; i <= 11; i++) {
-    const page = document.getElementById(`section${i}`);
-    if(page) {
-      const navDiv = document.createElement('div');
-      navDiv.className = 'nav-buttons';
-      if(i === 0) navDiv.innerHTML = `<button class="btn-next" onclick="nextSection()">Next →</button>`;
-      else if(i === 11) navDiv.innerHTML = `<button class="btn-prev" onclick="prevSection()">← Back</button><button class="btn-submit-final" onclick="submitForm()">✓ SUBMIT FORM</button>`;
-      else navDiv.innerHTML = `<button class="btn-prev" onclick="prevSection()">← Back</button><button class="btn-next" onclick="nextSection()">Next →</button>`;
-      page.appendChild(navDiv);
-    }
-  }
+  const navDiv = document.createElement('div');
+  navDiv.className = 'nav-buttons';
+  navDiv.innerHTML = `<button class="btn-submit-final" onclick="submitForm()">SUBMIT DATA</button>`;
+  container.appendChild(navDiv);
+
+  numberQuestions();
 }
 
+/* Every section is on the page at once. showSection stays because the
+   required-answer check calls it to bring a missed question into view. */
 function showSection(index) {
-  for(let i = 0; i <= 11; i++) { const page = document.getElementById(`section${i}`); if(page) page.classList.toggle('active', i === index); }
-  currentSection = index;
-  document.getElementById('progressFill').style.width = ((index + 1) / 12 * 100) + '%';
-  document.getElementById('progressText').innerText = `Section ${index + 1} of 12: ${sections[index]}`;
-  window.scrollTo(0, 0);
+  const pages = document.querySelectorAll('.section-page');
+  currentSection = Math.max(0, Math.min(pages.length - 1, index));
+  const page = pages[currentSection];
+  if (page && page.scrollIntoView) page.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-function nextSection() { if (currentSection < 11) showSection(currentSection + 1); }
-function prevSection() { if (currentSection > 0) showSection(currentSection - 1); }
+function nextSection() { showSection(currentSection + 1); }
+function prevSection() { showSection(currentSection - 1); }
+
+/* ---------- question numbers, from the section heading ---------- */
+function numberQuestions(){
+  document.querySelectorAll('#sections-container .section-page').forEach(function (page, si) {
+    var head = page.querySelector('.section-header');
+    var secNo = head ? (head.textContent.trim().match(/^(\d+)\./) || [null, String(si + 1)])[1] : String(si + 1);
+    var seen = 0;
+    page.querySelectorAll('.question-row').forEach(function (row) {
+      if (!row.querySelector('input, select, textarea')) return;
+      if (!keyOf(row)) return;
+      seen++;
+      var n = secNo + '.' + seen;
+      row.dataset.qn = n;
+      var label = row.querySelector('.question-text');
+      if (label && !label.querySelector('.question-num')) {
+        var tag = document.createElement('span');
+        tag.className = 'question-num';
+        tag.textContent = n;
+        label.insertBefore(tag, label.firstChild);
+      }
+    });
+  });
+}
+
+/* how much of the page is done */
+function updateProgress(){
+  const rows = document.querySelectorAll('#sections-container .question-row');
+  let total = 0, done = 0;
+  rows.forEach(function (row) {
+    if (!row.querySelector('input, select, textarea')) return;
+    if (row.style.display === 'none') return;
+    if ((row.closest('.section-page') || {style:{}}).style.display === 'none') return;
+    total++;
+    if (typeof _raRowAnswered === 'function' && _raRowAnswered(row)) done++;
+  });
+  const fill = document.getElementById('progressFill');
+  const text = document.getElementById('progressText');
+  if (fill) fill.style.width = (total ? Math.round(done / total * 100) : 0) + '%';
+  if (text) text.textContent = done + ' of ' + total + ' questions answered. Every one is required.';
+}
 function switchTab(tab) {
   document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
-  if(tab === 'entry') document.querySelector('.tab-btn:first-child').classList.add('active');
-  else document.querySelector('.tab-btn:last-child').classList.add('active');
+  var btn = document.querySelector('.tab-btn[data-tab="' + tab + '"]');
+  if(btn) btn.classList.add('active');
   if(tab === 'summary') renderSummary();
   window.scrollTo(0, 0);
 }
@@ -422,9 +541,6 @@ function validateForm() {
   if(!d.visitdate){ alert("Select Date of Visit"); return false; }
   return true;
 }
-function submitForm(){ if(validateForm()) document.getElementById('confirmModal').style.display='flex'; }
-function closeModal(){ document.getElementById('confirmModal').style.display='none'; }
-function doSubmit(){ closeModal(); ans._submitted = new Date().toLocaleString(); ans._demographics = getDemographics(); submitted = true; renderSummary(); switchTab('summary'); }
 function renderSummary(){
   if(!submitted && !ans._submitted) return;
   const demo = ans._demographics || getDemographics();
@@ -457,24 +573,909 @@ function renderSummary(){
   document.getElementById('summary-content').innerHTML = html;
 }
 
-buildAllSections();
-document.getElementById("districtSelect").value = DISTRICT;
-updateChiefdom();
-const _vd = document.getElementById("visitdate");
-if (_vd) _vd.value = new Date().toISOString().split('T')[0];
-showSection(0);
-setTimeout(() => {
-  const radioGroups = ['training_type','dhis2_device','data_transfer','dhis2_training','head_access','data_validation','feedback_provided','rating','gapaddr','immfeedback'];
-  for(let i=0;i<=8;i++) radioGroups.push(`know${i}`);
-  for(let i=0;i<=4;i++) radioGroups.push(`train${i}`);
-  for(let i=0;i<=2;i++) radioGroups.push(`dhis2_staff${i}`);
-  for(let i=0;i<=6;i++) radioGroups.push(`tool${i}`);
-  for(let i=0;i<=4;i++) radioGroups.push(`form${i}`);
-  for(let i=0;i<=4;i++) radioGroups.push(`sub${i}`);
-  for(let i=0;i<=4;i++) radioGroups.push(`entered${i}`);
-  for(let i=0;i<=5;i++) radioGroups.push(`issue${i}`);
-  radioGroups.forEach(g => updateRadioVisuals(g));
-}, 200);
+
+
+/* ==================== NMDR: SUBMIT, QUEUE, EDIT ====================
+   The same machinery as the Facility Profile form, so the two behave alike:
+   works with no signal, queues what cannot go out, syncs by itself, updates a
+   record instead of duplicating it, and refuses an unchanged resubmission.
+   Paste the Apps Script /exec URL for data management assessment here. */
+var ENDPOINT = "PASTE_YOUR_FORM_G_WEB_APP_EXEC_URL_HERE";
+
+var OUTBOX_KEY = "mocm_outbox_form_g";
+var ARCHIVE_KEY = "mocm_sent_form_g";     // what this phone has submitted, kept for editing
+var RECORD_KEY = "mocm_record_form_g";
+
+var RECORD = { id: null, accepted: 0, hash: null };
+
+function pad2(n){ return (n<10?"0":"")+n; }
+function newRecordId(){
+  var d=new Date();
+  return "FG-" + d.getFullYear()+pad2(d.getMonth()+1)+pad2(d.getDate()) + "-" +
+         pad2(d.getHours())+pad2(d.getMinutes())+pad2(d.getSeconds()) + "-" +
+         Math.random().toString(36).slice(2,7).toUpperCase();
+}
+function loadRecord(){
+  try { var r=JSON.parse(sessionStorage.getItem(RECORD_KEY)); if(r&&r.id) RECORD=r; } catch(e){}
+  if(!RECORD.id){ RECORD={id:newRecordId(),accepted:0,hash:null}; saveRecord(); }
+}
+function saveRecord(){ try{ sessionStorage.setItem(RECORD_KEY, JSON.stringify(RECORD)); }catch(e){} }
+
+/* ---------- GPS ---------- */
+function renderGps(){
+  var el=document.getElementById("gpsPanel");
+  if(!el) return;
+  if(GPS.state==="ok"){
+    el.className="gps-panel good";
+    el.innerHTML='<div class="gps-line">'+GPS.lat+', '+GPS.lng+'</div>'+
+      '<div class="gps-sub">Accurate to about '+Math.round(Number(GPS.accuracy))+' m · read at '+escOpt(GPS.taken)+'</div>';
+  } else if(GPS.state==="waiting"){
+    el.className="gps-panel";
+    el.innerHTML='<div class="gps-line">Reading the position...</div>'+
+      '<div class="gps-sub">Stand outside or near a window. This takes a few seconds.</div>';
+  } else {
+    el.className="gps-panel bad";
+    el.innerHTML='<div class="gps-line">No position yet</div>'+
+      '<div class="gps-sub">'+escOpt(GPS.note||"The phone did not give a position.")+
+      ' You can still submit, and the record will say the GPS was not captured.</div>';
+  }
+}
+function captureGps(again){
+  if(!navigator.geolocation){ GPS.state="fail"; GPS.note="This phone does not offer GPS to the browser."; renderGps(); return; }
+  if(again){ GPS.state="waiting"; renderGps(); }
+  navigator.geolocation.getCurrentPosition(function(pos){
+    GPS.lat=pos.coords.latitude.toFixed(6);
+    GPS.lng=pos.coords.longitude.toFixed(6);
+    GPS.accuracy=String(Math.round(pos.coords.accuracy));
+    GPS.taken=new Date().toLocaleString();
+    GPS.state="ok"; GPS.note=""; renderGps();
+  }, function(err){
+    GPS.state="fail";
+    GPS.note = (err&&err.code===1) ? "Location permission was refused for this page."
+      : "The phone could not get a fix ("+((err&&err.message)||"no signal")+").";
+    renderGps();
+  }, { enableHighAccuracy:true, timeout:20000, maximumAge:60000 });
+}
+
+/* ---------- the payload: every question with its own label ----------
+   The labels are read off the screen, so a question edited in the form arrives
+   here with its new wording and no code change. */
+function labelledRows(){
+  var out = [];
+  var pages = document.querySelectorAll('#sections-container .section-page');
+  pages.forEach(function(page, si){
+    var head = page.querySelector('.section-header');
+    var headText = head ? head.textContent.trim() : '';
+    var secNo = (headText.match(/^(\d+)\./) || [null, String(si+1)])[1];
+    var rows = page.querySelectorAll('.question-row');
+    var seen = 0;
+    rows.forEach(function(row){
+      if(row.closest('#obs-container')) return;          // the cards travel separately
+      var field = row.querySelector('input, select, textarea');
+      if(!field) return;
+      var key = keyOf(row);
+      if(!key) return;
+      seen++;
+      var n = row.dataset.qn || (secNo + '.' + seen);
+      var text = (row.querySelector('.question-text') || {textContent:''}).textContent
+                   .replace(/\s+/g,' ').replace(/\*$/,'').trim();
+      if (text.indexOf(n) === 0) text = text.slice(n.length).trim();   // the number is printed separately
+      var v = ans[key];
+      if(row.style.display === 'none'){ v = 'Skipped'; }   // the question did not apply
+      else if(v === undefined || v === '') v = domValue(row);   // demographics live in the DOM
+      if(Array.isArray(v)) v = v.join(', ');
+      out.push({ n:n, label:n + ' ' + text, value:(v===undefined?'':v) });
+    });
+  });
+  return out;
+}
+
+/* whatever the row is showing, for the fields that are not held in ans */
+function domValue(row){
+  var checked = row.querySelector('input[type=radio]:checked');
+  if(checked) return checked.value;
+  var boxes = row.querySelectorAll('input[type=checkbox]:checked');
+  if(boxes.length) return Array.prototype.map.call(boxes, function(b){ return b.value; }).join(', ');
+  var f = row.querySelector('select, input[type=text], input[type=number], input[type=date], textarea');
+  return f ? f.value : '';
+}
+
+/* the answer key behind a question row, taken from its own handler */
+function keyOf(row){
+  var el = row.querySelector('input[type=radio]');
+  if(el && el.name) return el.name;
+  var fields = row.querySelectorAll('input, select, textarea');
+  for(var i=0;i<fields.length;i++){
+    var h = fields[i].getAttribute('onchange') || fields[i].getAttribute('oninput') || '';
+    var m = h.match(/update(?:Ans|Check)\('([^']+)'/);
+    if(m) return m[1];
+    if(fields[i].id) return fields[i].id;
+  }
+  return '';
+}
+
+function getPayload(){
+  var d = getDemographics();
+  return {
+    recordId: RECORD.id,
+    revision: RECORD.accepted + 1,
+    resubmission: RECORD.accepted > 0,
+    submittedAt: new Date().toLocaleString(),
+    submittedBy: d.supervisor,
+    district: d.district, chiefdom: d.chiefdom, phu: d.phu, facility_type: d.facility_type,
+    visit_date: d.visitdate,
+    gps_lat: GPS.lat, gps_lng: GPS.lng, gps_accuracy: GPS.accuracy, gps_taken: GPS.taken,
+    rows: labelledRows(),
+    rating: ans.rating || ''
+  };
+}
+
+function recordFingerprint(p){
+  var parts = [p.district, p.chiefdom, p.phu, p.facility_type, p.visit_date, p.submittedBy];
+  p.rows.forEach(function(r){ parts.push(r.label + '=' + r.value); });
+  return parts.join('|');            // GPS left out, it drifts on its own
+}
+
+/* ---------- the archive: every assessment this phone submitted, kept on the
+   phone so a past visit can be reopened and corrected with no signal ---------- */
+function archive(){ try{ return JSON.parse(localStorage.getItem(ARCHIVE_KEY))||{}; }catch(e){ return {}; } }
+function archiveSave(p){
+  var all=archive();
+  all[p.recordId]={ payload:p, savedAt:new Date().toLocaleString(), version:p.revision,
+                    phu:p.phu, chiefdom:p.chiefdom, visit_date:p.visit_date, pct:p.overall_pct };
+  try{ localStorage.setItem(ARCHIVE_KEY, JSON.stringify(all)); }catch(e){}
+}
+function archiveList(){
+  var all=archive();
+  return Object.keys(all).map(function(id){
+    var it=all[id];
+    return { recordId:id, version:it.version, savedAt:it.savedAt, phu:it.phu,
+             chiefdom:it.chiefdom, visitDate:it.visit_date, pct:it.pct };
+  }).sort(function(a,b){ return a.recordId<b.recordId?1:-1; });
+}
+
+/* ---------- the outbox ---------- */
+function outbox(){ try{ return JSON.parse(localStorage.getItem(OUTBOX_KEY))||[]; }catch(e){ return []; } }
+function saveOutbox(list){ try{ localStorage.setItem(OUTBOX_KEY, JSON.stringify(list)); }catch(e){} renderPending(); }
+function queueSubmission(p){
+  var list=outbox().filter(function(i){ return i.payload.recordId!==p.recordId; });
+  list.push({ payload:p, queuedAt:new Date().toLocaleString() });
+  saveOutbox(list);
+}
+function renderPending(){
+  var el=document.getElementById("pendingPanel");
+  if(!el) return;
+  var list=outbox();
+  if(!list.length){ el.className="pending-panel"; el.innerHTML=""; return; }
+  el.className="pending-panel on";
+  el.innerHTML='<div class="pending-head">'+list.length+(list.length===1?" record is":" records are")+
+    " on this phone and not yet in NMDR. "+(navigator.onLine?"Sending now.":"They go by themselves once there is a signal.")+'</div>'+
+    list.map(function(i){
+      var p=i.payload;
+      return '<div class="pend-row"><div class="pend-main">'+escOpt(p.phu||"Facility not given")+'</div>'+
+        '<div class="pend-sub">Visit '+escOpt(p.visit_date||"not given")+' · version '+p.revision+' · queued '+escOpt(i.queuedAt)+'</div>'+
+        '<div class="pend-sub">'+escOpt(p.recordId)+'</div></div>';
+    }).join('')+
+    '<div class="pend-actions"><button class="btn-tool" onclick="flushOutbox(false)">SEND NOW</button>'+
+    '<button class="btn-tool" onclick="discardPending()">DISCARD</button></div>';
+}
+function discardPending(){
+  var n=outbox().length;
+  if(!n) return;
+  if(!confirm("Throw away "+n+(n===1?" record":" records")+" that never reached NMDR?\n\nThis cannot be undone.")) return;
+  saveOutbox([]);
+}
+/* NMDR answers with JSON. If a web page comes back instead, the deployment is
+   not reachable as data: almost always the web app access is not set to Anyone,
+   or the script was edited without re-deploying a new version. Say so plainly
+   rather than letting a JSON parse error surface. */
+function jsonFrom(res){
+  return res.text().then(function(t){
+    var s = String(t || '').trim();
+    if (s.charAt(0) === '<') {
+      throw new Error('NMDR returned a web page instead of data. In Apps Script, check ' +
+        'Deploy \u25b8 Manage deployments: Execute as Me, Who has access Anyone, then deploy a NEW version ' +
+        'and paste the /exec URL into this form.');
+    }
+    try { return JSON.parse(s); }
+    catch (e) { throw new Error('NMDR sent something this form could not read: ' + s.slice(0, 80)); }
+  });
+}
+
+function postRecord(p){
+  return fetch(ENDPOINT,{ method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(p) })
+    .then(function(r){ return jsonFrom(r); })
+    .then(function(res){
+      if(!res||!res.ok) throw new Error((res&&res.error)?res.error:"NMDR rejected the submission.");
+      return res;
+    });
+}
+function serverVersions(){
+  if(!navigator.onLine) return Promise.resolve(null);
+  return fetch(ENDPOINT+"?action=list&t="+Date.now())
+    .then(function(r){ return jsonFrom(r); })
+    .then(function(res){
+      if(!res||!res.ok) return null;
+      var map={};
+      (res.records||[]).forEach(function(r){ map[r.recordId]=Number(r.version)||0; });
+      return map;
+    }).catch(function(){ return null; });
+}
+var flushing=false;
+function flushOutbox(quiet){
+  if(flushing||!outbox().length||!navigator.onLine) return Promise.resolve();
+  flushing=true;
+  var sent=0, skipped=0;
+  return serverVersions().then(function(have){
+    function step(){
+      var list=outbox();
+      if(!list.length) return Promise.resolve(true);
+      var item=list[0], id=item.payload.recordId;
+      if(have && have[id]!==undefined && have[id]>=item.payload.revision){
+        skipped++; saveOutbox(outbox().slice(1)); return step();
+      }
+      return postRecord(item.payload)
+        .then(function(){ sent++; saveOutbox(outbox().slice(1)); return step(); })
+        .catch(function(){ return false; });
+    }
+    return step();
+  }).then(function(allSent){
+    flushing=false; renderPending();
+    if(!quiet||(allSent&&(sent||skipped))){
+      var bits=[];
+      if(sent) bits.push(sent+(sent===1?" record":" records")+" sent to NMDR");
+      if(skipped) bits.push(skipped+(skipped===1?" was":" were")+" already there, so not sent again");
+      sendStatus(allSent?"good":"working", allSent
+        ? (bits.length?bits.join(", ")+". Nothing is waiting now.":"Nothing was waiting.")
+        : (bits.length?bits.join(", ")+". ":"")+"Some records are still waiting. They will try again by themselves.");
+    }
+  });
+}
+window.addEventListener("online", function(){ flushOutbox(true); });
+setInterval(function(){ flushOutbox(true); }, 60000);
+
+/* ---------- status strip ---------- */
+function sendStatus(kind, text){
+  var el=document.getElementById("sendStatus");
+  if(!el) return;
+  el.className="send-status "+kind;
+  el.innerHTML=text;
+}
+function toolStatus(kind, text){
+  var el=document.getElementById("toolStatus");
+  if(!el) return;
+  el.className="tool-status "+(kind||"");
+  el.textContent=text||"";
+}
+
+/* ---------- submit ---------- */
+function readyToSubmit(){
+  if(typeof validateAllQuestions==="function" && !validateAllQuestions()) return false;
+  var d=getDemographics();
+  if(!d.district){ alert("Please select District"); return false; }
+  if(!d.chiefdom){ alert("Please select Chiefdom"); return false; }
+  if(!d.phu){ alert("Please select Health Facility (PHU)"); return false; }
+  if(!d.facility_type){ alert("Please select Health Facility Type"); return false; }
+  if(!d.supervisor){ alert("Enter Supervisor Name"); return false; }
+  if(!d.visitdate){ alert("Select Date of Visit"); return false; }
+  return true;
+}
+
+function submitForm(){
+  if(!readyToSubmit()) return;
+  document.getElementById('confirmModal').style.display='flex';
+}
+function closeModal(){ document.getElementById('confirmModal').style.display='none'; }
+
+function doSubmit(){
+  closeModal();
+  if(!readyToSubmit()) return;
+  if(!ENDPOINT || ENDPOINT.indexOf("http")!==0){
+    sendStatus("bad","This copy of the form has no NMDR address yet. Give it to the ICF-SL team before using it in the field.");
+    renderSummaryNow();
+    return;
+  }
+
+  var p=getPayload();
+  var fingerprint=recordFingerprint(p);
+  if(RECORD.accepted>0 && RECORD.hash && fingerprint===RECORD.hash){
+    sendStatus("good","<b>No changes made.</b> This data is already submitted to NMDR as "+escOpt(RECORD.id)+
+      ", version "+RECORD.accepted+".<br>Edit something first, or start a new entry.");
+    switchTab('summary');
+    return;
+  }
+  try {
+    var u=JSON.parse(sessionStorage.getItem("mocm_user"));
+    if(u) p.signedInAs=u.name+" ("+u.username+")";
+  } catch(e){}
+
+  sendStatus("working","Submitting data to NMDR. Keep this page open.");
+  switchTab('summary');
+  renderSummaryNow();
+
+  if(!navigator.onLine){
+    queueSubmission(p);
+    accepted(null,true,fingerprint,p);
+    return;
+  }
+  postRecord(p)
+    .then(function(res){ accepted(res,false,fingerprint,p); })
+    .catch(function(err){
+      queueSubmission(p);
+      accepted(null,true,fingerprint,p);
+      sendStatus("working","<b>Queued.</b> NMDR could not be reached ("+escOpt(err.message)+
+        "). Nothing is lost: it is held on this phone and goes out by itself once there is a signal.");
+    });
+}
+
+function accepted(res, queued, fingerprint, p){
+  var version=RECORD.accepted+1, id=RECORD.id;
+  RECORD.accepted=version; RECORD.hash=fingerprint; saveRecord();
+  if(p){ p.revision=version; archiveSave(p); }   // kept on the phone for editing
+  ans._submitted=new Date().toLocaleString();
+  ans._record={ id:id, version:version };
+  renderSummaryNow();
+
+  var verb=version>1?"Resubmitted":"Submitted";
+  sendStatus(queued?"working":"good",
+    "<b>"+verb+(queued?" and queued":"")+" to NMDR.</b> "+
+    (queued ? "Held in this phone's outbox. It goes to NMDR by itself once there is a signal."
+            : "Reference "+escOpt((res&&res.reference)||id)+". The summary and its PDF have been emailed.")+
+    "<br>"+escOpt(id)+", version "+version+". Press NEW ENTRY when you are ready for the next facility.");
+}
+
+/* ---------- clear for the next facility ---------- */
+function newEntry(){
+  if(!confirm("Clear the entry fields and start the next facility?\n\nOnly what is on the screen is cleared. Assessments already submitted from this phone stay on it, and anything waiting in the outbox is still sent.")) return;
+  location.reload();      // the fields are rebuilt empty; the archive and the outbox live in localStorage and are untouched
+}
+
+/* data management assessment already draws its own summary tab; this fills in what it needs */
+function renderSummaryNow(){
+  ans._demographics = getDemographics();
+  ans._gps = { lat:GPS.lat, lng:GPS.lng, accuracy:GPS.accuracy, taken:GPS.taken };
+  submitted = true;
+  renderSummary();
+}
+
+
+/* ==================== DOWNLOAD, DASHBOARD, EDIT ====================
+   Same three tools as the Facility Profile form. The dashboard and the CSV
+   fallback read a de-identified pull; the Excel download is the whole file. */
+var NMDR_CACHE = null;
+
+function pullData(force){
+  if(NMDR_CACHE && !force) return Promise.resolve(NMDR_CACHE);
+  if(!navigator.onLine) return Promise.reject(new Error("No signal. This needs NMDR."));
+  return fetch(ENDPOINT+"?action=data&t="+Date.now())
+    .then(function(r){ return jsonFrom(r); })
+    .then(function(res){
+      if(!res||!res.ok) throw new Error((res&&res.error)?res.error:"NMDR did not return the data.");
+      NMDR_CACHE=res; return res;
+    });
+}
+function csvCell(v){ var s=(v===undefined||v===null)?"":String(v); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
+function toCsv(tab){ return [tab.headers].concat(tab.rows).map(function(r){ return r.map(csvCell).join(","); }).join("\r\n"); }
+function saveFile(name, mime, data, isB64){
+  var blob;
+  if(isB64){
+    var bin=atob(data), bytes=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+    blob=new Blob([bytes],{type:mime});
+  } else {
+    blob=new Blob(["\ufeff"+data],{type:mime});
+  }
+  var url=URL.createObjectURL(blob), a=document.createElement("a");
+  a.href=url; a.download=name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 6000);
+}
+function downloadData(){
+  if(!navigator.onLine){ toolStatus("bad","No signal. The download needs NMDR."); return; }
+  toolStatus("on","Pulling the whole file from NMDR...");
+  fetch(ENDPOINT+"?action=export&t="+Date.now())
+    .then(function(r){ return jsonFrom(r); })
+    .then(function(res){
+      if(!res||!res.ok||!res.b64) throw new Error((res&&res.error)?res.error:"The workbook did not come through.");
+      saveFile(res.filename,res.mime,res.b64,true);
+      toolStatus("on","Downloaded the whole file, "+(res.sheets||[]).length+" sheets: "+(res.sheets||[]).join(", ")+".");
+    })
+    .catch(function(err){
+      toolStatus("on","The Excel export did not work ("+err.message+"). Falling back to one CSV per sheet...");
+      pullData(true).then(function(res){
+        var stamp=new Date().toISOString().slice(0,10), n=0;
+        Object.keys(res.tabs||{}).forEach(function(name){
+          var tab=res.tabs[name];
+          if(!tab||!tab.rows.length) return;
+          var file="nmdr-"+name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+"-"+stamp+".csv";
+          setTimeout(function(){ saveFile(file,"text/csv;charset=utf-8",toCsv(tab),false); }, n*800);
+          n++;
+        });
+        toolStatus(n?"on":"bad", n ? n+(n===1?" sheet":" sheets")+" downloading as CSV." : "There is nothing in NMDR to download yet.");
+      }).catch(function(e){ toolStatus("bad","Download failed: "+e.message); });
+    });
+}
+
+/* ---------- edit a past submission ---------- */
+var EDIT_LIST=[];
+function openEditPicker(){
+  document.getElementById("editModal").style.display="flex";
+  var body=document.getElementById("editBody");
+  var rows=archiveList();
+  if(!rows.length){
+    body.innerHTML='<div class="dash-empty">Nothing has been submitted from this phone yet. '+
+      'Assessments you submit here are kept on the phone so you can reopen and correct them, with or without a signal.</div>';
+    return;
+  }
+  body.innerHTML='<div class="dash-note" style="margin:0 0 12px;">Assessments submitted from this phone. '+
+    'Reopening one is offline work, nothing is read back from the server.</div>'+
+    '<input class="form-input" type="text" placeholder="Filter by facility, chiefdom or date" '+
+    'oninput="filterEditList(this.value)" style="margin-bottom:12px;"><div id="editRows"></div>';
+  EDIT_LIST=rows;
+  filterEditList("");
+}
+function closeEditPicker(){ document.getElementById("editModal").style.display="none"; }
+function filterEditList(term){
+  var t=String(term||"").toLowerCase();
+  var rows=EDIT_LIST.filter(function(r){ return !t || (r.phu+" "+r.chiefdom+" "+r.visitDate+" "+r.recordId).toLowerCase().indexOf(t)>-1; });
+  var host=document.getElementById("editRows");
+  if(!rows.length){ host.innerHTML='<div class="dash-empty">Nothing matches that.</div>'; return; }
+  host.innerHTML=rows.map(function(r){
+    return '<div class="rec-row" onclick="loadSubmission(\''+escOpt(r.recordId)+'\')">'+
+      '<div class="rec-main">'+escOpt(r.phu||"Facility not given")+'</div>'+
+      '<div class="rec-sub">'+escOpt(r.chiefdom||"")+' · visit '+escOpt(r.visitDate||"not given")+
+      ' · version '+r.version+(r.pct!==undefined?' · '+r.pct+'%':'')+'</div>'+
+      '<div class="rec-sub">'+escOpt(r.recordId)+' · submitted '+escOpt(r.savedAt||"")+'</div></div>';
+  }).join('');
+}
+function loadSubmission(id){
+  var item=archive()[id];
+  if(!item){ document.getElementById("editBody").innerHTML='<div class="dash-empty">That assessment is no longer on this phone.</div>'; return; }
+  applyRecord(item.payload);
+  closeEditPicker();
+  switchTab('entry');
+  sendStatus("working","<b>Editing "+escOpt(id)+"</b>, version "+item.version+", "+escOpt(item.phu||"")+"."+
+    "<br>This is the copy kept on this phone, so you can correct it with no signal. "+
+    "Submitting sends version "+(item.version+1)+" and updates that same record.");
+  window.scrollTo(0,0);
+}
+
+/* put a record back on the screen, from the copy kept on this phone */
+function applyRecord(rec){
+  RECORD = { id: rec.recordId, accepted: Number(rec.revision || rec.version) || 1, hash: null };
+  saveRecord();
+
+  var district = document.getElementById('districtSelect');
+  if(district){ district.value = rec.district || 'Bo'; updateChiefdom(); }
+  if(rec.chiefdom){ document.getElementById('chiefdomSelect').value = rec.chiefdom; updatePHU(); }
+  if(rec.phu){ document.getElementById('phuSelect').value = rec.phu; updateFacilityType(); }
+  var sup = document.getElementById('supervisor'); if(sup) sup.value = rec.submittedBy || '';
+  var vd = document.getElementById('visitdate'); if(vd) vd.value = rec.visit_date || '';
+
+  if(rec.gps_lat && rec.gps_lng){
+    GPS = { lat:String(rec.gps_lat), lng:String(rec.gps_lng), accuracy:String(rec.gps_accuracy||''),
+            taken:String(rec.gps_taken||''), state:'ok', note:'' };
+    renderGps();
+  }
+
+  // the answers come back keyed by question number, matched to what is on screen
+  var byNumber = {};
+  (rec.rows||[]).forEach(function(r){ byNumber[String(r.n)] = r.value; });
+  labelledRows().forEach(function(r){
+    var v = byNumber[r.n];
+    if(v === undefined || v === '') return;
+    var key = r.label.replace(/^\S+\s+/, '');
+    // find the key again the same way labelledRows did
+  });
+  // simpler and safe: walk the rows in the same order and assign by position
+  var live = [];
+  document.querySelectorAll('#sections-container .section-page').forEach(function(page, si){
+    var head = page.querySelector('.section-header');
+    var secNo = (head ? (head.textContent.trim().match(/^(\d+)\./)||[null,String(si+1)])[1] : String(si+1));
+    var seen = 0;
+    page.querySelectorAll('.question-row').forEach(function(row){
+      if(row.closest('#obs-container')) return;
+      if(!row.querySelector('input, select, textarea')) return;
+      var key = keyOf(row);
+      if(!key) return;
+      seen++;
+      live.push({ n: row.dataset.qn || (secNo + '.' + seen), key: key });
+    });
+  });
+  live.forEach(function(item){
+    var v = byNumber[item.n];
+    if(v === undefined || v === '') return;
+    if(String(v).indexOf(', ') > -1 && Array.isArray(ans[item.key])) ans[item.key] = String(v).split(', ');
+    else ans[item.key] = v;
+  });
+
+  redrawAnswers();
+  RECORD.hash = recordFingerprint(getPayload());
+  saveRecord();
+  showSection(0);
+}
+
+/* paint the stored answers back onto the rebuilt controls */
+function redrawAnswers(){
+  Object.keys(ans).forEach(function(key){
+    if(key.charAt(0) === '_') return;
+    var v = ans[key];
+    if(Array.isArray(v)){
+      document.querySelectorAll('input[type=checkbox]').forEach(function(b2){
+        var h = b2.getAttribute('onchange') || '';
+        if(h.indexOf("updateCheck('"+key+"'") > -1){
+          b2.checked = v.indexOf(b2.value) > -1;
+          var wrap = b2.closest('.check-option');
+          if(wrap) wrap.classList.toggle('selected', b2.checked);
+        }
+      });
+      return;
+    }
+    var radios = document.querySelectorAll('input[type=radio][name="'+key+'"]');
+    if(radios.length){
+      radios.forEach(function(r){ if(r.value === String(v)){ r.checked = true; } });
+      updateRadioVisuals('group_' + key);
+      return;
+    }
+    var el = document.getElementById(key);
+    if(el){ el.value = v; return; }
+    document.querySelectorAll('input, textarea').forEach(function(f){
+      var h = f.getAttribute('oninput') || f.getAttribute('onchange') || '';
+      if(h.indexOf("updateAns('"+key+"'") > -1) f.value = v;
+    });
+  });
+  updateScores();
+}
+
+/* ---------- dashboard ---------- */
+function openDashboard(force){
+  document.getElementById("dashModal").style.display="flex";
+  document.getElementById("dashBody").innerHTML='<div class="dash-empty">Reading the data from NMDR...</div>';
+  pullData(force).then(function(res){
+    document.getElementById("dashBody").innerHTML=dashboardHtml(res);
+  }).catch(function(err){
+    document.getElementById("dashBody").innerHTML='<div class="dash-empty">'+escOpt(err.message)+'</div>';
+  });
+}
+function closeDashboard(){ document.getElementById("dashModal").style.display="none"; }
+
+function asObjects(tab){
+  if(!tab||!tab.headers) return [];
+  return tab.rows.map(function(row){
+    var o={}; tab.headers.forEach(function(h,i){ o[h]=row[i]; }); return o;
+  });
+}
+function pick(o, needle){
+  for(var k in o){ if(k.toLowerCase().indexOf(needle.toLowerCase())>-1) return o[k]; }
+  return "";
+}
+function tally(list, fn){
+  var map={};
+  list.forEach(function(x){ var k=String(fn(x)||"").trim()||"Not given"; map[k]=(map[k]||0)+1; });
+  return Object.keys(map).map(function(k){ return {k:k,n:map[k]}; })
+    .sort(function(a,b){ return b.n-a.n || a.k.localeCompare(b.k); });
+}
+function bars(rows,total,tone){
+  if(!rows.length) return '<div class="dash-note">Nothing recorded yet.</div>';
+  var max=rows[0].n||1;
+  return rows.map(function(r){
+    var pct=Math.round(r.n/(total||max)*100);
+    return '<div class="bar-row"><div class="bar-top"><span>'+escOpt(r.k)+'</span>'+
+      '<span class="bar-num">'+r.n+(total?' · '+pct+'%':'')+'</span></div>'+
+      '<div class="bar-track"><div class="bar-fill '+(tone||'')+'" style="width:'+Math.max(2,Math.round(r.n/max*100))+'%"></div></div></div>';
+  }).join('');
+}
+function block(t,inner){ return '<div class="dash-block"><div class="dash-title">'+t+'</div>'+inner+'</div>'; }
+function kpi(v,l){ return '<div class="kpi"><div class="kpi-val">'+v+'</div><div class="kpi-lbl">'+l+'</div></div>'; }
+function nums(l){ return l.map(Number).filter(function(n){ return !isNaN(n); }); }
+function mean(l){ return l.length ? l.reduce(function(a,b){ return a+b; },0)/l.length : 0; }
+
+function dashboardHtml(res){
+  var main=null;
+  Object.keys(res.tabs||{}).forEach(function(n){ if(/^data management assessment$/i.test(n)) main=res.tabs[n]; });
+  var visits=asObjects(main);
+  if(!visits.length) return '<div class="dash-empty">No assessment has reached NMDR yet.</div>';
+
+  var facilities={};
+  visits.forEach(function(v){ var f=pick(v,'Health Facility (PHU)'); if(f) facilities[f]=1; });
+
+  var resub=visits.filter(function(v){ return String(v['Status'])==='Resubmitted'; }).length;
+
+  var h='<div class="dash-kpis">'+
+    kpi(visits.length,'Assessments in NMDR')+
+    kpi(Object.keys(facilities).length+' of 10','Pilot facilities covered')+
+    kpi(pct.length?Math.round(mean(pct))+'%':'0%','Mean readiness score')+
+    kpi(resub,'Records resubmitted')+'</div>';
+
+  h+=block('Readiness score by facility',
+    bars(visits.map(function(v){ return { k:String(pick(v,'Health Facility (PHU)')||'Not given'),
+      n:Number(pick(v,'Overall %'))||0 }; }).sort(function(a,b){ return b.n-a.n; }), 100, 'green'));
+
+  ['Reporting Forms','Reference Material','Antimalarials','Essential Drugs','Basic Tools','Referral','Waste'].forEach(function(name){
+    var vals=nums(visits.map(function(v){ return pick(v, name+' %'); }));
+    if(!vals.length) return;
+    h+=block(name+' , mean '+Math.round(mean(vals))+'%',
+      bars(visits.map(function(v){ return { k:String(pick(v,'Health Facility (PHU)')||'Not given'),
+        n:Number(pick(v,name+' %'))||0 }; }).sort(function(a,b){ return b.n-a.n; }), 100));
+  });
+
+  h+=block('Assessments by chiefdom', bars(tally(visits,function(v){ return pick(v,'Chiefdom'); }), visits.length));
+  h+=block('Assessments by facility type', bars(tally(visits,function(v){ return pick(v,'Health Facility Type'); }), visits.length, 'gold'));
+  h+=block('Supervisor rating given', bars(tally(visits,function(v){ return pick(v,'10.2'); }), visits.length));
+  h+=block('Assessments by date', bars(tally(visits,function(v){ return String(pick(v,'Date of Visit')).slice(0,10); }), 0, 'gold'));
+  h+=block('Data quality',
+    '<div class="dash-note">Pulled '+escOpt(res.pulled||'')+'. Names and phone numbers stay in NMDR and never reach this screen, '+
+    'so this dashboard counts scores and categories only.</div>');
+  return h;
+}
+
+
+/* ==================== DOWNLOAD, DASHBOARD, EDIT ====================
+   Same three tools as the Facility Profile form. The dashboard and the CSV
+   fallback read a de-identified pull; the Excel download is the whole file. */
+var NMDR_CACHE = null;
+
+function pullData(force){
+  if(NMDR_CACHE && !force) return Promise.resolve(NMDR_CACHE);
+  if(!navigator.onLine) return Promise.reject(new Error("No signal. This needs NMDR."));
+  return fetch(ENDPOINT+"?action=data&t="+Date.now())
+    .then(function(r){ return jsonFrom(r); })
+    .then(function(res){
+      if(!res||!res.ok) throw new Error((res&&res.error)?res.error:"NMDR did not return the data.");
+      NMDR_CACHE=res; return res;
+    });
+}
+function csvCell(v){ var s=(v===undefined||v===null)?"":String(v); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
+function toCsv(tab){ return [tab.headers].concat(tab.rows).map(function(r){ return r.map(csvCell).join(","); }).join("\r\n"); }
+function saveFile(name, mime, data, isB64){
+  var blob;
+  if(isB64){
+    var bin=atob(data), bytes=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+    blob=new Blob([bytes],{type:mime});
+  } else {
+    blob=new Blob(["\ufeff"+data],{type:mime});
+  }
+  var url=URL.createObjectURL(blob), a=document.createElement("a");
+  a.href=url; a.download=name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 6000);
+}
+function downloadData(){
+  if(!navigator.onLine){ toolStatus("bad","No signal. The download needs NMDR."); return; }
+  toolStatus("on","Pulling the whole file from NMDR...");
+  fetch(ENDPOINT+"?action=export&t="+Date.now())
+    .then(function(r){ return jsonFrom(r); })
+    .then(function(res){
+      if(!res||!res.ok||!res.b64) throw new Error((res&&res.error)?res.error:"The workbook did not come through.");
+      saveFile(res.filename,res.mime,res.b64,true);
+      toolStatus("on","Downloaded the whole file, "+(res.sheets||[]).length+" sheets: "+(res.sheets||[]).join(", ")+".");
+    })
+    .catch(function(err){
+      toolStatus("on","The Excel export did not work ("+err.message+"). Falling back to one CSV per sheet...");
+      pullData(true).then(function(res){
+        var stamp=new Date().toISOString().slice(0,10), n=0;
+        Object.keys(res.tabs||{}).forEach(function(name){
+          var tab=res.tabs[name];
+          if(!tab||!tab.rows.length) return;
+          var file="nmdr-"+name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+"-"+stamp+".csv";
+          setTimeout(function(){ saveFile(file,"text/csv;charset=utf-8",toCsv(tab),false); }, n*800);
+          n++;
+        });
+        toolStatus(n?"on":"bad", n ? n+(n===1?" sheet":" sheets")+" downloading as CSV." : "There is nothing in NMDR to download yet.");
+      }).catch(function(e){ toolStatus("bad","Download failed: "+e.message); });
+    });
+}
+
+var EDIT_LIST=[];
+function openEditPicker(){
+  document.getElementById("editModal").style.display="flex";
+  var body=document.getElementById("editBody");
+  var rows=archiveList();
+  if(!rows.length){
+    body.innerHTML='<div class="dash-empty">Nothing has been submitted from this phone yet. '+
+      'Assessments you submit here are kept on the phone so you can reopen and correct them, with or without a signal.</div>';
+    return;
+  }
+  body.innerHTML='<div class="dash-note" style="margin:0 0 12px;">data management assessments submitted from this phone. '+
+    'Reopening one is offline work, nothing is read back from the server.</div>'+
+    '<input class="form-input" type="text" placeholder="Filter by facility, chiefdom or date" '+
+    'oninput="filterEditList(this.value)" style="margin-bottom:12px;"><div id="editRows"></div>';
+  EDIT_LIST=rows;
+  filterEditList("");
+}
+function closeEditPicker(){ document.getElementById("editModal").style.display="none"; }
+function filterEditList(term){
+  var t=String(term||"").toLowerCase();
+  var rows=EDIT_LIST.filter(function(r){ return !t || (r.phu+" "+r.chiefdom+" "+r.visitDate+" "+r.recordId).toLowerCase().indexOf(t)>-1; });
+  var host=document.getElementById("editRows");
+  if(!rows.length){ host.innerHTML='<div class="dash-empty">Nothing matches that.</div>'; return; }
+  host.innerHTML=rows.map(function(r){
+    return '<div class="rec-row" onclick="loadSubmission(\''+escOpt(r.recordId)+'\')">'+
+      '<div class="rec-main">'+escOpt(r.phu||"Facility not given")+'</div>'+
+      '<div class="rec-sub">'+escOpt(r.chiefdom||"")+' · visit '+escOpt(r.visitDate||"not given")+
+      ' · version '+r.version+(r.pct!==undefined?' · '+r.pct+'%':'')+'</div>'+
+      '<div class="rec-sub">'+escOpt(r.recordId)+' · submitted '+escOpt(r.savedAt||"")+'</div></div>';
+  }).join('');
+}
+function loadSubmission(id){
+  var item=archive()[id];
+  if(!item){ document.getElementById("editBody").innerHTML='<div class="dash-empty">That assessment is no longer on this phone.</div>'; return; }
+  applyRecord(item.payload);
+  closeEditPicker();
+  switchTab('entry');
+  sendStatus("working","<b>Editing "+escOpt(id)+"</b>, version "+item.version+", "+escOpt(item.phu||"")+"."+
+    "<br>This is the copy kept on this phone, so you can correct it with no signal. "+
+    "Submitting sends version "+(item.version+1)+" and updates that same record.");
+  window.scrollTo(0,0);
+}
+
+/* ---------- dashboard ---------- */
+function openDashboard(force){
+  document.getElementById("dashModal").style.display="flex";
+  document.getElementById("dashBody").innerHTML='<div class="dash-empty">Reading the data from NMDR...</div>';
+  pullData(force).then(function(res){
+    document.getElementById("dashBody").innerHTML=dashboardHtml(res);
+  }).catch(function(err){
+    document.getElementById("dashBody").innerHTML='<div class="dash-empty">'+escOpt(err.message)+'</div>';
+  });
+}
+function closeDashboard(){ document.getElementById("dashModal").style.display="none"; }
+
+function asObjects(tab){
+  if(!tab||!tab.headers) return [];
+  return tab.rows.map(function(row){
+    var o={}; tab.headers.forEach(function(h,i){ o[h]=row[i]; }); return o;
+  });
+}
+function pick(o, needle){
+  for(var k in o){ if(k.toLowerCase().indexOf(needle.toLowerCase())>-1) return o[k]; }
+  return "";
+}
+function tally(list, fn){
+  var map={};
+  list.forEach(function(x){ var k=String(fn(x)||"").trim()||"Not given"; map[k]=(map[k]||0)+1; });
+  return Object.keys(map).map(function(k){ return {k:k,n:map[k]}; })
+    .sort(function(a,b){ return b.n-a.n || a.k.localeCompare(b.k); });
+}
+function bars(rows,total,tone){
+  if(!rows.length) return '<div class="dash-note">Nothing recorded yet.</div>';
+  var max=rows[0].n||1;
+  return rows.map(function(r){
+    var pct=Math.round(r.n/(total||max)*100);
+    return '<div class="bar-row"><div class="bar-top"><span>'+escOpt(r.k)+'</span>'+
+      '<span class="bar-num">'+r.n+(total?' · '+pct+'%':'')+'</span></div>'+
+      '<div class="bar-track"><div class="bar-fill '+(tone||'')+'" style="width:'+Math.max(2,Math.round(r.n/max*100))+'%"></div></div></div>';
+  }).join('');
+}
+function block(t,inner){ return '<div class="dash-block"><div class="dash-title">'+t+'</div>'+inner+'</div>'; }
+function kpi(v,l){ return '<div class="kpi"><div class="kpi-val">'+v+'</div><div class="kpi-lbl">'+l+'</div></div>'; }
+function nums(l){ return l.map(Number).filter(function(n){ return !isNaN(n); }); }
+function mean(l){ return l.length ? l.reduce(function(a,b){ return a+b; },0)/l.length : 0; }
+
+function dashboardHtml(res){
+  var main=null;
+  Object.keys(res.tabs||{}).forEach(function(n){ if(/^Form G$/i.test(n)) main=res.tabs[n]; });
+  var visits=asObjects(main);
+  if(!visits.length) return '<div class="dash-empty">No data management assessment has reached NMDR yet.</div>';
+
+  var facilities={};
+  visits.forEach(function(v){ var f=pick(v,'Health Facility (PHU)'); if(f) facilities[f]=1; });
+
+  var resub=visits.filter(function(v){ return String(v['Status'])==='Resubmitted'; }).length;
+
+  var h='<div class="dash-kpis">'+
+    kpi(visits.length,'Assessments in NMDR')+
+    kpi(Object.keys(facilities).length+' of 10','Pilot facilities covered')+
+    kpi(visits.length,'Assessments')+
+    kpi(resub,'Records resubmitted')+'</div>';
+
+  h+=block('Observations by facility', bars(tally(visits,function(v){ return pick(v,'Health Facility (PHU)'); }), visits.length, 'green'));
+
+  [].forEach(function(name){
+    var vals=nums(visits.map(function(v){ return pick(v, name+' %'); }));
+    if(!vals.length) return;
+    h+=block(name+' , mean '+Math.round(mean(vals))+'%',
+      bars(visits.map(function(v){ return { k:String(pick(v,'Health Facility (PHU)')||'Not given'),
+        n:Number(pick(v,name+' %'))||0 }; }).sort(function(a,b){ return b.n-a.n; }), 100));
+  });
+
+  h+=block('Assessments by chiefdom', bars(tally(visits,function(v){ return pick(v,'Chiefdom'); }), visits.length));
+  h+=block('Assessments by facility type', bars(tally(visits,function(v){ return pick(v,'Health Facility Type'); }), visits.length, 'gold'));
+  h+=block('Supervisor rating given', bars(tally(visits,function(v){ return pick(v,'Rating'); }), visits.length));
+  h+=block('Assessments by date', bars(tally(visits,function(v){ return String(pick(v,'Date of Visit')).slice(0,10); }), 0, 'gold'));
+  h+=block('Data quality',
+    '<div class="dash-note">Pulled '+escOpt(res.pulled||'')+'. Names and phone numbers stay in NMDR and never reach this screen, '+
+    'so this dashboard counts scores and categories only.</div>');
+  return h;
+}
+
+
+
+
+
+
+
+
+
+
+/* ==================== SKIP LOGIC ====================
+   A question that cannot apply is hidden and its answer cleared, so nothing
+   stale travels to NMDR. Hidden rows are ignored by the required check, left
+   out of the answered count, and recorded as "Skipped". */
+var ROW_RULES = [
+  // a facility that does not enter its own data into DHIS2 is not asked about it
+  { key:'data_transfer',   when:function(){ return ans.dhis2_device !== 'Facility does not enter data directly into DHIS2'; } },
+  { key:'dhis2_training',  when:function(){ return ans.dhis2_device !== 'Facility does not enter data directly into DHIS2'; } },
+  { key:'data_validation', when:function(){ return ans.dhis2_device !== 'Facility does not enter data directly into DHIS2'; } },
+  // the reasons only when no feedback was given
+  { key:'fb_reasons',      when:function(){ return ans.feedback_provided === 'No'; } }
+];
+
+function keyOf(row){
+  var el = row.querySelector('input[type=radio]');
+  if(el && el.name) return el.name;
+  var fields = row.querySelectorAll('input, select, textarea');
+  for(var i=0;i<fields.length;i++){
+    var h = fields[i].getAttribute('onchange') || fields[i].getAttribute('oninput') || '';
+    var m = h.match(/update(?:Ans|Check)\('([^']+)'/);
+    if(m) return m[1];
+    m = h.match(/update(?:Ans|Check)\(([A-Z_]+)\[(\d+)\]/);   // generated lists, e.g. STAFF_KEYS[3]
+    if(m) return m[1] + '_' + m[2];
+    m = h.match(/\['([a-z_]+)'[^\]]*\]\[/);
+    if(m) return m[1];
+    if(fields[i].id) return fields[i].id;
+  }
+  return '';
+}
+function rowFor(key){
+  var rows = document.querySelectorAll('#sections-container .question-row');
+  for(var i=0;i<rows.length;i++){ if(keyOf(rows[i]) === key) return rows[i]; }
+  return null;
+}
+function clearAnswer(key, row){
+  if(Array.isArray(ans[key])) ans[key] = [];
+  else delete ans[key];
+  if(key === 'fb_reasons') delete ans.fb_other;
+  if(!row) return;
+  row.querySelectorAll('input[type=radio], input[type=checkbox]').forEach(function(i){
+    i.checked = false;
+    var wrap = i.closest('.radio-option') || i.closest('.check-option');
+    if(wrap) wrap.classList.remove('selected');
+  });
+  row.querySelectorAll('input[type=text], input[type=number], textarea, select').forEach(function(f){
+    if(f.id === 'obs_count') return;
+    f.value = '';
+  });
+}
+function applySkips(){
+  ROW_RULES.forEach(function(rule){
+    var row = rowFor(rule.key);
+    if(!row) return;
+    var show = rule.when();
+    if(!show){
+      if(row.style.display !== 'none') clearAnswer(rule.key, row);
+      row.style.display = 'none';
+    } else {
+      row.style.display = '';
+    }
+  });
+  document.querySelectorAll('#sections-container .section-page').forEach(function(page){
+    var rows = page.querySelectorAll('.question-row');
+    var any = 0, live = 0;
+    rows.forEach(function(r){
+      if(r.closest('#obs-container')) return;
+      if(!r.querySelector('input, select, textarea')) return;
+      any++;
+      if(r.style.display !== 'none') live++;
+    });
+    if(!any) return;
+    page.style.display = live ? '' : 'none';
+  });
+}
+
+
+
 
 /* ==================== REQUIRE EVERY QUESTION ====================
    Set REQUIRE_ALL to false to go back to checking only the key fields. */
@@ -492,8 +1493,8 @@ function _raVisible(el){
   // never because its wizard section is the inactive one
   var n = el;
   while (n && n !== document.body) {
-    if (n.classList && (n.classList.contains('section-page') || n.classList.contains('tab-page'))) return true;
     if (n.style && n.style.display === 'none') return false;
+    if (n.classList && n.classList.contains('tab-page')) return true;
     n = n.parentElement;
   }
   return true;
@@ -501,7 +1502,13 @@ function _raVisible(el){
 
 function _raLabel(row){
   var t = row.querySelector('.question-text');
-  var s = t ? t.textContent.replace(/\s+/g,' ').replace(/\*$/,'').trim() : 'this question';
+  var s = 'this question';
+  if (t) {
+    var num = t.querySelector('.question-num');
+    var n = num ? num.textContent.trim() : '';
+    s = t.textContent.replace(/\s+/g,' ').replace(/\*$/,'').trim();
+    if (n && s.indexOf(n) === 0) s = n + ' ' + s.slice(n.length).trim();
+  }
   return s.length > 90 ? s.slice(0,90) + '…' : s;
 }
 
@@ -744,6 +1751,36 @@ var USERS = [
   else schedule();
   new MutationObserver(schedule).observe(document.body, { childList:true, subtree:true });
 })();
+
+
+/* everything is declared by this point, so the form can start */
+buildAllSections();
+document.getElementById("districtSelect").value = DISTRICT;
+updateChiefdom();
+const _vd = document.getElementById("visitdate");
+if (_vd) _vd.value = new Date().toISOString().split('T')[0];
+setTimeout(() => {
+  const radioGroups = ['training_type','dhis2_device','data_transfer','dhis2_training','head_access','data_validation','feedback_provided','rating','gapaddr','immfeedback'];
+  for(let i=0;i<=8;i++) radioGroups.push(`know${i}`);
+  for(let i=0;i<=4;i++) radioGroups.push(`train${i}`);
+  for(let i=0;i<=2;i++) radioGroups.push(`dhis2_staff${i}`);
+  for(let i=0;i<=6;i++) radioGroups.push(`tool${i}`);
+  for(let i=0;i<=4;i++) radioGroups.push(`form${i}`);
+  for(let i=0;i<=4;i++) radioGroups.push(`sub${i}`);
+  for(let i=0;i<=4;i++) radioGroups.push(`entered${i}`);
+  for(let i=0;i<=5;i++) radioGroups.push(`issue${i}`);
+  radioGroups.forEach(g => updateRadioVisuals(g));
+}, 200);
+
+loadRecord();
+renderGps();
+captureGps(false);
+renderPending();
+applySkips();
+updateProgress();
+setTimeout(function(){ flushOutbox(true); }, 1500);
+document.addEventListener('change', function(){ applySkips(); updateProgress(); });
+document.addEventListener('input', function(){ applySkips(); updateProgress(); });
 
 </script>
 </body>
