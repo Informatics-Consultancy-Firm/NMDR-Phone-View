@@ -499,8 +499,9 @@ function buildAllSections() {
   </div></div>`;
 
   // SECTION 7: Staff Reached
-  html += `<div class="section-page" id="section7"><div class="section-header">8. TOTAL NUMBER OF STAFF REACHED</div><div class="section-card">
-    ${ISSUE_AREAS.map((area,i)=>`<div class="question-row"><div class="question-text">${area}</div><input class="form-input" type="number" min="0" placeholder="Number of staff reached" oninput="updateAns(STAFF_KEYS[${i}],this.value)"></div>`).join('')}
+  html += `<div class="section-page" id="section7"><div class="section-header">8. STAFF REACHED ON EACH AREA</div><div class="section-card">
+    <div class="count-hint">Was any staff member reached on this area during the visit? Yes or No for each.</div>
+    ${ISSUE_AREAS.map((area,i)=>`<div class="question-row"><div class="question-text">${area}</div><div class="options-group-vertical" id="staffreach${i}"><label class="radio-option"><input type="radio" name="staffreach${i}" value="Yes" onchange="updateAns(STAFF_KEYS[${i}],'Yes'); updateRadioVisuals('staffreach${i}')"> Yes</label><label class="radio-option"><input type="radio" name="staffreach${i}" value="No" onchange="updateAns(STAFF_KEYS[${i}],'No'); updateRadioVisuals('staffreach${i}')"> No</label></div></div>`).join('')}
   </div></div>`;
 
   // SECTION 8: Supervisor Feedback
@@ -1606,7 +1607,7 @@ function draftEsc(v){
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-var BUILD = "2026-07-28d";     // shown in the DRAFTS panel, so you can tell a stale phone
+var BUILD = "2026-07-28e";     // shown in the DRAFTS panel, so you can tell a stale phone
 var PAGE_RELOADS_FOR_NEW = true;   // how this form clears itself for the next facility
 var DRAFTS_KEY = "mocm_drafts_" + FORM_MARK;
 
@@ -2171,7 +2172,7 @@ if (_vd) _vd.value = new Date().toISOString().split('T')[0];
 setTimeout(() => {
   const radioGroups = ['guidelines','job_aids','acts','sp_available','water_cups','itns_anc','micronutrients','greet','first_anc','gestational_age','prev_iptp','fever','test_done','treatment_action','act_compliance','explore_fever','ipc','hiv_test','ctx_status','ctx_refer','iptp_hiv','iptp_eligible','correct_dose','micronutrient_dispense','itn_already','itn_given','feedback_provided','rating','gapaddr','immfeedback'];
   for(let i=0;i<=8;i++) radioGroups.push(`c${i}`);
-  for(let i=0;i<=10;i++) radioGroups.push(`issue${i}`);
+  for(let i=0;i<=10;i++) { radioGroups.push(`issue${i}`); radioGroups.push(`staffreach${i}`); }
   radioGroups.forEach(g => updateRadioVisuals(g));
 }, 200);
 
