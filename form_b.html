@@ -1688,7 +1688,7 @@ document.addEventListener('input', updateProgress);
    record instead of duplicating it, and refuses an unchanged resubmission.
    Paste the Apps Script /exec URL for Form B here. */
 var FORM_MARK = "B";          // which form this is, for the router
-var ENDPOINT = "https://script.google.com/macros/s/AKfycbzk0RN_TqpDYGnTZrppyhz0tbr1dT_NBooTOVlWmVmFeaF0Z5lpggejHI0UvzBU17fYLg/exec";
+var ENDPOINT = "https://script.google.com/macros/s/AKfycbwV04trmpmSLJAS5BTdgBHTS4lumCPRd45yIUvOx9Z0BX7147xCGVId9JcoNt_nCUG_/exec";
 
 var OUTBOX_KEY = "mocm_outbox_form_b";
 var ARCHIVE_KEY = "mocm_sent_form_b";     // what this phone has submitted, kept for editing
@@ -2282,9 +2282,11 @@ function openDashboard(force){
   document.getElementById("dashModal").style.display="flex";
   document.getElementById("dashBody").innerHTML='<div class="dash-empty">Reading the data from NMDR...</div>';
   pullData(force).then(function(res){
+    var why = diagnoseFeed(res);
+    if (why) { document.getElementById("dashBody").innerHTML = '<div class="dash-empty">'+why+'</div>'; return; }
     document.getElementById("dashBody").innerHTML=dashboardHtml(res);
   }).catch(function(err){
-    document.getElementById("dashBody").innerHTML='<div class="dash-empty">'+esc(err.message)+'</div>';
+    dashError(err);
   });
 }
 function closeDashboard(){ document.getElementById("dashModal").style.display="none"; }
@@ -2373,7 +2375,7 @@ function draftEsc(v){
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-var BUILD = "2026-07-28a";     // shown in the DRAFTS panel, so you can tell a stale phone
+var BUILD = "2026-07-28d";     // shown in the DRAFTS panel, so you can tell a stale phone
 var PAGE_RELOADS_FOR_NEW = true;   // how this form clears itself for the next facility
 var DRAFTS_KEY = "mocm_drafts_" + FORM_MARK;
 
@@ -3221,6 +3223,78 @@ function escChart(v){
     '.dash-kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;}';
   document.head.appendChild(css);
 })();
+
+
+/* ==================== WHY THE DASHBOARD IS EMPTY ====================
+   A dashboard with nothing in it has three very different causes and they used
+   to look identical. This says which one it is, so nobody hunts blind. */
+function diagnoseFeed(res){
+  if (!res) return 'NMDR sent nothing back. Try again once there is a signal.';
+
+  if (res.ok === false) {
+    return '<b>NMDR refused the request.</b><br>' + (res.error ? String(res.error) : 'No reason given.');
+  }
+
+  /* the router answers its health check when it does not recognise the form
+     marker, and that answer carries no tabs at all */
+  if (!res.tabs) {
+    var served = (res.forms && res.forms.length)
+      ? res.forms.map(function (f){ return f.form; }).join(', ') : '';
+    return '<b>The deployment did not recognise this form.</b><br>' +
+      'It answered with its own health check instead of the data' +
+      (served ? ', and says it serves: ' + served + '.' : '.') +
+      '<br><br>This form asks for <b>?form=' + FORM_MARK + '&amp;action=data</b>. ' +
+      'In Apps Script, paste the latest Router.gs (the one that reads the whole marker, not just ' +
+      'its first letter), then Deploy \u25b8 Manage deployments \u25b8 edit \u25b8 Version: ' +
+      '<b>New version</b>. Without a new version the URL keeps running the old code.';
+  }
+
+  var names = Object.keys(res.tabs);
+  if (!names.length) return '<b>NMDR answered, but with no tabs.</b> Run setup() once in Apps Script.';
+
+  var rows = 0;
+  names.forEach(function (n){ if (res.tabs[n] && res.tabs[n].rows) rows += res.tabs[n].rows.length; });
+  if (!rows) {
+    return '<b>Nothing has reached NMDR for this form yet.</b><br>' +
+      'The deployment answered properly and returned ' + names.join(', ') +
+      ', with no rows in it. Submit a record and read this again.';
+  }
+  return '';
+}
+
+
+/* ==================== WHY THE DASHBOARD COULD NOT READ ====================
+   A bare error told nobody anything. This shows the address that was tried, the
+   form marker, and the three things that actually cause it. Defined last, so it
+   replaces the earlier handler. */
+function dashError(err){
+  var msg = (err && err.message) ? String(err.message) : String(err);
+  var host = document.getElementById("dashBody");
+  if (!host) return;
+  var online = navigator.onLine ? 'this phone says it is online' : 'this phone says it is OFFLINE';
+  host.innerHTML =
+    '<div class="dash-empty" style="text-align:left;">' +
+      '<div style="font-weight:800;color:var(--red);margin-bottom:8px;">The dashboard could not read NMDR.</div>' +
+      '<div style="margin-bottom:10px;">' + escDash(msg) + '</div>' +
+      '<div class="dash-note" style="margin:0 0 10px;">Form marker <b>' + escDash(FORM_MARK) + '</b> · ' + online +
+        ' · build ' + escDash(typeof BUILD === 'string' ? BUILD : '?') + '</div>' +
+      '<div class="dash-note" style="margin:0 0 6px;"><b>Try this, in order:</b></div>' +
+      '<div class="dash-note" style="margin:0;">1. Open this address in a browser tab. It should answer with data, not a web page:<br>' +
+        '<span style="word-break:break-all;color:var(--blue-dark);">' + escDash(ENDPOINT) +
+        '?form=' + escDash(FORM_MARK) + '&amp;action=data</span></div>' +
+      '<div class="dash-note" style="margin:6px 0 0;">2. If that shows a Google sign-in page: Deploy ▸ Manage deployments ▸ ' +
+        'Execute as <b>Me</b>, Who has access <b>Anyone</b>.</div>' +
+      '<div class="dash-note" style="margin:6px 0 0;">3. If it says the form is not known: the project needs the current ' +
+        'Router.gs, then Deploy ▸ Manage deployments ▸ Version <b>New version</b>.</div>' +
+    '</div>';
+}
+function escDash(v){
+  return String(v === undefined || v === null ? '' : v)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+
+
 
 </script>
 </body>
