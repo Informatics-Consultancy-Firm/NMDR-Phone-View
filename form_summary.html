@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOCM Scoring · NMDR</title>
+<style>
+:root {
+  --blue-dark: #0b3d68; --blue: #1565a8; --gold: #d4a017; --green: #28a745;
+  --amber: #e6a700; --red: #dc3545; --bg: #eef2f6; --soft-bg: #e8f1f9;
+  --border: #d5dee7; --text-dark: #1b2733; --text-light: #6b7987;
+}
+* { box-sizing: border-box; }
+body { font-family: 'Agency FB', 'Arial Narrow', Arial, sans-serif; background: var(--bg);
+  color: var(--text-dark); font-size: 14px; line-height: 1.5; margin: 0; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 0 40px; }
+
+.tab-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: var(--blue-dark);
+  position: sticky; top: 0; z-index: 300; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+.tab-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  min-width: 0; padding: 9px 3px; color: rgba(255,255,255,.78); font-weight: 700; font-size: 9.5px;
+  line-height: 1.15; text-align: center; border: none; background: none; cursor: pointer;
+  border-bottom: 3px solid transparent; font-family: inherit; }
+.tab-btn.active { color: #fff; border-bottom: 3px solid var(--gold); background: rgba(255,255,255,.08); }
+.icn { width: 15px; height: 15px; flex: 0 0 auto; }
+
+.tool-status { display: none; padding: 11px 16px; font-size: 13px; font-weight: 600;
+  background: var(--soft-bg); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 250; }
+.tool-status.on { display: block; color: var(--blue-dark); }
+.tool-status.bad { display: block; color: var(--red); }
+
+.page-header { background: #fff; border-bottom: 3px solid var(--gold); padding: 14px 16px; text-align: center; }
+.header-org { font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: .5px; }
+.header-title { font-size: 19px; font-weight: 800; color: var(--blue-dark); margin-top: 3px; }
+.header-sub { font-size: 12.5px; color: var(--text-light); margin-top: 2px; }
+
+.card { background: #fff; border: 1px solid var(--border); border-radius: 16px; margin: 14px 16px; overflow: hidden; }
+.card-head { background: var(--soft-bg); color: var(--blue-dark); font-weight: 800; font-size: 12.5px;
+  text-transform: uppercase; letter-spacing: .4px; padding: 12px 14px; border-bottom: 1px solid var(--border); }
+.card-body { padding: 14px; }
+.row { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+.row:last-child { border-bottom: none; }
+.row-label { color: var(--text-light); }
+.row-value { font-weight: 700; text-align: right; }
+.note { font-size: 12px; color: var(--text-light); line-height: 1.5; margin-top: 8px; }
+
+.form-select, .form-input { width: 100%; padding: 13px 14px; border: 1.5px solid var(--border);
+  border-radius: 12px; font-size: 15px; font-family: inherit; background: #fff; }
+label.field { display: block; font-weight: 600; font-size: 13.5px; margin: 0 0 6px; }
+
+/* the score table */
+table.score { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.score th { text-align: left; font-size: 10.5px; text-transform: uppercase; letter-spacing: .4px;
+  color: var(--text-light); padding: 8px 6px; border-bottom: 2px solid var(--soft-bg); }
+table.score td { padding: 9px 6px; border-bottom: 1px solid var(--border); vertical-align: top; }
+table.score tr:last-child td { border-bottom: none; }
+td.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.work { display: block; font-size: 11px; color: var(--text-light); margin-top: 2px; }
+.band { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 800;
+  white-space: nowrap; }
+.band.red { background: #fdecea; color: var(--red); border: 1px solid #f5c2bd; }
+.band.amber { background: #fff6e0; color: #8a6400; border: 1px solid #f0dca8; }
+.band.green { background: #e7f6ea; color: #14682a; border: 1px solid #b7dfc1; }
+
+.overall { padding: 18px 16px; text-align: center; border-radius: 16px; margin: 0 0 4px; }
+.overall.red { background: #fdecea; border: 2px solid #f5c2bd; }
+.overall.amber { background: #fff6e0; border: 2px solid #f0dca8; }
+.overall.green { background: #e7f6ea; border: 2px solid #b7dfc1; }
+.overall-pct { font-size: 46px; font-weight: 800; line-height: 1; color: var(--blue-dark); }
+.overall-sum { font-size: 13px; color: var(--text-light); margin-top: 6px; }
+
+.missing { background: #fff8e1; border: 1.5px solid var(--gold); border-radius: 14px; padding: 12px 14px; font-size: 13px; }
+.missing b { color: #7a5600; }
+.pill { display: inline-block; background: #fff; border: 1px solid var(--border); border-radius: 20px;
+  padding: 3px 10px; font-size: 11.5px; font-weight: 700; margin: 3px 4px 0 0; }
+.pill.have { border-color: #b7dfc1; color: #14682a; }
+.pill.want { border-color: #f5c2bd; color: var(--red); }
+
+.btn { width: 100%; padding: 16px; border: none; border-radius: 40px; font-weight: 800; font-size: 15px;
+  cursor: pointer; font-family: inherit; }
+.btn-main { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: #fff; }
+.btn-main[disabled] { background: #c7d2dd; cursor: not-allowed; }
+.btn-tool { padding: 11px 14px; background: #fff; color: var(--blue-dark); border: 1.5px solid var(--blue);
+  border-radius: 40px; font-weight: 700; font-size: 12.5px; cursor: pointer; font-family: inherit; }
+.send-status { display: none; margin: 12px 16px 0; padding: 11px 14px; border-radius: 12px;
+  font-size: 13px; font-weight: 600; line-height: 1.45; }
+.send-status.working { display: block; background: var(--soft-bg); border: 1px solid #c9dff2; color: var(--blue-dark); }
+.send-status.good { display: block; background: #d4edda; border: 1px solid #b7dfc1; color: #155724; }
+.send-status.bad { display: block; background: #f8d7da; border: 1px solid #f1b5bb; color: #721c24; }
+.dash-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.kpi { background: var(--soft-bg); border-radius: 12px; padding: 12px 14px; }
+.kpi-val { font-size: 22px; font-weight: 800; color: var(--blue-dark); }
+.kpi-lbl { font-size: 10.5px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; color: var(--text-light); margin-top: 2px; }
+.dash-block { margin-top: 20px; }
+.dash-title { font-size: 12px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: var(--blue);
+  padding-bottom: 6px; border-bottom: 2px solid var(--soft-bg); margin-bottom: 10px; }
+.bar-row { margin-bottom: 9px; }
+.bar-top { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; margin-bottom: 3px; }
+.bar-num { color: var(--blue-dark); font-weight: 700; white-space: nowrap; }
+.bar-track { height: 8px; background: var(--border); border-radius: 6px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--red); border-radius: 6px; }
+.bar-fill.gold { background: var(--gold); }
+.bar-fill.green { background: var(--green); }
+.no-data { padding: 26px; text-align: center; color: var(--text-light); font-size: 13px; }
+.tab-page { display: none; }
+.tab-page.active { display: block; }
+</style>
+</head>
+<body>
+
+<div class="tab-nav">
+  <button class="tab-btn active" data-tab="score" onclick="switchTab('score')"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/></svg>SCORECARD</button>
+  <button class="tab-btn" data-tab="working" onclick="switchTab('working')"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h12"/><path d="M8 12h12"/><path d="M8 18h12"/><path d="M4 6h.01"/><path d="M4 12h.01"/><path d="M4 18h.01"/></svg>HOW IT ADDS UP</button>
+  <button class="tab-btn" data-tab="coverage" onclick="switchTab('coverage')"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M3 12h18"/><path d="M3 18h18"/><circle cx="7" cy="6" r="0"/></svg>ALL FACILITIES</button>
+  <button class="tab-btn" data-tab="dash" onclick="switchTab('dash'); loadDashboard(false);"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 12l4-3"/><path d="M12 12v5"/></svg>DASHBOARD</button>
+  <button class="tab-btn" onclick="rebuild(true)"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 11-3-6.7"/><path d="M21 3v6h-6"/></svg>REFRESH</button>
+  <button class="tab-btn" onclick="pullFromNmdr(true)"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>PULL NMDR</button>
+</div>
+<div id="toolStatus" class="tool-status"></div>
+
+<div class="page-header">
+  <div class="header-org">National Malaria Control Programme, Ministry of Health, Sierra Leone</div>
+  <div class="header-title">MOCM SCORING</div>
+  <div class="header-sub">Facility performance across the scored checklists</div>
+</div>
+
+<div class="wrap">
+
+  <div class="card">
+    <div class="card-head">CHOOSE THE VISIT</div>
+    <div class="card-body">
+      <label class="field" for="visitPick">Facility</label>
+      <select class="form-select" id="visitPick" onchange="rebuild(false)">
+        <option value="">Nothing scored on this phone yet</option>
+      </select>
+      <div class="note" id="visitNote"></div>
+    </div>
+  </div>
+
+  <div class="tab-page active" id="tab-score">
+    <div class="card">
+      <div class="card-head">OVERALL FACILITY PERFORMANCE</div>
+      <div class="card-body" id="overallBody"><div class="no-data">Nothing to score yet.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head">BY FORM AND SECTION</div>
+      <div class="card-body" id="bySectionBody"><div class="no-data">Nothing to score yet.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head">SUBMIT THE SCORECARD</div>
+      <div class="card-body">
+        <div id="readyBody"></div>
+        <div style="margin-top:14px;">
+          <button class="btn btn-main" id="submitBtn" onclick="submitScorecard()">SUBMIT SCORECARD TO NMDR</button>
+        </div>
+        <div class="note">One scorecard per facility. It is worked out on this phone from the checklists already submitted,
+          so it can be produced with no signal. Submitting it sends the totals to NMDR; if there is no
+          signal it waits in the queue and goes by itself.</div>
+      </div>
+    </div>
+    <div id="sendStatus" class="send-status"></div>
+  </div>
+
+  <div class="tab-page" id="tab-coverage">
+    <div class="card">
+      <div class="card-head">EVERY FACILITY, AND WHAT IS STILL OUTSTANDING</div>
+      <div class="card-body" id="coverageBody"><div class="no-data">Nothing read yet.</div></div>
+    </div>
+  </div>
+
+  <div class="tab-page" id="tab-dash">
+    <div class="card">
+      <div class="card-head">EVERYTHING IN NMDR</div>
+      <div class="card-body" id="dashBody"><div class="no-data">Press DASHBOARD to read the sheets.</div></div>
+      <div class="card-body" style="border-top:1px solid var(--border);">
+        <button class="btn-tool" onclick="loadDashboard(true)">READ THE SHEETS AGAIN</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-page" id="tab-working">
+    <div class="card">
+      <div class="card-head">HOW THE SCORE IS WORKED OUT</div>
+      <div class="card-body" id="workingBody"><div class="no-data">Nothing to show yet.</div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ==========================================================================
+   MOCM SCORING  ·  NMCP Sierra Leone  ·  ICF-SL
+   Collates the section scores from every scored checklist submitted on this
+   phone, bands each one, and works out one facility performance score:
+        all points scored  /  all points possible  x  100
+   Bands: under 70% needs improvement, 70 to 85% satisfactory, above 85% good.
+
+   WHERE THE NUMBERS COME FROM
+   Each form keeps a copy of everything it submitted in this browser's storage
+   (mocm_sent_form_b and friends), and anything still waiting for signal in its
+   outbox. Because every form is served from the same site, this page can read
+   all of them, which is why the scorecard works offline. PULL NMDR is there to
+   fill in visits submitted from a DIFFERENT phone.
+   ========================================================================== */
+
+var FORM_MARK = "SC";
+var BUILD = "score-2026-07-28d";
+var ENDPOINT = "https://script.google.com/macros/s/AKfycbzk0RN_TqpDYGnTZrppyhz0tbr1dT_NBooTOVlWmVmFeaF0Z5lpggejHI0UvzBU17fYLg/exec";
+
+/* the forms that carry a score, with the section names spelled out for reading */
+var SCORED_FORMS = [
+  { mark: 'B', title: 'Form B · Health Facility Readiness', tab: 'Form B',
+    sections: { reporting: 'Reporting forms', reference: 'Reference material',
+                antimalarial: 'Antimalarial commodities', essential: 'Essential drugs',
+                tools: 'Basic tools', referral: 'Inpatient and referral', waste: 'Waste management' },
+    /* the sheet's own column names, and the usual total for each section, used to
+       rebuild the detail from a record submitted on another phone */
+    sheet: { reporting: ['Reporting Forms', 22], reference: ['Reference Material', 14],
+             antimalarial: ['Antimalarials', 22], essential: ['Essential Drugs', 22],
+             tools: ['Basic Tools', 9], referral: ['Referral', 6], waste: ['Waste', 2] } },
+  { mark: 'C', title: 'Form C · mRDT Use Assessment', tab: 'Form C',
+    sections: { availability: 'mRDT availability', preparation: 'Preparation',
+                procedure: 'Blood collection and procedure', waste: 'Waste disposal',
+                therapeutic: 'Therapeutic decisions', records: 'Record review' },
+    sheet: { availability: ['Availability', 3], preparation: ['Preparation', 6],
+             procedure: ['Procedure', 6], waste: ['Waste', 3],
+             therapeutic: ['Therapeutic', 6], records: ['Records', 8] } }
+];
+
+/* the facilities this pilot covers, so the page can show which are NOT done yet.
+   Anything found in NMDR or on the phone that is not listed is added to the end. */
+var FACILITIES = [
+  'Njagbahun (Badjia) MCHP', 'Faabu CHP', 'Gerehun CHC', 'Mbundorbu MCHP',
+  'Mamboma (Bongor) CHP', 'Bumpe CHC', 'Mokoba MCHP', 'Yengema (Bumpe Ngao) MCHP',
+  'Gondama (Tikonko) CHC', 'Griema MCHP'
+];
+
+var OUTBOX_KEY = "mocm_outbox_form_sc";
+var SENT_KEY   = "mocm_sent_form_sc";
+var PULL_STATE = '';
+var PULL_AT = '';
+var PULLED = {};          // scores pulled from NMDR, keyed facility|date
+var VISITS = [];          // what we found, one entry per facility and visit date
+
+/* ---------- helpers ---------- */
+function esc(v){
+  return String(v === undefined || v === null ? '' : v)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function pct(scored, possible){
+  return possible > 0 ? Math.round(scored / possible * 1000) / 10 : 0;
+}
+function band(p){
+  if (p > 85) return { key:'green', label:'Good' };
+  if (p >= 70) return { key:'amber', label:'Satisfactory' };
+  return { key:'red', label:'Needs improvement' };
+}
+function say(kind, html){
+  var el = document.getElementById('toolStatus');
+  el.className = 'tool-status ' + (kind === 'bad' ? 'bad' : 'on');
+  el.innerHTML = html;
+}
+function sendStatus(kind, html){
+  var el = document.getElementById('sendStatus');
+  el.className = 'send-status ' + kind;
+  el.innerHTML = html;
+}
+function readJson(key){
+  try { return JSON.parse(localStorage.getItem(key)) || null; } catch (e) { return null; }
+}
+
+/* ---------- what this phone holds ---------- */
+
+/* every record a scored form has submitted or queued, newest revision winning */
+function gatherLocal(){
+  var found = {};                                    // "FACILITY|DATE" -> { forms: {} }
+
+  SCORED_FORMS.forEach(function (f){
+    var mark = f.mark.toLowerCase();
+    var archive = readJson('mocm_sent_form_' + mark) || {};
+    var queued  = readJson('mocm_outbox_form_' + mark) || [];
+
+    var records = [];
+    Object.keys(archive).forEach(function (id){
+      var item = archive[id];
+      if (item && item.payload) records.push({ payload: item.payload, when: item.savedAt || '', queued: false });
+    });
+    queued.forEach(function (q){
+      if (q && q.payload) records.push({ payload: q.payload, when: q.queuedAt || '', queued: true });
+    });
+
+    records.forEach(function (r){
+      var p = r.payload;
+      if (!p || !p.scores) return;                   // an unscored form has nothing for us
+      /* the facility IS the key: one record per facility per form is expected,
+         so a different date on Form B and Form C still belongs to one scorecard */
+      var key = p.phu || 'Facility not named';
+      if (!found[key]) found[key] = { phu: p.phu || '', chiefdom: p.chiefdom || '',
+                                      district: p.district || '', forms: {} };
+      if (p.chiefdom && !found[key].chiefdom) found[key].chiefdom = p.chiefdom;
+      if (p.district && !found[key].district) found[key].district = p.district;
+
+      var have = found[key].forms[f.mark];
+      if (have && !laterThan(p, have.payload)) return;      // keep whichever is later
+      found[key].forms[f.mark] = { payload: p, when: r.when, queued: r.queued,
+                                   source: r.queued ? 'queued on this phone' : 'submitted from this phone' };
+    });
+  });
+
+  /* anything pulled from NMDR fills the gaps, without overwriting local copies */
+  Object.keys(PULLED).forEach(function (key){
+    var got = PULLED[key];
+    if (!found[key]) found[key] = { phu: got.phu, chiefdom: got.chiefdom, district: got.district, forms: {} };
+    Object.keys(got.forms).forEach(function (mk){
+      if (!found[key].forms[mk]) found[key].forms[mk] = got.forms[mk];
+    });
+  });
+
+  return Object.keys(found).sort().map(function (k){
+    var v = found[k];
+    v.key = k;
+    /* the dates are shown for information, taken from the forms themselves */
+    v.dates = [];
+    Object.keys(v.forms).forEach(function (mk){
+      var dt = v.forms[mk].payload.visit_date;
+      if (dt && v.dates.indexOf(dt) === -1) v.dates.push(dt);
+    });
+    v.dates.sort();
+    v.visit_date = v.dates.length ? v.dates[v.dates.length - 1] : '';
+    return v;
+  });
+}
+
+/* which of two records for the same facility and form is the one to keep:
+   the higher version, and failing that the later visit date */
+function laterThan(a, b){
+  var ra = Number(a.revision || 0), rb = Number(b.revision || 0);
+  if (ra !== rb) return ra > rb;
+  return String(a.visit_date || '') >= String(b.visit_date || '');
+}
+
+/* ---------- the arithmetic ---------- */
+function scoreVisit(visit){
+  var out = { forms: [], scored: 0, possible: 0, missing: [], present: [] };
+
+  SCORED_FORMS.forEach(function (f){
+    var held = visit.forms[f.mark];
+    if (!held) { out.missing.push(f); return; }
+    out.present.push(f);
+
+    var p = held.payload;
+    var rows = [];
+    var fScored = 0, fPossible = 0;
+
+    Object.keys(f.sections).forEach(function (key){
+      var s = (p.scores || {})[key];
+      if (!s) return;
+      var sc = Number(s.scored) || 0, tot = Number(s.total) || 0;
+      fScored += sc; fPossible += tot;
+      rows.push({ name: f.sections[key], scored: sc, possible: tot, pct: pct(sc, tot) });
+    });
+
+    /* the form's own totals win if it sent them, so the scorecard always agrees
+       with the form's own summary and its email */
+    var totalScored   = (p.total_scored   !== undefined && p.total_scored   !== '') ? Number(p.total_scored)   : fScored;
+    var totalPossible = (p.total_possible !== undefined && p.total_possible !== '') ? Number(p.total_possible) : fPossible;
+
+    out.scored   += totalScored;
+    out.possible += totalPossible;
+    out.forms.push({ mark: f.mark, title: f.title, rows: rows, scored: totalScored,
+                     possible: totalPossible, pct: pct(totalScored, totalPossible),
+                     sectionSum: fScored, sectionTotal: fPossible,
+                     source: held.source, when: held.when,
+                     recordId: p.recordId || '', revision: p.revision || '' });
+  });
+
+  out.pct = pct(out.scored, out.possible);
+  out.band = band(out.pct);
+  return out;
+}
+
+/* ---------- drawing ---------- */
+function currentVisit(){
+  var key = document.getElementById('visitPick').value;
+  for (var i = 0; i < VISITS.length; i++) if (VISITS[i].key === key) return VISITS[i];
+  return null;
+}
+
+function fillVisitPicker(keepKey){
+  var sel = document.getElementById('visitPick');
+  if (!VISITS.length) {
+    sel.innerHTML = '<option value="">No scored checklist found on this phone</option>';
+    document.getElementById('visitNote').textContent =
+      'Submit Form B or Form C on this phone first, or press PULL NMDR to fetch what other phones have sent.';
+    return;
+  }
+  sel.innerHTML = VISITS.map(function (v){
+    var n = Object.keys(v.forms).length;
+    return '<option value="' + esc(v.key) + '">' + esc(v.phu || 'Facility not named') +
+           ' · ' + n + ' of ' + SCORED_FORMS.length + ' scored forms</option>';
+  }).join('');
+  if (keepKey) sel.value = keepKey;
+  if (!sel.value) sel.selectedIndex = 0;
+  var v = currentVisit();
+  document.getElementById('visitNote').textContent =
+    VISITS.length + (VISITS.length === 1 ? ' facility' : ' facilities') + ' with scores on this phone.' +
+    (v && v.dates.length ? ' Visit dates on file: ' + v.dates.join(', ') + '.' : '');
+}
+
+function drawScore(){
+  var visit = currentVisit();
+  var overall = document.getElementById('overallBody');
+  var bySection = document.getElementById('bySectionBody');
+  var ready = document.getElementById('readyBody');
+  var btn = document.getElementById('submitBtn');
+
+  if (!visit) {
+    overall.innerHTML = '<div class="no-data">Nothing to score yet.</div>';
+    bySection.innerHTML = '<div class="no-data">Nothing to score yet.</div>';
+    ready.innerHTML = '';
+    btn.disabled = true;
+    drawWorking(null, null);
+    return;
+  }
+
+  var s = scoreVisit(visit);
+
+  /* the headline */
+  overall.innerHTML =
+    '<div class="overall ' + s.band.key + '">' +
+      '<div class="overall-pct">' + s.pct + '%</div>' +
+      '<div class="band ' + s.band.key + '" style="margin-top:8px;">' + s.band.label + '</div>' +
+      '<div class="overall-sum">' + s.scored + ' points scored out of ' + s.possible + ' possible</div>' +
+    '</div>' +
+    '<div class="row"><div class="row-label">Facility</div><div class="row-value">' + esc(visit.phu) + '</div></div>' +
+    '<div class="row"><div class="row-label">Chiefdom</div><div class="row-value">' + esc(visit.chiefdom) + '</div></div>' +
+    '<div class="row"><div class="row-label">Visit date(s) on file</div><div class="row-value">' +
+      esc(visit.dates.length ? visit.dates.join(', ') : 'not recorded') + '</div></div>' +
+    '<div class="row"><div class="row-label">Scored forms included</div><div class="row-value">' +
+      s.present.map(function (f){ return 'Form ' + f.mark; }).join(', ') + '</div></div>' +
+    '<div class="note">Under 70% needs improvement · 70 to 85% satisfactory · above 85% good.</div>';
+
+  /* each form, each section */
+  if (!s.forms.length) {
+    bySection.innerHTML = '<div class="no-data">No scored form found for this visit.</div>';
+  } else {
+    bySection.innerHTML = s.forms.map(function (f){
+      var b = band(f.pct);
+      return '<div style="margin-bottom:20px;">' +
+        '<div style="font-weight:800;color:var(--blue-dark);font-size:13.5px;margin-bottom:8px;">' + esc(f.title) + '</div>' +
+        '<table class="score"><thead><tr><th>Section</th><th class="num">Score</th><th class="num">%</th><th>Band</th></tr></thead><tbody>' +
+        f.rows.map(function (r){
+          var rb = band(r.pct);
+          return '<tr><td>' + esc(r.name) + '</td>' +
+                 '<td class="num">' + r.scored + ' / ' + r.possible +
+                   '<span class="work">' + r.scored + ' ÷ ' + r.possible + ' × 100</span></td>' +
+                 '<td class="num">' + r.pct + '%</td>' +
+                 '<td><span class="band ' + rb.key + '">' + rb.label + '</span></td></tr>';
+        }).join('') +
+        '<tr><td><b>Form total</b></td><td class="num"><b>' + f.scored + ' / ' + f.possible + '</b></td>' +
+          '<td class="num"><b>' + f.pct + '%</b></td>' +
+          '<td><span class="band ' + b.key + '">' + b.label + '</span></td></tr>' +
+        '</tbody></table>' +
+        '<div class="note">' + esc(f.recordId) + (f.revision ? ' · version ' + esc(f.revision) : '') +
+          ' · ' + esc(f.source) + (f.when ? ' · ' + esc(f.when) : '') + '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  /* is everything in? */
+  var pills = SCORED_FORMS.map(function (f){
+    var have = !!visit.forms[f.mark];
+    return '<span class="pill ' + (have ? 'have' : 'want') + '">Form ' + f.mark + (have ? ' ✓' : ' missing') + '</span>';
+  }).join('');
+
+  if (s.missing.length) {
+    ready.innerHTML = '<div class="missing"><b>Not every scored checklist is in yet.</b><br>' +
+      'The scorecard would only cover ' + s.present.length + ' of ' + SCORED_FORMS.length +
+      ' scored forms, so the facility score would not be comparable with other facilities.<br>' +
+      pills + '<div class="note">Finish and submit the missing form on this phone, then press REFRESH. ' +
+      'If it was submitted from another phone, press PULL NMDR.</div></div>';
+    btn.disabled = true;
+    btn.textContent = 'WAITING FOR ' + s.missing.map(function (f){ return 'FORM ' + f.mark; }).join(' AND ');
+  } else {
+    ready.innerHTML = '<div class="row"><div class="row-label">Scored checklists</div><div class="row-value">' +
+      pills + '</div></div>' +
+      '<div class="row"><div class="row-label">Facility score</div><div class="row-value">' + s.pct + '% · ' +
+      s.band.label + '</div></div>';
+    btn.disabled = false;
+    btn.textContent = 'SUBMIT SCORECARD TO NMDR';
+  }
+
+  drawWorking(visit, s);
+}
+
+/* the second tab: the arithmetic in words, so nobody has to trust the number */
+function drawWorking(visit, s){
+  var host = document.getElementById('workingBody');
+  if (!visit || !s) { host.innerHTML = '<div class="no-data">Nothing to show yet.</div>'; return; }
+
+  var lines = [];
+  lines.push('<div class="note" style="margin:0 0 14px;">Every scored question in the checklists carries points. ' +
+    'The section score is the points earned over the points available in that section. The facility score is ' +
+    'every point earned across all the scored checklists over every point available.</div>');
+
+  s.forms.forEach(function (f){
+    lines.push('<div style="font-weight:800;color:var(--blue-dark);margin:14px 0 6px;">' + esc(f.title) + '</div>');
+    lines.push('<table class="score"><tbody>' + f.rows.map(function (r){
+      return '<tr><td>' + esc(r.name) + '</td><td class="num">' + r.scored + ' of ' + r.possible +
+             ' = ' + r.pct + '%</td></tr>';
+    }).join('') +
+    '<tr><td><b>Added up</b></td><td class="num"><b>' + f.sectionSum + ' of ' + f.sectionTotal + '</b></td></tr>' +
+    (f.scored !== f.sectionSum || f.possible !== f.sectionTotal
+      ? '<tr><td>Form total as the form itself reported it</td><td class="num">' + f.scored + ' of ' + f.possible + '</td></tr>'
+      : '') +
+    '</tbody></table>');
+  });
+
+  lines.push('<div style="font-weight:800;color:var(--blue-dark);margin:18px 0 6px;">Facility performance</div>');
+  lines.push('<table class="score"><tbody>' +
+    s.forms.map(function (f){
+      return '<tr><td>Form ' + esc(f.mark) + '</td><td class="num">' + f.scored + ' of ' + f.possible + '</td></tr>';
+    }).join('') +
+    '<tr><td><b>Total</b></td><td class="num"><b>' + s.scored + ' of ' + s.possible + '</b></td></tr>' +
+    '<tr><td><b>Facility score</b></td><td class="num"><b>' + s.scored + ' ÷ ' + s.possible + ' × 100 = ' + s.pct + '%</b></td></tr>' +
+    '<tr><td><b>Band</b></td><td class="num"><span class="band ' + s.band.key + '">' + s.band.label + '</span></td></tr>' +
+    '</tbody></table>');
+  lines.push('<div class="note">Under 70% needs improvement (red) · 70 to 85% satisfactory (yellow) · ' +
+    'above 85% good (green). Build ' + BUILD + '.</div>');
+
+  host.innerHTML = lines.join('');
+}
+
+function switchTab(tab){
+  document.querySelectorAll('.tab-page').forEach(function (p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function (b){ b.classList.remove('active'); });
+  var page = document.getElementById('tab-' + tab);
+  if (page) page.classList.add('active');
+  var btn = document.querySelector('.tab-btn[data-tab="' + tab + '"]');
+  if (btn) btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function rebuild(loud){
+  var keep = document.getElementById('visitPick').value;
+  VISITS = gatherLocal();
+  fillVisitPicker(keep);
+  drawScore();
+  drawCoverage();
+  if (loud) {
+    say('on', VISITS.length
+      ? '<b>Read from this phone.</b> ' + VISITS.length + (VISITS.length === 1 ? ' visit' : ' visits') + ' with scores.'
+      : '<b>Nothing scored on this phone yet.</b> Submit Form B or Form C first, or press PULL NMDR.');
+  }
+}
+
+/* ---------- NMDR ---------- */
+function jsonFrom(res){
+  return res.text().then(function (t){
+    var s = String(t || '').trim();
+    if (s.charAt(0) === '<') {
+      throw new Error('NMDR returned a web page instead of data. Check the deployment: ' +
+        'Execute as Me, Who has access Anyone, then deploy a NEW version.');
+    }
+    try { return JSON.parse(s); }
+    catch (e) { throw new Error('NMDR sent something this page could not read: ' + s.slice(0, 80)); }
+  });
+}
+
+/* Read the scored forms straight out of the Google Sheet, so facilities done on
+   ANOTHER phone appear here too, with their section detail rebuilt from the
+   sheet's own columns. Runs by itself when there is a signal, and on the button. */
+function pullFromNmdr(loud){
+  if (!/^https/.test(ENDPOINT)) { if (loud) say('bad', 'This copy has no NMDR address yet.'); return; }
+  if (loud) say('on', 'Reading the scored checklists from NMDR...');
+  PULL_STATE = 'working';
+
+  var jobs = SCORED_FORMS.map(function (f){
+    return fetch(ENDPOINT + '?form=' + f.mark + '&action=data&t=' + Date.now())
+      .then(jsonFrom).then(function (res){ return { f: f, res: res }; });
+  });
+
+  return Promise.all(jobs).then(function (all){
+    var added = 0, facilities = {};
+    all.forEach(function (got){
+      var f = got.f;
+      var tabs = (got.res && got.res.tabs) ? got.res.tabs : {};
+      var tab = tabs[f.tab];
+      if (!tab) {                                   // fall back to any tab that looks right
+        Object.keys(tabs).forEach(function (n){
+          if (!tab && tabs[n] && tabs[n].headers && tabs[n].headers.indexOf('Overall score') > -1) tab = tabs[n];
+        });
+      }
+      if (!tab || !tab.headers || !tab.rows) return;
+
+      var H = tab.headers;
+      var at = function (name){ return H.indexOf(name); };
+      var iPhu = at('Health Facility (PHU)'), iDate = at('Date of Visit'), iVer = at('Version');
+      var iScored = at('Overall score'), iPossible = at('Overall possible');
+      var iChief = at('Chiefdom'), iDist = at('District'), iRec = at('Record ID');
+      if (iPhu < 0) return;
+
+      tab.rows.forEach(function (row){
+        var phu = String(row[iPhu] || '').trim();
+        if (!phu) return;
+        facilities[phu] = true;
+
+        var scores = {};
+        var sumScored = 0, sumPossible = 0;
+        Object.keys(f.sheet).forEach(function (key){
+          var colName = f.sheet[key][0], nominal = f.sheet[key][1];
+          var iS = at(colName), iP = at(colName + ' %');
+          if (iS < 0) return;
+          var sc = Number(row[iS]);
+          if (isNaN(sc)) return;
+          var pctVal = iP > -1 ? Number(row[iP]) : NaN;
+          /* the sheet keeps the score and the percentage, so the total comes back
+             out of them; where the percentage is zero, the usual total is used */
+          var tot = (!isNaN(pctVal) && pctVal > 0) ? Math.round(sc / pctVal * 100) : nominal;
+          if (!tot || tot < sc) tot = Math.max(nominal, sc);
+          scores[key] = { scored: sc, total: tot };
+          sumScored += sc; sumPossible += tot;
+        });
+
+        var payload = {
+          phu: phu,
+          chiefdom: iChief > -1 ? String(row[iChief] || '') : '',
+          district: iDist > -1 ? String(row[iDist] || '') : '',
+          visit_date: iDate > -1 ? String(row[iDate] || '').slice(0, 10) : '',
+          revision: iVer > -1 ? Number(row[iVer]) || 1 : 1,
+          recordId: iRec > -1 ? String(row[iRec] || '') : '(from NMDR)',
+          scores: scores,
+          total_scored:   iScored   > -1 && row[iScored]   !== '' ? Number(row[iScored])   : sumScored,
+          total_possible: iPossible > -1 && row[iPossible] !== '' ? Number(row[iPossible]) : sumPossible
+        };
+
+        var key = phu;
+        if (!PULLED[key]) PULLED[key] = { phu: phu, chiefdom: payload.chiefdom,
+                                          district: payload.district, forms: {} };
+        var have = PULLED[key].forms[f.mark];
+        if (have && !laterThan(payload, have.payload)) return;
+        PULLED[key].forms[f.mark] = { payload: payload, source: 'in NMDR, from another phone', when: '' };
+        added++;
+      });
+    });
+
+    PULL_STATE = 'done';
+    PULL_AT = new Date().toLocaleString();
+    rebuild(false);
+    if (loud || added) {
+      say('on', '<b>Read ' + added + ' scored record(s) from NMDR</b> across ' +
+        Object.keys(facilities).length + ' facilit' + (Object.keys(facilities).length === 1 ? 'y' : 'ies') +
+        '. Section detail was rebuilt from the sheet.');
+    }
+  }).catch(function (err){
+    PULL_STATE = 'failed';
+    if (loud) say('bad', 'Could not read from NMDR: ' + esc(err.message));
+  });
+}
+
+/* ---------- who is still outstanding ---------- */
+function drawCoverage(){
+  var host = document.getElementById('coverageBody');
+  if (!host) return;
+
+  var byFacility = {};
+  VISITS.forEach(function (v){ byFacility[v.phu] = v; });
+
+  var names = FACILITIES.slice();
+  Object.keys(byFacility).forEach(function (n){ if (names.indexOf(n) === -1) names.push(n); });
+
+  var done = 0, part = 0, none = 0;
+  var rows = names.map(function (name){
+    var v = byFacility[name];
+    var cells = SCORED_FORMS.map(function (f){
+      var held = v && v.forms[f.mark];
+      if (!held) return '<td><span class="pill want">Form ' + f.mark + ' missing</span></td>';
+      var where = /NMDR/.test(held.source) ? 'NMDR' : (held.queued ? 'queued' : 'this phone');
+      return '<td><span class="pill have">Form ' + f.mark + ' ✓ <span style="font-weight:500;">' + where + '</span></span></td>';
+    }).join('');
+
+    var scoreCell = '<td class="num">—</td>';
+    if (v) {
+      var sc = scoreVisit(v);
+      if (!sc.missing.length) {
+        done++;
+        scoreCell = '<td class="num"><b>' + sc.pct + '%</b><br><span class="band ' + sc.band.key + '">' +
+                    sc.band.label + '</span></td>';
+      } else { part++; }
+    } else { none++; }
+
+    return '<tr><td>' + esc(name) + '</td>' + cells + scoreCell + '</tr>';
+  }).join('');
+
+  host.innerHTML =
+    '<table class="score"><thead><tr><th>Facility</th>' +
+      SCORED_FORMS.map(function (f){ return '<th>Form ' + f.mark + '</th>'; }).join('') +
+      '<th class="num">Facility score</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<div class="note"><b>' + done + ' complete</b> · ' + part + ' part done · ' + none +
+      ' not started, of ' + names.length + ' facilities.' +
+      (PULL_AT ? '<br>NMDR last read ' + esc(PULL_AT) + '.' : '<br>Press PULL NMDR to include facilities done on other phones.') +
+      '</div>';
+}
+
+/* ==========================================================================
+   DASHBOARD  ·  everything the whole suite has sent to the sheets
+   One read per form of the de-identified feed, then counted and drawn. No
+   library, just bars, so it works on any phone and offline once read.
+   ========================================================================== */
+
+var ALL_FORMS = [
+  { mark: 'A',  tab: 'Form A',  name: 'Facility Profile' },
+  { mark: 'B',  tab: 'Form B',  name: 'HF Readiness', scored: true },
+  { mark: 'C',  tab: 'Form C',  name: 'mRDT Use', scored: true },
+  { mark: 'D',  tab: 'Form D',  name: 'Case Management' },
+  { mark: 'E',  tab: 'Form E',  name: 'PMC at EPI' },
+  { mark: 'F',  tab: 'Form F',  name: 'MiP at ANC' },
+  { mark: 'G',  tab: 'Form G',  name: 'Data Management' },
+  { mark: 'H',  tab: 'Form H',  name: 'Laboratory' },
+  { mark: 'I',  tab: 'Form I',  name: 'PMC (SP)' },
+  { mark: 'J',  tab: 'Form J',  name: 'Malaria Vaccine' },
+  { mark: 'SC', tab: 'Scoring', name: 'Scorecards', scored: true }
+];
+
+var DASH = null;
+
+function loadDashboard(loud){
+  var host = document.getElementById('dashBody');
+  if (!/^https/.test(ENDPOINT)) { host.innerHTML = '<div class="no-data">This copy has no NMDR address yet.</div>'; return; }
+  if (DASH && !loud) { drawDashboard(); return; }
+  host.innerHTML = '<div class="no-data">Reading every form from the sheets...</div>';
+
+  var jobs = ALL_FORMS.map(function (f){
+    return fetch(ENDPOINT + '?form=' + f.mark + '&action=data&t=' + Date.now())
+      .then(jsonFrom)
+      .then(function (res){ return { f: f, res: res }; })
+      .catch(function (err){ return { f: f, error: err.message }; });
+  });
+
+  Promise.all(jobs).then(function (all){
+    DASH = { at: new Date().toLocaleString(), forms: [], facilities: {}, scores: [], failed: [] };
+
+    all.forEach(function (got){
+      var f = got.f;
+      if (got.error) { DASH.failed.push(f.mark); DASH.forms.push({ f: f, rows: 0 }); return; }
+      var tabs = (got.res && got.res.tabs) ? got.res.tabs : {};
+      var tab = tabs[f.tab];
+      if (!tab) {
+        Object.keys(tabs).forEach(function (n){
+          if (!tab && tabs[n] && tabs[n].headers && tabs[n].headers.indexOf('Record ID') > -1
+              && !/_/.test(n)) tab = tabs[n];
+        });
+      }
+      if (!tab || !tab.headers) { DASH.forms.push({ f: f, rows: 0 }); return; }
+
+      var H = tab.headers, rows = tab.rows || [];
+      var iPhu = H.indexOf('Health Facility (PHU)');
+      if (iPhu < 0) iPhu = H.indexOf('4. Name of Hospital');
+      if (iPhu < 0) iPhu = H.indexOf('3. Name of Health Facility (PHU)');
+      var iPct = H.indexOf('Overall %');
+      if (iPct < 0) iPct = H.indexOf('Facility score %');
+      var iDate = H.indexOf('Date of Visit');
+      if (iDate < 0) iDate = H.indexOf('9. Date of visit');
+      if (iDate < 0) iDate = H.indexOf('11. Date of Visit');
+
+      var here = { f: f, rows: rows.length, byDate: {}, pcts: [] };
+      rows.forEach(function (row){
+        var phu = iPhu > -1 ? String(row[iPhu] || '').trim() : '';
+        if (phu) {
+          if (!DASH.facilities[phu]) DASH.facilities[phu] = {};
+          DASH.facilities[phu][f.mark] = (DASH.facilities[phu][f.mark] || 0) + 1;
+        }
+        var dt = iDate > -1 ? String(row[iDate] || '').slice(0, 10) : '';
+        if (dt) here.byDate[dt] = (here.byDate[dt] || 0) + 1;
+        if (iPct > -1) {
+          var v = Number(row[iPct]);
+          if (!isNaN(v) && v > 0) {
+            here.pcts.push(v);
+            if (f.mark === 'SC' && phu) DASH.scores.push({ phu: phu, pct: v });
+          }
+        }
+      });
+      DASH.forms.push(here);
+    });
+
+    drawDashboard();
+  });
+}
+
+function bars(items, max, tone){
+  if (!items.length) return '<div class="no-data">Nothing yet.</div>';
+  var top = max || Math.max.apply(null, items.map(function (i){ return i.n; })) || 1;
+  return items.map(function (i){
+    var w = Math.max(2, Math.round(i.n / top * 100));
+    return '<div class="bar-row"><div class="bar-top"><span>' + esc(i.k) + '</span>' +
+      '<span class="bar-num">' + i.v + '</span></div>' +
+      '<div class="bar-track"><div class="bar-fill ' + (i.tone || tone || '') + '" style="width:' + w + '%"></div></div></div>';
+  }).join('');
+}
+
+function drawDashboard(){
+  var host = document.getElementById('dashBody');
+  if (!DASH) { host.innerHTML = '<div class="no-data">Nothing read yet.</div>'; return; }
+
+  var totalRows = 0;
+  DASH.forms.forEach(function (x){ totalRows += x.rows; });
+  var facilities = Object.keys(DASH.facilities);
+  var withData = DASH.forms.filter(function (x){ return x.rows > 0; }).length;
+  var scorecards = (DASH.forms.filter(function (x){ return x.f.mark === 'SC'; })[0] || { rows: 0 }).rows;
+
+  /* the banded picture across the scorecards */
+  var bandCount = { green: 0, amber: 0, red: 0 };
+  DASH.scores.forEach(function (s){ bandCount[band(s.pct).key]++; });
+  var meanScore = DASH.scores.length
+    ? Math.round(DASH.scores.reduce(function (a, s){ return a + s.pct; }, 0) / DASH.scores.length * 10) / 10
+    : 0;
+
+  var h = '';
+
+  h += '<div class="dash-kpis">' +
+    kpi(totalRows, 'Records in the sheets') +
+    kpi(facilities.length, 'Facilities with data') +
+    kpi(withData + ' of ' + ALL_FORMS.length, 'Forms in use') +
+    kpi(scorecards, 'Scorecards submitted') +
+    '</div>';
+
+  if (DASH.scores.length) {
+    var b = band(meanScore);
+    h += '<div class="dash-block"><div class="dash-title">Facility performance</div>' +
+      '<div class="overall ' + b.key + '"><div class="overall-pct">' + meanScore + '%</div>' +
+      '<div class="band ' + b.key + '" style="margin-top:8px;">Mean of ' + DASH.scores.length +
+      ' scorecard' + (DASH.scores.length === 1 ? '' : 's') + '</div></div>' +
+      bars([
+        { k: 'Good, above 85%', n: bandCount.green, v: bandCount.green, tone: 'green' },
+        { k: 'Satisfactory, 70 to 85%', n: bandCount.amber, v: bandCount.amber, tone: 'gold' },
+        { k: 'Needs improvement, under 70%', n: bandCount.red, v: bandCount.red, tone: '' }
+      ], Math.max(1, DASH.scores.length)) + '</div>';
+
+    h += '<div class="dash-block"><div class="dash-title">Score by facility</div>' +
+      bars(DASH.scores.slice().sort(function (a, b2){ return b2.pct - a.pct; }).map(function (s){
+        return { k: s.phu, n: s.pct, v: s.pct + '%', tone: band(s.pct).key === 'green' ? 'green' :
+                 (band(s.pct).key === 'amber' ? 'gold' : '') };
+      }), 100) + '</div>';
+  }
+
+  h += '<div class="dash-block"><div class="dash-title">Records by form</div>' +
+    bars(DASH.forms.map(function (x){
+      return { k: 'Form ' + x.f.mark + ' · ' + x.f.name, n: x.rows, v: String(x.rows) };
+    })) + '</div>';
+
+  var perFacility = facilities.map(function (phu){
+    var n = 0;
+    Object.keys(DASH.facilities[phu]).forEach(function (mk){ n += DASH.facilities[phu][mk]; });
+    return { k: phu, n: n, v: String(n) };
+  }).sort(function (a, b2){ return b2.n - a.n; });
+  h += '<div class="dash-block"><div class="dash-title">Records by facility</div>' + bars(perFacility, 0, 'gold') + '</div>';
+
+  /* which form each facility has sent, the coverage grid */
+  h += '<div class="dash-block"><div class="dash-title">Which forms each facility has sent</div>' +
+    '<div style="overflow-x:auto;"><table class="score"><thead><tr><th>Facility</th>' +
+    ALL_FORMS.map(function (f){ return '<th class="num">' + f.mark + '</th>'; }).join('') +
+    '</tr></thead><tbody>' +
+    facilities.sort().map(function (phu){
+      return '<tr><td>' + esc(phu) + '</td>' + ALL_FORMS.map(function (f){
+        var n = DASH.facilities[phu][f.mark];
+        return '<td class="num">' + (n ? '<b style="color:var(--green);">' + n + '</b>' : '<span style="color:var(--border);">·</span>') + '</td>';
+      }).join('') + '</tr>';
+    }).join('') + '</tbody></table></div>' +
+    '<div class="note">A number is how many records that facility has for that form. A dot means none yet.</div></div>';
+
+  /* activity by date, across everything */
+  var dates = {};
+  DASH.forms.forEach(function (x){
+    Object.keys(x.byDate || {}).forEach(function (dt){ dates[dt] = (dates[dt] || 0) + x.byDate[dt]; });
+  });
+  var dateRows = Object.keys(dates).sort().slice(-14).map(function (dt){
+    return { k: dt, n: dates[dt], v: String(dates[dt]) };
+  });
+  if (dateRows.length) {
+    h += '<div class="dash-block"><div class="dash-title">Visits by date, last 14 days on file</div>' +
+      bars(dateRows, 0, 'green') + '</div>';
+  }
+
+  h += '<div class="dash-foot note">Read from the sheets ' + esc(DASH.at) + '.' +
+    (DASH.failed.length ? ' Could not read: ' + DASH.failed.join(', ') + '.' : '') +
+    ' Names, phone numbers and emails are held back by NMDR, so nothing personal reaches this screen.</div>';
+
+  host.innerHTML = h;
+}
+
+function kpi(value, label){
+  return '<div class="kpi"><div class="kpi-val">' + esc(value) + '</div><div class="kpi-lbl">' + esc(label) + '</div></div>';
+}
+
+/* ---------- submitting the scorecard ---------- *//* ==========================================================================
+   DASHBOARD  ·  everything the whole suite has sent to the sheets
+   One read per form of the de-identified feed, then counted and drawn. No
+   library, just bars, so it works on any phone and offline once read.
+   ========================================================================== */
+
+var ALL_FORMS = [
+  { mark: 'A',  tab: 'Form A',  name: 'Facility Profile' },
+  { mark: 'B',  tab: 'Form B',  name: 'HF Readiness', scored: true },
+  { mark: 'C',  tab: 'Form C',  name: 'mRDT Use', scored: true },
+  { mark: 'D',  tab: 'Form D',  name: 'Case Management' },
+  { mark: 'E',  tab: 'Form E',  name: 'PMC at EPI' },
+  { mark: 'F',  tab: 'Form F',  name: 'MiP at ANC' },
+  { mark: 'G',  tab: 'Form G',  name: 'Data Management' },
+  { mark: 'H',  tab: 'Form H',  name: 'Laboratory' },
+  { mark: 'I',  tab: 'Form I',  name: 'PMC (SP)' },
+  { mark: 'J',  tab: 'Form J',  name: 'Malaria Vaccine' },
+  { mark: 'SC', tab: 'Scoring', name: 'Scorecards', scored: true }
+];
+
+var DASH = null;
+
+function loadDashboard(loud){
+  var host = document.getElementById('dashBody');
+  if (!/^https/.test(ENDPOINT)) { host.innerHTML = '<div class="no-data">This copy has no NMDR address yet.</div>'; return; }
+  if (DASH && !loud) { drawDashboard(); return; }
+  host.innerHTML = '<div class="no-data">Reading every form from the sheets...</div>';
+
+  var jobs = ALL_FORMS.map(function (f){
+    return fetch(ENDPOINT + '?form=' + f.mark + '&action=data&t=' + Date.now())
+      .then(jsonFrom)
+      .then(function (res){ return { f: f, res: res }; })
+      .catch(function (err){ return { f: f, error: err.message }; });
+  });
+
+  Promise.all(jobs).then(function (all){
+    DASH = { at: new Date().toLocaleString(), forms: [], facilities: {}, scores: [], failed: [] };
+
+    all.forEach(function (got){
+      var f = got.f;
+      if (got.error) { DASH.failed.push(f.mark); DASH.forms.push({ f: f, rows: 0 }); return; }
+      var tabs = (got.res && got.res.tabs) ? got.res.tabs : {};
+      var tab = tabs[f.tab];
+      if (!tab) {
+        Object.keys(tabs).forEach(function (n){
+          if (!tab && tabs[n] && tabs[n].headers && tabs[n].headers.indexOf('Record ID') > -1
+              && !/_/.test(n)) tab = tabs[n];
+        });
+      }
+      if (!tab || !tab.headers) { DASH.forms.push({ f: f, rows: 0 }); return; }
+
+      var H = tab.headers, rows = tab.rows || [];
+      var iPhu = H.indexOf('Health Facility (PHU)');
+      if (iPhu < 0) iPhu = H.indexOf('4. Name of Hospital');
+      if (iPhu < 0) iPhu = H.indexOf('3. Name of Health Facility (PHU)');
+      var iPct = H.indexOf('Overall %');
+      if (iPct < 0) iPct = H.indexOf('Facility score %');
+      var iDate = H.indexOf('Date of Visit');
+      if (iDate < 0) iDate = H.indexOf('9. Date of visit');
+      if (iDate < 0) iDate = H.indexOf('11. Date of Visit');
+
+      var here = { f: f, rows: rows.length, byDate: {}, pcts: [] };
+      rows.forEach(function (row){
+        var phu = iPhu > -1 ? String(row[iPhu] || '').trim() : '';
+        if (phu) {
+          if (!DASH.facilities[phu]) DASH.facilities[phu] = {};
+          DASH.facilities[phu][f.mark] = (DASH.facilities[phu][f.mark] || 0) + 1;
+        }
+        var dt = iDate > -1 ? String(row[iDate] || '').slice(0, 10) : '';
+        if (dt) here.byDate[dt] = (here.byDate[dt] || 0) + 1;
+        if (iPct > -1) {
+          var v = Number(row[iPct]);
+          if (!isNaN(v) && v > 0) {
+            here.pcts.push(v);
+            if (f.mark === 'SC' && phu) DASH.scores.push({ phu: phu, pct: v });
+          }
+        }
+      });
+      DASH.forms.push(here);
+    });
+
+    drawDashboard();
+  });
+}
+
+function bars(items, max, tone){
+  if (!items.length) return '<div class="no-data">Nothing yet.</div>';
+  var top = max || Math.max.apply(null, items.map(function (i){ return i.n; })) || 1;
+  return items.map(function (i){
+    var w = Math.max(2, Math.round(i.n / top * 100));
+    return '<div class="bar-row"><div class="bar-top"><span>' + esc(i.k) + '</span>' +
+      '<span class="bar-num">' + i.v + '</span></div>' +
+      '<div class="bar-track"><div class="bar-fill ' + (i.tone || tone || '') + '" style="width:' + w + '%"></div></div></div>';
+  }).join('');
+}
+
+function drawDashboard(){
+  var host = document.getElementById('dashBody');
+  if (!DASH) { host.innerHTML = '<div class="no-data">Nothing read yet.</div>'; return; }
+
+  var totalRows = 0;
+  DASH.forms.forEach(function (x){ totalRows += x.rows; });
+  var facilities = Object.keys(DASH.facilities);
+  var withData = DASH.forms.filter(function (x){ return x.rows > 0; }).length;
+  var scorecards = (DASH.forms.filter(function (x){ return x.f.mark === 'SC'; })[0] || { rows: 0 }).rows;
+
+  /* the banded picture across the scorecards */
+  var bandCount = { green: 0, amber: 0, red: 0 };
+  DASH.scores.forEach(function (s){ bandCount[band(s.pct).key]++; });
+  var meanScore = DASH.scores.length
+    ? Math.round(DASH.scores.reduce(function (a, s){ return a + s.pct; }, 0) / DASH.scores.length * 10) / 10
+    : 0;
+
+  var h = '';
+
+  h += '<div class="dash-kpis">' +
+    kpi(totalRows, 'Records in the sheets') +
+    kpi(facilities.length, 'Facilities with data') +
+    kpi(withData + ' of ' + ALL_FORMS.length, 'Forms in use') +
+    kpi(scorecards, 'Scorecards submitted') +
+    '</div>';
+
+  if (DASH.scores.length) {
+    var b = band(meanScore);
+    h += '<div class="dash-block"><div class="dash-title">Facility performance</div>' +
+      '<div class="overall ' + b.key + '"><div class="overall-pct">' + meanScore + '%</div>' +
+      '<div class="band ' + b.key + '" style="margin-top:8px;">Mean of ' + DASH.scores.length +
+      ' scorecard' + (DASH.scores.length === 1 ? '' : 's') + '</div></div>' +
+      bars([
+        { k: 'Good, above 85%', n: bandCount.green, v: bandCount.green, tone: 'green' },
+        { k: 'Satisfactory, 70 to 85%', n: bandCount.amber, v: bandCount.amber, tone: 'gold' },
+        { k: 'Needs improvement, under 70%', n: bandCount.red, v: bandCount.red, tone: '' }
+      ], Math.max(1, DASH.scores.length)) + '</div>';
+
+    h += '<div class="dash-block"><div class="dash-title">Score by facility</div>' +
+      bars(DASH.scores.slice().sort(function (a, b2){ return b2.pct - a.pct; }).map(function (s){
+        return { k: s.phu, n: s.pct, v: s.pct + '%', tone: band(s.pct).key === 'green' ? 'green' :
+                 (band(s.pct).key === 'amber' ? 'gold' : '') };
+      }), 100) + '</div>';
+  }
+
+  h += '<div class="dash-block"><div class="dash-title">Records by form</div>' +
+    bars(DASH.forms.map(function (x){
+      return { k: 'Form ' + x.f.mark + ' · ' + x.f.name, n: x.rows, v: String(x.rows) };
+    })) + '</div>';
+
+  var perFacility = facilities.map(function (phu){
+    var n = 0;
+    Object.keys(DASH.facilities[phu]).forEach(function (mk){ n += DASH.facilities[phu][mk]; });
+    return { k: phu, n: n, v: String(n) };
+  }).sort(function (a, b2){ return b2.n - a.n; });
+  h += '<div class="dash-block"><div class="dash-title">Records by facility</div>' + bars(perFacility, 0, 'gold') + '</div>';
+
+  /* which form each facility has sent, the coverage grid */
+  h += '<div class="dash-block"><div class="dash-title">Which forms each facility has sent</div>' +
+    '<div style="overflow-x:auto;"><table class="score"><thead><tr><th>Facility</th>' +
+    ALL_FORMS.map(function (f){ return '<th class="num">' + f.mark + '</th>'; }).join('') +
+    '</tr></thead><tbody>' +
+    facilities.sort().map(function (phu){
+      return '<tr><td>' + esc(phu) + '</td>' + ALL_FORMS.map(function (f){
+        var n = DASH.facilities[phu][f.mark];
+        return '<td class="num">' + (n ? '<b style="color:var(--green);">' + n + '</b>' : '<span style="color:var(--border);">·</span>') + '</td>';
+      }).join('') + '</tr>';
+    }).join('') + '</tbody></table></div>' +
+    '<div class="note">A number is how many records that facility has for that form. A dot means none yet.</div></div>';
+
+  /* activity by date, across everything */
+  var dates = {};
+  DASH.forms.forEach(function (x){
+    Object.keys(x.byDate || {}).forEach(function (dt){ dates[dt] = (dates[dt] || 0) + x.byDate[dt]; });
+  });
+  var dateRows = Object.keys(dates).sort().slice(-14).map(function (dt){
+    return { k: dt, n: dates[dt], v: String(dates[dt]) };
+  });
+  if (dateRows.length) {
+    h += '<div class="dash-block"><div class="dash-title">Visits by date, last 14 days on file</div>' +
+      bars(dateRows, 0, 'green') + '</div>';
+  }
+
+  h += '<div class="dash-foot note">Read from the sheets ' + esc(DASH.at) + '.' +
+    (DASH.failed.length ? ' Could not read: ' + DASH.failed.join(', ') + '.' : '') +
+    ' Names, phone numbers and emails are held back by NMDR, so nothing personal reaches this screen.</div>';
+
+  host.innerHTML = h;
+}
+
+function kpi(value, label){
+  return '<div class="kpi"><div class="kpi-val">' + esc(value) + '</div><div class="kpi-lbl">' + esc(label) + '</div></div>';
+}
+
+/* ---------- submitting the scorecard ---------- */
+function scorecardPayload(){
+  var visit = currentVisit();
+  if (!visit) return null;
+  var s = scoreVisit(visit);
+  return {
+    form: FORM_MARK,
+    recordId: 'SC-' + (visit.phu || 'facility').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 20),
+    revision: 1,
+    submittedAt: new Date().toLocaleString(),
+    district: visit.district, chiefdom: visit.chiefdom, phu: visit.phu,
+    visit_date: visit.visit_date,               // the latest date the forms carry
+    visit_dates: visit.dates.join(', '),
+    total_scored: s.scored, total_possible: s.possible, overall_pct: s.pct,
+    band: s.band.label,
+    forms_included: s.present.map(function (f){ return 'Form ' + f.mark; }).join(', '),
+    forms_expected: SCORED_FORMS.length,
+    sections: [].concat.apply([], s.forms.map(function (f){
+      return f.rows.map(function (r){
+        return { form: 'Form ' + f.mark, section: r.name, scored: r.scored,
+                 possible: r.possible, pct: r.pct, band: band(r.pct).label };
+      });
+    })),
+    form_totals: s.forms.map(function (f){
+      return { form: 'Form ' + f.mark, recordId: f.recordId, scored: f.scored,
+               possible: f.possible, pct: f.pct, band: band(f.pct).label };
+    }),
+    build: BUILD
+  };
+}
+
+function submitScorecard(){
+  var p = scorecardPayload();
+  if (!p) { sendStatus('bad', 'Choose a visit first.'); return; }
+  var s = scoreVisit(currentVisit());
+  if (s.missing.length) {
+    sendStatus('bad', 'Not every scored checklist is in for this visit, so the scorecard is not comparable yet.');
+    return;
+  }
+
+  sendStatus('working', 'Sending the scorecard to NMDR...');
+  if (!navigator.onLine || !/^https/.test(ENDPOINT)) { queue(p); return; }
+
+  fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(p) })
+    .then(jsonFrom)
+    .then(function (res){
+      if (!res || !res.ok) throw new Error((res && res.error) ? res.error : 'NMDR refused the scorecard.');
+      keepSent(p);
+      sendStatus('good', '<b>Scorecard sent to NMDR.</b> ' + esc(p.phu) + ' · ' + p.overall_pct +
+        '% · ' + esc(p.band) + '<br>Reference ' + esc(res.reference || p.recordId) + '.');
+    })
+    .catch(function (err){ queue(p, err.message); });
+}
+
+function queue(p, why){
+  var box = readJson(OUTBOX_KEY) || [];
+  box = box.filter(function (q){ return !q.payload || q.payload.recordId !== p.recordId; });
+  box.push({ payload: p, queuedAt: new Date().toLocaleString() });
+  try { localStorage.setItem(OUTBOX_KEY, JSON.stringify(box)); } catch (e) {}
+  keepSent(p);
+  sendStatus('working', '<b>Held on this phone.</b> ' + (why ? esc(why) + '<br>' : '') +
+    'The scorecard goes to NMDR by itself once there is a signal. Nothing is lost.');
+}
+
+function keepSent(p){
+  var all = readJson(SENT_KEY) || {};
+  all[p.recordId] = { payload: p, savedAt: new Date().toLocaleString() };
+  try { localStorage.setItem(SENT_KEY, JSON.stringify(all)); } catch (e) {}
+}
+
+function flushOutbox(){
+  var box = readJson(OUTBOX_KEY) || [];
+  if (!box.length || !navigator.onLine || !/^https/.test(ENDPOINT)) return;
+  var next = box[0];
+  fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(next.payload) })
+    .then(jsonFrom)
+    .then(function (res){
+      if (!res || !res.ok) return;
+      var left = (readJson(OUTBOX_KEY) || []).filter(function (q){
+        return q.payload.recordId !== next.payload.recordId;
+      });
+      try { localStorage.setItem(OUTBOX_KEY, JSON.stringify(left)); } catch (e) {}
+      sendStatus('good', '<b>A held scorecard has now reached NMDR.</b> ' + esc(next.payload.phu) + '.');
+    })
+    .catch(function (){ /* still no signal, try again later */ });
+}
+
+/* ---------- start ---------- */
+rebuild(false);
+/* read the sheet as soon as there is a signal, so the facility list is complete
+   without anyone pressing anything */
+if (navigator.onLine) setTimeout(function (){ pullFromNmdr(false); }, 900);
+window.addEventListener('online', function (){ pullFromNmdr(false); });
+setTimeout(function (){ flushOutbox(); }, 1500);
+setInterval(flushOutbox, 60000);
+window.addEventListener('online', flushOutbox);
+</script>
+</body>
+</html>
