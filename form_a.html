@@ -212,14 +212,7 @@ body {
   justify-content: center;
   padding: 20px;
 }
-.modal-content {
-  background: var(--white);
-  border-radius: 20px;
-  max-width: 600px;
-  width: 100%;
-  max-height: 85vh;
-  overflow-y: auto;
-}
+.modal-content { background:#fff; border-radius:20px; max-width:520px; width:100%; max-height:88vh; display:flex; flex-direction:column; overflow:hidden; }
 .modal-header {
   background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   color: white;
@@ -232,7 +225,7 @@ body {
   top: 0;
 }
 .modal-header button { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
-.modal-body { padding: 20px; }
+.modal-body { padding:18px 20px; overflow-y:auto; -webkit-overflow-scrolling:touch; flex:1 1 auto; min-height:0; }
 .modal-footer { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; gap: 12px; background: white; position: sticky; bottom: 0; }
 .summary-item { margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
 .summary-label { font-weight: 700; color: var(--blue); font-size: 10px; text-transform: uppercase; margin-bottom: 4px; }
@@ -260,7 +253,7 @@ body {
 .tool-status { display:none; margin:0; padding:11px 16px; font-size:13px; font-weight:600; background:var(--soft-bg); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:250; line-height:1.4; }
 .tool-status.on { display: block; color: var(--blue-dark); }
 .tool-status.bad { display: block; color: var(--red); }
-.dash-content { max-width: 620px; }
+.dash-content { max-width:620px; }
 .dash-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 6px; }
 .kpi { background: var(--soft-bg); border-radius: 12px; padding: 12px 14px; }
 .kpi-val { font-size: 22px; font-weight: 800; color: var(--blue-dark); }
@@ -1195,7 +1188,7 @@ function closeModal() { document.getElementById("summaryModal").style.display = 
    record and submitting again updates the same record on the server, it does
    not create a second one. */
 var FORM_MARK = "A";          // which form this is, for the router
-var ENDPOINT = "https://script.google.com/macros/s/AKfycbwV04trmpmSLJAS5BTdgBHTS4lumCPRd45yIUvOx9Z0BX7147xCGVId9JcoNt_nCUG_/exec";
+var ENDPOINT = "https://script.google.com/macros/s/AKfycbzk0RN_TqpDYGnTZrppyhz0tbr1dT_NBooTOVlWmVmFeaF0Z5lpggejHI0UvzBU17fYLg/exec";
 
 var OUTBOX_KEY = "mocm_outbox_form_a";
 var ARCHIVE_KEY = "mocm_sent_form_a";     // what this phone has submitted, kept for editing
@@ -1432,12 +1425,10 @@ function confirmSubmit() {
   // nothing to send if not a single answer has changed
   var fingerprint = recordFingerprint(data);
   if (RECORD.accepted > 0 && RECORD.hash && fingerprint === RECORD.hash) {
-    sendStatus("good", "<b>No changes made.</b> This data is already submitted to NMDR as " +
-      escapeHtml(RECORD.id) + ", version " + RECORD.accepted + "." +
-      "<br>Edit something first, or close this and start a new entry.");
-    var b = document.getElementById("btnConfirm");
-    if (b) { b.disabled = false; b.textContent = "SUBMIT AGAIN"; }
-    return;
+    /* a resubmission with nothing changed is allowed: it refreshes the same
+       record and re-sends the email, rather than being refused */
+    sendStatus("working", "<b>Nothing has changed since version " + RECORD.accepted + ".</b> " +
+      "Sending it again anyway, which refreshes the record and re-sends the email.");
   }
   data.fingerprint = fingerprint;
 
@@ -2094,7 +2085,7 @@ function draftEsc(v){
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-var BUILD = "2026-07-27g";     // shown in the DRAFTS panel, so you can tell a stale phone
+var BUILD = "2026-07-28a";     // shown in the DRAFTS panel, so you can tell a stale phone
 var PAGE_RELOADS_FOR_NEW = false;   // how this form clears itself for the next facility
 var DRAFTS_KEY = "mocm_drafts_" + FORM_MARK;
 
@@ -2831,6 +2822,111 @@ function newEntry(){
     ]
   });
 }
+
+
+/* ==================== DASHBOARD CHARTS ====================
+   The dashboards drew grey-blue bars only. These definitions come last on
+   purpose, so they replace the earlier bars() and give every dashboard a
+   coloured donut with a legend beside coloured bars. Everything is inline SVG
+   and CSS, no library, sized for a phone first. */
+
+var CHART_COLOURS = ['#1565a8', '#28a745', '#d4a017', '#8e44ad', '#e67e22',
+                     '#17a2b8', '#c0392b', '#2c3e50', '#7f8c8d', '#16a085'];
+
+function chartColour(i, tone){
+  if (tone === 'green') return '#28a745';
+  if (tone === 'gold')  return '#d4a017';
+  if (tone === 'red')   return '#dc3545';
+  return CHART_COLOURS[i % CHART_COLOURS.length];
+}
+
+/* a donut, drawn with one stroked arc per slice. Percentages are of the total
+   shown in the middle, so it reads as a share rather than a count. */
+function donut(rows, tone){
+  var total = 0;
+  rows.forEach(function (r){ total += Number(r.n) || 0; });
+  if (!total) return '';
+
+  var R = 54, C = 2 * Math.PI * R, at = 0, arcs = '';
+  rows.forEach(function (r, i){
+    var share = (Number(r.n) || 0) / total;
+    if (share <= 0) return;
+    var len = share * C;
+    arcs += '<circle cx="60" cy="60" r="' + R + '" fill="none" stroke="' + chartColour(i, tone) +
+            '" stroke-width="16" stroke-dasharray="' + len.toFixed(2) + ' ' + (C - len).toFixed(2) +
+            '" stroke-dashoffset="' + (-at).toFixed(2) + '" transform="rotate(-90 60 60)" ' +
+            'stroke-linecap="butt"></circle>';
+    at += len;
+  });
+
+  var legend = rows.map(function (r, i){
+    var share = Math.round((Number(r.n) || 0) / total * 100);
+    return '<div class="lg-row"><span class="lg-dot" style="background:' + chartColour(i, tone) + '"></span>' +
+      '<span class="lg-key">' + escChart(r.k) + '</span>' +
+      '<span class="lg-num">' + r.n + ' · ' + share + '%</span></div>';
+  }).join('');
+
+  return '<div class="chart-wrap">' +
+    '<svg class="donut" viewBox="0 0 120 120" role="img">' +
+      '<circle cx="60" cy="60" r="' + R + '" fill="none" stroke="#e9eef4" stroke-width="16"></circle>' +
+      arcs +
+      '<text x="60" y="56" text-anchor="middle" class="donut-big">' + total + '</text>' +
+      '<text x="60" y="72" text-anchor="middle" class="donut-small">records</text>' +
+    '</svg>' +
+    '<div class="legend">' + legend + '</div>' +
+  '</div>';
+}
+
+/* the bars every dashboard already asks for, now coloured, with the donut above
+   them whenever the rows are categories rather than percentages */
+function bars(rows, total, tone){
+  if (!rows || !rows.length) return '<div class="dash-note">Nothing recorded yet.</div>';
+  var max = 0;
+  rows.forEach(function (r){ if ((Number(r.n) || 0) > max) max = Number(r.n) || 0; });
+  if (!max) max = 1;
+
+  var isShare = (total === 100);            // a percentage scale, so no donut
+  var head = (!isShare && rows.length >= 2 && rows.length <= 8) ? donut(rows, tone) : '';
+
+  var body = rows.map(function (r, i){
+    var n = Number(r.n) || 0;
+    var pctOfTotal = total ? Math.round(n / total * 100) : 0;
+    var width = Math.max(2, Math.round(n / (isShare ? 100 : max) * 100));
+    return '<div class="bar-row"><div class="bar-top"><span>' + escChart(r.k) + '</span>' +
+      '<span class="bar-num">' + (r.v !== undefined ? r.v : (n + (total ? ' · ' + pctOfTotal + '%' : ''))) +
+      '</span></div>' +
+      '<div class="bar-track"><div class="bar-fill" style="width:' + width + '%;background:' +
+      chartColour(i, tone) + '"></div></div></div>';
+  }).join('');
+
+  return head + body;
+}
+
+function escChart(v){
+  return String(v === undefined || v === null ? '' : v)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* the styles the charts need, added once */
+(function () {
+  if (document.getElementById('chartCss')) return;
+  var css = document.createElement('style');
+  css.id = 'chartCss';
+  css.textContent =
+    '.chart-wrap{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:4px 0 14px;}' +
+    '.donut{width:132px;height:132px;flex:0 0 auto;}' +
+    '.donut-big{font-size:22px;font-weight:800;fill:#0b3d68;}' +
+    '.donut-small{font-size:9px;fill:#6b7987;text-transform:uppercase;letter-spacing:.5px;}' +
+    '.legend{flex:1 1 150px;min-width:0;}' +
+    '.lg-row{display:flex;align-items:center;gap:7px;font-size:12px;padding:3px 0;}' +
+    '.lg-dot{width:10px;height:10px;border-radius:3px;flex:0 0 auto;}' +
+    '.lg-key{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
+    '.lg-num{font-weight:700;color:#0b3d68;white-space:nowrap;}' +
+    '.bar-fill{transition:width .3s ease;}' +
+    '@media (max-width:420px){.donut{width:112px;height:112px;}.chart-wrap{gap:10px;}}' +
+    '.dash-kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;}';
+  document.head.appendChild(css);
+})();
 
 </script>
 </body>
