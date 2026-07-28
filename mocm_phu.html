@@ -262,14 +262,24 @@ var MODULES = [
    desc:"Ratings, gaps and agreed corrective actions.",
    pres:"form-g-presentation.pdf", video:"form-g-video.mp4", assessment:"form-g-assessment.html", data:"form_g.html"},
 
-
   {letter:"I", accent:"#e83e8c", title:"Perennial Malaria Chemoprevention (PMC)",
    desc:"Formerly Intermittent Preventive Treatment in Infants (IPTi). Eligibility, doses and recording.",
    pres:"form-i-presentation.pdf", video:"form-i-video.mp4", assessment:"form-i-assessment.html", data:"form_i.html"},
 
   {letter:"J", accent:"#6f42c1", title:"Malaria Vaccine (RTS,S) Administration",
    desc:"RTS,S dose schedule, cold chain, wastage and recording.",
-   pres:"form-j-presentation.pdf", video:"form-j-video.mp4", assessment:"form-j-assessment.html", data:"form_j.html"}
+   pres:"form-j-presentation.pdf", video:"form-j-video.mp4", assessment:"form-j-assessment.html", data:"form_j.html"},
+
+  /* The scorecard runs through the same four sub-modules as every other module:
+     presentation, video, assessment, then the live tool. The data step is the
+     scoring form itself, which is also where the dashboard lives. */
+  {letter:"SC", accent:"#0b3d68", title:"Scoring Form",
+   desc:"Collates the section scores from the scored checklists, bands them (under 70% needs improvement, 70 to 85% satisfactory, above 85% good) and works out one facility performance score. The same page carries the dashboard over everything submitted to NMDR.",
+   pres:"form-sc-presentation.pdf", video:"form-sc-video.mp4", assessment:"form-sc-assessment.html",
+   data:"summary_form.html", dataAlt:"form_summary.html",
+   dataTitle:"Scoring and Dashboard",
+   dataDesc:"Open the scoring form, check the facility score and submit it, or read the dashboard of everything in the sheets.",
+   dataBtn:"Open the scoring form"}
 ];
 
 var SUBS = [
@@ -299,9 +309,9 @@ var FORM_CREDENTIALS = {
   "E": { username: "supervisor", password: "mocm2026" },
   "F": { username: "supervisor", password: "mocm2026" },
   "G": { username: "supervisor", password: "mocm2026" },
-  "H": { username: "supervisor", password: "mocm2026" },
   "I": { username: "supervisor", password: "mocm2026" },
-  "J": { username: "supervisor", password: "mocm2026" }
+  "J": { username: "supervisor", password: "mocm2026" },
+  "SC": { username: "supervisor", password: "mocm2026" }
 };
 
 /* ================= ICONS ================= */
@@ -364,18 +374,24 @@ function homeHTML(){
 /* ================= MODULE DETAIL ================= */
 function moduleHTML(i){
   var m = MODULES[i];
-  var subs = SUBS.map(function(s){
+  var steps = m.dataOnly ? SUBS.filter(function(s){ return s.key === "data"; }) : SUBS;
+  var subs = steps.map(function(s){
     var locked = (REQUIRE_LOGIN && s.key === "data" && FORM_CREDENTIALS[m.letter] && !unlockedForms[m.letter]);
+    /* a module may reword its own data step, which the scoring form does */
+    var step  = m.dataOnly ? "" : s.step;
+    var title = (s.key === "data" && m.dataTitle) ? m.dataTitle : s.title;
+    var desc  = (s.key === "data" && m.dataDesc)  ? m.dataDesc  : s.desc;
+    var btn   = (s.key === "data" && m.dataBtn)   ? m.dataBtn   : s.btn;
     return '<div class="sub-card"><div class="ic '+s.ic+'">'+IC[s.ic]+'</div>'+
-      '<div class="step">'+esc(s.step)+'</div>'+
-      '<h4>'+esc(s.title)+'</h4><p>'+esc(s.desc)+'</p>'+
+      (step ? '<div class="step">'+esc(step)+'</div>' : '')+
+      '<h4>'+esc(title)+'</h4><p>'+esc(desc)+'</p>'+
       '<button class="btn '+s.cls+'" onclick="openSub(\''+s.key+'\','+i+')">'+
-        (locked ? IC.lock : '')+esc(s.btn)+'</button>'+
+        (locked ? IC.lock : '')+esc(btn)+'</button>'+
     '</div>';
   }).join("");
 
   return '<div class="wrap"><div class="detail">'+
-    '<div class="dhero"><div class="num">MODULE '+m.letter+'</div>'+
+    '<div class="dhero"><div class="num">'+(m.letter === 'SC' ? 'SCORING FORM' : 'MODULE '+m.letter)+'</div>'+
       '<h2>'+esc(m.title)+'</h2><p>'+esc(m.desc)+'</p></div>'+
     '<div class="subs">'+subs+
       '<div class="player" id="player"><div class="pbar">'+
@@ -417,6 +433,19 @@ function subUrl(m, s){
   return (s.key === "ppt") ? m.pres : m[s.key];
 }
 
+/* try each candidate in turn and use the first that answers */
+function fileThatExists(list, done){
+  var i = 0;
+  function tryNext(){
+    if (i >= list.length) { done(list[0]); return; }      // none answered: let the frame show its own error
+    var url = list[i++];
+    fetch(url, { method: "HEAD" })
+      .then(function (r){ if (r && r.ok) done(url); else tryNext(); })
+      .catch(function (){ tryNext(); });
+  }
+  tryNext();
+}
+
 function openSub(key, i){
   var m = MODULES[i], s = subByKey(key);
   if (!m || !s) return;
@@ -439,7 +468,16 @@ function openSub(key, i){
     }
   }
 
-  openDoc(key === "ppt" ? "pdf" : "html", s.title + " \u00B7 " + m.title, subUrl(m, s), 0);
+  var label = (m.dataOnly && key === "data" && m.dataTitle) ? m.dataTitle : s.title;
+  if (key === "data" && m.dataAlt) {
+    /* the scoring form has been called both summary_form.html and
+       form_summary.html; open whichever is actually on the server */
+    fileThatExists([subUrl(m, s), m.dataAlt], function (url) {
+      openDoc("html", label + " \u00B7 " + m.title, url, 0);
+    });
+    return;
+  }
+  openDoc(key === "ppt" ? "pdf" : "html", label + " \u00B7 " + m.title, subUrl(m, s), 0);
 }
 
 /* ================= DOC VIEWER ================= */
