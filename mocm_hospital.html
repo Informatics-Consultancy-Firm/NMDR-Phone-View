@@ -810,13 +810,19 @@ function removeRecheck(i){ recheckRows.splice(i,1); if(!recheckRows.length) rech
    District. The four location questions are filled in and read only, so nobody
    can record a lab assessment against the wrong facility. Widen SITE if the
    tool is ever used at a second hospital. */
-const SITE = { district:'Bo', chiefdom:'Bo City', phu:'Bo Government Hospital', facilityType:'Government Hospital' };
+/* The hospitals this lab tool is used at. Bo Children's Hospital added 28 Jul.
+   SITE stays as the default so nothing else in the form has to change. */
+const SITES = [
+  { district:'Bo', chiefdom:'Bo City', phu:'Bo Government Hospital',  facilityType:'Government Hospital' },
+  { district:'Bo', chiefdom:'Bo City', phu:"Bo Children's Hospital", facilityType:'Government Hospital' }
+];
+const SITE = SITES[0];
 
 let csvLoaded=true, manualMode=false;
 const districtsSet=new Set([SITE.district]);
 const chiefdomMap=new Map([[SITE.district, new Set([SITE.chiefdom])]]);
-const phuMap=new Map([[SITE.district+'|'+SITE.chiefdom, [SITE.phu]]]);
-const facilityTypeMap=new Map([[SITE.district+'|'+SITE.chiefdom+'|'+SITE.phu, SITE.facilityType]]);
+const phuMap=new Map([[SITE.district+'|'+SITE.chiefdom, SITES.map(function(x){ return x.phu; })]]);
+const facilityTypeMap=new Map(SITES.map(function(x){ return [x.district+'|'+x.chiefdom+'|'+x.phu, x.facilityType]; }));
 
 async function loadCSV(){
   // nothing to load: the site is fixed above
@@ -828,10 +834,19 @@ async function loadCSV(){
 function facilityTypeOptions(){ return ['CHC','CHP (Community Health Post)','MCH Aid Post','Peripheral Health Unit (PHU)','District Hospital','Regional Hospital','Government Hospital','Mission Hospital','Tertiary / Teaching Hospital']; }
 
 function renderCascade(kind){
-  const labels = { district:SITE.district, chiefdom:SITE.chiefdom, phu:SITE.phu, facilityType:SITE.facilityType };
+  /* the hospital is chosen, since the tool now covers two of them; the rest
+     stays fixed because both sit in Bo City */
+  if (kind === 'phu') {
+    return `<select class="form-select" id="phuSelect" onchange="onSitePick()">` +
+      SITES.map(function (x){
+        return `<option${x.phu === facilitySel.phu ? ' selected' : ''}>${escapeHtml(x.phu)}</option>`;
+      }).join('') +
+      `</select><div class="note">Choose the hospital this assessment was done at.</div>`;
+  }
+  const labels = { district:SITE.district, chiefdom:SITE.chiefdom, facilityType:SITE.facilityType };
   return `<div class="fixed-site">${escapeHtml(labels[kind]||'')}</div>` +
-         `<div class="note">Fixed for this tool. The laboratory assessment is only done at ` +
-         `${escapeHtml(SITE.phu)}, ${escapeHtml(SITE.chiefdom)}.</div>`;
+         `<div class="note">Fixed for this tool: both hospitals sit in ${escapeHtml(SITE.chiefdom)}, ` +
+         `${escapeHtml(SITE.district)} district.</div>`;
 }
 
 
@@ -976,22 +991,50 @@ function switchTab(tab){
 }
 
 /* ---------- progress ---------- */
-function isSkippedNumber(n){
-  n = String(n);
-  for(var r=0; r<SKIP_RULES.length; r++){
-    if(SKIP_RULES[r].match.test(n) && !SKIP_RULES[r].when()) return true;
-  }
-  return false;
-}
 /* ---------- skip logic ----------
    A question that cannot apply is hidden and its answer cleared, so nothing
    stale travels with the record. Hidden rows are ignored by the required check
    and left out of the answered count, and a section whose every question is
    skipped disappears heading and all. */
+/* Does this lab do mRDTs at all? 14.1 answers it, and 17.1.3 says which methods
+   are performed. Either one saying no mRDT takes out every RDT question below. */
+function answerOf(n){
+  if (typeof responses === 'object' && responses && responses[n] !== undefined) return responses[n];
+  var row = document.querySelector('.question-row[data-qn="' + n + '"]');
+  if (!row) return '';
+  var sel = row.querySelector('.choice-option.sel-yes, .choice-option.sel-no, .choice-option.selected');
+  return sel ? sel.getAttribute('data-opt') : '';
+}
+
+function doesRdt(){
+  if (answerOf('14.1') === 'No') return false;
+  if (answerOf('17.1.3') === 'Microscopy') return false;      // microscopy only
+  return true;
+}
+
+/* and the mirror of it, so microscopy questions can be skipped the same way */
+function doesMicroscopy(){
+  return answerOf('17.1.3') !== 'mRDT';
+}
+
 var SKIP_RULES = [
+  /* every RDT question, when the lab does not do RDTs:
+     14.2 to 14.4 (turnaround, brand), 20 to 25 (the whole RDT observation),
+     and the RDT specific items dotted through the other sections */
+  { match:/^14\.(2|3|4)$/,        when:doesRdt },
+  { match:/^2[0-5](\.|$)/,        when:doesRdt },
+  { match:/^11\.10$/,             when:doesRdt },   // bench aid for mRDTs
+  { match:/^13\.10$/,             when:doesRdt },   // QC on mRDT kits
+  { match:/^7\.1$/,               when:doesRdt },   // RDT commodity stock-outs
+  { match:/^3\.6$/,               when:doesRdt },   // staff trained on RDTs
+
+  /* and the mirror: a lab doing RDTs only has no slides to prepare or read */
+  { match:/^1[789](\.|$)/,         when:doesMicroscopy },
+  { match:/^2[6-9]\.(1|2|3|4|5)$/, when:function(){ return true; } },   // in-charge section always applies
+
   { match:/^17\.2\.3\.[2-9]$/,   when:function(){ return responses['17.2.3.1'] !== 'No'; } },
   { match:/^17\.2\.4\.[2-9]$/,   when:function(){ return responses['17.2.4.1'] !== 'No'; } },
-  { match:/^17\.2\.11\.(3|4)$/,  when:function(){ return responses['17.2.11.2'] !== 'No'; } },
+  { match:/^17\.2\.11\.(3|5|6)$/, when:function(){ return responses['17.2.11.2'] !== 'No'; } },
   // no technicians assessed means nothing to report about them
   { match:/^27\.(7|8)$/,          when:function(){ return Number(responses['27.6']) > 0; } }
 ];
@@ -1002,6 +1045,19 @@ function isSkippedNumber(n){
   }
   return false;
 }
+/* whichever hospital is chosen, keep the district, city and type in step */
+function onSitePick(){
+  var name = document.getElementById('phuSelect').value;
+  var site = null;
+  SITES.forEach(function (x){ if (x.phu === name) site = x; });
+  if (!site) return;
+  facilitySel.district = site.district;
+  facilitySel.chiefdom = site.chiefdom;
+  facilitySel.phu = site.phu;
+  facilitySel.facilityType = site.facilityType;
+  if (typeof updateProgress === 'function') updateProgress();
+}
+
 function applySkips(){
   document.querySelectorAll('#pageContainer .question-row').forEach(function(row){
     var n = row.dataset.qn;
@@ -1858,7 +1914,7 @@ function draftEsc(v){
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-var BUILD = "2026-07-28d";     // shown in the DRAFTS panel, so you can tell a stale phone
+var BUILD = "2026-07-28g";     // shown in the DRAFTS panel, so you can tell a stale phone
 var PAGE_RELOADS_FOR_NEW = true;   // how this form clears itself for the next facility
 var DRAFTS_KEY = "mocm_drafts_" + FORM_MARK;
 
