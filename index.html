@@ -600,8 +600,9 @@
                 <div id="dctChildren" style="overflow:hidden;max-height:0;transition:max-height .3s ease;">
                     <button class="nav-child nav-l3" data-tab="dct-sbd">5.0.5.1 SBD</button>
                     <button class="nav-child nav-l3" data-tab="dct-mocm-phu">5.0.5.2 MOCM (PHU)</button>
-                    <button class="nav-child nav-l3" data-tab="dct-mocm-hospital">5.0.5.3 MOCM (Hospital)</button>
-                    <button class="nav-child nav-l3" data-tab="dct-warehouse">5.0.5.4 Warehouse Assessment</button>
+                    <button class="nav-child nav-l3" data-tab="dct-mocm-lab">5.0.5.3 MOCM (Lab)</button>
+                    <button class="nav-child nav-l3" data-tab="dct-mocm-hospital">5.0.5.4 MOCM (Hospital)</button>
+                    <button class="nav-child nav-l3" data-tab="dct-warehouse">5.0.5.5 Warehouse Assessment</button>
                 </div>
                 <button class="nav-child nav-l2" data-tab="analytics-training">5.0.6 Analytics Learning</button>
             </div>
@@ -1048,7 +1049,8 @@
     <div id="survey-report" class="tab-content"><div class="iframe-pane"><iframe id="frame-survey-report" src="" data-src="survey_report.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="dct-sbd" class="tab-content"><div class="iframe-pane"><iframe id="frame-dct-sbd" src="" data-src="sbd.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="dct-mocm-phu" class="tab-content"><div class="iframe-pane"><iframe id="frame-dct-mocm-phu" src="" data-src="mocm_phu.html" loading="lazy" allow="fullscreen"></iframe></div></div>
-    <div id="dct-mocm-hospital" class="tab-content"><div class="iframe-pane"><iframe id="frame-dct-mocm-hospital" src="" data-src="mocm_hospital.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="dct-mocm-lab" class="tab-content"><div class="iframe-pane"><iframe id="frame-dct-mocm-lab" src="" data-src="mocm_hospital.html" loading="lazy" allow="fullscreen"></iframe></div></div>
+    <div id="dct-mocm-hospital" class="tab-content"><div class="iframe-pane"><iframe id="frame-dct-mocm-hospital" src="" data-src="mocm_hospital_v2.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="dct-warehouse" class="tab-content"><div class="iframe-pane"><iframe id="frame-dct-warehouse" src="" data-src="warehouse.html" loading="lazy" allow="fullscreen"></iframe></div></div>
     <div id="analytics-training" class="tab-content"><div class="iframe-pane"><iframe id="frame-analytics-training" src="" data-src="analytic_training.html" loading="lazy" allow="fullscreen"></iframe></div></div>
 
@@ -1161,7 +1163,7 @@ var INT_TABS         = ['int-pmc','int-malaria-vaccine','int-penta','int-measles
 var ENTO_TABS        = ['ento-data','ento-report','ento-dashboard','ir-data','ir-report','ir-dashboard'];
 var FINANCE_TABS     = ['finance-data','finance-report','finance-dashboard'];
 var SCM_TABS         = ['quant-data','quant-dashboard','supply-track-data','supply-track-dashboard'];
-var DCT_TABS         = ['dct-sbd','dct-mocm-phu','dct-mocm-hospital','dct-warehouse'];
+var DCT_TABS         = ['dct-sbd','dct-mocm-phu','dct-mocm-lab','dct-mocm-hospital','dct-warehouse'];
 
 var roleAccess = {
     national: ['welcome','me-dqa','me-detailed',
@@ -1380,7 +1382,7 @@ var pageLabelMap = {
     'int-vitamin-a':'Routine · Vitamin A','int-iptp':'Routine · IPTp','int-anc':'Routine · ANC',
     'int-mass-itn':'3.0 Interventions · Mass ITN','int-sbd':'3.0 Interventions · SBD','int-irs':'3.0 Interventions · IRS',
     'user-guide':'User Guide','bulletins':'Monthly Bulletin','mpd':'Malaria Programme Docs',
-    'campaign-survey':'Survey','survey-data':'Survey · Data','survey-report':'Survey · Report','dct-sbd':'Data Collection · SBD','dct-mocm-phu':'Data Collection · MOCM (PHU)','dct-mocm-hospital':'Data Collection · MOCM (Hospital)','dct-warehouse':'Data Collection · Warehouse Assessment','analytics-training':'Analytics Learning',
+    'campaign-survey':'Survey','survey-data':'Survey · Data','survey-report':'Survey · Report','dct-sbd':'Data Collection · SBD','dct-mocm-phu':'Data Collection · MOCM (PHU)','dct-mocm-lab':'Data Collection · MOCM (Lab)','dct-mocm-hospital':'Data Collection · MOCM (Hospital)','dct-warehouse':'Data Collection · Warehouse Assessment','analytics-training':'Analytics Learning',
     'dmat-dqa':'D-MAT · DQA','dmat-reporting':'D-MAT · Reporting',
     'dmat-suspected':'D-MAT · Suspected','dmat-tested':'D-MAT · Tested','dmat-confirmed':'D-MAT · Confirmed Cases',
     'dmat-treated':'D-MAT · Confirmed and Treated','dmat-confirmed-not-treated':'D-MAT · Confirmed and Not Treated',
