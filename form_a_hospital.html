@@ -1,0 +1,2863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>FORM A - MOCM Checklist, for Hospitals | NMCP Sierra Leone</title>
+<style>
+  @font-face {
+    font-family: 'AgencyFB';
+    src: local('Agency FB'), local('AgencyFB');
+  }
+
+
+/* the answered count, matching the other forms */
+.progress-container { background:var(--blue-dark); padding:10px 16px; margin:0 -16px; position:sticky; top:0; z-index:290; }
+.progress-bar { background:rgba(255,255,255,.2); border-radius:20px; height:6px; overflow:hidden; }
+.progress-fill { background:var(--gold); height:100%; width:0%; transition:width .3s ease; border-radius:20px; }
+.progress-text { color:#fff; font-size:11px; margin-top:6px; text-align:center; font-weight:500; }
+.tool-status { margin:0 -16px; }
+</style>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --blue: #3b78a8;
+  --blue-dark: #2b5f8a;
+  --blue-light: #4a8dbf;
+  --soft-bg: #e7f3ff;
+  --white: #ffffff;
+  --gold: #ffc107;
+  --green: #28a745;
+  --red: #dc3545;
+  --bg: #f0f2f5;
+  --border: #e0e6ed;
+  --text-dark: #1a2c3e;
+  --text-light: #6c7a8a;
+  --radius: 16px;
+}
+
+body {
+  font-family: 'Agency FB', 'AgencyFB', 'Arial Narrow', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text-dark);
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 20px 16px 0 16px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.page-header {
+  background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 60%, var(--blue-light) 100%);
+  color: white;
+  text-align: center;
+  padding: 24px 16px;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.header-logos { display: flex; justify-content: center; gap: 20px; margin-bottom: 16px; flex-wrap: wrap; }
+.header-logo { height: 65px; width: auto; background: white; padding: 6px 12px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+.header-org { font-size: 11px; font-weight: 600; letter-spacing: 1px; margin-bottom: 6px; opacity: 0.9; }
+.header-title { font-size: 22px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); }
+.header-sub { font-size: 11px; font-weight: 500; opacity: 0.85; margin-top: 6px; }
+
+.form-title {
+  background: linear-gradient(90deg, var(--blue-dark), var(--blue));
+  color: white;
+  padding: 14px 20px;
+  font-weight: 700;
+  font-size: 15px;
+  border-left: 4px solid var(--gold);
+}
+
+.section-card {
+  background: var(--white);
+}
+.card-header {
+  background: var(--white);
+  color: var(--blue-dark);
+  padding: 16px 20px 8px 20px;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--soft-bg);
+}
+.card-body { padding: 16px 20px 20px 20px; }
+
+.demographics {
+  background: var(--white);
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.demographics h3 { 
+  color: var(--blue-dark); 
+  margin-bottom: 16px; 
+  font-size: 13px; 
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.form-input, .form-select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: 'Agency FB', 'AgencyFB', 'Arial Narrow', Arial, sans-serif;
+  background: var(--white);
+}
+.form-input:focus, .form-select:focus {
+  border-color: var(--blue);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 120, 168, 0.1);
+}
+.form-select:disabled { background: #f6f8fa; color: #9aa7b4; }
+
+.question-row { margin-bottom: 24px; }
+.question-text { font-weight: 600; font-size: 14px; margin-bottom: 12px; color: var(--text-dark); }
+.required-star { color: var(--red); margin-left: 4px; font-size: 12px; }
+
+.count-hint { font-size: 12px; color: var(--text-light); margin-top: 8px; font-weight: 500; }
+.count-note {
+  display: none;
+  margin-top: 8px;
+  background: #fdecea;
+  border: 1px solid #f5c2bd;
+  border-radius: 10px;
+  padding: 9px 12px;
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 600;
+}
+.form-input.bad-entry { border-color: var(--red); box-shadow: 0 0 0 3px rgba(220,53,69,.12); }
+
+.options-group-vertical { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.radio-option-vertical {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--white);
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+.radio-option-vertical input { width: 18px; height: 18px; accent-color: var(--blue); cursor: pointer; margin: 0; }
+.radio-option-vertical.selected { background: var(--blue); border-color: var(--blue); color: white; }
+.radio-option-vertical.selected input { accent-color: white; }
+
+.member-card {
+  background: #fafbfc;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.member-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  color: var(--blue-dark);
+  font-size: 13px;
+}
+.member-tag { color: var(--text-light); font-size: 11px; font-weight: 600; }
+
+.signature-container {
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: white;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.signature-canvas { display: block; width: 100%; height: 120px; background: white; cursor: crosshair; }
+.signature-buttons { display: flex; gap: 10px; padding: 8px 10px; background: var(--soft-bg); border-top: 1px solid var(--border); }
+.signature-btn { background: var(--blue); color: white; border: none; border-radius: 20px; padding: 6px 12px; font-size: 11px; font-weight: 600; cursor: pointer; }
+.signature-btn.clear { background: var(--red); }
+
+.submit-container { padding: 20px; background: var(--white); margin-bottom: 20px; }
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+  color: white;
+  border: none;
+  border-radius: 40px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-content {
+  background: var(--white);
+  border-radius: 20px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.modal-header {
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+  color: white;
+  padding: 16px 20px;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+}
+.modal-header button { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+.modal-body { padding: 20px; }
+.modal-footer { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; gap: 12px; background: white; position: sticky; bottom: 0; }
+.summary-item { margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.summary-label { font-weight: 700; color: var(--blue); font-size: 10px; text-transform: uppercase; margin-bottom: 4px; }
+.summary-value { font-size: 13px; color: var(--text-dark); }
+.summary-section-title { font-weight: 700; font-size: 14px; color: var(--blue); margin: 16px 0 10px 0; padding-bottom: 6px; border-bottom: 2px solid var(--blue); }
+.btn-cancel { flex: 1; padding: 12px; background: #f0f2f5; color: var(--text-dark); border: 1px solid var(--border); border-radius: 40px; font-weight: 600; cursor: pointer; }
+.btn-confirm { flex: 1; padding: 12px; background: var(--blue); color: white; border: none; border-radius: 40px; font-weight: 600; cursor: pointer; }
+.icn { width:15px; height:15px; flex:0 0 auto; }
+.btn-tool { display: inline-flex; align-items: center; justify-content: center; }
+.sig-icn { width: 14px; height: 14px; vertical-align: -2px; }
+.tab-nav { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); background:var(--blue-dark); position:sticky; top:0; z-index:300; box-shadow:0 2px 8px rgba(0,0,0,.2); width:100%; box-sizing:border-box; margin: 0 -16px; }
+.tab-btn { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; min-width:0; padding:9px 3px; color:rgba(255,255,255,.78); font-weight:700; font-size:9.5px; letter-spacing:.2px; line-height:1.15; text-align:center; white-space:normal; overflow-wrap:anywhere; border:none; background:none; cursor:pointer; border-bottom:3px solid transparent; font-family:inherit; box-sizing:border-box; }
+.tab-btn.active { color: #fff; border-bottom: 3px solid var(--gold); background: rgba(255,255,255,.08); }
+.tab-page { display: none; }
+.tab-page.active { display: block; }
+.tool-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn-tool { flex: 1 1 30%; min-width: 30%; padding: 11px 8px; font-size: 12px; }
+.rec-row { border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; cursor: pointer; background: #fafbfc; }
+.rec-row:active { background: var(--soft-bg); border-color: var(--blue); }
+.rec-main { font-weight: 700; color: var(--blue-dark); font-size: 14px; }
+.rec-sub { font-size: 11.5px; color: var(--text-light); margin-top: 2px; }
+.btn-tool { flex: 1; padding: 13px 10px; background: var(--white); color: var(--blue-dark); border: 1.5px solid var(--blue); border-radius: 40px; font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit; }
+.btn-tool:active { background: var(--soft-bg); }
+.btn-tool:disabled { opacity: .55; }
+.tool-status { display:none; margin:0; padding:11px 16px; font-size:13px; font-weight:600; background:var(--soft-bg); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:250; line-height:1.4; }
+.tool-status.on { display: block; color: var(--blue-dark); }
+.tool-status.bad { display: block; color: var(--red); }
+.dash-content { max-width: 620px; }
+.dash-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 6px; }
+.kpi { background: var(--soft-bg); border-radius: 12px; padding: 12px 14px; }
+.kpi-val { font-size: 22px; font-weight: 800; color: var(--blue-dark); }
+.kpi-lbl { font-size: 10.5px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; color: var(--text-light); margin-top: 2px; }
+.dash-block { margin-top: 18px; }
+.dash-title { font-size: 12px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: var(--blue); padding-bottom: 6px; border-bottom: 2px solid var(--soft-bg); margin-bottom: 10px; }
+.bar-row { margin-bottom: 9px; }
+.bar-top { display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 3px; }
+.bar-lbl { color: var(--text-dark); padding-right: 8px; }
+.bar-num { color: var(--blue-dark); font-weight: 700; white-space: nowrap; }
+.bar-track { height: 8px; background: var(--border); border-radius: 6px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--blue); border-radius: 6px; }
+.bar-fill.gold { background: var(--gold); }
+.bar-fill.green { background: var(--green); }
+.dash-note { font-size: 11.5px; color: var(--text-light); margin-top: 8px; line-height: 1.5; }
+.dash-empty { padding: 24px; text-align: center; color: var(--text-light); font-size: 13px; }
+.submitted-by { border: 1.5px solid var(--border); border-radius: 12px; overflow: hidden; background: #fafbfc; }
+.sb-row { padding: 11px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.sb-row:last-child { border-bottom: none; }
+.sb-name { font-weight: 700; color: var(--blue-dark); }
+.sb-email { color: var(--text-light); font-size: 12px; word-break: break-all; }
+.sb-email.missing { color: var(--red); font-weight: 600; }
+.sb-empty { padding: 14px; font-size: 13px; color: var(--text-light); }
+.sb-note { padding: 10px 14px; background: var(--soft-bg); font-size: 12px; color: var(--blue-dark); font-weight: 600; }
+.gps-panel { border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 14px; background: #fafbfc; font-size: 13px; }
+.gps-panel.good { border-color: #b7dfc1; background: #f1f9f3; }
+.gps-panel.bad { border-color: #f1b5bb; background: #fdf2f3; }
+.gps-line { font-weight: 700; color: var(--blue-dark); }
+.gps-sub { font-size: 11.5px; color: var(--text-light); margin-top: 3px; }
+.pending-panel { display: none; margin: 0 20px; border: 1.5px solid var(--gold); border-radius: 14px; overflow: hidden; background: #fff8e1; }
+.pending-panel.on { display: block; }
+.pending-head { padding: 12px 14px; font-size: 13px; font-weight: 700; color: #7a5600; }
+.pend-row { padding: 11px 14px; border-top: 1px solid #f0dca8; background: var(--white); }
+.pend-main { font-weight: 700; font-size: 13.5px; color: var(--blue-dark); }
+.pend-sub { font-size: 11.5px; color: var(--text-light); margin-top: 2px; }
+.pend-actions { padding: 11px 14px; border-top: 1px solid #f0dca8; display: flex; gap: 10px; }
+.pend-actions .btn-tool { min-width: 0; padding: 10px; font-size: 12px; }
+.outbox-strip { display: none; margin: 0 20px; padding: 12px 14px; border-radius: 12px; background: #fff8e1; border: 1px solid var(--gold); color: #7a5600; font-size: 13px; font-weight: 600; }
+.outbox-strip.on { display: block; }
+.send-status { display:none; margin: 0 20px 4px 20px; padding: 11px 14px; border-radius: 12px; font-size: 13px; font-weight: 600; line-height: 1.45; }
+.send-status.working { display:block; background: var(--soft-bg); border: 1px solid #c9dff2; color: var(--blue-dark); }
+.send-status.good { display:block; background: #d4edda; border: 1px solid #b7dfc1; color: #155724; }
+.send-status.bad { display:block; background: #f8d7da; border: 1px solid #f1b5bb; color: #721c24; }
+.loading-indicator { text-align: center; padding: 20px; color: var(--blue); font-weight: 600; }
+
+@media (max-width: 340px) {
+  .tab-nav { grid-template-columns:repeat(3, minmax(0, 1fr)); }
+  .tab-btn { font-size:9px; padding:8px 2px; }
+}
+@media (min-width: 620px) {
+  .tab-nav { grid-template-columns:repeat(8, minmax(0, 1fr)); }
+  .tab-btn { font-size:10.5px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TAB NAVIGATION -->
+<div class="tab-nav">
+  <button class="tab-btn active" data-tab="entry" onclick="switchTab('entry')"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6v3H9z"/><path d="M8 5H6a1 1 0 00-1 1v13a1 1 0 001 1h12a1 1 0 001-1V6a1 1 0 00-1-1h-2"/><path d="M9 12h6"/><path d="M9 16h4"/></svg>DATA ENTRY</button>
+  <button class="tab-btn" data-tab="summary" onclick="switchTab('summary')"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12"/><path d="M8 12h12"/><path d="M8 18h12"/><path d="M4 6h.01"/><path d="M4 12h.01"/><path d="M4 18h.01"/></svg>SUMMARY</button>
+  <button class="tab-btn" onclick="saveDraft(false)"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>SAVE DRAFT</button>
+  <button class="tab-btn" data-draft-btn data-label="DRAFTS" onclick="openDrafts()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16a1 1 0 001-1V9a1 1 0 00-1-1h-7l-2-3H4a1 1 0 00-1 1v13a1 1 0 001 1z"/></svg>DRAFTS</button>
+  <button class="tab-btn" onclick="downloadData()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>DOWNLOAD</button>
+  <button class="tab-btn" onclick="openDashboard()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/></svg>DASHBOARD</button>
+  <button class="tab-btn" onclick="openEditPicker()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>EDIT</button>
+  <button class="tab-btn" onclick="newEntry()"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>NEW ENTRY</button>
+</div>
+<div id="toolStatus" class="tool-status"></div>
+<div class="progress-container">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-text" id="progressText">Fill the form, then press SUBMIT DATA at the foot of the page.</div>
+</div>
+
+
+
+<div class="page-header">
+  <div class="header-logos">
+    <!-- the local file is used when the form sits beside it; otherwise it falls back to the repo copy -->
+    <img src="ICF-SL.jpg" class="header-logo" alt="ICF-SL"
+         data-fallback="https://raw.githubusercontent.com/Informatics-Consultancy-Firm/NMDR-Phone-View/6bb327e58e3fcf17b05c9af591d9ab47425800a7/ICF-SL.jpg"
+         onerror="if(this.dataset.fallback){this.src=this.dataset.fallback;this.removeAttribute('data-fallback');}else{this.style.display='none';}">
+    <img src="NMCP.png" class="header-logo" alt="NMCP"
+         data-fallback="https://raw.githubusercontent.com/Informatics-Consultancy-Firm/NMDR-Phone-View/6bb327e58e3fcf17b05c9af591d9ab47425800a7/NMCP.png"
+         onerror="if(this.dataset.fallback){this.src=this.dataset.fallback;this.removeAttribute('data-fallback');}else{this.style.display='none';}">
+  </div>
+  <div class="header-org">National Malaria Control Programme, Ministry of Health, Sierra Leone</div>
+  <div class="header-title">MOCM Checklist, for Hospitals</div>
+  <div class="header-sub">FORM A: General Hospital Information</div>
+</div>
+
+
+
+<div class="tab-page active" id="tab-entry">
+<div class="form-title">FORM A: General Hospital Information</div>
+
+<!-- 1 to 5: which hospital -->
+<div class="demographics">
+  <h3>HOSPITAL IDENTIFICATION</h3>
+  <div class="site-note" id="siteNote"></div>
+  <div class="question-row">
+    <div class="question-text">1. Region <span class="required-star">*</span></div>
+    <select class="form-select" id="regionSelect" onchange="onRegion()">
+      <option value="">Select region...</option>
+    </select>
+  </div>
+  <div class="question-row">
+    <div class="question-text">2. District <span class="required-star">*</span></div>
+    <select class="form-select" id="districtSelect" onchange="onDistrictPick()">
+      <option value="">Select region first</option>
+    </select>
+  </div>
+  <div class="question-row">
+    <div class="question-text">3. Chiefdom / Zone / City <span class="required-star">*</span></div>
+    <input class="form-input" id="citySelect" type="text" placeholder="e.g. Bo City">
+  </div>
+  <div class="question-row">
+    <div class="question-text">4. Name of Hospital <span class="required-star">*</span></div>
+    <select class="form-select" id="hospitalSelect" onchange="onHospitalPick()">
+      <option value="">Select district first</option>
+    </select>
+    <input class="form-input" id="hospital_other" type="text" placeholder="If Other, type the hospital name"
+           style="display:none;margin-top:8px;">
+  </div>
+  <div class="question-row">
+    <div class="question-text">5. Hospital Ownership <span class="required-star">*</span></div>
+    <div class="options-group-vertical" id="ownership_group">
+      <label class="radio-option-vertical"><input type="radio" name="ownership" value="Government"> Government</label>
+      <label class="radio-option-vertical"><input type="radio" name="ownership" value="Private"> Private</label>
+      <label class="radio-option-vertical"><input type="radio" name="ownership" value="FBHF / Mission"> FBHF / Mission</label>
+      <label class="radio-option-vertical"><input type="radio" name="ownership" value="Parastatal"> Parastatal</label>
+    </div>
+  </div>
+</div>
+
+<!-- 6 to 11: who we spoke to -->
+<div class="section-card">
+  <div class="card-header">HOSPITAL LEADERSHIP AND RESPONDENT</div>
+  <div class="card-body">
+    <div class="question-row"><div class="question-text">6. Name of Head of Hospital <span class="required-star">*</span></div>
+      <input class="form-input" id="head_name" type="text" placeholder="Full name">
+    </div>
+    <div class="question-row"><div class="question-text">7. Designation of Head of Hospital <span class="required-star">*</span></div>
+      <input class="form-input" id="head_designation" type="text" placeholder="e.g. Medical Superintendent">
+    </div>
+    <div class="question-row"><div class="question-text">8. Contact of Head of Hospital (9 digits) <span class="required-star">*</span></div>
+      <input class="form-input" id="head_phone" type="tel" placeholder="099177283" maxlength="9"
+             oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,9)">
+    </div>
+    <div class="question-row"><div class="question-text">9. Name of Respondent <span class="required-star">*</span></div>
+      <input class="form-input" id="respondent_name" type="text" placeholder="Full name">
+    </div>
+    <div class="question-row"><div class="question-text">10. Contact of Respondent (9 digits) <span class="required-star">*</span></div>
+      <input class="form-input" id="respondent_phone" type="tel" placeholder="099177283" maxlength="9"
+             oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,9)">
+    </div>
+    <div class="question-row"><div class="question-text">11. Date of Visit <span class="required-star">*</span></div>
+      <input class="form-input" id="visit_date" type="date">
+    </div>
+  </div>
+</div>
+
+<!-- Supervisors: the count opens the cards -->
+<div class="section-card">
+  <div class="card-header">CLINICAL MENTORS / SUPERVISORS</div>
+  <div class="card-body">
+    <div class="question-row">
+      <div class="question-text">12. Number of clinical mentors / supervisors on this visit <span class="required-star">*</span></div>
+      <input class="form-input" id="supervisor_count" type="number" min="1" max="10" step="1" placeholder="Type a number" oninput="onSupervisorCountInput()">
+      <div class="count-note" id="supervisor_count_note"></div>
+      <div class="count-hint" id="supervisor_count_hint">Type the number and one card will open for each mentor.</div>
+    </div>
+    <div id="supervisors-container"></div>
+  </div>
+</div>
+
+<!-- Staff: the count opens the cards -->
+<div class="section-card">
+  <div class="card-header">HOSPITAL STAFF ENGAGED</div>
+  <div class="card-body">
+    <div class="question-row">
+      <div class="question-text">13. Number of hospital staff engaged <span class="required-star">*</span></div>
+      <input class="form-input" id="staff_count" type="number" min="1" max="30" step="1" placeholder="Type a number" oninput="onStaffCountInput()">
+      <div class="count-note" id="staff_count_note"></div>
+      <div class="count-hint" id="staff_count_hint">Type the number and one card will open for each staff member engaged.</div>
+    </div>
+    <div id="staff-container"></div>
+  </div>
+</div>
+
+<!-- Submitted by: taken from the supervisor cards -->
+<div class="section-card">
+  <div class="card-header">SUBMITTED BY</div>
+  <div class="card-body">
+    <div class="question-row" style="margin-bottom:0;">
+      <div class="question-text">14. Submitted by</div>
+      <div id="submittedByPanel" class="submitted-by"></div>
+    </div>
+  </div>
+</div>
+
+<!-- GPS: captured by the phone, not typed -->
+<div class="section-card">
+  <div class="card-header">LOCATION</div>
+  <div class="card-body">
+    <div class="question-row" style="margin-bottom:0;">
+      <div class="question-text">15. GPS position of the hospital</div>
+      <div id="gpsPanel" class="gps-panel"></div>
+      <button class="btn-tool" style="margin-top:10px;" onclick="captureGps(true)"><svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.1 7-11a7 7 0 10-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="11" r="2.5"/></svg>CAPTURE AGAIN</button>
+    </div>
+  </div>
+</div>
+
+<div id="pendingPanel" class="pending-panel"></div>
+
+<div class="submit-container">
+  <button class="btn-submit" onclick="validateAndSubmit()">SUBMIT DATA</button>
+</div>
+
+<div id="editModal" class="modal">
+  <div class="modal-content dash-content">
+    <div class="modal-header"><span>EDIT A SUBMISSION</span><button onclick="closeEditPicker()">&times;</button></div>
+    <div class="modal-body" id="editBody"></div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeEditPicker()">CLOSE</button></div>
+  </div>
+</div>
+
+<div id="askModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><span id="askTitle">NAME THIS DRAFT</span><button onclick="closeAsk()">&times;</button></div>
+    <div class="modal-body">
+      <div id="askNote" class="dash-note" style="margin:0 0 12px;"></div>
+      <input id="askInput" class="form-input" type="text" style="width:100%;box-sizing:border-box;">
+    </div>
+    <div class="modal-footer" id="askActions"></div>
+  </div>
+</div>
+
+<div id="draftModal" class="modal">
+  <div class="modal-content dash-content">
+    <div class="modal-header"><span>DRAFTS ON THIS PHONE</span><button onclick="closeDrafts()">&times;</button></div>
+    <div class="modal-body" id="draftBody"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeDrafts()">CLOSE</button>
+      <button class="btn-confirm" onclick="saveDraft(false); closeDrafts();">SAVE THIS ONE</button>
+    </div>
+  </div>
+</div>
+
+<div id="dashModal" class="modal">
+  <div class="modal-content dash-content">
+    <div class="modal-header"><span>NMDR DASHBOARD · FACILITY PROFILE</span><button onclick="closeDashboard()">&times;</button></div>
+    <div class="modal-body" id="dashBody"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeDashboard()">CLOSE</button>
+      <button class="btn-confirm" onclick="openDashboard(true)">REFRESH</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- end data entry tab -->
+
+<div class="tab-page" id="tab-summary">
+  <div class="form-title">LAST SUBMISSION FROM THIS PHONE</div>
+  <div id="tabSummaryBody"></div>
+</div>
+
+<div id="summaryModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><span>FACILITY PROFILE · SUBMISSION SUMMARY</span><button onclick="closeModal()">&times;</button></div>
+    <div class="modal-body" id="summaryBody"></div>
+    <div id="sendStatus" class="send-status"></div>
+    <div class="modal-footer"><button class="btn-cancel" id="btnCancel" onclick="closeModal()">CANCEL</button><button class="btn-confirm" id="btnConfirm" onclick="confirmSubmit()">CONFIRM SUBMIT</button></div>
+  </div>
+</div>
+
+<script>
+// ==================== FACILITY LIST ====================
+// MOCM pilot: 10 selected facilities, Bo District.
+// district | chiefdom | phu | facility_type
+/* The hospitals this tool is used at. Add a row per hospital as the pilot
+   widens; "Other hospital" lets a supervisor name one not yet listed rather
+   than being stuck. Region and ownership are asked separately, as the
+   validated checklist does. */
+const HOSPITALS = [
+  { region: "South", district: "Bo", city: "Bo City", name: "Bo Government Hospital", ownership: "Government" },
+  { region: "Other",        district: "Other",        city: "",               name: "Other hospital (not listed)" }
+];
+
+const REGIONS = ["East", "North", "North West", "South", "Western Area"];
+
+// ==================== CADRE LIST ====================
+// One list, used by question 8 (In-Charge) and by every staff card.
+// Add a cadre here and it appears in both dropdowns. Keep "Other" last.
+const CADRES = [
+  "Community Health Officer (CHO)",
+  "Community Health Technician (CHT)",
+  "Community Health Assistant (CHA)",
+  "State Registered Nurse (SRN)",
+  "State Enrolled Community Health Nurse (SECHN)",
+  "Registered Midwife",
+  "MCH Aide (MCHA)",
+  "Laboratory Technician",
+  "Other"
+];
+
+function cadreOptions(selected) {
+  var html = '<option value="">Select cadre...</option>';
+  CADRES.forEach(function(cadre) {
+    var on = (cadre === selected) ? ' selected' : '';
+    html += '<option value="' + escapeHtml(cadre) + '"' + on + '>' + escapeHtml(cadre) + '</option>';
+  });
+  return html;
+}
+
+function fillInChargeCadre() {
+  var sel = document.getElementById("cadre");     // not present in the hospital form
+  if (!sel) return;
+  sel.innerHTML = cadreOptions(sel.value);
+}
+
+// ==================== HOW MANY CARDS ====================
+const MAX_SUPERVISORS = 10;
+const MAX_STAFF = 30;
+
+// ==================== CASCADE DATA STRUCTURE ====================
+let csvData = [];
+let districtsSet = new Set();
+let chiefdomMap = new Map();        // district -> Set of chiefdoms
+let phuMap = new Map();             // "district|chiefdom" -> Array of {phu, facilityType}
+let facilityTypeMap = new Map();    // "district|chiefdom|phu" -> facility_type
+
+function resetCascade() {
+  csvData = [];
+  districtsSet = new Set();
+  chiefdomMap = new Map();
+  phuMap = new Map();
+  facilityTypeMap = new Map();
+}
+
+/* hospitals.csv beside the form extends the built-in list.
+   Columns: region, district, city, name */
+async function loadCSV() {
+  fillRegions();
+  prefillSite();
+  try {
+    const response = await fetch('hospitals.csv');
+    if (!response.ok) return;
+    const rows = parseCSV(await response.text());
+    rows.forEach(function (r) {
+      const name = (r.name || r.hospital || '').trim();
+      if (!name) return;
+      if (HOSPITALS.some(function (h) { return h.name === name; })) return;
+      HOSPITALS.push({ region: (r.region || '').trim(), district: (r.district || '').trim(),
+                       city: (r.city || r.chiefdom || '').trim(), name: name });
+    });
+    fillRegions();
+    prefillSite();
+  } catch (error) {
+    // no CSV present: the built-in list stays in use
+  }
+}
+
+// Expected CSV columns: region, district, city, name
+function parseCSV(csvText) {
+  const lines = csvText.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const head = lines[0].split(',').map(function (h) { return h.trim().toLowerCase(); });
+  return lines.slice(1).map(function (line) {
+    const cells = line.split(',');
+    const row = {};
+    head.forEach(function (h, i) { row[h] = (cells[i] || '').trim(); });
+    return row;
+  });
+}
+
+function parseCSVLine(line) {
+  const result = [];
+  let inQuotes = false;
+  let current = '';
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    if (char === '"') inQuotes = !inQuotes;
+    else if (char === ',' && !inQuotes) { result.push(current); current = ''; }
+    else current += char;
+  }
+  result.push(current);
+  return result;
+}
+
+// only the chiefdoms that hold a facility in the list
+function chiefdomsForDistrict(district) {
+  if (chiefdomMap.has(district)) return Array.from(chiefdomMap.get(district)).sort();
+  return [];
+}
+
+/* region, district, hospital: a short cascade over the HOSPITALS list, with an
+   Other route so a hospital not yet listed can still be recorded */
+function fillRegions(){
+  var sel = document.getElementById('regionSelect');
+  var seen = {};
+  var list = REGIONS.slice();
+  HOSPITALS.forEach(function (h) { if (list.indexOf(h.region) === -1 && h.region !== 'Other') list.push(h.region); });
+  sel.innerHTML = '<option value="">Select region...</option>' +
+    list.map(function (r) { return '<option>' + escapeHtml(r) + '</option>'; }).join('') +
+    '<option>Other</option>';
+}
+
+function onRegion(){
+  var region = document.getElementById('regionSelect').value;
+  var d = document.getElementById('districtSelect');
+  var districts = [];
+  HOSPITALS.forEach(function (h) {
+    if (h.region === region && districts.indexOf(h.district) === -1) districts.push(h.district);
+  });
+  if (districts.indexOf('Other') === -1) districts.push('Other');
+  d.disabled = !region;
+  d.innerHTML = region
+    ? '<option value="">Select district...</option>' + districts.map(function (x) { return '<option>' + escapeHtml(x) + '</option>'; }).join('')
+    : '<option value="">Select region first</option>';
+  onDistrictPick();
+}
+
+function onDistrictPick(){
+  var region = document.getElementById('regionSelect').value;
+  var district = document.getElementById('districtSelect').value;
+  var h = document.getElementById('hospitalSelect');
+  var names = [];
+  HOSPITALS.forEach(function (x) {
+    if (x.district === district && x.name.indexOf('Other hospital') !== 0) names.push(x.name);
+  });
+  h.disabled = !district;
+  h.innerHTML = district
+    ? '<option value="">Select hospital...</option>' +
+      names.map(function (n) { return '<option>' + escapeHtml(n) + '</option>'; }).join('') +
+      '<option>Other hospital (not listed)</option>'
+    : '<option value="">Select district first</option>';
+  onHospitalPick();
+}
+
+/* the site this pilot runs at, filled in on a blank form so nobody types it
+   each visit. Everything stays editable, and the hospital list can grow. */
+const DEFAULT_SITE = { region: "South", district: "Bo", city: "Bo City",
+                       name: "Bo Government Hospital", ownership: "Government" };
+
+/* a line at the top of the form saying which hospital this visit is for, so a
+   supervisor can see it without scrolling back up */
+function renderSiteNote(){
+  var el = document.getElementById('siteNote');
+  if (!el) return;
+  var name = hospitalName();
+  var own = (document.querySelector('input[name="ownership"]:checked') || {}).value || '';
+  var city = document.getElementById('citySelect').value;
+  if (!name) { el.className = 'site-note'; el.textContent = 'Choose the hospital below.'; return; }
+  el.className = 'site-note on';
+  el.innerHTML = '<b>' + escapeHtml(name) + '</b>' +
+    (city ? ' · ' + escapeHtml(city) : '') +
+    (own ? ' · ' + escapeHtml(own) : '');
+}
+
+function prefillSite(){
+  var region = document.getElementById('regionSelect');
+  if (!region || region.value) return;                 // already chosen, leave it
+  if (!HOSPITALS.some(function (h) { return h.name === DEFAULT_SITE.name; })) return;
+  region.value = DEFAULT_SITE.region;
+  onRegion();
+  document.getElementById('districtSelect').value = DEFAULT_SITE.district;
+  onDistrictPick();
+  document.getElementById('hospitalSelect').value = DEFAULT_SITE.name;
+  onHospitalPick();
+  document.getElementById('citySelect').value = DEFAULT_SITE.city;
+  var own = document.querySelector('input[name="ownership"][value="' + DEFAULT_SITE.ownership + '"]');
+  if (own) { own.checked = true; updateRadioVisuals(document.getElementById('ownership_group')); }
+  if (typeof updateProgress === 'function') updateProgress();
+  renderSiteNote();
+}
+
+function onHospitalPick(){
+  var name = document.getElementById('hospitalSelect').value;
+  var other = document.getElementById('hospital_other');
+  var isOther = name.indexOf('Other hospital') === 0;
+  other.style.display = isOther ? 'block' : 'none';
+  if (!isOther) other.value = '';
+
+  /* fill the city in from the list, but leave it editable */
+  var city = document.getElementById('citySelect');
+  HOSPITALS.forEach(function (x) {
+    if (x.name !== name) return;
+    if (x.city && !city.value) city.value = x.city;
+    if (x.ownership && !document.querySelector('input[name="ownership"]:checked')) {
+      var own = document.querySelector('input[name="ownership"][value="' + x.ownership + '"]');
+      if (own) { own.checked = true; updateRadioVisuals(document.getElementById('ownership_group')); }
+    }
+  });
+  if (typeof updateProgress === 'function') updateProgress();
+  renderSiteNote();
+}
+
+/* the hospital's name, whether picked from the list or typed */
+function hospitalName(){
+  var picked = document.getElementById('hospitalSelect').value;
+  if (picked.indexOf('Other hospital') === 0) {
+    var typed = document.getElementById('hospital_other').value.trim();
+    return typed ? typed : '';
+  }
+  return picked;
+}
+
+// ==================== MENTORS AND STAFF ENGAGED ====================
+let supervisors = [];
+let staffMembers = [];
+
+function blankSupervisor() { return { name: "", sex: "", designation: "", organization: "", email: "", phone: "" }; }
+function blankStaff() { return { name: "", sex: "", designation: "", phone: "" }; }
+
+function setSupervisorCount(n) {
+  n = Math.max(0, Math.min(MAX_SUPERVISORS, n));
+  while (supervisors.length < n) supervisors.push(blankSupervisor());
+  while (supervisors.length > n) {
+    sessionStorage.removeItem('sup_sig_' + (supervisors.length - 1));
+    supervisors.pop();
+  }
+  if (n > 0) document.getElementById("supervisor_count").value = supervisors.length;
+  document.getElementById("supervisor_count_hint").textContent = supervisors.length
+    ? "Cards open now: " + supervisors.length + ". Every card must be completed."
+    : "Type the number and one card will open for each mentor.";
+  renderSupervisors();
+}
+
+/* the number typed in question 11 decides how many staff cards exist */
+function setStaffCount(n) {
+  n = Math.max(0, Math.min(MAX_STAFF, n));
+  while (staffMembers.length < n) staffMembers.push(blankStaff());
+  while (staffMembers.length > n) staffMembers.pop();
+  if (n > 0) document.getElementById("staff_count").value = staffMembers.length;
+  document.getElementById("staff_count_hint").textContent = staffMembers.length
+    ? "Cards open now: " + staffMembers.length + ". Every card must be completed."
+    : "Type the number and one card will open for each staff member engaged.";
+  renderStaff();
+}
+
+function countNotice(inputId, noteId, message) {
+  var input = document.getElementById(inputId);
+  var note = document.getElementById(noteId);
+  if (message) {
+    note.textContent = message;
+    note.style.display = "block";
+    input.classList.add("bad-entry");
+  } else {
+    note.textContent = "";
+    note.style.display = "none";
+    input.classList.remove("bad-entry");
+  }
+}
+
+function onSupervisorCountInput() {
+  var raw = document.getElementById("supervisor_count").value.trim();
+  if (raw === "") {
+    countNotice("supervisor_count", "supervisor_count_note", "");
+    setSupervisorCount(0);
+    return;
+  }
+  var n = Number(raw);
+  if (!Number.isInteger(n) || n < 1 || n > MAX_SUPERVISORS) {
+    countNotice("supervisor_count", "supervisor_count_note",
+      "Wrong entry. Type a whole number between 1 and " + MAX_SUPERVISORS + ".");
+    document.getElementById("supervisor_count").value = supervisors.length || "";
+    return;
+  }
+  countNotice("supervisor_count", "supervisor_count_note", "");
+  setSupervisorCount(n);
+}
+
+function onStaffCountInput() {
+  var raw = document.getElementById("staff_count").value.trim();
+  if (raw === "") {
+    countNotice("staff_count", "staff_count_note", "");
+    setStaffCount(0);
+    return;
+  }
+  var n = Number(raw);
+  if (!Number.isInteger(n) || n < 1 || n > MAX_STAFF) {
+    countNotice("staff_count", "staff_count_note",
+      "Wrong entry. Type a whole number between 1 and " + MAX_STAFF + ".");
+    document.getElementById("staff_count").value = staffMembers.length || "";
+    return;
+  }
+  countNotice("staff_count", "staff_count_note", "");
+  setStaffCount(n);
+}
+
+function createSignaturePad(canvasId, clearBtnId, storageKey) {
+  let drawing = false;
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function getCoordinates(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    let clientX, clientY;
+    if (e.touches) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+    return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+  }
+
+  function startDrawing(e) {
+    drawing = true;
+    const coord = getCoordinates(e);
+    ctx.beginPath();
+    ctx.moveTo(coord.x, coord.y);
+    ctx.lineTo(coord.x, coord.y);
+    ctx.stroke();
+    e.preventDefault();
+  }
+
+  function draw(e) {
+    if (!drawing) return;
+    const coord = getCoordinates(e);
+    ctx.lineTo(coord.x, coord.y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(coord.x, coord.y);
+    e.preventDefault();
+  }
+
+  function stopDrawing() {
+    drawing = false;
+    ctx.beginPath();
+    if (storageKey) sessionStorage.setItem(storageKey, canvas.toDataURL());
+  }
+
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#1a2c3e';
+
+  canvas.addEventListener('mousedown', startDrawing);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', stopDrawing);
+  canvas.addEventListener('mouseleave', stopDrawing);
+  canvas.addEventListener('touchstart', startDrawing);
+  canvas.addEventListener('touchmove', draw);
+  canvas.addEventListener('touchend', stopDrawing);
+
+  document.getElementById(clearBtnId)?.addEventListener('click', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (storageKey) sessionStorage.removeItem(storageKey);
+  });
+
+  canvas.width = canvas.offsetWidth * 2;
+  canvas.height = canvas.offsetHeight * 2;
+  ctx.scale(2, 2);
+
+  const saved = sessionStorage.getItem(storageKey);
+  if (saved) { const img = new Image(); img.onload = () => ctx.drawImage(img, 0, 0); img.src = saved; }
+}
+
+function renderSupervisors() {
+  setTimeout(renderSubmittedBy, 0);
+  const container = document.getElementById("supervisors-container");
+  if (!container) return;
+  let html = '';
+  supervisors.forEach((s, i) => {
+    html += `<div class="member-card">
+      <div class="member-header"><span>Mentor / Supervisor #${i + 1}</span><span class="member-tag">of ${supervisors.length}</span></div>
+      <div class="question-row"><div class="question-text">Full Name <span class="required-star">*</span></div><input class="form-input" type="text" id="sup_name_${i}" value="${escapeHtml(s.name || '')}" placeholder="Full name"></div>
+      <div class="question-row"><div class="question-text">Sex <span class="required-star">*</span></div><div class="options-group-vertical" id="sup_sex_group_${i}"><label class="radio-option-vertical"><input type="radio" name="sup_sex_${i}" value="Male" ${s.sex === 'Male' ? 'checked' : ''}> Male</label><label class="radio-option-vertical"><input type="radio" name="sup_sex_${i}" value="Female" ${s.sex === 'Female' ? 'checked' : ''}> Female</label></div></div>
+      <div class="question-row"><div class="question-text">Designation <span class="required-star">*</span></div><input class="form-input" type="text" id="sup_designation_${i}" value="${escapeHtml(s.designation || '')}" placeholder="Designation"></div>
+      <div class="question-row" data-optional="1"><div class="question-text">Organization</div><input class="form-input" type="text" id="sup_org_${i}" value="${escapeHtml(s.organization || '')}" placeholder="e.g. DHMT Bo, NMCP, ICF-SL (optional)"></div>
+      <div class="question-row" data-optional="1"><div class="question-text">Email</div><input class="form-input" type="email" id="sup_email_${i}" value="${escapeHtml(s.email || '')}" placeholder="name@example.com (optional)" autocapitalize="none" spellcheck="false"><div class="count-hint">If given, the summary and its PDF are emailed here as well as to NMDR.</div></div>
+      <div class="question-row"><div class="question-text">Phone Number (9 digits) <span class="required-star">*</span></div><input class="form-input" type="tel" id="sup_phone_${i}" value="${escapeHtml(s.phone || '')}" placeholder="099177283" maxlength="9" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,9)"></div>
+      <div class="question-row"><div class="question-text">Signature <span class="required-star">*</span></div><div class="signature-container"><canvas id="sup_sig_canvas_${i}" class="signature-canvas"></canvas><div class="signature-buttons"><button type="button" class="signature-btn clear" id="sup_sig_clear_${i}">Clear Signature</button></div></div></div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  supervisors.forEach((s, i) => {
+    setTimeout(() => createSignaturePad(`sup_sig_canvas_${i}`, `sup_sig_clear_${i}`, `sup_sig_${i}`), 50);
+    document.getElementById(`sup_name_${i}`).addEventListener('input', (e) => { supervisors[i].name = e.target.value; renderSubmittedBy(); });
+    document.querySelectorAll(`input[name="sup_sex_${i}"]`).forEach(r => r.addEventListener('change', (e) => { if(e.target.checked) supervisors[i].sex = e.target.value; updateRadioVisuals(document.getElementById(`sup_sex_group_${i}`)); }));
+    document.getElementById(`sup_designation_${i}`).addEventListener('input', (e) => { supervisors[i].designation = e.target.value; });
+    document.getElementById(`sup_org_${i}`).addEventListener('input', (e) => { supervisors[i].organization = e.target.value; });
+    document.getElementById(`sup_email_${i}`).addEventListener('input', (e) => { supervisors[i].email = e.target.value.trim(); renderSubmittedBy(); });
+    document.getElementById(`sup_phone_${i}`).addEventListener('input', (e) => { supervisors[i].phone = e.target.value; });
+    updateRadioVisuals(document.getElementById(`sup_sex_group_${i}`));
+  });
+}
+
+function renderStaff() {
+  const container = document.getElementById("staff-container");
+  if (!container) return;
+  let html = '';
+  staffMembers.forEach((s, i) => {
+    html += `<div class="member-card">
+      <div class="member-header"><span>Staff Engaged #${i + 1}</span><span class="member-tag">of ${staffMembers.length}</span></div>
+      <div class="question-row"><div class="question-text">Full Name <span class="required-star">*</span></div><input class="form-input" type="text" id="staff_name_${i}" value="${escapeHtml(s.name || '')}" placeholder="Full name"></div>
+      <div class="question-row"><div class="question-text">Sex <span class="required-star">*</span></div><div class="options-group-vertical" id="staff_sex_group_${i}"><label class="radio-option-vertical"><input type="radio" name="staff_sex_${i}" value="Male" ${s.sex === 'Male' ? 'checked' : ''}> Male</label><label class="radio-option-vertical"><input type="radio" name="staff_sex_${i}" value="Female" ${s.sex === 'Female' ? 'checked' : ''}> Female</label></div></div>
+      <div class="question-row"><div class="question-text">Designation <span class="required-star">*</span></div><input class="form-input" type="text" id="staff_designation_${i}" value="${escapeHtml(s.designation || '')}" placeholder="e.g. Ward Sister, Medical Officer"></div>
+      <div class="question-row"><div class="question-text">Phone Number (9 digits) <span class="required-star">*</span></div><input class="form-input" type="tel" id="staff_phone_${i}" value="${escapeHtml(s.phone || '')}" placeholder="099177283" maxlength="9" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,9)"></div>
+      <div class="question-row"><div class="question-text">Signature <span class="required-star">*</span></div><div class="signature-container"><canvas id="staff_sig_canvas_${i}" class="signature-canvas"></canvas><div class="signature-buttons"><button type="button" class="signature-btn clear" id="staff_sig_clear_${i}">Clear Signature</button></div></div></div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  staffMembers.forEach((s, i) => {
+    setTimeout(() => createSignaturePad(`staff_sig_canvas_${i}`, `staff_sig_clear_${i}`, `staff_sig_${i}`), 50);
+    document.getElementById(`staff_name_${i}`)?.addEventListener('input', (e) => { staffMembers[i].name = e.target.value; });
+    document.querySelectorAll(`input[name="staff_sex_${i}"]`).forEach(r => r.addEventListener('change', (e) => { if(e.target.checked) staffMembers[i].sex = e.target.value; updateRadioVisuals(document.getElementById(`staff_sex_group_${i}`)); }));
+    document.getElementById(`staff_designation_${i}`)?.addEventListener('input', (e) => { staffMembers[i].designation = e.target.value; });
+    document.getElementById(`staff_phone_${i}`)?.addEventListener('input', (e) => { staffMembers[i].phone = e.target.value; });
+    updateRadioVisuals(document.getElementById(`staff_sex_group_${i}`));
+  });
+}
+
+/* a staff member's signature, read from the pad */
+function staffSignature(i){
+  try { return sessionStorage.getItem('staff_sig_' + i) || ''; } catch (e) { return ''; }
+}
+
+function updateRadioVisuals(container) {
+  if (!container) return;
+  container.querySelectorAll('.radio-option-vertical').forEach(radio => {
+    const input = radio.querySelector('input');
+    if (input && input.checked) radio.classList.add('selected');
+    else radio.classList.remove('selected');
+  });
+}
+
+function toggleCadreOther() {
+  var sel = document.getElementById("cadre");
+  if (!sel) return;
+  var box = document.getElementById("cadre_other");
+  var isOther = sel.value === "Other";
+  box.style.display = isOther ? "block" : "none";
+  if (!isOther) box.value = "";
+}
+
+function onStaffCadreChange(i) {
+  var sel = document.getElementById("staff_cadre_" + i);
+  var box = document.getElementById("staff_cadre_other_" + i);
+  staffMembers[i].cadre = sel.value;
+  var isOther = sel.value === "Other";
+  box.style.display = isOther ? "block" : "none";
+  if (!isOther) { box.value = ""; staffMembers[i].cadreOther = ""; }
+}
+
+/* kept only so any borrowed code that calls it does not throw */
+function staffCadreValue(i) {
+  var s = staffMembers[i];
+  if (!s.cadre) return "";
+  if (s.cadre !== "Other") return s.cadre;
+  var other = (s.cadreOther || "").trim();
+  return other ? "Other: " + other : "Other";
+}
+
+function cadreValue() {
+  var el = document.getElementById("cadre");
+  if (!el) return "";
+  var sel = el.value;
+  if (sel !== "Other") return sel;
+  var other = document.getElementById("cadre_other").value.trim();
+  return other ? "Other: " + other : "Other";
+}
+
+function escapeHtml(str) { if (!str) return ''; return String(str).replace(/[&<>"]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[m])); }
+function validatePhone(phone) { return phone && String(phone).replace(/\D/g, '').length === 9; }
+function validateEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(email || '').trim()); }
+function supervisorSignature(i) { return sessionStorage.getItem('sup_sig_' + i) || ""; }
+
+/* Submitted by is not typed: it is the supervision team from the cards above */
+function submittedByList() {
+  return supervisors.map(function (s, i) {
+    return { n: i + 1, name: (s.name || '').trim(), email: (s.email || '').trim() };
+  });
+}
+function submittedByNames() {
+  return submittedByList().filter(function (s) { return s.name; })
+    .map(function (s) { return s.name; }).join(', ');
+}
+function submittedByEmails() {
+  var seen = {}, out = [];
+  submittedByList().forEach(function (s) {
+    var e = s.email.toLowerCase();
+    if (validateEmail(e) && !seen[e]) { seen[e] = true; out.push(s.email); }
+  });
+  return out;
+}
+
+function renderSubmittedBy() {
+  var el = document.getElementById('submittedByPanel');
+  if (!el) return;
+  var list = submittedByList();
+  if (!list.length) {
+    el.innerHTML = '<div class="sb-empty">Answer question 10 and fill the supervisor cards. Their names and emails appear here.</div>';
+    return;
+  }
+  var html = list.map(function (s) {
+    var email = validateEmail(s.email)
+      ? '<div class="sb-email">' + escapeHtml(s.email) + '</div>'
+      : '<div class="sb-email missing">Email still needed on supervisor card #' + s.n + '</div>';
+    return '<div class="sb-row"><div class="sb-name">' +
+      (s.name ? escapeHtml(s.name) : 'Supervisor #' + s.n + ', name still needed') +
+      '</div>' + email + '</div>';
+  }).join('');
+  var ready = submittedByEmails().length;
+  html += '<div class="sb-note">' + (ready
+    ? 'The summary and its PDF go to ' + ready + (ready === 1 ? ' address' : ' addresses') + ' above, plus the ICF-SL inbox.'
+    : 'No email is ready yet. Every supervisor needs one.') + '</div>';
+  el.innerHTML = html;
+}
+
+function validateForm() {
+  if (!document.getElementById("regionSelect").value) { alert("Please select the Region"); return false; }
+  if (!document.getElementById("districtSelect").value) { alert("Please select the District"); return false; }
+  if (!document.getElementById("citySelect").value.trim()) { alert("Please give the Chiefdom / Zone / City"); return false; }
+  if (!hospitalName()) { alert("Please select the hospital, or type its name if you chose Other"); return false; }
+  if (!document.querySelector('input[name="ownership"]:checked')) { alert("Please select the Hospital Ownership"); return false; }
+  if (!document.getElementById("head_name").value.trim()) { alert("Please give the Name of Head of Hospital"); return false; }
+  if (!document.getElementById("head_designation").value.trim()) { alert("Please give the Designation of Head of Hospital"); return false; }
+  if (!/^[0-9]{9}$/.test(document.getElementById("head_phone").value)) { alert("Contact of Head of Hospital must be 9 digits"); return false; }
+  if (!document.getElementById("respondent_name").value.trim()) { alert("Please give the Name of Respondent"); return false; }
+  if (!/^[0-9]{9}$/.test(document.getElementById("respondent_phone").value)) { alert("Contact of Respondent must be 9 digits"); return false; }
+  if (!document.getElementById("visit_date").value) { alert("Please select the Date of Visit"); return false; }
+
+  if (!supervisors.length) { alert("Enter how many clinical mentors / supervisors are on this visit"); return false; }
+  for (var i = 0; i < supervisors.length; i++) {
+    var m = supervisors[i], n = i + 1;
+    if (!m.name || !m.name.trim()) { alert("Mentor #" + n + ": name is required"); return false; }
+    if (!m.sex) { alert("Mentor #" + n + ": sex is required"); return false; }
+    if (!m.designation || !m.designation.trim()) { alert("Mentor #" + n + ": designation is required"); return false; }
+    var em = String(m.email || '').trim();
+    if (em && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { alert("Mentor #" + n + ": that email does not look right. Leave it blank if there is none."); return false; }
+    if (!/^[0-9]{9}$/.test(String(m.phone || ''))) { alert("Mentor #" + n + ": phone must be 9 digits"); return false; }
+    if (!supervisorSignature(i)) { alert("Mentor #" + n + ": signature is required"); return false; }
+  }
+
+  if (!staffMembers.length) { alert("Enter how many hospital staff were engaged"); return false; }
+  for (var j = 0; j < staffMembers.length; j++) {
+    var st = staffMembers[j], k = j + 1;
+    if (!st.name || !st.name.trim()) { alert("Staff engaged #" + k + ": name is required"); return false; }
+    if (!st.sex) { alert("Staff engaged #" + k + ": sex is required"); return false; }
+    if (!st.designation || !st.designation.trim()) { alert("Staff engaged #" + k + ": designation is required"); return false; }
+    if (!/^[0-9]{9}$/.test(String(st.phone || ''))) { alert("Staff engaged #" + k + ": phone must be 9 digits"); return false; }
+    if (!staffSignature(j)) { alert("Staff engaged #" + k + ": signature is required"); return false; }
+  }
+  return true;
+}
+
+function getFormData() {
+  return {
+    form: FORM_MARK,
+    recordId: RECORD.id,
+    revision: RECORD.accepted + 1,
+    resubmission: RECORD.accepted > 0,
+    submittedBy: submittedByNames(),
+    supervisorEmails: submittedByEmails(),
+    submittedAt: new Date().toLocaleString(),
+    region: document.getElementById("regionSelect").value,
+    district: document.getElementById("districtSelect").value,
+    chiefdom: document.getElementById("citySelect").value.trim(),
+    phu: hospitalName(),                     // the hospital, kept in the shared field name
+    facility_type: "Hospital",
+    ownership: document.querySelector('input[name="ownership"]:checked')?.value || "",
+    head_name: document.getElementById("head_name").value,
+    head_designation: document.getElementById("head_designation").value,
+    head_phone: document.getElementById("head_phone").value,
+    respondent_name: document.getElementById("respondent_name").value,
+    respondent_phone: document.getElementById("respondent_phone").value,
+    visit_date: document.getElementById("visit_date").value,
+    gps_lat: GPS.lat,
+    gps_lng: GPS.lng,
+    gps_accuracy: GPS.accuracy,
+    gps_taken: GPS.taken,
+    supervisor_count: supervisors.length,
+    staff_count: staffMembers.length,
+    supervisors: supervisors.map((s, i) => ({ ...s, signature: supervisorSignature(i) })),
+    staff: staffMembers.map((s, i) => ({ ...s, signature: staffSignature(i) }))
+  };
+}
+
+/* inline SVG, so the marks render the same on every phone and print */
+var SIG_YES = "<svg class='sig-icn' viewBox='0 0 24 24' fill='none' stroke='#28a745' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6L9 17l-5-5'/></svg>";
+var SIG_NO  = "<svg class='sig-icn' viewBox='0 0 24 24' fill='none' stroke='#dc3545' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M18 6L6 18'/><path d='M6 6l12 12'/></svg>";
+
+function showSummary() {
+  const data = getFormData();
+  let html = `<div class="summary-item"><div class="summary-label">Submitted At</div><div class="summary-value">${data.submittedAt}</div></div>`;
+  html += `<div class="summary-section-title">LOCATION & FACILITY TYPE</div>`;
+  html += `<div class="summary-item"><div class="summary-label">District</div><div class="summary-value">${data.district}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Chiefdom</div><div class="summary-value">${data.chiefdom}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Health Facility (PHU)</div><div class="summary-value">${data.phu}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Facility Type</div><div class="summary-value">${data.facility_type}</div></div>`;
+  html += `<div class="summary-section-title">FACILITY INFORMATION</div>`;
+  html += `<div class="summary-item"><div class="summary-label">Region</div><div class="summary-value">${escapeHtml(data.region || '')}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Ownership</div><div class="summary-value">${escapeHtml(data.ownership || '')}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Head of Hospital</div><div class="summary-value">${escapeHtml(data.head_name || '')}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Designation</div><div class="summary-value">${escapeHtml(data.head_designation || '')}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Respondent</div><div class="summary-value">${escapeHtml(data.respondent_name || '')}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Cadre</div><div class="summary-value">${data.cadre}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Visit Date</div><div class="summary-value">${data.visit_date}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">GPS</div><div class="summary-value">${data.gps_lat ? escapeHtml(data.gps_lat + ', ' + data.gps_lng + ' (about ' + Math.round(Number(data.gps_accuracy || 0)) + ' m)') : 'Not captured'}</div></div>`;
+  html += `<div class="summary-section-title">SUPERVISORS (${data.supervisor_count})</div>` + data.supervisors.map((s,i) => `<div class="summary-item"><div class="summary-label">Supervisor #${i+1}</div><div class="summary-value">${s.name} | ${s.sex} | ${s.designation} | ${s.organization} | ${s.email || 'no email'} | Phone: ${s.phone} | Sig: ${s.signature ? SIG_YES : SIG_NO}</div></div>`).join('');
+  html += `<div class="summary-section-title">STAFF (${data.staff_count})</div>` + data.staff.map((s,i) => `<div class="summary-item"><div class="summary-label">Staff #${i+1}</div><div class="summary-value">${s.name || '-'} | ${s.sex || '-'} | ${s.cadre || '-'} | ${s.unit || '-'} | Phone: ${s.phone || '-'}</div></div>`).join('');
+  html += `<div class="summary-section-title">SUBMITTED BY</div>`;
+  html += `<div class="summary-item"><div class="summary-label">Supervision team</div><div class="summary-value">${escapeHtml(data.submittedBy || 'Not given')}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Emailed to</div><div class="summary-value">${escapeHtml((data.supervisorEmails || []).join(', ') || 'No supervisor email')}</div></div>`;
+  html += `<div class="summary-item"><div class="summary-label">Record</div><div class="summary-value">${escapeHtml(data.recordId)} · version ${data.revision}${data.resubmission ? ' · resubmission' : ''}</div></div>`;
+  document.getElementById("summaryBody").innerHTML = html;
+  var st = document.getElementById("sendStatus");
+  if (st) { st.className = "send-status"; st.innerHTML = ""; }
+  var editing = RECORD.accepted > 0;
+  var cb = document.getElementById("btnConfirm");
+  if (cb) { cb.disabled = false; cb.textContent = editing ? "SUBMIT THE CHANGES" : "CONFIRM SUBMIT"; }
+  var xb = document.getElementById("btnCancel");
+  if (xb) xb.textContent = editing ? "KEEP EDITING" : "CANCEL";
+  if (editing) {
+    sendStatus("working", "Editing " + escapeHtml(RECORD.id) + ", already in NMDR at version " +
+      RECORD.accepted + ". Submitting sends version " + (RECORD.accepted + 1) +
+      " and updates that same record.");
+  }
+  document.getElementById("summaryModal").style.display = "flex";
+}
+
+function validateAndSubmit() { if (readyToSubmit()) showSummary(); }
+function closeModal() { document.getElementById("summaryModal").style.display = "none"; }
+
+/* ==================== SEND TO THE ICF-SL SERVER ====================
+   Paste the Apps Script web app URL here, the one ending in /exec.
+   Deploy ▸ New deployment ▸ Web app ▸ Execute as: Me ▸ Access: Anyone.
+
+   The form works with no network. A submission that cannot go out is kept in
+   this phone's outbox and sent by itself once there is a signal. Editing a
+   record and submitting again updates the same record on the server, it does
+   not create a second one. */
+var FORM_MARK = "AH";         // A-Hospital, for the router
+var ENDPOINT = "https://script.google.com/macros/s/AKfycbzk0RN_TqpDYGnTZrppyhz0tbr1dT_NBooTOVlWmVmFeaF0Z5lpggejHI0UvzBU17fYLg/exec"    /* its own project, NOT the PHU one */;
+
+var OUTBOX_KEY = "mocm_outbox_form_a_hospital";
+var ARCHIVE_KEY = "mocm_sent_form_a_hospital";     // what this phone has submitted, kept for editing
+var RECORD_KEY = "mocm_record_form_a_hospital";
+
+/* which record this page is editing, and how many versions the server has taken */
+var RECORD = { id: null, accepted: 0, hash: null };
+
+/* the position the phone read, filled by captureGps() further down */
+var GPS = { lat: "", lng: "", accuracy: "", taken: "", state: "waiting", note: "" };
+
+function pad2(n) { return (n < 10 ? "0" : "") + n; }
+function newRecordId() {
+  var d = new Date();
+  var stamp = d.getFullYear() + pad2(d.getMonth() + 1) + pad2(d.getDate()) + "-" +
+              pad2(d.getHours()) + pad2(d.getMinutes()) + pad2(d.getSeconds());
+  return "FAH-" + stamp + "-" + Math.random().toString(36).slice(2, 7).toUpperCase();
+}
+
+function loadRecord() {
+  try {
+    var r = JSON.parse(sessionStorage.getItem(RECORD_KEY));
+    if (r && r.id) RECORD = r;
+  } catch (e) { /* first time in this tab */ }
+  if (!RECORD.id) { RECORD.id = newRecordId(); RECORD.accepted = 0; RECORD.hash = null; saveRecord(); }
+}
+function saveRecord() {
+  try { sessionStorage.setItem(RECORD_KEY, JSON.stringify(RECORD)); } catch (e) {}
+}
+
+/* ---------- the archive: every record this phone submitted, kept on the phone
+   so a past visit can be reopened and corrected with no signal ---------- */
+function archive() {
+  try { return JSON.parse(localStorage.getItem(ARCHIVE_KEY)) || {}; } catch (e) { return {}; }
+}
+function archiveSave(payload) {
+  var all = archive();
+  all[payload.recordId] = {
+    payload: payload,
+    savedAt: new Date().toLocaleString(),
+    version: payload.revision,
+    phu: payload.phu,
+    chiefdom: payload.chiefdom,
+    visit_date: payload.visit_date
+  };
+  try { localStorage.setItem(ARCHIVE_KEY, JSON.stringify(all)); } catch (e) {}
+}
+function archiveList() {
+  var all = archive();
+  return Object.keys(all).map(function (id) {
+    var it = all[id];
+    return { recordId: id, version: it.version, savedAt: it.savedAt,
+             phu: it.phu, chiefdom: it.chiefdom, visitDate: it.visit_date };
+  }).sort(function (a, b) { return a.recordId < b.recordId ? 1 : -1; });
+}
+
+/* ---------- the outbox, so nothing is lost without a signal ---------- */
+function outbox() {
+  try { return JSON.parse(localStorage.getItem(OUTBOX_KEY)) || []; } catch (e) { return []; }
+}
+function saveOutbox(list) {
+  try { localStorage.setItem(OUTBOX_KEY, JSON.stringify(list)); } catch (e) {}
+  renderOutbox();
+}
+function queueSubmission(payload) {
+  var list = outbox().filter(function (item) {
+    // an edit of a record still waiting replaces the older version of it
+    return item.payload.recordId !== payload.recordId;
+  });
+  list.push({ payload: payload, queuedAt: new Date().toLocaleString() });
+  saveOutbox(list);
+}
+function renderOutbox() {
+  var el = document.getElementById("outboxStrip");
+  if (el) {
+    var n = outbox().length;
+    if (!n) { el.className = "outbox-strip"; el.innerHTML = ""; }
+    else {
+      el.className = "outbox-strip on";
+      el.innerHTML = "Do not clear this site's browser data while records are still waiting below.";
+    }
+  }
+  renderPending();
+renderDraftBadge();
+warnIfNoStorage();
+updateProgress();
+document.addEventListener('change', function(){ updateProgress(); renderSiteNote(); });
+document.addEventListener('input', updateProgress);
+}
+
+/* NMDR answers with JSON. If a web page comes back instead, the deployment is
+   not reachable as data: almost always the web app access is not set to Anyone,
+   or the script was edited without re-deploying a new version. Say so plainly
+   rather than letting a JSON parse error surface. */
+function jsonFrom(res){
+  return res.text().then(function(t){
+    var s = String(t || '').trim();
+    if (s.charAt(0) === '<') {
+      throw new Error('NMDR returned a web page instead of data. In Apps Script, check ' +
+        'Deploy \u25b8 Manage deployments: Execute as Me, Who has access Anyone, then deploy a NEW version ' +
+        'and paste the /exec URL into this form.');
+    }
+    try { return JSON.parse(s); }
+    catch (e) { throw new Error('NMDR sent something this form could not read: ' + s.slice(0, 80)); }
+  });
+}
+
+function postRecord(payload) {
+  /* Stamp the form letter on the way out, not only when the payload is built.
+     Anything already sitting in this phone's outbox from an older copy of the
+     form therefore still reaches the right form when it finally goes. */
+  payload.form = FORM_MARK;
+  return fetch(ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(function (r) { return jsonFrom(r); })
+  .then(function (res) {
+    if (!res || !res.ok) throw new Error((res && res.error) ? res.error : "The server rejected the submission.");
+    return res;
+  });
+}
+
+/* send what is waiting, oldest first, stopping at the first failure. Anything
+   NMDR already holds at that version or later is dropped rather than sent twice. */
+var flushing = false;
+function flushOutbox(quiet) {
+  if (flushing || !outbox().length || !navigator.onLine) return Promise.resolve();
+  flushing = true;
+  var skipped = 0, sent = 0;
+
+  return serverVersions().then(function (have) {
+    function step() {
+      var list = outbox();
+      if (!list.length) return Promise.resolve(true);
+      var item = list[0];
+      var id = item.payload.recordId;
+
+      if (have && have[id] !== undefined && have[id] >= item.payload.revision) {
+        skipped++;                       // already in NMDR at this version or later
+        saveOutbox(outbox().slice(1));
+        return step();
+      }
+      return postRecord(item.payload)
+        .then(function () { sent++; saveOutbox(outbox().slice(1)); return step(); })
+        .catch(function () { return false; });
+    }
+    return step();
+  }).then(function (allSent) {
+    flushing = false;
+    renderOutbox();
+    if (!quiet || (allSent && (sent || skipped))) {
+      var bits = [];
+      if (sent) bits.push(sent + (sent === 1 ? " record" : " records") + " sent to NMDR");
+      if (skipped) bits.push(skipped + (skipped === 1 ? " was" : " were") + " already there, so not sent again");
+      sendStatus(allSent ? "good" : "working", allSent
+        ? (bits.length ? bits.join(", ") + ". Nothing is waiting now." : "Nothing was waiting.")
+        : (bits.length ? bits.join(", ") + ". " : "") + "Some records are still waiting. They will try again by themselves.");
+    }
+  });
+}
+
+window.addEventListener("online", function () { flushOutbox(true); });
+setInterval(function () { flushOutbox(true); }, 60000);
+
+/* ---------- the submit button ---------- */
+function sendStatus(kind, text) {
+  var el = document.getElementById("sendStatus");
+  if (!el) return;
+  el.className = "send-status " + kind;
+  el.innerHTML = text;
+}
+
+function afterAccepted(res, queued, fingerprint, payload) {
+  var wasVersion = RECORD.accepted + 1;
+  var wasId = RECORD.id;
+  var verb = wasVersion > 1 ? "Resubmitted" : "Submitted";
+  var where = queued
+    ? "Held in this phone's outbox. It goes to NMDR by itself once there is a signal."
+    : "Reference " + ((res && res.reference) ? res.reference : wasId) +
+      ".<br>The summary and its PDF have been emailed to the supervision team and to ICF-SL.";
+
+  // the form is cleared straight away, ready for the next facility. To change
+  // this record later, use EDIT A SUBMISSION and pick it out of NMDR.
+  RECORD.accepted = wasVersion;
+  RECORD.hash = fingerprint || null;
+  saveRecord();
+
+  // keep a copy on the phone so this visit can be reopened and corrected later
+  if (payload) { payload.revision = wasVersion; archiveSave(payload); }
+  deleteDraft(wasId);            // it is in NMDR now, so the draft is done
+
+  resetForm();
+
+  renderTabSummary();
+  sendStatus(queued ? "working" : "good",
+    "<b>" + verb + (queued ? " and queued" : "") + " to NMDR.</b> " + where +
+    "<br>" + escapeHtml(wasId) + ", version " + wasVersion +
+    ". The form is now blank for the next facility." +
+    "<br>To change this visit later, press EDIT A SUBMISSION and pick it from the list.");
+
+  var confirmBtn = document.getElementById("btnConfirm");
+  var cancelBtn = document.getElementById("btnCancel");
+  confirmBtn.disabled = true;
+  confirmBtn.textContent = "SUBMITTED";
+  cancelBtn.textContent = "START THE NEXT ENTRY";
+}
+
+/* every compulsory question answered, and the formats valid. Used by the review
+   button and again by the submit button, so nothing can reach NMDR half filled. */
+function readyToSubmit() {
+  if (typeof validateAllQuestions === "function" && !validateAllQuestions()) return false;
+  return validateForm();
+}
+
+function confirmSubmit() {
+  // checked again here: the modal may have been open while a field was cleared,
+  // and SUBMIT AGAIN after an edit comes straight back to this function
+  if (!readyToSubmit()) {
+    closeModal();
+    var btn = document.getElementById("btnConfirm");
+    if (btn) { btn.disabled = false; btn.textContent = RECORD.accepted > 0 ? "SUBMIT AGAIN" : "CONFIRM SUBMIT"; }
+    return;
+  }
+
+  if (!ENDPOINT || ENDPOINT.indexOf("http") !== 0) {
+    sendStatus("bad", "This copy of the form has no NMDR address yet. Give it to the ICF-SL team before using it in the field.");
+    return;
+  }
+
+  var data = getFormData();
+
+  // nothing to send if not a single answer has changed
+  var fingerprint = recordFingerprint(data);
+  if (RECORD.accepted > 0 && RECORD.hash && fingerprint === RECORD.hash) {
+    sendStatus("good", "<b>No changes made.</b> This data is already submitted to NMDR as " +
+      escapeHtml(RECORD.id) + ", version " + RECORD.accepted + "." +
+      "<br>Edit something first, or close this and start a new entry.");
+    var b = document.getElementById("btnConfirm");
+    if (b) { b.disabled = false; b.textContent = "SUBMIT AGAIN"; }
+    return;
+  }
+  data.fingerprint = fingerprint;
+
+  try {
+    var u = JSON.parse(sessionStorage.getItem("mocm_user"));
+    if (u) data.signedInAs = u.name + " (" + u.username + ")";
+  } catch (e) { /* not signed in */ }
+
+  var confirmBtn = document.getElementById("btnConfirm");
+  confirmBtn.disabled = true;
+  confirmBtn.textContent = "SENDING...";
+
+  if (!navigator.onLine) {
+    queueSubmission(data);
+    afterAccepted(null, true, fingerprint, data);
+    return;
+  }
+
+  sendStatus("working", "Submitting data to NMDR. Keep this page open.");
+  postRecord(data)
+    .then(function (res) { afterAccepted(res, false, fingerprint, data); })
+    .catch(function (err) {
+      queueSubmission(data);
+      afterAccepted(null, true, fingerprint, data);
+      sendStatus("working", "<b>Queued.</b> The server could not be reached (" + err.message +
+        "). Nothing is lost: it is held on this phone and goes out by itself once there is a signal." +
+        "<br>" + escapeHtml(RECORD.id) + ", version " + RECORD.accepted + ". The form is now blank for the next facility.");
+    });
+}
+
+// Initialize
+document.getElementById("visit_date").value = new Date().toISOString().split('T')[0];
+fillInChargeCadre();
+loadCSV();
+setSupervisorCount(0);
+setStaffCount(0);
+loadRecord();
+claimFreshStart();
+renderSubmittedBy();
+renderGps();
+captureGps(false);
+renderOutbox();
+setTimeout(function () { flushOutbox(true); }, 1500);
+
+setTimeout(() => {
+  updateRadioVisuals(document.getElementById('ownership_group'));
+}, 100);
+
+
+/* ==================== TABS ====================
+   One bar holds data entry, the summary, and the three tools. */
+function switchTab(tab) {
+  document.querySelectorAll('.tab-page').forEach(function (p) { p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+  var page = document.getElementById('tab-' + tab);
+  if (page) page.classList.add('active');
+  var btn = document.querySelector('.tab-btn[data-tab="' + tab + '"]');
+  if (btn) btn.classList.add('active');
+  if (tab === 'summary') renderTabSummary();
+  window.scrollTo(0, 0);
+}
+
+/* the summary tab shows the most recent record submitted from this phone */
+function renderTabSummary() {
+  var host = document.getElementById('tabSummaryBody');
+  if (!host) return;
+  var list = archiveList();
+  if (!list.length) {
+    host.innerHTML = '<div class="dash-empty">Nothing has been submitted from this phone yet. ' +
+      'Once you submit, the record appears here and can be reopened from EDIT.</div>';
+    return;
+  }
+  var item = archive()[list[0].recordId];
+  var d = item.payload;
+  function row(label, value) {
+    return '<div class="summary-item"><div class="summary-label">' + label + '</div>' +
+      '<div class="summary-value">' + escapeHtml(value === undefined || value === '' ? 'Not given' : String(value)) + '</div></div>';
+  }
+  var html = '<div class="card-body">';
+  html += '<div class="summary-section-title">RECORD</div>';
+  html += row('Reference', d.recordId + ' · version ' + item.version);
+  html += row('Submitted', item.savedAt);
+  html += '<div class="summary-section-title">LOCATION & FACILITY TYPE</div>';
+  html += row('District', d.district) + row('Chiefdom', d.chiefdom) +
+          row('Health Facility (PHU)', d.phu) + row('Facility Type', d.facility_type);
+  html += '<div class="summary-section-title">FACILITY INFORMATION</div>';
+  html += row('Region', d.region) + row('Ownership', d.ownership) +
+          row('Head of Hospital', d.head_name) + row('Designation', d.head_designation) +
+          row('Respondent', d.respondent_name) + row('Visit Date', d.visit_date) +
+          row('GPS', d.gps_lat ? d.gps_lat + ', ' + d.gps_lng : 'Not captured');
+  html += '<div class="summary-section-title">SUPERVISORS (' + (d.supervisors || []).length + ')</div>';
+  (d.supervisors || []).forEach(function (x, i) {
+    html += row('Supervisor #' + (i + 1),
+      [x.name, x.sex, x.designation, x.organization, x.email, x.phone].filter(Boolean).join(' | '));
+  });
+  html += '<div class="summary-section-title">STAFF (' + (d.staff || []).length + ')</div>';
+  (d.staff || []).forEach(function (x, i) {
+    html += row('Staff #' + (i + 1), [x.name, x.sex, x.cadre, x.unit, x.phone].filter(Boolean).join(' | '));
+  });
+  html += '<div class="dash-note">' + list.length +
+    (list.length === 1 ? ' record is' : ' records are') +
+    ' kept on this phone. Use EDIT to open an older one.</div></div>';
+  host.innerHTML = html;
+}
+
+/* ==================== DOWNLOAD DATA AND DASHBOARD ====================
+   Both read the same pull from NMDR. Names, emails and phone numbers are
+   left behind on the server, so nothing here identifies a person. */
+
+var NMDR_CACHE = null;
+
+function toolStatus(kind, text) {
+  var el = document.getElementById("toolStatus");
+  if (!el) return;
+  el.className = "tool-status " + (kind || "");
+  el.textContent = text || "";
+}
+
+function pullData(force) {
+  if (NMDR_CACHE && !force) return Promise.resolve(NMDR_CACHE);
+  if (!navigator.onLine) {
+    return Promise.reject(new Error("No signal. The download and the dashboard both need NMDR."));
+  }
+  return fetch(ENDPOINT + "?form=" + FORM_MARK + "&action=data&t=" + Date.now())
+    .then(function (r) { return jsonFrom(r); })
+    .then(function (res) {
+      if (!res || !res.ok) throw new Error((res && res.error) ? res.error : "NMDR did not return the data.");
+      NMDR_CACHE = res;
+      return res;
+    });
+}
+
+/* ---------- download: one CSV per tab ---------- */
+function csvCell(v) {
+  var s = (v === undefined || v === null) ? "" : String(v);
+  return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+function toCsv(tab) {
+  return [tab.headers].concat(tab.rows)
+    .map(function (row) { return row.map(csvCell).join(","); })
+    .join("\r\n");
+}
+function saveCsv(name, text) {
+  var blob = new Blob(["\ufeff" + text], { type: "text/csv;charset=utf-8" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+}
+
+/* ---------- dashboard ---------- */
+function openDashboard(force) {
+  document.getElementById("dashModal").style.display = "flex";
+  document.getElementById("dashBody").innerHTML =
+    '<div class="dash-empty">Reading the data from NMDR...</div>';
+  pullData(force).then(function (res) {
+    document.getElementById("dashBody").innerHTML = dashboardHtml(res);
+  }).catch(function (err) {
+    document.getElementById("dashBody").innerHTML =
+      '<div class="dash-empty">' + escapeHtml(err.message) + '</div>';
+  });
+}
+function closeDashboard() { document.getElementById("dashModal").style.display = "none"; }
+
+/* rows as objects, so a renamed or reordered column does not break anything */
+function asObjects(tab) {
+  if (!tab || !tab.headers) return [];
+  return tab.rows.map(function (row) {
+    var o = {};
+    tab.headers.forEach(function (h, i) { o[h] = row[i]; });
+    return o;
+  });
+}
+function pick(o, needle) {
+  for (var k in o) { if (k.toLowerCase().indexOf(needle.toLowerCase()) > -1) return o[k]; }
+  return "";
+}
+function tally(list, fn) {
+  var map = {};
+  list.forEach(function (item) {
+    var k = String(fn(item) || "").trim();
+    if (!k) k = "Not given";
+    map[k] = (map[k] || 0) + 1;
+  });
+  return Object.keys(map).map(function (k) { return { k: k, n: map[k] }; })
+    .sort(function (a, b) { return b.n - a.n || a.k.localeCompare(b.k); });
+}
+function bars(rows, total, tone) {
+  if (!rows.length) return '<div class="dash-note">Nothing recorded yet.</div>';
+  var max = rows[0].n || 1;
+  return rows.map(function (r) {
+    var pct = Math.round(r.n / (total || max) * 100);
+    return '<div class="bar-row"><div class="bar-top">' +
+      '<span class="bar-lbl">' + escapeHtml(r.k) + '</span>' +
+      '<span class="bar-num">' + r.n + (total ? ' · ' + pct + '%' : '') + '</span></div>' +
+      '<div class="bar-track"><div class="bar-fill ' + (tone || '') + '" style="width:' +
+      Math.max(2, Math.round(r.n / max * 100)) + '%"></div></div></div>';
+  }).join('');
+}
+function block(title, inner) {
+  return '<div class="dash-block"><div class="dash-title">' + title + '</div>' + inner + '</div>';
+}
+function kpi(val, label) {
+  return '<div class="kpi"><div class="kpi-val">' + val + '</div><div class="kpi-lbl">' + label + '</div></div>';
+}
+function nums(list) { return list.map(Number).filter(function (n) { return !isNaN(n); }); }
+function mean(list) { return list.length ? (list.reduce(function (a, b) { return a + b; }, 0) / list.length) : 0; }
+function median(list) {
+  if (!list.length) return 0;
+  var s = list.slice().sort(function (a, b) { return a - b; });
+  var m = Math.floor(s.length / 2);
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+}
+
+function dashboardHtml(res) {
+  var visits = asObjects(res.tabs["Form A"]);
+  var sups   = asObjects(res.tabs["Form A_Supervisor"]);
+  var staff  = asObjects(res.tabs["Form A_Staff"]);
+
+  if (!visits.length) {
+    return '<div class="dash-empty">No visit has reached NMDR yet. Submit a Hospital Profile and open this again.</div>';
+  }
+
+  var facilities = {};
+  visits.forEach(function (v) { var f = pick(v, 'Health Facility (PHU)'); if (f) facilities[f] = 1; });
+  var resub = visits.filter(function (v) { return String(v['Status']) === 'Resubmitted'; }).length;
+  var hcw = nums(visits.map(function (v) { return pick(v, 'health care workers'); }));
+  var supPer = nums(visits.map(function (v) { return pick(v, 'Number of supervisors'); }));
+  var staffPer = nums(visits.map(function (v) { return pick(v, 'Number of staff members'); }));
+  var signed = sups.filter(function (s) { return String(pick(s, 'Signature')) === 'Captured'; }).length;
+
+  var h = '';
+
+  h += '<div class="dash-kpis">' +
+    kpi(visits.length, 'Visits in NMDR') +
+    kpi(Object.keys(facilities).length + ' of 10', 'Pilot facilities covered') +
+    kpi(sups.length, 'Supervisor records') +
+    kpi(staff.length, 'Staff met, records') +
+    '</div>';
+
+  h += block('Coverage of the 10 pilot facilities',
+    bars(tally(visits, function (v) { return pick(v, 'Health Facility (PHU)'); }), 0, 'green') +
+    '<div class="dash-note">' + Object.keys(facilities).length + ' facilities visited, ' +
+    (10 - Object.keys(facilities).length) + ' still to visit.</div>');
+
+  h += block('Visits by chiefdom',
+    bars(tally(visits, function (v) { return pick(v, 'Chiefdom'); }), visits.length));
+
+  h += block('Visits by facility type',
+    bars(tally(visits, function (v) { return pick(v, 'Health Facility Type'); }), visits.length));
+
+  h += block('Visits by date',
+    bars(tally(visits, function (v) { return String(pick(v, 'Date of visit')).slice(0, 10); }), 0, 'gold'));
+
+  h += block('Health workers for malaria services',
+    '<div class="dash-kpis">' +
+      kpi(hcw.length ? mean(hcw).toFixed(1) : '0', 'Mean per facility') +
+      kpi(hcw.length ? median(hcw) : 0, 'Median') +
+      kpi(hcw.length ? Math.min.apply(null, hcw) : 0, 'Lowest') +
+      kpi(hcw.length ? Math.max.apply(null, hcw) : 0, 'Highest') +
+    '</div>' +
+    bars(tally(visits, function (v) { return pick(v, 'health care workers'); }), 0));
+
+  h += block('In-Charge cadre',
+    bars(tally(visits, function (v) { return pick(v, 'Cadre of In-Charge'); }), visits.length));
+
+  h += block('In-Charge gender',
+    bars(tally(visits, function (v) { return pick(v, 'Gender of health facility'); }), visits.length, 'gold'));
+
+  h += block('Supervision team',
+    '<div class="dash-kpis">' +
+      kpi(supPer.length ? mean(supPer).toFixed(1) : '0', 'Supervisors per visit') +
+      kpi(sups.length ? Math.round(signed / sups.length * 100) + '%' : '0%', 'Signatures captured') +
+    '</div>' +
+    bars(tally(sups, function (s) { return pick(s, 'Designation'); }), sups.length));
+
+  h += block('Supervisors by organization',
+    bars(tally(sups, function (s) { return pick(s, 'Organization'); }), sups.length));
+
+  h += block('Supervisors by sex',
+    bars(tally(sups, function (s) { return pick(s, 'Sex'); }), sups.length, 'gold'));
+
+  h += block('Staff met, by cadre',
+    '<div class="dash-kpis">' +
+      kpi(staffPer.length ? mean(staffPer).toFixed(1) : '0', 'Staff met per visit') +
+      kpi(staff.length, 'Staff records') +
+    '</div>' +
+    bars(tally(staff, function (s) { return pick(s, 'Cadre'); }), staff.length));
+
+  h += block('Staff met, by unit',
+    bars(tally(staff, function (s) { return pick(s, 'Unit'); }), staff.length));
+
+  h += block('Staff met, by sex',
+    bars(tally(staff, function (s) { return pick(s, 'Sex'); }), staff.length, 'gold'));
+
+  h += block('Data quality',
+    '<div class="dash-kpis">' +
+      kpi(resub, 'Records resubmitted') +
+      kpi(visits.length ? Math.round(resub / visits.length * 100) + '%' : '0%', 'Share resubmitted') +
+    '</div>' +
+    '<div class="dash-note">Pulled ' + escapeHtml(res.pulled || '') +
+    '. Names, emails and phone numbers stay in NMDR and are never sent to this screen, ' +
+    'so this dashboard counts records and categories only.</div>');
+
+  return h;
+}
+
+
+/* ==================== NO POINTLESS RESUBMISSION ====================
+   A fingerprint of everything that matters in the record. Volatile fields, the
+   timestamp and the version, are left out, so two submissions with the same
+   answers give the same fingerprint and the second one is refused. */
+function recordFingerprint(data) {
+  var parts = [
+    data.district, data.chiefdom, data.phu, data.facility_type,
+    data.region, data.ownership, data.head_name, data.head_designation, data.respondent_name,
+    data.visit_date, data.submittedBy
+  ];
+  // GPS is left out: the reading moves a few metres on its own and that is not an edit
+  // the signature is left out on purpose: a record loaded back from NMDR has to
+  // be signed again, and re-signing on its own is not a change to the answers
+  (data.supervisors || []).forEach(function (s) {
+    parts.push([s.name, s.sex, s.designation, s.organization, s.email, s.phone].join('~'));
+  });
+  (data.staff || []).forEach(function (s) {
+    parts.push([s.name, s.sex, s.cadre, s.unit, s.phone].join('~'));
+  });
+  return parts.join('|');
+}
+
+/* ==================== LOAD A PAST SUBMISSION AND EDIT IT ==================== */
+function openEditPicker() {
+  document.getElementById("editModal").style.display = "flex";
+  var body = document.getElementById("editBody");
+  var rows = archiveList();
+  if (!rows.length) {
+    body.innerHTML = '<div class="dash-empty">Nothing has been submitted from this phone yet. ' +
+      'Records you submit here are kept on the phone so you can reopen and correct them, with or without a signal.</div>';
+    return;
+  }
+  body.innerHTML = '<div class="dash-note" style="margin:0 0 12px;">Records submitted from this phone. ' +
+    'Reopening one is offline work, nothing is read back from the server.</div>' +
+    '<input class="form-input" id="editSearch" type="text" placeholder="Filter by facility, chiefdom or date" ' +
+    'oninput="filterEditList(this.value)" autocapitalize="none" style="margin-bottom:12px;"><div id="editRows"></div>';
+  EDIT_LIST = rows;
+  filterEditList("");
+}
+function closeEditPicker() { document.getElementById("editModal").style.display = "none"; }
+
+var EDIT_LIST = [];
+function filterEditList(term) {
+  var t = String(term || "").toLowerCase();
+  var rows = EDIT_LIST.filter(function (r) {
+    return !t || (r.phu + " " + r.chiefdom + " " + r.visitDate + " " + r.recordId).toLowerCase().indexOf(t) > -1;
+  });
+  var host = document.getElementById("editRows");
+  if (!rows.length) { host.innerHTML = '<div class="dash-empty">Nothing matches that.</div>'; return; }
+  host.innerHTML = rows.map(function (r) {
+    return '<div class="rec-row" onclick="loadSubmission(\'' + escapeHtml(r.recordId) + '\')">' +
+      '<div class="rec-main">' + escapeHtml(r.phu || 'Facility not given') + '</div>' +
+      '<div class="rec-sub">' + escapeHtml(r.chiefdom || '') + ' · visit ' + escapeHtml(r.visitDate || 'not given') +
+      ' · version ' + r.version + '</div>' +
+      '<div class="rec-sub">' + escapeHtml(r.recordId) + ' · submitted ' + escapeHtml(r.savedAt || '') + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function loadSubmission(id) {
+  var item = archive()[id];
+  if (!item) {
+    document.getElementById("editBody").innerHTML = '<div class="dash-empty">That record is no longer on this phone.</div>';
+    return;
+  }
+  fillFormFrom(item.payload);
+  closeEditPicker();
+  sendStatus("working",
+    "<b>Editing " + escapeHtml(id) + "</b>, version " + item.version + ", " + escapeHtml(item.phu || '') + "." +
+    "<br>This is the copy kept on this phone, signatures included, so you can correct it with no signal. " +
+    "Submitting sends version " + (item.version + 1) + " and updates that same record.");
+  window.scrollTo(0, 0);
+}
+
+/* put a record back on the screen */
+function fillFormFrom(rec) {
+  RECORD = { id: rec.recordId, accepted: Number(rec.revision || rec.version) || 1, hash: null };
+  saveRecord();
+
+  document.getElementById("regionSelect").value = rec.region || "";
+  onRegion();
+  document.getElementById("districtSelect").value = rec.district || "";
+  onDistrictPick();
+  var picked = rec.phu || "";
+  var known = Array.prototype.some.call(document.getElementById("hospitalSelect").options,
+    function (o) { return o.value === picked; });
+  if (known) { document.getElementById("hospitalSelect").value = picked; onHospitalPick(); }
+  else {
+    document.getElementById("hospitalSelect").value = "Other hospital (not listed)";
+    onHospitalPick();
+    document.getElementById("hospital_other").value = picked;
+  }
+  document.getElementById("citySelect").value = rec.chiefdom || "";
+  var own = document.querySelector('input[name="ownership"][value="' + (rec.ownership || '') + '"]');
+  if (own) { own.checked = true; updateRadioVisuals(document.getElementById('ownership_group')); }
+  document.getElementById("head_name").value = rec.head_name || "";
+  document.getElementById("head_designation").value = rec.head_designation || "";
+  document.getElementById("head_phone").value = rec.head_phone || "";
+  document.getElementById("respondent_name").value = rec.respondent_name || "";
+  document.getElementById("respondent_phone").value = rec.respondent_phone || "";
+  setCadreFromLabel(rec.cadre || "");
+  document.getElementById("visit_date").value = rec.visit_date || "";
+  if (rec.gps_lat && rec.gps_lng) {
+    GPS = { lat: String(rec.gps_lat), lng: String(rec.gps_lng),
+            accuracy: String(rec.gps_accuracy || ""), taken: String(rec.gps_taken || ""),
+            state: "ok", note: "" };
+    renderGps();
+  }
+
+  // the cards, rebuilt from the record. The signatures come back too, because
+  // this copy came off the phone rather than the server.
+  for (var i = 0; i < 40; i++) { sessionStorage.removeItem('sup_sig_' + i); sessionStorage.removeItem('staff_sig_' + i); }
+  supervisors = (rec.supervisors || []).map(function (s, i) {
+    if (s.signature) { try { sessionStorage.setItem('sup_sig_' + i, s.signature); } catch (e) {} }
+    return { name: s.name || "", sex: s.sex || "", designation: s.designation || "",
+             organization: s.organization || "", email: s.email || "", phone: s.phone || "" };
+  });
+  if (!supervisors.length) supervisors = [];
+  document.getElementById("supervisor_count").value = supervisors.length || "";
+  setSupervisorCount(supervisors.length);
+
+  staffMembers = (rec.staff || []).map(function (s) {
+    var m = { name: s.name || "", sex: s.sex || "", cadre: "", cadreOther: "", unit: s.unit || "", phone: s.phone || "" };
+    var c = String(s.cadre || "");
+    if (c.indexOf("Other: ") === 0) { m.cadre = "Other"; m.cadreOther = c.slice(7); }
+    else if (c === "Other") { m.cadre = "Other"; }
+    else if (CADRES.indexOf(c) > -1) { m.cadre = c; }
+    return m;
+  });
+  document.getElementById("staff_count").value = staffMembers.length || "";
+  setStaffCount(staffMembers.length);
+
+  renderSubmittedBy();
+  RECORD.hash = recordFingerprint(getFormData());   // so an untouched load is refused
+  saveRecord();
+}
+
+/* the sheet stores "Other: <text>", the dropdown needs both halves back */
+function setCadreFromLabel(label) {
+  var sel = document.getElementById("cadre");
+  if (sel) {
+  var box = document.getElementById("cadre_other");
+  if (label.indexOf("Other: ") === 0) {
+    sel.value = "Other"; toggleCadreOther(); box.value = label.slice(7);
+  }
+  } else if (label === "Other") {
+    sel.value = "Other"; toggleCadreOther();
+  } else {
+    sel.value = CADRES.indexOf(label) > -1 ? label : "";
+    toggleCadreOther();
+  }
+}
+
+/* ==================== CLEAR FOR THE NEXT ENTRY ==================== */
+function resetForm() {
+  ["citySelect", "hospital_other", "head_name", "head_designation", "head_phone",
+   "respondent_name", "respondent_phone", "supervisor_count", "staff_count"]
+    .forEach(function (id) { var el = document.getElementById(id); if (el) el.value = ""; });
+
+  document.querySelectorAll('input[name="ownership"]').forEach(function (r) { r.checked = false; });
+  updateRadioVisuals(document.getElementById('ownership_group'));
+
+  document.getElementById("visit_date").value = new Date().toISOString().split('T')[0];
+
+  document.getElementById("regionSelect").value = "";
+  fillRegions();
+  onRegion();                          // relists the districts, clears the hospital
+  prefillSite();                       // then puts the pilot site back
+
+  for (var i = 0; i < 40; i++) { sessionStorage.removeItem('sup_sig_' + i); sessionStorage.removeItem('staff_sig_' + i); }
+  supervisors = [];
+  staffMembers = [];
+  setSupervisorCount(0);
+  setStaffCount(0);
+  renderSubmittedBy();
+
+  /* Only the entry fields are cleared. Everything this phone has submitted stays
+     in the archive, and anything still queued stays in the outbox. */
+  RECORD = { id: newRecordId(), accepted: 0, hash: null };   // a brand new record
+  saveRecord();
+  captureGps(true);                       // the next facility is somewhere else
+  renderPending();
+  window.scrollTo(0, 0);
+}
+
+
+/* ==================== GPS, CAPTURED BY THE PHONE ====================
+   Read on load and again on demand. It is a place, not a person, so it travels
+   to NMDR and stays in the download and the dashboard. */
+function renderGps() {
+  var el = document.getElementById("gpsPanel");
+  if (!el) return;
+  if (GPS.state === "ok") {
+    el.className = "gps-panel good";
+    el.innerHTML = '<div class="gps-line">' + GPS.lat + ', ' + GPS.lng + '</div>' +
+      '<div class="gps-sub">Accurate to about ' + Math.round(Number(GPS.accuracy)) +
+      ' m · read at ' + escapeHtml(GPS.taken) + '</div>';
+  } else if (GPS.state === "waiting") {
+    el.className = "gps-panel";
+    el.innerHTML = '<div class="gps-line">Reading the position...</div>' +
+      '<div class="gps-sub">Stand outside or near a window. This takes a few seconds.</div>';
+  } else {
+    el.className = "gps-panel bad";
+    el.innerHTML = '<div class="gps-line">No position yet</div>' +
+      '<div class="gps-sub">' + escapeHtml(GPS.note || "The phone did not give a position.") +
+      ' You can still submit, and the record will say the GPS was not captured.</div>';
+  }
+}
+
+function captureGps(again) {
+  if (!navigator.geolocation) {
+    GPS.state = "fail";
+    GPS.note = "This phone does not offer GPS to the browser.";
+    renderGps();
+    return;
+  }
+  if (again) { GPS.state = "waiting"; renderGps(); }
+  navigator.geolocation.getCurrentPosition(
+    function (pos) {
+      GPS.lat = pos.coords.latitude.toFixed(6);
+      GPS.lng = pos.coords.longitude.toFixed(6);
+      GPS.accuracy = String(Math.round(pos.coords.accuracy));
+      GPS.taken = new Date().toLocaleString();
+      GPS.state = "ok";
+      GPS.note = "";
+      renderGps();
+    },
+    function (err) {
+      GPS.state = "fail";
+      GPS.note = err && err.code === 1
+        ? "Location permission was refused for this page."
+        : "The phone could not get a fix (" + ((err && err.message) || "no signal") + ").";
+      renderGps();
+    },
+    { enableHighAccuracy: true, timeout: 20000, maximumAge: 60000 }
+  );
+}
+
+/* ==================== WHAT IS WAITING TO GO ====================
+   The queued records, listed rather than just counted, so nobody wonders what
+   is still on the phone. */
+function renderPending() {
+  var el = document.getElementById("pendingPanel");
+  if (!el) return;
+  var list = outbox();
+  if (!list.length) { el.className = "pending-panel"; el.innerHTML = ""; return; }
+
+  el.className = "pending-panel on";
+  var head = '<div class="pending-head">' + list.length +
+    (list.length === 1 ? " record is" : " records are") + " on this phone and not yet in NMDR. " +
+    (navigator.onLine ? "Sending now." : "They go by themselves once there is a signal.") + '</div>';
+  var rows = list.map(function (item) {
+    var p = item.payload;
+    return '<div class="pend-row">' +
+      '<div class="pend-main">' + escapeHtml(p.phu || "Facility not given") + '</div>' +
+      '<div class="pend-sub">Visit ' + escapeHtml(p.visit_date || "not given") +
+      ' · version ' + p.revision + ' · queued ' + escapeHtml(item.queuedAt) + '</div>' +
+      '<div class="pend-sub">' + escapeHtml(p.recordId) + '</div>' +
+      '</div>';
+  }).join('');
+  var actions = '<div class="pend-actions">' +
+    '<button class="btn-tool" onclick="flushOutbox(false)">SEND NOW</button>' +
+    '<button class="btn-tool" onclick="discardPending()">DISCARD</button></div>';
+  el.innerHTML = head + rows + actions;
+}
+
+function discardPending() {
+  var n = outbox().length;
+  if (!n) return;
+  if (!confirm("Throw away " + n + (n === 1 ? " record" : " records") +
+    " that never reached NMDR?\n\nThis cannot be undone.")) return;
+  saveOutbox([]);
+}
+
+/* which record ids NMDR already holds, and at what version */
+function serverVersions() {
+  if (!navigator.onLine) return Promise.resolve(null);
+  return fetch(ENDPOINT + "?form=" + FORM_MARK + "&action=list&t=" + Date.now())
+    .then(function (r) { return jsonFrom(r); })
+    .then(function (res) {
+      if (!res || !res.ok) return null;
+      var map = {};
+      (res.records || []).forEach(function (r) { map[r.recordId] = Number(r.version) || 0; });
+      return map;
+    })
+    .catch(function () { return null; });
+}
+
+/* ==================== DOWNLOAD THE WHOLE FILE ====================
+   One Excel file holding every sheet. If the workbook export is unavailable,
+   it falls back to one CSV per sheet so nothing is lost. */
+function saveBase64(name, mime, b64) {
+  var bin = atob(b64);
+  var bytes = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  var url = URL.createObjectURL(new Blob([bytes], { type: mime }));
+  var a = document.createElement("a");
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function () { URL.revokeObjectURL(url); }, 6000);
+}
+
+function downloadData() {
+  if (!navigator.onLine) {
+    toolStatus("bad", "No signal. The download needs NMDR.");
+    return;
+  }
+  toolStatus("on", "Pulling the whole file from NMDR...");
+
+  fetch(ENDPOINT + "?form=" + FORM_MARK + "&action=export&t=" + Date.now())
+    .then(function (r) { return jsonFrom(r); })
+    .then(function (res) {
+      if (!res || !res.ok || !res.b64) throw new Error((res && res.error) ? res.error : "The workbook did not come through.");
+      saveBase64(res.filename, res.mime, res.b64);
+      toolStatus("on", "Downloaded the whole file, " + (res.sheets || []).length +
+        " sheets: " + (res.sheets || []).join(", ") + ".");
+    })
+    .catch(function (err) {
+      toolStatus("on", "The Excel export did not work (" + err.message + "). Falling back to one CSV per sheet...");
+      downloadCsvFallback();
+    });
+}
+
+function downloadCsvFallback() {
+  pullData(true).then(function (res) {
+    var stamp = new Date().toISOString().slice(0, 10);
+    var names = Object.keys(res.tabs || {});
+    var written = 0;
+    names.forEach(function (name) {
+      var tab = res.tabs[name];
+      if (!tab || !tab.rows.length) return;
+      var file = "nmdr-" + name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + "-" + stamp + ".csv";
+      setTimeout(function () { saveCsv(file, toCsv(tab)); }, written * 800);
+      written++;
+    });
+    toolStatus(written ? "on" : "bad", written
+      ? written + (written === 1 ? " sheet" : " sheets") + " downloading as CSV. Names, emails and phone numbers are not in these."
+      : "There is nothing in NMDR to download yet.");
+  }).catch(function (err) {
+    toolStatus("bad", "Download failed: " + err.message);
+  });
+}
+
+
+/* ==================== DRAFTS: SAVE AND CONTINUE LATER ====================
+   A draft is the whole entry as it stands, saved on this phone with no
+   validation, so a supervisor can stop half way, start another facility, and
+   come back to it. Drafts live beside the submitted archive and the outbox, and
+   none of them touch the others: starting a new entry never loses a draft.
+   A draft is removed by itself once that record reaches NMDR. */
+
+/* its own escaper, since the forms name theirs differently */
+function draftEsc(v){
+  return String(v === undefined || v === null ? '' : v)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+var BUILD = "hosp-2026-07-28d";     // shown in the DRAFTS panel, so you can tell a stale phone
+var PAGE_RELOADS_FOR_NEW = false;   // how this form clears itself for the next facility
+var DRAFTS_KEY = "mocm_drafts_" + FORM_MARK;
+
+/* Drafts, the outbox and the submitted archive all need this browser's storage.
+   Opening the form as a downloaded file rather than from the portal can leave
+   storage switched off, and then saving looks like it does nothing. Say so once,
+   loudly, instead of failing quietly. */
+function storageWorks(){
+  try {
+    localStorage.setItem('__mocm_probe', '1');
+    localStorage.removeItem('__mocm_probe');
+    return true;
+  } catch (e) { return false; }
+}
+function warnIfNoStorage(){
+  if (storageWorks()) return true;
+  var el = document.getElementById('toolStatus');
+  if (el) {
+    el.className = 'tool-status bad';
+    el.innerHTML = '<b>This phone will not let the form save anything.</b> Drafts, the offline ' +
+      'queue and EDIT A SUBMISSION all need browser storage. Open the form from the portal link ' +
+      'rather than a downloaded copy, and do not use a private or incognito tab.';
+  }
+  return false;
+}
+
+function drafts(){
+  try { return JSON.parse(localStorage.getItem(DRAFTS_KEY)) || {}; }
+  catch (e) { return {}; }
+}
+function writeDrafts(all){
+  try { localStorage.setItem(DRAFTS_KEY, JSON.stringify(all)); } catch (e) {}
+  renderDraftBadge();
+}
+function draftList(){
+  var all = drafts();
+  return Object.keys(all).map(function (id) {
+    var d = all[id];
+    return { recordId: id, name: d.name || '', savedAt: d.savedAt, savedStamp: d.savedStamp || 0,
+             phu: d.phu, chiefdom: d.chiefdom, visitDate: d.visitDate,
+             answered: d.answered, accepted: d.accepted || 0 };
+  }).sort(function (a, b) {
+    if (a.savedStamp !== b.savedStamp) return b.savedStamp - a.savedStamp;   // newest first
+    return a.recordId < b.recordId ? 1 : -1;
+  });
+}
+
+/* what the entry looks like right now, in the same shape a submission uses */
+function draftSnapshot(){
+  try {
+    return (typeof getPayload === 'function') ? getPayload() : getFormData();
+  } catch (e) {
+    return null;                       // a half filled card can throw; nothing to save yet
+  }
+}
+
+/* how many questions are answered, for the draft list */
+function draftAnswered(){
+  var host = document.querySelector('#sections-container') || document.getElementById('pageContainer')
+             || document.getElementById('tab-entry');
+  if (!host) return '';
+  var total = 0, done = 0;
+  host.querySelectorAll('.question-row').forEach(function (row) {
+    if (!row.querySelector('input, select, textarea')) return;
+    if (row.style.display === 'none') return;
+    if (row.getAttribute('data-optional')) return;      // not required, so not counted
+    total++;
+    if (typeof _raRowAnswered === 'function' && _raRowAnswered(row)) done++;
+  });
+  return total ? (done + ' of ' + total + ' answered') : '';
+}
+
+/* a message where the supervisor is actually looking: the strip under the tab
+   bar, which is on screen wherever they have scrolled to */
+function draftSay(kind, html){
+  var el = document.getElementById('toolStatus');
+  if (el) {
+    el.className = 'tool-status ' + (kind === 'bad' ? 'bad' : 'on');
+    el.innerHTML = html;
+    if (el.scrollIntoView) el.scrollIntoView({ block: 'nearest' });
+    clearTimeout(window.__draftMsgTimer);
+    window.__draftMsgTimer = setTimeout(function () {
+      if (el.innerHTML === html) { el.className = 'tool-status'; el.innerHTML = ''; }
+    }, 9000);
+  }
+  if (typeof sendStatus === 'function') sendStatus(kind === 'bad' ? 'bad' : 'good', html);
+}
+
+/* start a clean facility without losing drafts, the outbox or the archive */
+function newEntry(){
+  if (!confirm("Start a new facility?\n\nAnything typed here that you have not submitted or saved as a draft will be cleared. Drafts and queued records are kept.")) return;
+  resetForm();
+  RECORD = { id: newRecordId(), accepted: 0, hash: null };
+  saveRecord();
+  updateProgress();
+  window.scrollTo(0, 0);
+  draftSay("on", "<b>New facility.</b> The form is blank and a new reference has been given. " +
+    "Your drafts and anything queued are untouched.");
+}
+
+/* how much of the form is answered */
+function updateProgress(){
+  var total = 0, done = 0;
+  document.querySelectorAll('#tab-entry .question-row').forEach(function (row) {
+    if (!row.querySelector('input, select, textarea')) return;
+    if (row.style.display === 'none') return;
+    if (row.getAttribute('data-optional')) return;      // not required, so not counted
+    total++;
+    if (typeof _raRowAnswered === 'function' && _raRowAnswered(row)) done++;
+  });
+  var fill = document.getElementById('progressFill');
+  var text = document.getElementById('progressText');
+  if (fill) fill.style.width = (total ? Math.round(done / total * 100) : 0) + '%';
+  if (text) text.textContent = done + ' of ' + total + ' questions answered. Every one is required.';
+}
+
+function saveDraft(quiet, presetName){
+  if (!warnIfNoStorage()) return false;
+  var snap = draftSnapshot();
+  if (!snap) {
+    if (!quiet) draftSay("bad", "Nothing could be saved yet. Answer a question or two first.");
+    return false;
+  }
+
+  var existing = drafts()[RECORD.id];
+  var name = presetName || (existing && existing.name) || '';
+  if (!quiet && !presetName) {
+    var suggestion = name || draftSuggestedName(snap);
+    var typed = prompt("Name this draft, so you can find it again:", suggestion);
+    if (typed === null) return false;              // cancelled, nothing saved
+    name = typed.trim() || suggestion;
+  }
+
+  var all = drafts();
+  all[RECORD.id] = {
+    payload: snap,
+    name: name,
+    accepted: RECORD.accepted || 0,
+    savedAt: new Date().toLocaleString(),
+    savedStamp: Date.now(),
+    phu: snap.phu || '',
+    chiefdom: snap.chiefdom || '',
+    visitDate: snap.visit_date || '',
+    answered: draftAnswered()
+  };
+  writeDrafts(all);
+
+  if (!quiet) {
+    draftSay("on", "<b>Draft saved:</b> " + draftEsc(name) + "<br>" + draftEsc(draftAnswered()) +
+      " · " + draftEsc(RECORD.id) + " · " + draftEsc(all[RECORD.id].savedAt) +
+      "<br>Nothing has gone to NMDR. Find it again under DRAFTS.");
+    setTimeout(function () {
+      if (confirm("Draft saved as:\n" + name + "\n\nStart a new blank entry now?\n\n" +
+                  "Your draft stays under DRAFTS and can be continued at any time.")) {
+        startFreshEntry();
+      }
+    }, 60);
+  }
+  return true;
+}
+
+/* a sensible default name: the facility and the visit date, else a numbered one */
+function draftSuggestedName(snap){
+  var bits = [];
+  if (snap && snap.phu) bits.push(snap.phu);
+  if (snap && snap.visit_date) bits.push(snap.visit_date);
+  if (bits.length) return bits.join(' · ');
+  return 'Draft ' + (draftList().length + 1) + ' · ' +
+         new Date().toLocaleDateString();
+}
+
+/* a blank form with a NEW reference, leaving drafts, the outbox and the archive
+   alone. The flag survives the reload, which is what clears the fields. */
+function startFreshEntry(){
+  try { localStorage.setItem('mocm_fresh_' + FORM_MARK, '1'); } catch (e) {}
+  if (typeof resetForm === 'function' && !PAGE_RELOADS_FOR_NEW) {
+    resetForm();
+    takeFreshRecordId();
+    if (typeof updateProgress === 'function') updateProgress();
+    window.scrollTo(0, 0);
+    draftSay("on", "<b>New entry.</b> The form is blank with a new reference. " +
+      "Your drafts and anything queued are untouched.");
+  } else {
+    try { location.reload(); }
+    catch (e) {                         // if a reload is refused, clear by hand
+      if (typeof resetForm === 'function') resetForm();
+      takeFreshRecordId();
+      if (typeof updateProgress === 'function') updateProgress();
+    }
+  }
+}
+
+function takeFreshRecordId(){
+  RECORD = { id: newRecordId(), accepted: 0, hash: null };
+  saveRecord();
+  try { localStorage.removeItem('mocm_fresh_' + FORM_MARK); } catch (e) {}
+}
+
+/* on load, if we came from SAVE DRAFT or NEW ENTRY, take a new reference so the
+   next entry cannot overwrite the draft we just kept */
+function claimFreshStart(){
+  var flag = null;
+  try { flag = localStorage.getItem('mocm_fresh_' + FORM_MARK); } catch (e) {}
+  if (flag) takeFreshRecordId();
+}
+
+function deleteDraft(id){
+  var all = drafts();
+  if (all[id]) { delete all[id]; writeDrafts(all); }
+}
+
+/* the count on the DRAFTS button, so an unfinished visit is not forgotten */
+function renderDraftBadge(){
+  var n = draftList().length;
+  document.querySelectorAll('[data-draft-btn]').forEach(function (b) {
+    var label = b.getAttribute('data-label') || 'DRAFTS';
+    b.innerHTML = b.innerHTML.replace(/(<\/svg>)[\s\S]*$/, '$1' + label + (n ? ' (' + n + ')' : ''));
+  });
+}
+
+/* ---------- the picker ---------- */
+function openDrafts(){
+  document.getElementById('draftModal').style.display = 'flex';
+  var body = document.getElementById('draftBody');
+  var rows = draftList();
+  if (!rows.length) {
+    body.innerHTML = '<div class="dash-empty">No drafts on this phone. ' +
+      'Press SAVE DRAFT at any point, give it a name, and the entry is kept here, unsent, ' +
+      'until you come back to it. You can keep as many as you like.' +
+      '<div class="dash-note" style="margin-top:14px;">Form ' + FORM_MARK + ' · build ' + BUILD + '</div></div>';
+    return;
+  }
+  body.innerHTML = '<div class="dash-note" style="margin:0 0 12px;">' + rows.length +
+    (rows.length === 1 ? ' unfinished entry' : ' unfinished entries') + ' kept on this phone, newest first. ' +
+    'Nothing here has been sent to NMDR. Form ' + FORM_MARK + ' · build ' + BUILD + '</div>' + rows.map(function (r) {
+    var name = r.name || r.phu || 'Unnamed draft';
+    return '<div class="rec-row">' +
+      '<div class="rec-main">' + draftEsc(name) + '</div>' +
+      '<div class="rec-sub">' + draftEsc(r.phu || 'Facility not chosen yet') +
+        (r.chiefdom ? ' · ' + draftEsc(r.chiefdom) : '') +
+        (r.visitDate ? ' · visit ' + draftEsc(r.visitDate) : '') + '</div>' +
+      '<div class="rec-sub">' + (r.answered ? draftEsc(r.answered) + ' · ' : '') +
+        'saved ' + draftEsc(r.savedAt || '') + '</div>' +
+      '<div class="rec-sub" style="opacity:.75;">' + draftEsc(r.recordId) + '</div>' +
+      '<div class="pend-actions" style="padding:10px 0 0;border:none;flex-wrap:wrap;">' +
+        '<button class="btn-tool" onclick="resumeDraft(\'' + draftEsc(r.recordId) + '\')">CONTINUE</button>' +
+        '<button class="btn-tool" onclick="renameDraft(\'' + draftEsc(r.recordId) + '\')">RENAME</button>' +
+        '<button class="btn-tool" onclick="dropDraft(\'' + draftEsc(r.recordId) + '\')">DELETE</button>' +
+      '</div></div>';
+  }).join('');
+}
+function closeDrafts(){ document.getElementById('draftModal').style.display = 'none'; }
+
+function resumeDraft(id){
+  var d = drafts()[id];
+  if (!d) { openDrafts(); return; }
+
+  /* save whatever is on the screen first, so switching never loses work */
+  if (RECORD.id !== id && anyAnswerYet()) saveDraft(true);
+
+  if (typeof applyRecord === 'function') applyRecord(d.payload);
+  else if (typeof fillFormFrom === 'function') fillFormFrom(d.payload);
+
+  /* a draft that has never been submitted is still a new record, so put the
+     version back to what it was rather than what applyRecord assumed */
+  RECORD = { id: id, accepted: d.accepted || 0, hash: null };
+  saveRecord();
+
+  closeDrafts();
+  if (typeof switchTab === 'function') switchTab('entry');
+  if (typeof applySkips === 'function') applySkips();
+  if (typeof updateProgress === 'function') updateProgress();
+  draftSay("good", "<b>Continuing:</b> " + draftEsc(d.name || d.phu || 'this draft') +
+    "<br>" + draftEsc(d.phu || '') + " · saved " + draftEsc(d.savedAt || '') +
+    "<br>" + draftEsc(draftAnswered()) + ". Finish it and press SUBMIT DATA, or SAVE DRAFT again.");
+  window.scrollTo(0, 0);
+}
+
+function renameDraft(id){
+  var all = drafts();
+  var d = all[id];
+  if (!d) { openDrafts(); return; }
+  var typed = prompt("Rename this draft:", d.name || d.phu || '');
+  if (typed === null) return;
+  d.name = typed.trim() || d.name || d.phu || 'Unnamed draft';
+  writeDrafts(all);
+  openDrafts();
+}
+
+function dropDraft(id){
+  if (!confirm("Delete this draft?\n\nIt has not been sent to NMDR, so the entry is gone for good.")) return;
+  deleteDraft(id);
+  openDrafts();
+}
+
+/* a quiet save every minute, so a flat battery does not cost the visit */
+setInterval(function () {
+  if (!draftList().length && !anyAnswerYet()) return;
+  if (drafts()[RECORD.id] || anyAnswerYet()) saveDraft(true);
+}, 60000);
+
+function anyAnswerYet(){
+  var a = draftAnswered();
+  var m = a.match(/^(\d+) of/);
+  return m ? Number(m[1]) > 0 : false;
+}
+
+/* ==================== REQUIRE EVERY QUESTION ====================
+   Set REQUIRE_ALL to false to go back to checking only the key fields. */
+var REQUIRE_ALL = true;
+
+var _RA_STYLE = document.createElement('style');
+_RA_STYLE.textContent =
+  '.ra-missing input,.ra-missing select,.ra-missing textarea{border-color:#dc3545 !important;box-shadow:0 0 0 3px rgba(220,53,69,.15) !important;}' +
+  '.ra-missing .options-group-vertical,.ra-missing .options-group-check,.ra-missing .options-group-h{outline:2px solid #dc3545;outline-offset:4px;border-radius:12px;}' +
+  '.ra-flag{color:#dc3545;font-weight:700;font-size:12px;margin-top:6px;}';
+document.head.appendChild(_RA_STYLE);
+
+function _raVisible(el){
+  // a row is skipped only when it (or a wrapper inside its section) is hidden,
+  // never because its wizard section is the inactive one
+  var n = el;
+  while (n && n !== document.body) {
+    if (n.classList && (n.classList.contains('section-page') || n.classList.contains('tab-page'))) return true;
+    if (n.style && n.style.display === 'none') return false;
+    n = n.parentElement;
+  }
+  return true;
+}
+
+function _raLabel(row){
+  var t = row.querySelector('.question-text');
+  var s = t ? t.textContent.replace(/\s+/g,' ').replace(/\*$/,'').trim() : 'this question';
+  return s.length > 90 ? s.slice(0,90) + '…' : s;
+}
+
+/* an "Other, specify" box only counts when an Other option is ticked */
+function _raOtherRequired(row){
+  var ticked = row.querySelectorAll('input[type=radio]:checked, input[type=checkbox]:checked');
+  for (var i = 0; i < ticked.length; i++) {
+    if (/other/i.test(ticked[i].value || '')) return true;
+  }
+  var sels = row.querySelectorAll('select');
+  for (var j = 0; j < sels.length; j++) {
+    if (/other/i.test(sels[j].value || '')) return true;
+  }
+  return false;
+}
+
+function _raRowAnswered(row){
+  var radios = row.querySelectorAll('input[type=radio]');
+  if (radios.length) {
+    var names = {};
+    for (var i = 0; i < radios.length; i++) names[radios[i].name] = true;
+    for (var nm in names) {
+      if (!row.querySelector('input[type=radio][name="' + nm + '"]:checked')) return false;
+    }
+  }
+  var boxes = row.querySelectorAll('input[type=checkbox]');
+  if (boxes.length && !row.querySelector('input[type=checkbox]:checked')) return false;
+
+  var fields = row.querySelectorAll('select, textarea, input[type=text], input[type=number], input[type=date], input[type=month], input[type=tel], input[type=email]');
+  for (var j = 0; j < fields.length; j++) {
+    var f = fields[j];
+    if (f.disabled) continue;
+    if (/other/i.test(f.placeholder || '') && !_raOtherRequired(row)) continue;
+    if (String(f.value).trim() === '') return false;
+  }
+  return true;
+}
+
+function validateAllQuestions(){
+  document.querySelectorAll('.ra-missing').forEach(function(e){ e.classList.remove('ra-missing'); });
+  document.querySelectorAll('.ra-flag').forEach(function(e){ e.remove(); });
+
+  var rows = document.querySelectorAll('.question-row');
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    if (!_raVisible(row)) continue;
+    if (!row.querySelector('input, select, textarea')) continue;   // heading-only rows
+    if (row.getAttribute('data-optional')) continue;               // genuinely optional
+    if (_raRowAnswered(row)) continue;
+
+    // bring it on screen: right tab, right wizard section
+    if (typeof switchTab === 'function') {
+      var tab = row.closest('.tab-page');
+      if (tab && !tab.classList.contains('active')) switchTab('entry');
+    }
+    var page = row.closest('.section-page');
+    if (page && typeof showSection === 'function') {
+      var all = Array.prototype.slice.call(document.querySelectorAll('.section-page'));
+      var idx = all.indexOf(page);
+      if (idx > -1) showSection(idx);
+    }
+    row.classList.add('ra-missing');
+    var flag = document.createElement('div');
+    flag.className = 'ra-flag';
+    flag.textContent = 'This question is required.';
+    row.appendChild(flag);
+    row.scrollIntoView({ behavior:'smooth', block:'center' });
+    alert('Please answer: ' + _raLabel(row));
+    return false;
+  }
+  return true;
+}
+
+/* run the full check before whatever the form already did */
+(function(){
+  var _origSubmit = window.submitForm;
+  window.submitForm = function(){
+    if (REQUIRE_ALL && !validateAllQuestions()) return;
+    return _origSubmit.apply(this, arguments);
+  };
+})();
+
+/* the last gate before anything leaves the phone. confirmSubmit checks this
+   itself as well; this wrapper keeps the guarantee even if that call is edited
+   out one day. validateAndSubmit already runs readyToSubmit(). */
+(function(){
+  var _origConfirm = window.confirmSubmit;
+  if (typeof _origConfirm !== 'function') return;
+  window.confirmSubmit = function(){
+    if (REQUIRE_ALL && !validateAllQuestions()) { closeModal(); return; }
+    return _origConfirm.apply(this, arguments);
+  };
+})();
+
+
+/* ==================== SIGN IN ====================
+   Add or change users here. Three slots; fill the empty two when ready. */
+var USERS = [
+  { username: "msk", password: "1234", name: "Mohamed Sillah Kanu" },
+  { username: "",    password: "",     name: "" },   // second user — fill in
+  { username: "",    password: "",     name: "" }    // third user — fill in
+];
+
+(function(){
+  var KEY = "mocm_user";
+
+  function currentUser(){
+    try { return JSON.parse(sessionStorage.getItem(KEY)); } catch(e){ return null; }
+  }
+
+  var css = document.createElement('style');
+  css.textContent =
+    '#lgOverlay{position:fixed;inset:0;z-index:3000;background:linear-gradient(160deg,#2b5f8a,#1e4a6d);' +
+    'display:flex;align-items:center;justify-content:center;padding:20px;font-family:inherit;}' +
+    '#lgCard{background:#fff;border-radius:20px;width:100%;max-width:330px;padding:26px 22px 24px;text-align:center;' +
+    'box-shadow:0 24px 48px rgba(0,0,0,.3);}' +
+    '#lgCard .lgIcon{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#2b5f8a,#3b78a8);' +
+    'margin:0 auto 14px;display:flex;align-items:center;justify-content:center;}' +
+    '#lgCard .lgIcon svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;}' +
+    '#lgCard h3{font-size:17px;font-weight:800;color:#2b5f8a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}' +
+    '#lgCard p{font-size:12px;color:#6c7a8a;margin-bottom:18px;}' +
+    '#lgCard input{width:100%;padding:13px 14px;border:1.5px solid #e0e6ed;border-radius:12px;font-size:15px;' +
+    'font-family:inherit;margin-bottom:10px;}' +
+    '#lgCard input:focus{border-color:#3b78a8;outline:2px solid rgba(59,120,168,.2);}' +
+    '#lgErr{color:#dc3545;font-size:12px;font-weight:600;min-height:16px;margin-bottom:8px;display:none;}' +
+    '#lgBtn{width:100%;padding:14px;background:#2b5f8a;color:#fff;border:none;border-radius:12px;' +
+    'font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;}' +
+    '.lgWho{font-size:10.5px;font-weight:600;letter-spacing:.4px;opacity:.9;margin-top:8px;}' +
+    '.lgWho a{color:#ffc107;text-decoration:underline;cursor:pointer;margin-left:8px;}' +
+    '@keyframes lgShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}';
+  document.head.appendChild(css);
+
+  function showWho(){
+    var u = currentUser(); if(!u) return;
+    var host = document.querySelector('.page-header');
+    if(!host || host.querySelector('.lgWho')) return;
+    var d = document.createElement('div');
+    d.className = 'lgWho';
+    d.innerHTML = 'Signed in: ' + u.name + ' (' + u.username + ')<a id="lgOut">Sign out</a>';
+    host.appendChild(d);
+    d.querySelector('#lgOut').onclick = function(){
+      sessionStorage.removeItem(KEY);
+      location.reload();
+    };
+  }
+
+  function gate(){
+    if (currentUser()) { showWho(); return; }
+    var o = document.createElement('div');
+    o.id = 'lgOverlay';
+    o.innerHTML =
+      '<div id="lgCard">' +
+      '<div class="lgIcon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/>' +
+      '<path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>' +
+      '<h3>Sign in</h3><p>MOCM / OTSS+ supervision · NMCP Sierra Leone</p>' +
+      '<input id="lgUser" type="text" placeholder="Username" autocomplete="off" autocapitalize="none">' +
+      '<input id="lgPass" type="password" placeholder="Password">' +
+      '<div id="lgErr">Wrong username or password.</div>' +
+      '<button id="lgBtn">Sign in</button></div>';
+    document.body.appendChild(o);
+
+    var uEl = o.querySelector('#lgUser'), pEl = o.querySelector('#lgPass'), err = o.querySelector('#lgErr');
+    function attempt(){
+      var u = uEl.value.trim().toLowerCase(), p = pEl.value;
+      for (var i = 0; i < USERS.length; i++) {
+        var acc = USERS[i];
+        if (acc.username && acc.username.toLowerCase() === u && acc.password === p) {
+          sessionStorage.setItem(KEY, JSON.stringify({ username: acc.username, name: acc.name, at: new Date().toLocaleString() }));
+          o.remove();
+          showWho();
+          return;
+        }
+      }
+      err.style.display = 'block';
+      var card = o.querySelector('#lgCard');
+      card.style.animation = 'lgShake .3s';
+      setTimeout(function(){ card.style.animation = ''; }, 320);
+      pEl.value = ''; uEl.focus();
+    }
+    o.querySelector('#lgBtn').onclick = attempt;
+    pEl.onkeydown = function(e){ if (e.key === 'Enter') attempt(); };
+    uEl.onkeydown = function(e){ if (e.key === 'Enter') pEl.focus(); };
+    setTimeout(function(){ uEl.focus(); }, 60);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gate);
+  else gate();
+})();
+
+
+/* ---------- show the star on every question the form enforces ---------- */
+(function(){
+  function isOtherBox(f){ return /other/i.test(f.placeholder || ''); }
+
+  function markRequired(){
+    var rows = document.querySelectorAll('.question-row');
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var fields = row.querySelectorAll('input, select, textarea');
+      if (!fields.length) continue;                     // heading-only row
+
+      // a row holding nothing but an "If Other, specify" box stays unstarred
+      var onlyOther = true;
+      for (var j = 0; j < fields.length; j++) {
+        if (!isOtherBox(fields[j])) { onlyOther = false; break; }
+      }
+      if (onlyOther) continue;
+
+      var label = row.querySelector('.question-text');
+      if (!label || label.querySelector('.required-star')) continue;
+      var star = document.createElement('span');
+      star.className = 'required-star';
+      star.textContent = '*';
+      label.appendChild(star);
+    }
+  }
+
+  var pending = null;
+  function schedule(){
+    clearTimeout(pending);
+    pending = setTimeout(markRequired, 120);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', schedule);
+  else schedule();
+  new MutationObserver(schedule).observe(document.body, { childList:true, subtree:true });
+})();
+
+
+/* ==================== IN-PAGE DIALOGS ====================
+   The first version of SAVE DRAFT used the browser's prompt() and confirm().
+   Inside an app webview, or an iframe without allow-modals, those are simply
+   ignored: prompt returns nothing, so the save was cancelled and the button
+   looked dead. Everything below asks in the page instead, which works
+   everywhere. These definitions come last on purpose, so they replace the
+   earlier ones. */
+
+function askText(opts){
+  var modal = document.getElementById('askModal');
+  if (!modal) {                                   // no markup: fall back quietly
+    var typed = null;
+    try { typed = prompt(opts.title, opts.value || ''); } catch (e) {}
+    if (typed !== null && typed !== undefined && opts.onOk) opts.onOk(String(typed).trim());
+    return;
+  }
+  document.getElementById('askTitle').textContent = opts.title || '';
+  document.getElementById('askNote').innerHTML = opts.note || '';
+  var input = document.getElementById('askInput');
+  input.style.display = '';
+  input.value = opts.value || '';
+  input.placeholder = opts.placeholder || '';
+
+  var actions = document.getElementById('askActions');
+  actions.innerHTML = '';
+  (opts.buttons || []).forEach(function (b) {
+    var el = document.createElement('button');
+    el.className = b.primary ? 'btn-confirm' : 'btn-cancel';
+    el.textContent = b.label;
+    el.onclick = function () {
+      var val = input.value.trim();
+      closeAsk();
+      if (b.act) b.act(val);
+    };
+    actions.appendChild(el);
+  });
+  modal.style.display = 'flex';
+  setTimeout(function () { try { input.focus(); input.select(); } catch (e) {} }, 50);
+}
+
+function askConfirm(opts){
+  var modal = document.getElementById('askModal');
+  if (!modal) {
+    var ok = false;
+    try { ok = confirm(opts.title + '\n\n' + (opts.plain || '')); } catch (e) { ok = true; }
+    if (ok && opts.onYes) opts.onYes();
+    return;
+  }
+  document.getElementById('askTitle').textContent = opts.title || '';
+  document.getElementById('askNote').innerHTML = opts.note || '';
+  document.getElementById('askInput').style.display = 'none';
+  var actions = document.getElementById('askActions');
+  actions.innerHTML = '';
+  (opts.buttons || []).forEach(function (b) {
+    var el = document.createElement('button');
+    el.className = b.primary ? 'btn-confirm' : 'btn-cancel';
+    el.textContent = b.label;
+    el.onclick = function () { closeAsk(); if (b.act) b.act(); };
+    actions.appendChild(el);
+  });
+  modal.style.display = 'flex';
+}
+
+function closeAsk(){
+  var m = document.getElementById('askModal');
+  if (m) m.style.display = 'none';
+}
+
+/* ---------- saving, naming, and straight on to the next facility ---------- */
+
+function saveDraft(quiet, presetName){
+  if (!warnIfNoStorage()) return false;
+  var snap = draftSnapshot();
+  if (!snap) {
+    if (!quiet) draftSay("bad", "Nothing could be saved yet. Answer a question or two first.");
+    return false;
+  }
+
+  var existing = drafts()[RECORD.id];
+
+  /* a quiet autosave, or a name already decided: write it and be done */
+  if (quiet || presetName) {
+    writeDraft(snap, presetName || (existing && existing.name) || draftSuggestedName(snap));
+    return true;
+  }
+
+  /* otherwise ask for the name in the page */
+  askText({
+    title: existing ? 'Rename and save this draft' : 'Name this draft',
+    note: 'It stays on this phone until you finish it. Nothing is sent to NMDR.<br>' +
+          draftEsc(draftAnswered()) + ' · ' + draftEsc(RECORD.id),
+    value: (existing && existing.name) || draftSuggestedName(snap),
+    placeholder: 'e.g. Gerehun CHC, morning visit',
+    buttons: [
+      { label: 'CANCEL' },
+      { label: 'SAVE', act: function (name) {
+          writeDraft(snap, name || draftSuggestedName(snap));
+          draftSay("on", "<b>Draft saved:</b> " + draftEsc(name) + "<br>" +
+            draftEsc(draftAnswered()) + " · saved just now. Find it again under DRAFTS.");
+        } },
+      { label: 'SAVE & NEW ENTRY', primary: true, act: function (name) {
+          writeDraft(snap, name || draftSuggestedName(snap));
+          startFreshEntry();
+        } }
+    ]
+  });
+  return true;
+}
+
+/* the actual write, shared by the quiet and the named paths */
+function writeDraft(snap, name){
+  var all = drafts();
+  all[RECORD.id] = {
+    payload: snap,
+    name: name,
+    accepted: RECORD.accepted || 0,
+    savedAt: new Date().toLocaleString(),
+    savedStamp: Date.now(),
+    phu: snap.phu || '',
+    chiefdom: snap.chiefdom || '',
+    visitDate: snap.visit_date || '',
+    answered: draftAnswered()
+  };
+  writeDrafts(all);
+}
+
+function renameDraft(id){
+  var all = drafts();
+  var d = all[id];
+  if (!d) { openDrafts(); return; }
+  askText({
+    title: 'Rename this draft',
+    note: draftEsc(d.phu || '') + ' · saved ' + draftEsc(d.savedAt || ''),
+    value: d.name || d.phu || '',
+    buttons: [
+      { label: 'CANCEL', act: function () { openDrafts(); } },
+      { label: 'RENAME', primary: true, act: function (name) {
+          var fresh = drafts();
+          if (fresh[id]) {
+            fresh[id].name = name || fresh[id].name || fresh[id].phu || 'Unnamed draft';
+            writeDrafts(fresh);
+          }
+          openDrafts();
+        } }
+    ]
+  });
+}
+
+function dropDraft(id){
+  var d = drafts()[id];
+  if (!d) { openDrafts(); return; }
+  askConfirm({
+    title: 'Delete this draft?',
+    plain: 'It has not been sent to NMDR.',
+    note: '<b>' + draftEsc(d.name || d.phu || 'Unnamed draft') + '</b><br>' +
+          draftEsc(d.answered || '') + ' · saved ' + draftEsc(d.savedAt || '') +
+          '<br><br>It has not been sent to NMDR, so the entry is gone for good.',
+    buttons: [
+      { label: 'KEEP IT', act: function () { openDrafts(); } },
+      { label: 'DELETE', primary: true, act: function () { deleteDraft(id); openDrafts(); } }
+    ]
+  });
+}
+
+function newEntry(){
+  askConfirm({
+    title: 'Start a new facility?',
+    plain: 'Anything on screen that is not submitted or saved as a draft will be cleared.',
+    note: 'Anything typed here that you have not submitted or saved as a draft will be cleared.' +
+          '<br><br>Your drafts, submitted records and anything waiting in the outbox all stay on this phone.',
+    buttons: [
+      { label: 'CANCEL' },
+      { label: 'SAVE AS DRAFT FIRST', act: function () { saveDraft(false); } },
+      { label: 'START NEW', primary: true, act: function () { startFreshEntry(); } }
+    ]
+  });
+}
+
+
+
+
+</script>
+</body>
+</html>
