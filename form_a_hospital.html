@@ -315,6 +315,74 @@ body {
   .tab-btn { font-size:10.5px; }
 }
 </style>
+<style id="fitCss">
+/* ==================== FIT THE DEVICE ====================
+   These rules come last on purpose, so they win over the form's own styling.
+   Three things were making the forms look distorted on a phone, especially
+   inside the portal's phone shell:
+     1. inputs at 13 to 15px, which makes iOS zoom the whole page on focus and
+        leaves it scaled and off centre. 16px is the threshold that stops it.
+     2. nothing stopping a wide element (a table, a chart, a long unbroken word)
+        from pushing the page wider than the screen, which causes sideways drift.
+     3. the page setting its own outer padding again inside a shell that already
+        provides it, so the content sat cramped and narrow.
+   ======================================================== */
+
+html, body { max-width: 100%; overflow-x: hidden; }
+* { min-width: 0; }
+
+/* No field may be smaller than 16px, or the phone zooms on focus and leaves the
+   page scaled and off centre. The form's own .form-input rules are more specific
+   than a plain element selector, so this one has to insist. Buttons are left
+   alone: their sizes carry meaning in the tab bar. */
+input, select, textarea { font-size: 16px !important; max-width: 100%; box-sizing: border-box; }
+input[type=radio], input[type=checkbox] { font-size: inherit !important; }
+
+/* anything that could be wider than the screen is contained */
+img, svg, canvas, iframe, video, pre { max-width: 100%; }
+table { max-width: 100%; }
+.question-text, .rec-main, .rec-sub, .lg-key, .score-row span, .tri-label { overflow-wrap: anywhere; }
+
+/* wide tables scroll inside their own box rather than stretching the page */
+.score-wrap, .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* the signature pad and the donut size themselves to the screen */
+.signature-canvas { width: 100% !important; height: 150px; touch-action: none; }
+
+/* modals: never wider than the screen, and always scrollable */
+.modal { padding: 10px; }
+.modal-content { width: 100%; max-width: 520px; max-height: 88vh; display: flex;
+  flex-direction: column; overflow: hidden; }
+.modal-body { overflow-y: auto; -webkit-overflow-scrolling: touch; flex: 1 1 auto; min-height: 0; }
+
+/* inside the portal's phone shell the outer padding is already provided, so the
+   form drops its own and uses the full width it is given */
+body.framed { padding-left: 0 !important; padding-right: 0 !important; max-width: 100% !important; }
+body.framed .wrap, body.framed .container { padding-left: 12px; padding-right: 12px; }
+body.framed .tab-nav, body.framed .tool-status, body.framed .progress-container { margin-left: 0; margin-right: 0; }
+
+/* a genuinely narrow phone */
+@media (max-width: 400px) {
+  body { font-size: 13.5px; }
+  .section-card, .card-body, .modal-body { padding-left: 12px; padding-right: 12px; }
+  .member-card { padding-left: 10px; padding-right: 10px; }
+}
+/* and a tablet or desktop, where the form should not stretch to the full width */
+@media (min-width: 900px) {
+  .wrap, .container, #sections-container { max-width: 820px; margin-left: auto; margin-right: auto; }
+}
+</style>
+<script>
+/* the form knows whether it is inside the portal shell, so it can drop the
+   padding the shell already provides */
+(function () {
+  try { if (window.self !== window.top) document.documentElement.setAttribute('data-framed', '1'); }
+  catch (e) { document.documentElement.setAttribute('data-framed', '1'); }
+  document.addEventListener('DOMContentLoaded', function () {
+    if (document.documentElement.getAttribute('data-framed')) document.body.classList.add('framed');
+  });
+})();
+</script>
 </head>
 <body>
 
@@ -1895,17 +1963,22 @@ function fillFormFrom(rec) {
 }
 
 /* the sheet stores "Other: <text>", the dropdown needs both halves back */
+/* The hospital form has no In-Charge cadre select, so this does nothing here.
+   An earlier guard sat one brace too shallow, which left the else branches
+   running against a null element and killed the whole restore. */
 function setCadreFromLabel(label) {
   var sel = document.getElementById("cadre");
-  if (sel) {
+  if (!sel) return;
   var box = document.getElementById("cadre_other");
-  if (label.indexOf("Other: ") === 0) {
-    sel.value = "Other"; toggleCadreOther(); box.value = label.slice(7);
-  }
+  if (String(label).indexOf("Other: ") === 0) {
+    sel.value = "Other";
+    toggleCadreOther();
+    if (box) box.value = String(label).slice(7);
   } else if (label === "Other") {
-    sel.value = "Other"; toggleCadreOther();
+    sel.value = "Other";
+    toggleCadreOther();
   } else {
-    sel.value = CADRES.indexOf(label) > -1 ? label : "";
+    sel.value = (typeof CADRES !== "undefined" && CADRES.indexOf(label) > -1) ? label : "";
     toggleCadreOther();
   }
 }
@@ -2114,7 +2187,7 @@ function draftEsc(v){
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-var BUILD = "hosp-2026-07-28d";     // shown in the DRAFTS panel, so you can tell a stale phone
+var BUILD = "hosp-2026-08-01a";     // shown in the DRAFTS panel, so you can tell a stale phone
 var PAGE_RELOADS_FOR_NEW = false;   // how this form clears itself for the next facility
 var DRAFTS_KEY = "mocm_drafts_" + FORM_MARK;
 
