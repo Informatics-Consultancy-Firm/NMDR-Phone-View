@@ -189,6 +189,120 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans
 
 /* ── FOOTER ── */
 .page-footer{background:var(--blue-dk);color:rgba(255,255,255,.8);text-align:center;padding:14px;font-size:11px;margin-top:28px;}
+
+/* ══════════════════════════════════════════════════════════════════════
+   PHONE VIEW ONLY (≤ 640px). Tablet and desktop layouts are untouched.
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width:640px){
+
+  /* ── HEADER ── */
+  .page-header{padding:14px 14px;}
+  .header-row{gap:10px;}
+  .logo-box{padding:5px 8px;}
+  .logo-box img{width:54px;}
+  .header-text{flex:1 1 auto;min-width:0;}
+  .header-text h1{font-size:15px;line-height:1.3;letter-spacing:.2px;}
+  .header-text p{font-size:10px;line-height:1.4;}
+  .header-right{margin-left:0 !important;width:100%;}
+
+  /* ── LAYOUT / CARDS ── */
+  .page-body{padding:14px 12px;}
+  .card{border-radius:10px;margin-bottom:16px;}
+  .card-head{padding:12px 14px;}
+  .card-head h2{font-size:14px;}
+  .card-body{padding:14px 12px !important;}
+  .head-btns{width:100%;}
+  .head-btns .btn{flex:1 1 auto;justify-content:center;}
+
+  /* ── FORM CONTROLS (16px stops iOS zooming on focus) ── */
+  .cfg-grid,.opt-grid{grid-template-columns:1fr;gap:12px;}
+  .form-control{font-size:16px;padding:10px 12px;}
+  input.form-control,select.form-control{width:100% !important;min-width:0 !important;max-width:none !important;}
+
+  /* ── BUTTONS ── */
+  .btn{padding:10px 14px;font-size:11.5px;}
+  .btn-sm{padding:9px 12px;font-size:11px;}
+  .btn-row{gap:8px;}
+  .btn-row .btn{flex:1 1 auto;justify-content:center;}
+
+  /* ── TABS: swipe sideways instead of wrapping into a block ── */
+  .tab-nav{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-bottom:14px;}
+  .tab-nav::-webkit-scrollbar{display:none;}
+  .tab-btn{flex:0 0 auto;padding:9px 12px;font-size:12px;white-space:nowrap;}
+  .trk-period-tabs{flex-wrap:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .trk-period-tabs::-webkit-scrollbar{display:none;}
+  .trk-period-btn{padding:7px 12px;font-size:11.5px;}
+
+  /* ── SUBPLOTS → ONE COLUMN, SQUARE CANVASES STAY SQUARE ── */
+  .maps-3col{grid-template-columns:1fr !important;gap:12px;}
+  #monthlyMapsGrid{grid-template-columns:1fr !important;gap:12px;padding:12px;}
+  .canvas-wrap{padding-top:100%;}
+  .month-map-card .mm-canvas-wrap{padding-top:100%;}
+  .map-panel{max-width:none !important;}
+  .map-panel-head{font-size:10.5px;padding:8px 10px;line-height:1.4;}
+  .month-map-card .mmhead{font-size:10.5px;padding:7px 8px;}
+  .mm-leg-item{font-size:9.5px;}
+
+  /* section header bars (title + download button) stack */
+  .sec-head{flex-direction:column;align-items:stretch !important;gap:8px;line-height:1.45;}
+  .sec-head .btn{justify-content:center;}
+
+  /* ── HEATMAPS: keep full size and pan sideways rather than shrink to unreadable ── */
+  #tab-heatmaps .collap-body{padding:10px !important;-webkit-overflow-scrolling:touch;}
+  #hmCanvas1,#hmCanvas2{width:auto !important;max-width:none !important;height:auto !important;margin:0 !important;}
+
+  /* ── LEGENDS / PILLS ── */
+  .legend-bar{padding:9px 10px;gap:6px;}
+  .legend-title,.legend-item{font-size:10.5px;}
+  .stats-row{gap:6px;}
+  .stat-pill{font-size:11px;padding:5px 11px;}
+
+  /* ── TOOLBARS STACK (inline margin-top hacks neutralised) ── */
+  .trk-toolbar{flex-direction:column;align-items:stretch;padding:12px;gap:10px;margin-bottom:14px;}
+  .trk-toolbar > *{margin-top:0 !important;width:100%;}
+  .trk-search{max-width:none;min-width:0;}
+  .ctl-row{flex-direction:column;align-items:stretch !important;gap:10px !important;}
+  .ctl-row > *{margin-top:0 !important;width:100%;}
+  .ctl-row .btn{justify-content:center;}
+
+  /* ── COLLAPSIBLES ── */
+  .collap-head{padding:10px 12px;}
+  .collap-head h3{font-size:12.5px;}
+  .collap-body{padding:12px;}
+
+  /* ── TABLES: scroll inside their own box, never widen the page ── */
+  .data-table{font-size:11px;}
+  .data-table th,.data-table td{padding:7px 9px;}
+  .data-table-wrap{-webkit-overflow-scrolling:touch;}
+  .trk-dist-body,.trk-chief-body{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  #varRefConfig,#varRefMethod,#cutInfo,#vioBox,#cocFull{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  #varRefConfig table,#varRefMethod table{min-width:560px;}
+
+  /* ── TRACKING TREES ── */
+  .trk-fac-grid{grid-template-columns:1fr;}
+  .trk-dist-head,.trk-chief-head{flex-wrap:wrap;}
+  .trk-dist-name{font-size:12px;}
+  .trk-chief-name{font-size:11.5px;}
+
+  /* ── DOWNLOADS / METHODOLOGY ── */
+  #tab-downloads > div{grid-template-columns:1fr !important;}
+  #tab-methodology > div{max-width:none !important;}
+
+  /* ── PROGRESS / MISC ── */
+  .progress-body{padding:10px;}
+  .step-list{max-height:200px;}
+  .step-item{font-size:10px;padding:6px 8px;}
+  #rsTooltip{max-width:68vw;font-size:11px;padding:8px 11px;}
+  .page-footer{padding:12px;font-size:10px;}
+}
+
+/* very narrow phones */
+@media (max-width:380px){
+  .page-body{padding:12px 9px;}
+  .header-text h1{font-size:14px;}
+  .btn{padding:9px 11px;font-size:11px;}
+  .tab-btn{padding:9px 10px;font-size:11.5px;}
+}
 </style>
 </head>
 <body>
@@ -205,7 +319,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans
       <h1>NMCP Reporting Status Tool</h1>
       <p>National Malaria Control Programme · Sierra Leone · ICF-SL</p>
     </div>
-    <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;">
+    <div class="header-right" style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;">
       <span id="headerPill" style="background:rgba(255,255,255,.15);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.5px;">Ready</span>
     </div>
   </div>
@@ -218,7 +332,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans
   <div class="card" id="configCard">
     <div class="card-head">
       <h2>⚙ Pipeline Configuration</h2>
-      <div style="display:flex;gap:8px;">
+      <div class="head-btns" style="display:flex;gap:8px;">
         <button class="btn btn-gold" onclick="rs_startPipeline()">&#9654; Run Pipeline</button>
         <button class="btn btn-outline btn-sm" onclick="rs_reset()">↺ Reset</button>
       </div>
@@ -245,7 +359,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans
           <!-- Facility classification -->
           <div style="margin-bottom:16px;">
             <div style="font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">1 · Facility Registry</div>
-            <p>All <strong>Level-5</strong> organisation units are fetched from DHIS2 and classified by name suffix using <code>getHFType()</code>. Only the five assessed facility types are retained; all others are excluded.</p>
+            <p>All <strong>Level-5</strong> organisation units are fetched from DHIS2 and classified by name suffix using <code>getHFType()</code> (misspellings folded in, &ldquo;Home&rdquo; &rarr; Clinic). Only the five assessed facility types are retained. <strong>Laboratories</strong> (name contains &ldquo;Laboratory&rdquo;), <strong>Marie Stopes</strong> facilities and units of an <strong>unrecognised type</strong> are dropped <em>before any data is fetched</em> &mdash; see the Excluded Facilities tab after a run.</p>
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
               <span style="background:#e7f3ff;border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-weight:700;font-size:11px;">Hospital</span>
               <span style="background:#e7f3ff;border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-weight:700;font-size:11px;">Clinic</span>
@@ -258,60 +372,54 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans
 
           <!-- Data elements table -->
           <div style="margin-bottom:16px;">
-            <div style="font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">2 · Data Elements Used (13 total)</div>
+            <div style="font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">2 · Data Elements Used (21 total &mdash; three sources)</div>
 
-            <p style="margin-bottom:8px;"><strong>Dataset HF01 — Outpatient Morbidity</strong> &nbsp;·&nbsp; Facility Level-5 · Monthly</p>
-            <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px;">
-              <thead><tr style="background:var(--blue-lt);">
-                <th style="padding:5px 8px;text-align:left;color:var(--blue);font-weight:800;border:1px solid var(--border);">#</th>
-                <th style="padding:5px 8px;text-align:left;color:var(--blue);font-weight:800;border:1px solid var(--border);">Data Element</th>
-                <th style="padding:5px 8px;text-align:left;color:var(--blue);font-weight:800;border:1px solid var(--border);">UID</th>
-                <th style="padding:5px 8px;text-align:left;color:var(--blue);font-weight:800;border:1px solid var(--border);">Disaggregation</th>
-              </tr></thead>
-              <tbody>
-                <tr style="border:1px solid var(--border);"><td style="padding:4px 8px;border:1px solid var(--border);">1</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case — suspected Malaria</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">FJafyE1kzs4</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
-                <tr style="border:1px solid var(--border);background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">2</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (Microscopy) — Negative</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">Rijj3Fp9ksg</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
-                <tr style="border:1px solid var(--border);"><td style="padding:4px 8px;border:1px solid var(--border);">3</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (Microscopy) — Positive</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">Sz13vbo2Qwh</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
-                <tr style="border:1px solid var(--border);background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">4</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (RDT) — Negative</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">mXS2g1AiPsS</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
-                <tr style="border:1px solid var(--border);"><td style="padding:4px 8px;border:1px solid var(--border);">5</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (RDT) — Positive</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">p6zQLDFjSfd</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
-                <tr style="border:1px solid var(--border);background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">6</td><td style="padding:4px 8px;border:1px solid var(--border);">Malaria treated with ACT &lt;24 hours</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">wU8EdHifSLa</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
-                <tr style="border:1px solid var(--border);"><td style="padding:4px 8px;border:1px solid var(--border);">7</td><td style="padding:4px 8px;border:1px solid var(--border);">Malaria treated with ACT &gt;24 hours</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">XKTCuR0W3YN</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
-                <tr style="border:1px solid var(--border);background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">8</td><td style="padding:4px 8px;border:1px solid var(--border);">OPD (New and follow-up curative)</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">jkVioQxQcnk</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5+y</td></tr>
-              </tbody>
-            </table>
-
-            <p style="margin-bottom:8px;"><strong>Dataset HF04 — Community Based Services</strong> &nbsp;·&nbsp; Level-6 CHW/HTR/ETR (rolled up to Level-5 MCHP) · Monthly</p>
-            <table style="width:100%;border-collapse:collapse;font-size:11px;">
-              <thead><tr style="background:#e8f5e9;">
-                <th style="padding:5px 8px;text-align:left;color:#155724;font-weight:800;border:1px solid var(--border);">#</th>
-                <th style="padding:5px 8px;text-align:left;color:#155724;font-weight:800;border:1px solid var(--border);">Data Element</th>
-                <th style="padding:5px 8px;text-align:left;color:#155724;font-weight:800;border:1px solid var(--border);">UID</th>
-                <th style="padding:5px 8px;text-align:left;color:#155724;font-weight:800;border:1px solid var(--border);">Disaggregation</th>
-              </tr></thead>
-              <tbody>
-                <tr style="border:1px solid var(--border);"><td style="padding:4px 8px;border:1px solid var(--border);">9</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case (suspected malaria) in HTR and ETR</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">wfaQBIVQxWo</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
-                <tr style="border:1px solid var(--border);background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">10</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (RDT) in HTR — Negative</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">YWvx4zYdp92</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
-                <tr style="border:1px solid var(--border);"><td style="padding:4px 8px;border:1px solid var(--border);">11</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (RDT) in HTR — Positive</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">T7xH8GwWpEM</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
-                <tr style="border:1px solid var(--border);background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">12</td><td style="padding:4px 8px;border:1px solid var(--border);">Malaria treated with ACT in HTR &lt;24 hours</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">h3zJa6hAgib</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
-                <tr style="border:1px solid var(--border);"><td style="padding:4px 8px;border:1px solid var(--border);">13</td><td style="padding:4px 8px;border:1px solid var(--border);">Malaria treated with ACT in HTR &gt;24 hours</td><td style="padding:4px 8px;font-family:monospace;font-size:10px;border:1px solid var(--border);">Imkks0HAl7E</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
-              </tbody>
-            </table>
+            <div id="varRefConfig"></div>
           </div>
 
           <!-- Reporting rule -->
           <div style="margin-bottom:10px;">
             <div style="font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">3 · Reporting Status Rule</div>
             <div style="background:#d4edda;border:1.5px solid var(--green);border-radius:6px;padding:10px 14px;">
-              <strong style="color:#155724;">Reported (1)</strong> — A facility is considered to have reported for a given month if the <em>sum of all values across any of the 13 data elements above is greater than zero</em> for that facility-month combination.<br>
-              <strong style="color:#721c24;">Not Reported (0)</strong> — If no non-zero value is found across all 13 data elements for that facility and month, the facility is marked as not reported.
+              <strong style="color:#155724;">Reported (1)</strong> — A facility is considered to have reported for a given month if the <em>value on any of the 21 data elements above is greater than zero</em> for that facility-month, in any age band or sex, from any of the three sources.<br>
+              <strong style="color:#721c24;">Not Reported (0)</strong> — If no non-zero value is found across all 21 data elements for that facility and month, the facility is marked as not reported.<br>
+              <span style="font-size:11px;color:#5a6b3a;"><strong>Form cutover:</strong> old-form values after March 2026 and new-form values before April 2026 are ignored — a facility must not appear to report on a form that was not in use. Community (HF04) is unaffected.</span>
             </div>
             <p style="margin-top:8px;font-size:11px;color:var(--muted);">HF04 community data entered at Level-6 CHW/HTR/ETR units is rolled up to the parent Level-5 MCHP before this check is applied. A single non-zero community record is therefore sufficient to mark the MCHP as reported for that month.</p>
           </div>
 
+          <!-- CHW tracking -->
+          <div style="margin-bottom:16px;">
+            <div style="font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">4 · CHW Tracking (Level 6 · HF04 only)</div>
+            <p>The same Level-6 units that get rolled up for facility reporting are <em>also</em> tracked individually. Every Level-6 org unit whose Level-5 parent survived the exclusions is registered as a <strong>CHW / ETR post</strong>, named <code>CHW01</code> upward within its facility. <strong>Only facilities with at least one CHW are listed</strong> &mdash; a PHU with no Level-6 children does not appear.</p>
+            <div style="background:#e8f5e9;border:1.5px solid #28a745;border-radius:6px;padding:10px 14px;margin:10px 0;">
+              <strong style="color:#155724;">CHW reporting = 1</strong> &nbsp;&mdash;&nbsp; any of the <strong>5 HF04 Community Based Services</strong> data elements carries a non-zero value <em>at that Level-6 unit</em> for the month.<br>
+              <strong style="color:#721c24;">CHW not reporting = 0</strong> &nbsp;&mdash;&nbsp; none of them does.
+            </div>
+            <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:8px;">
+              <thead><tr style="background:#e8f5e9;">
+                <th style="padding:5px 8px;text-align:left;color:#155724;font-weight:800;border:1px solid var(--border);">Data element (HF04)</th>
+                <th style="padding:5px 8px;text-align:left;color:#155724;font-weight:800;border:1px solid var(--border);">UID</th>
+              </tr></thead>
+              <tbody id="chwVarRows"></tbody>
+            </table>
+            <p style="font-size:11px;color:var(--muted);line-height:1.7;">
+              <strong>HF04 only, and no cutover.</strong> HF04 is the single form a CHW keys into, so the April 2026
+              facility form transition does not apply to CHW status &mdash; the old/new form rule is a facility
+              concern. The 8 old-form and 8 new-form facility elements are never read at Level 6.<br>
+              <strong>Independent of the facility flag.</strong> The same value rolls up to mark the parent PHU as
+              reporting, but is kept at Level 6 as well, so a facility can read as reporting while an individual CHW
+              under it is silent.<br>
+              <strong>Rate convention.</strong> The CHW reporting rate counts <em>reporting CHWs only</em> in the
+              denominator, matching the active-facility rule used elsewhere &mdash; a post that never reported would
+              otherwise depress the rate permanently.
+            </p>
+          </div>
+
           <!-- Outputs -->
           <div>
-            <div style="font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">4 · Outputs</div>
-            <p>Reporting heatmaps (all facilities · active facilities only), geographic choropleth maps at national / district / chiefdom level, a district map of inactive (never-reported) facility counts, facility-level tracking tree, summary aggregation tables, and downloadable Excel / CSV / R / Python exports. A facility is <b>active</b> if it reported at least once in the selected period, otherwise <b>inactive</b>; reporting rates use active facilities only in the denominator.</p>
+            <div style="font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">5 · Outputs</div>
+            <p>An <strong>Excluded Facilities</strong> list (labs, Marie Stopes, unrecognised types &mdash; with the reason for each), a <strong>&#9888; Wrong Form</strong> report showing month-by-month form coverage and every PHU that reported on the wrong form for the period, a <strong>CHW Tracking</strong> tree covering every Level-6 CHW post under a PHU (HF04 only) with per-CHW month grids and reporting / never-reported lists, reporting heatmaps (all facilities · active facilities only), geographic choropleth maps at national / district / chiefdom level, a district map of inactive (never-reported) facility counts, facility-level tracking tree, summary aggregation tables, and downloadable Excel / CSV / R / Python exports. A facility is <b>active</b> if it reported at least once in the selected period, otherwise <b>inactive</b>; reporting rates use active facilities only in the denominator.</p>
           </div>
 
         </div>
@@ -352,6 +460,9 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans
           <button class="tab-btn active" data-tab="heatmaps">Heatmaps</button>
           <button class="tab-btn" data-tab="geomaps">Geographic Maps</button>
           <button class="tab-btn" data-tab="tracking">🏥 Facility Tracking</button>
+          <button class="tab-btn" data-tab="chw">👤 CHW Tracking</button>
+          <button class="tab-btn" data-tab="excluded">Excluded Facilities</button>
+          <button class="tab-btn" data-tab="formrule">⚠ Wrong Form</button>
           <button class="tab-btn" data-tab="summary">Summary Table</button>
           <button class="tab-btn" data-tab="downloads">Downloads</button>
           <button class="tab-btn" data-tab="methodology">Methodology</button>
@@ -432,7 +543,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans
 
           <!-- Controls bar -->
           <div style="background:var(--blue-lt);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;">
-            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px;">
+            <div class="ctl-row" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px;">
               <div class="form-group" style="margin:0;">
                 <label>Map Level</label>
                 <select class="form-control" id="geoLevel" style="width:auto;min-width:120px;">
@@ -455,7 +566,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans
           </div>
 
           <!-- ── SECTION 1: Monthly Maps Grid ── -->
-          <div style="background:var(--blue);color:#fff;padding:10px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="background:var(--blue);color:#fff;padding:10px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;justify-content:space-between;" class="sec-head">
             <span>📅 Monthly Reporting Status Maps — January to December</span>
             <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4);" onclick="rs_downloadMonthlyGrid()">↓ Download Monthly Grid (PNG)</button>
           </div>
@@ -464,7 +575,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans
           </div>
 
           <!-- ── SECTION 2: Annual Summary Maps ── -->
-          <div style="background:var(--blue-dk);color:#fff;padding:10px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="background:var(--blue-dk);color:#fff;padding:10px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;justify-content:space-between;" class="sec-head">
             <span>🗺 Annual Summary Maps</span>
             <button class="btn btn-gold btn-sm" onclick="rs_geoDownloadSubplot()">↓ Download Annual Subplot (PNG)</button>
           </div>
@@ -493,7 +604,7 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans
           </div>
 
           <!-- ── SECTION 3: District Inactive Facilities Map ── -->
-          <div style="background:#a50f15;color:#fff;padding:10px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="background:#a50f15;color:#fff;padding:10px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;justify-content:space-between;" class="sec-head">
             <span>🚫 Inactive Facilities by District — count of facilities that never reported in the selected period</span>
             <button class="btn btn-gold btn-sm" onclick="rs_geoDownload('geoDistrictInactive','district_inactive')">↓ Download Map (PNG)</button>
           </div>
@@ -558,6 +669,99 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans
         </div>
 
         <!-- ── TAB: SUMMARY TABLE ── -->
+        <!-- ── TAB: CHW TRACKING ── -->
+        <div id="tab-chw" class="tab-pane">
+          <p style="font-size:12px;color:#2c4b62;line-height:1.7;margin-bottom:12px;">
+            CHW / ETR posts are <strong>Level-6</strong> org units sitting under a PHU, listed as
+            <code>CHW01</code> upward within each facility. Only facilities with <strong>at least one CHW</strong>
+            appear below. A CHW counts as reporting for a month if any of the <strong>5 HF04 Community Based
+            Services</strong> data elements carries a non-zero value at that Level-6 unit &mdash; HF04 is the only
+            form a CHW keys into, and it is not subject to the facility form cutover.
+          </p>
+          <div id="chwStats" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;"></div>
+
+          <div class="trk-toolbar">
+            <div class="form-group" style="margin:0;">
+              <label>Year</label>
+              <select class="form-control" id="chwYear" style="width:auto;min-width:90px;" onchange="chw_render()"></select>
+            </div>
+            <input type="text" class="form-control trk-search" id="chwSearch" placeholder="Search CHW, facility, chiefdom, district…" oninput="chw_render()">
+            <div style="display:flex;gap:6px;align-items:center;margin-top:18px;">
+              <label style="font-size:11px;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:4px;cursor:pointer;">
+                <input type="checkbox" id="chwShowRep" checked onchange="chw_render()"> Show Reporting
+              </label>
+              <label style="font-size:11px;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:4px;cursor:pointer;">
+                <input type="checkbox" id="chwShowNrep" checked onchange="chw_render()"> Show Not Reporting
+              </label>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="chw_expandAll(true)" style="margin-top:18px;">⊞ Expand All</button>
+            <button class="btn btn-outline btn-sm" onclick="chw_expandAll(false)" style="margin-top:18px;">⊟ Collapse All</button>
+          </div>
+
+          <div style="background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;">
+            <div style="font-size:12px;font-weight:700;color:var(--blue-dk);margin-bottom:8px;">
+              ⬇ Download CHW lists <span style="font-weight:400;color:var(--muted);">— for the selected year: district, chiefdom, facility, CHW, months reported, reporting rate</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+              <button class="btn btn-green btn-sm" onclick="chw_download('reporting','xlsx')">● Reporting — Excel</button>
+              <button class="btn btn-outline btn-sm" onclick="chw_download('reporting','csv')">Reporting — CSV</button>
+              <span style="width:1px;height:20px;background:var(--border);margin:0 4px;"></span>
+              <button class="btn btn-sm" style="background:#dc3545;color:#fff;" onclick="chw_download('silent','xlsx')">○ Not Reporting — Excel</button>
+              <button class="btn btn-outline btn-sm" onclick="chw_download('silent','csv')">Not Reporting — CSV</button>
+              <span style="width:1px;height:20px;background:var(--border);margin:0 4px;"></span>
+              <button class="btn btn-primary btn-sm" onclick="chw_download('all','xlsx')">All (with status) — Excel</button>
+              <button class="btn btn-outline btn-sm" onclick="chw_download('facilities','xlsx')">Facilities with ≥1 CHW — Excel</button>
+            </div>
+          </div>
+
+          <div id="chwTree"></div>
+        </div>
+
+        <!-- ── TAB: EXCLUDED FACILITIES ── -->
+        <div id="tab-excluded" class="tab-pane">
+          <p style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:12px;">
+            These Level-5 org units were dropped <strong>before any data was fetched</strong>. They appear in no
+            analysis, no denominator and no export. Laboratories are typed <em>Hospital</em> in the source, so
+            leaving them in would inflate the Hospital denominator with units that never report.
+          </p>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+            <input type="text" class="form-control" id="exclSearch" placeholder="Search facility, district, reason…" style="max-width:300px;" oninput="rs_renderExcluded()">
+            <button class="btn btn-outline btn-sm" onclick="rs_downloadExcluded('csv')">↓ CSV</button>
+            <button class="btn btn-outline btn-sm" onclick="rs_downloadExcluded('xlsx')">↓ Excel</button>
+          </div>
+          <div id="exclStats" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
+          <div class="data-table-wrap">
+            <table class="data-table" id="excludedTable">
+              <thead><tr><th>OU ID</th><th>District</th><th>Chiefdom</th><th>Facility</th><th>Type in source</th><th>Exclusion reason</th></tr></thead>
+              <tbody id="exclBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ── TAB: WRONG FORM ── -->
+        <div id="tab-formrule" class="tab-pane">
+          <p style="font-size:12px;color:#2c4b62;line-height:1.7;margin-bottom:12px;">
+            New facility-form data entry starts <strong>April 2026</strong>. Each form is confined to its own window,
+            so a facility-month can never take values from both facility forms. Any PHU that entered data on the
+            <strong>wrong form for the period</strong> is listed here, and those values are <strong>ignored</strong> in
+            every calculation &mdash; they never mark a facility as reported. Shown for follow-up only.
+            Community (HF04) is a separate dataset and is not subject to the cutover.
+          </p>
+          <div id="cutInfo"></div>
+          <div style="margin:16px 0 8px 0;font-size:13px;font-weight:700;color:var(--blue-dk);">Form coverage by month <span style="font-weight:400;color:var(--muted);font-size:11px;">(facility-months reporting on each form, after the cutover rule)</span></div>
+          <div class="data-table-wrap" style="max-height:260px;">
+            <table class="data-table"><thead id="formHead"></thead><tbody id="formBody"></tbody></table>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin:20px 0 6px 0;">
+            <span style="font-size:13px;font-weight:700;color:var(--blue-dk);">Form rule violations &mdash; wrong form for the period <span style="font-weight:400;color:var(--muted);font-size:11px;">(ignored in all calculations &middot; display only)</span></span>
+            <span style="display:flex;gap:8px;">
+              <button class="btn btn-outline btn-sm" onclick="rs_downloadViolations('csv')">↓ CSV</button>
+              <button class="btn btn-outline btn-sm" onclick="rs_downloadViolations('xlsx')">↓ Excel</button>
+            </span>
+          </div>
+          <div id="vioBox"></div>
+        </div>
+
         <div id="tab-summary" class="tab-pane">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
             <input type="text" class="form-control" id="tblSearch" placeholder="Search district, chiefdom, period…" style="max-width:300px;" oninput="rs_filterTable()">
@@ -642,8 +846,8 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans
             </div>
             <div style="border:1.5px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:22px 24px;background:#fff;margin-bottom:20px;">
 
-              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">1 · Facility Registry</h3>
-              <p>All Level-5 organisation units are retrieved from the DHIS2 instance (<code>sl.dhis2.org/hmis23</code>) using the <code>/api/organisationUnits</code> endpoint with ancestor fields to extract district (Level-2) and chiefdom (Level-4) hierarchy. Each facility is classified by the last word of its display name using a suffix-first rule (<code>getHFType()</code>). Only the five assessed types are retained:</p>
+              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">1 &middot; Facility Registry</h3>
+              <p>All <strong>Level-5 (PHU)</strong> organisation units are retrieved from <code>sl.dhis2.org/hmis23</code> via <code>/api/organisationUnits</code> with ancestor fields, giving district (Level-2) and chiefdom (Level-4). Each facility is classified by the last word of its display name using a suffix-first rule (<code>getHFType()</code>), with misspellings folded in (&ldquo;Climic&rdquo; &rarr; Clinic) and nursing homes (&ldquo;Home&rdquo;) treated as Clinic. Only the five assessed types are retained:</p>
               <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px 0;">
                 <span style="background:#e7f3ff;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-weight:700;font-size:12px;">Hospital</span>
                 <span style="background:#e7f3ff;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-weight:700;font-size:12px;">Clinic</span>
@@ -651,62 +855,61 @@ html,body{width:100%;min-height:100vh;font-family:'Segoe UI','Roboto',Arial,sans
                 <span style="background:#e7f3ff;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-weight:700;font-size:12px;">CHP</span>
                 <span style="background:#e7f3ff;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-weight:700;font-size:12px;">MCHP</span>
               </div>
-              <p>Level-6 organisation units (community health workers, HTR/ETR workers operating under an MCHP) are fetched in parallel. A <code>childToL5</code> map is built to link each Level-6 UID to its Level-5 MCHP parent, so community data reported at Level-6 is correctly attributed to the parent facility.</p>
+              <p><strong>Level-6 organisation units</strong> (CHW / ETR posts sitting under a PHU) are fetched in parallel. A <code>childToL5</code> map links each Level-6 UID to its Level-5 parent, so community data reported at Level 6 is attributed to the parent facility. Level-6 units never appear as facilities in their own right.</p>
 
-              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px 0;">2 · Data Elements</h3>
-              <p>Thirteen data elements are queried via <code>/api/dataValueSets</code> across two DHIS2 datasets:</p>
+              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px 0;">2 &middot; Exclusions <span style="background:var(--gold);color:#000;border-radius:3px;padding:1px 6px;font-size:9px;letter-spacing:.5px;">BEFORE ANY DATA IS FETCHED</span></h3>
+              <p>A facility is dropped entirely &mdash; from every analysis, denominator and export &mdash; if it is:</p>
+              <ul style="margin:8px 0 10px 18px;">
+                <li><strong>A laboratory</strong> (name contains &ldquo;Laboratory&rdquo;). Labs are not health facilities, yet many are typed <em>Hospital</em> in the source (e.g. &ldquo;Bo Regional Hospital Laboratory&rdquo;). Left in, they sit in the Hospital denominator forever reporting nothing and drag the Hospital reporting rate down for no real reason.</li>
+                <li><strong>A Marie Stopes facility</strong> &mdash; excluded by NMCP request (specialised SRH provider).</li>
+                <li><strong>Of an unrecognised type</strong> &mdash; the type cannot be derived from the facility name.</li>
+              </ul>
+              <p style="font-size:11px;color:var(--muted);">The full list of excluded facilities, with the reason for each, is shown in the <strong>Excluded Facilities</strong> tab and downloadable as CSV or Excel.</p>
 
-              <p style="margin:12px 0 6px 0;font-weight:700;color:var(--blue-dk);">HF01 — Outpatient Morbidity &nbsp;(Dataset UID: <code style="font-size:11px;">ij1VNJwxKCh</code>)</p>
-              <p style="font-size:11px;color:var(--muted);margin-bottom:6px;">Data entered directly at Level-5 by facility staff. Queried with <code>children=true</code> so Level-6 CHW/ETR community records are automatically included.</p>
-              <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:14px;">
-                <thead><tr style="background:var(--blue-lt);">
-                  <th style="padding:5px 8px;border:1px solid var(--border);color:var(--blue);font-weight:800;">#</th>
-                  <th style="padding:5px 8px;border:1px solid var(--border);color:var(--blue);font-weight:800;">Data Element</th>
-                  <th style="padding:5px 8px;border:1px solid var(--border);color:var(--blue);font-weight:800;">UID</th>
-                  <th style="padding:5px 8px;border:1px solid var(--border);color:var(--blue);font-weight:800;">Age Disaggregation</th>
-                </tr></thead>
-                <tbody>
-                  <tr><td style="padding:4px 8px;border:1px solid var(--border);">1</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case — suspected Malaria</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">FJafyE1kzs4</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
-                  <tr style="background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">2</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (Microscopy) — Negative</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">Rijj3Fp9ksg</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
-                  <tr><td style="padding:4px 8px;border:1px solid var(--border);">3</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (Microscopy) — Positive</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">Sz13vbo2Qwh</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
-                  <tr style="background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">4</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (RDT) — Negative</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">mXS2g1AiPsS</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
-                  <tr><td style="padding:4px 8px;border:1px solid var(--border);">5</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (RDT) — Positive</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">p6zQLDFjSfd</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
-                  <tr style="background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">6</td><td style="padding:4px 8px;border:1px solid var(--border);">Malaria treated with ACT &lt;24 hours</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">wU8EdHifSLa</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
-                  <tr><td style="padding:4px 8px;border:1px solid var(--border);">7</td><td style="padding:4px 8px;border:1px solid var(--border);">Malaria treated with ACT &gt;24 hours</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">XKTCuR0W3YN</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5–14y · 15+y</td></tr>
-                  <tr style="background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">8</td><td style="padding:4px 8px;border:1px solid var(--border);">OPD (New and follow-up curative)</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">jkVioQxQcnk</td><td style="padding:4px 8px;border:1px solid var(--border);">0–59m · 5+y</td></tr>
-                </tbody>
-              </table>
-
-              <p style="margin:0 0 6px 0;font-weight:700;color:var(--blue-dk);">HF04 — Community Based Services &nbsp;(Dataset UID: <code style="font-size:11px;">nufVxEfy3Ps</code>)</p>
-              <p style="font-size:11px;color:var(--muted);margin-bottom:6px;">Data entered at Level-6 by community health workers (HTR/ETR). All Level-6 records are rolled up to the parent Level-5 MCHP before aggregation.</p>
-              <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:18px;">
-                <thead><tr style="background:#e8f5e9;">
-                  <th style="padding:5px 8px;border:1px solid var(--border);color:#155724;font-weight:800;">#</th>
-                  <th style="padding:5px 8px;border:1px solid var(--border);color:#155724;font-weight:800;">Data Element</th>
-                  <th style="padding:5px 8px;border:1px solid var(--border);color:#155724;font-weight:800;">UID</th>
-                  <th style="padding:5px 8px;border:1px solid var(--border);color:#155724;font-weight:800;">Age Disaggregation</th>
-                </tr></thead>
-                <tbody>
-                  <tr><td style="padding:4px 8px;border:1px solid var(--border);">9</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case (suspected malaria) in HTR and ETR</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">wfaQBIVQxWo</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
-                  <tr style="background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">10</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (RDT) in HTR — Negative</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">YWvx4zYdp92</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
-                  <tr><td style="padding:4px 8px;border:1px solid var(--border);">11</td><td style="padding:4px 8px;border:1px solid var(--border);">Fever case tested (RDT) in HTR — Positive</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">T7xH8GwWpEM</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
-                  <tr style="background:#f8fbff;"><td style="padding:4px 8px;border:1px solid var(--border);">12</td><td style="padding:4px 8px;border:1px solid var(--border);">Malaria treated with ACT in HTR &lt;24 hours</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">h3zJa6hAgib</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
-                  <tr><td style="padding:4px 8px;border:1px solid var(--border);">13</td><td style="padding:4px 8px;border:1px solid var(--border);">Malaria treated with ACT in HTR &gt;24 hours</td><td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">Imkks0HAl7E</td><td style="padding:4px 8px;border:1px solid var(--border);">2–59m · 5–14y · 15+y</td></tr>
-                </tbody>
-              </table>
-
-              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">3 · Reporting Status Rule</h3>
-              <div style="background:#d4edda;border:1.5px solid var(--green);border-radius:6px;padding:12px 16px;margin-bottom:10px;">
-                <strong style="color:#155724;font-size:13px;">Reported = 1</strong> &nbsp;—&nbsp; A facility is marked as <em>Reported</em> for a given month if the sum of all values across <strong>any</strong> of the 13 data elements above is greater than zero for that facility-month combination.<br><br>
-                <strong style="color:#721c24;font-size:13px;">Not Reported = 0</strong> &nbsp;—&nbsp; If no non-zero value is found across all 13 data elements for that facility and month, the facility is marked as <em>Not Reported</em>.
+              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px 0;">3 &middot; Reporting Variables &mdash; three sources</h3>
+              <p><strong>Twenty-one data elements</strong> across three DHIS2 datasets. <code>dx</code> is queried at <strong>data-element level (no category option combo)</strong>, so analytics aggregates <em>every</em> disaggregation automatically:</p>
+              <ul style="margin:8px 0 10px 18px;">
+                <li><strong>Old form &amp; community</strong> &mdash; 3 age groups (0&ndash;59m / 5&ndash;14y / 15+y; community 2&ndash;59m treated as 0&ndash;59m). OPD on the old form uses its own two groups (0&ndash;59m / 5+y).</li>
+                <li><strong>New form (2025_HF01)</strong> &mdash; <strong>22 category option combos per element</strong>: 11 age categories (0-7d, 08-28d, 1-5m, 06-11m, 12-59m, 05-09y, 10-14y, 15-19y, 20-44y, 45-59y, 60+y) each split <strong>Male</strong> and <strong>Female</strong>. All 22 are named individually with their UIDs in the combo register below.</li>
+              </ul>
+              <p>Nothing is dropped. A value entered against any single age/sex cell &mdash; one female 20&ndash;44y RDT positive, say &mdash; is enough to mark that facility-month as reported.</p>
+              <div style="background:#f8fbff;border-left:3px solid var(--blue);border-radius:4px;padding:10px 14px;margin:10px 0;font-size:11.5px;">
+                <strong>Why no COC-level query here.</strong> <code>dx</code> is queried at data-element level, so analytics aggregates the disaggregation for us and the request stays at 21 UIDs instead of ~180 <code>dx.COC</code> pairs. The register lists the combos <strong>data-entry staff actually key in</strong> &mdash; the cells on the form. Combos DHIS2 calculates from others are not reporting evidence in their own right and are not listed. If this tool is ever extended to output case counts it must switch to explicit <code>dx.COC</code> pairs, since sums over calculated combos would double-count.
               </div>
-              <p style="font-size:11px;color:var(--muted);">HF04 community data entered at Level-6 is rolled up to the parent Level-5 MCHP before this check. A single non-zero community record is sufficient to mark the MCHP as reported.</p>
 
-              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px 0;">4 · Aggregation</h3>
-              <p>Facility-month records are aggregated to district-month, district-year, chiefdom-month, and chiefdom-year levels. The reporting rate at each level is: <code>Reported facility-months ÷ Total facility-months × 100</code>. Geographic rates are computed from the chiefdom-month aggregates and mapped to GeoJSON boundaries.</p>
+              <div id="varRefMethod"></div>
+              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px 0;">4 &middot; Form Cutover</h3>
+              <div style="background:#fff3cd;border:1.5px solid var(--gold);border-radius:6px;padding:12px 16px;margin-bottom:10px;font-size:12px;">
+                New facility-form data entry starts <strong>April 2026</strong>. The old form is counted only up to <strong>March 2026</strong> (&le; 202603); the new form only from <strong>April 2026</strong> (&ge; 202604). A value sitting outside its own form&rsquo;s window is <strong>ignored</strong> &mdash; it must not make a facility look like it reported on a form that was not in use, so a PHU that entered data only on the wrong form is correctly counted as <em>Not Reported</em> for that month. Every such case is recorded per facility-month in the <strong>&#9888; Wrong Form</strong> tab, with the data elements involved and the value ignored, downloadable as CSV or Excel. The two form windows never overlap, so a facility-month can never take values from both facility forms. Community (HF04) is a separate dataset and is unaffected.
+              </div>
 
-              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px 0;">5 · Technical Details</h3>
-              <p>DHIS2 instance: <code>sl.dhis2.org/hmis23</code> &nbsp;·&nbsp; API endpoint: <code>/api/dataValueSets</code> with <code>children=true</code> (Level-6 CHW/ETR rows returned automatically and rolled up to Level-5 parent) &nbsp;·&nbsp; Org unit level: 5 (facility) + 6 (community rollup) &nbsp;·&nbsp; Period type: Monthly &nbsp;·&nbsp; Developed by: Informatics Consultancy Firm – Sierra Leone (ICF-SL) for the National Malaria Control Programme (NMCP).</p>
+              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px 0;">5 &middot; Fetching &mdash; how all the data is pulled</h3>
+              <p>One <code>/api/analytics</code> call per year covers the whole country:</p>
+              <div style="background:#f8fbff;border:1px solid var(--border);border-radius:6px;padding:10px 14px;margin:8px 0 10px 0;font-family:monospace;font-size:10.5px;line-height:1.6;word-break:break-all;">
+                /api/analytics.json?dimension=dx:&lt;21 data elements&gt;&amp;dimension=pe:&lt;months in year&gt;&amp;dimension=ou:LEVEL-5;LEVEL-6&amp;paging=false&amp;ignoreLimit=true
+              </div>
+              <p>Querying <code>ou:LEVEL-5;LEVEL-6</code> returns every PHU and every CHW / ETR post in one pass, so no org-unit batching is needed. Analytics returns only non-empty cells, and aggregates over all category option combos because <code>dx</code> is at data-element level. Each Level-6 row is rolled up to its Level-5 parent via <code>childToL5</code>; a Level-6 row carrying a <em>facility</em> data element is ignored, since facility forms are never entered at Level 6. Every request goes through the Apps Script CORS proxy with exponential-backoff retry.</p>
+
+              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px 0;">6 &middot; Reporting Status Rule</h3>
+              <div style="background:#d4edda;border:1.5px solid var(--green);border-radius:6px;padding:12px 16px;margin-bottom:10px;">
+                <strong style="color:#155724;font-size:13px;">Reported = 1</strong> &nbsp;&mdash;&nbsp; the facility-month carries a non-zero value on <strong>any</strong> of the 21 data elements above, in <strong>any</strong> age band or sex, from any of the three sources, after the cutover rule is applied.<br><br>
+                <strong style="color:#721c24;font-size:13px;">Not Reported = 0</strong> &nbsp;&mdash;&nbsp; no non-zero value on any of them.
+              </div>
+              <p style="font-size:11px;color:var(--muted);">Each facility-month also records the source split: <code>facStatus</code> (old or new facility form) and <code>comStatus</code> (HF04 community, rolled up from Level 6). A single non-zero community record is sufficient to mark the parent PHU as reported.</p>
+
+              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px 0;">7 &middot; Aggregation</h3>
+              <p>Facility-month records are aggregated to district-month, district-year, chiefdom-month, and chiefdom-year levels. The reporting rate at each level is <code>Reported facility-months &divide; Total facility-months &times; 100</code>. Facilities that never reported in the selected window are excluded from the <em>active</em> denominator (the second heatmap and the &ldquo;active&rdquo; rate). Geographic rates are computed from the chiefdom-month aggregates and mapped to GeoJSON boundaries.</p>
+
+              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px 0;">8 &middot; CHW Tracking (Level 6)</h3>
+              <p>Every <strong>Level-6</strong> org unit whose Level-5 parent survived the exclusions is registered as a CHW / ETR post, carrying its DHIS2 name (<code>CHW01</code> upward within a facility) and its parent&rsquo;s district, chiefdom, facility and type. <strong>Only facilities with at least one CHW appear</strong> &mdash; a PHU with no Level-6 children is absent from this tab entirely.</p>
+              <p>A CHW is <strong>reporting</strong> for a month if any of the <strong>5 HF04 Community Based Services</strong> data elements carries a non-zero value <em>at that Level-6 unit</em>. HF04 is the only form a CHW keys into, so the facility form cutover does not apply and no old/new-form split is involved. This is the same value that gets rolled up into the parent PHU for facility reporting status &mdash; here it is kept at Level 6 as well, so a facility can be reported while an individual CHW under it is silent.</p>
+              <p>The tree runs <strong>district &rarr; facility &rarr; CHW</strong>, sorted naturally so <code>CHW02</code> precedes <code>CHW10</code>. Each CHW row shows a tick or dot per month, months reported, its rate, and whether it ever reported in the selected year. The CHW reporting rate uses <strong>reporting CHWs only</strong> in the denominator, mirroring the active-facility convention elsewhere in the tool. Downloads: reporting CHWs, never-reported CHWs, all CHWs with status, and one row per facility with a CHW count and its CHW-month totals.</p>
+
+              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px 0;">9 &middot; Wrong-Form Reporting</h3>
+              <p>Each ignored out-of-window value is recorded against its PHU and month in <code>ST.cutViol</code>, keyed <code>ouId|period|source</code>, so several data elements entered on the same wrong form in the same month collapse into one row listing all of them. The <strong>&#9888; Wrong Form</strong> tab shows the monthly split of facility-months reporting on the old form, the new form and community, then lists every violation with district, chiefdom, facility, type, month, form used, rule broken, the data elements involved and the total value ignored. Nothing in this report feeds any calculation &mdash; it exists so the PHUs can be followed up.</p>
+
+              <h3 style="font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px 0;">10 &middot; Technical Details</h3>
+              <p>DHIS2 instance: <code>sl.dhis2.org/hmis23</code> &nbsp;&middot;&nbsp; Endpoints: <code>/api/organisationUnits</code>, <code>/api/analytics</code> &nbsp;&middot;&nbsp; Org unit levels: 5 (facility) + 6 (community rollup) &nbsp;&middot;&nbsp; Period type: Monthly &nbsp;&middot;&nbsp; Developed by: Informatics Consultancy Firm &ndash; Sierra Leone (ICF-SL) for the National Malaria Control Programme (NMCP).</p>
             </div>
           </div>
         </div>
@@ -731,6 +934,7 @@ const PROXY     = 'https://script.google.com/macros/s/AKfycbyRXc68PYSmDSCYPakAS8
 const BASE_URL  = 'https://sl.dhis2.org/hmis23';
 const AUTH      = 'Basic ' + btoa('musa-sillahkanu:Navigator/2024!');
 const LEVEL_PHU = 5, LEVEL_DIST = 2, LEVEL_CHIEF = 4;
+const LEVEL_COM = 6;   // Level 6 = CHW / ETR community reporting units (children of the PHU)
 
 // ── Facility type classifier — suffix-first, then substring fallback ──────────
 // Returns 'Hospital' | 'Clinic' | 'CHC' | 'CHP' | 'MCHP' | 'Other'
@@ -745,6 +949,8 @@ function getHFType(name) {
   if (suffix === 'CHP')      return 'CHP';
   const clinicSuffixes = ['CLINIC','CLINNIC','CLINNC','CLIMIC','CLINC','CLINIK','CLENIC','CLINCC','CLIN'];
   if (clinicSuffixes.includes(suffix)) return 'Clinic';
+  // "Home" (e.g. "St John Clinic and Nursing Home") is folded into Clinic
+  if (suffix === 'HOME' || u.includes('NURSING HOME')) return 'Clinic';
   if (u.includes('HOSPITAL')) return 'Hospital';
   if (u.includes('MCHP'))     return 'MCHP';
   if (u.includes('CHC'))      return 'CHC';
@@ -754,11 +960,320 @@ function getHFType(name) {
 }
 const ASSESSED_TYPES = ['Hospital', 'Clinic', 'CHC', 'CHP', 'MCHP'];
 
-const DE_UIDS = [
-  'FJafyE1kzs4','Rijj3Fp9ksg','Sz13vbo2Qwh','mXS2g1AiPsS','p6zQLDFjSfd',
-  'wU8EdHifSLa','XKTCuR0W3YN','jkVioQxQcnk','wfaQBIVQxWo','YWvx4zYdp92',
-  'T7xH8GwWpEM','h3zJa6hAgib','Imkks0HAl7E'
+// ═══════════════════════════════════════════════════════════════════
+//  REPORTING VARIABLES — THREE SOURCES
+// ═══════════════════════════════════════════════════════════════════
+// A facility-month counts as REPORTED if any one of these data elements
+// carries a non-zero value. dx is queried at DATA ELEMENT level (no COC),
+// so analytics aggregates EVERY disaggregation automatically:
+//   old form + community : 3 age groups
+//   new form (2025_HF01) : 11 keyed age categories x 2 sexes = 22 COCs per element
+// Nothing is dropped — a value entered against any single age/sex cell marks
+// the facility-month as reported.
+//
+// The register lists only the combos data-entry staff actually key in. Combos
+// that DHIS2 calculates from others (1-11m = 1-5m + 06-11m) are not reporting
+// evidence in their own right and are left out.
+const OLD_FAC_DS = 'ij1VNJwxKCh';   // HF01 Outpatient morbidity (old facility form)
+const NEW_FAC_DS = 'fB66asHJITQ';   // 2025_HF01 Outpatient Morbidity & Mortality Summary
+const COM_DS     = 'nufVxEfy3Ps';   // HF04 Community Based Services
+
+// OLD FACILITY FORM — HF01 Outpatient morbidity
+const OLD_FAC_DE = {
+  'FJafyE1kzs4':'Fever case — suspected Malaria',
+  'Rijj3Fp9ksg':'Fever case tested (Microscopy) — Negative',
+  'Sz13vbo2Qwh':'Fever case tested (Microscopy) — Positive',
+  'mXS2g1AiPsS':'Fever case tested (RDT) — Negative',
+  'p6zQLDFjSfd':'Fever case tested (RDT) — Positive',
+  'wU8EdHifSLa':'Malaria treated with ACT <24 hours',
+  'XKTCuR0W3YN':'Malaria treated with ACT >24 hours',
+  'jkVioQxQcnk':'OPD (New and follow-up curative)',
+};
+// NEW FACILITY FORM — 2025_HF01 (rollout April 2026)
+const NEW_FAC_DE = {
+  'dHcZ3eDjKU0':'HF01_Fever cases (Suspected Malaria)_Cases',
+  'AwLklDAVtvq':'HF01_Fever cases tested for Malaria (RDT) - Positive_Cases',
+  'Bn5tLFYdmRD':'HF01_Fever cases tested for Malaria (RDT) - Negative_Cases',
+  'AMrdoWsiHMa':'HF01_Fever cases tested for Malaria (Microscopy) - Positive_Cases',
+  'ofCoyRXAweZ':'HF01_Fever cases tested for Malaria (Microscopy) - Negative_Cases',
+  'ht4jvP2ppBI':'HF01_Malaria treated at Facility with ACT < 24hrs_Cases',
+  'zV9set4PXcm':'HF01_Malaria treated at Facility with ACT > 24hrs_Cases',
+  'VvwkIKdMtK7':'HF01_Total OPD (New & Follow-up cases)',
+};
+// COMMUNITY — HF04 Community Based Services (reported at Level 6 by CHW / ETR)
+const COM_DE = {
+  'wfaQBIVQxWo':'Fever case (suspected malaria) in HTR and ETR',
+  'YWvx4zYdp92':'Fever case tested (RDT) in HTR — Negative',
+  'T7xH8GwWpEM':'Fever case tested (RDT) in HTR — Positive',
+  'h3zJa6hAgib':'Malaria treated with ACT in HTR <24 hours',
+  'Imkks0HAl7E':'Malaria treated with ACT in HTR >24 hours',
+};
+
+// ── FORM CUTOVER ──────────────────────────────────────────────────
+// New facility form data entry starts April 2026.
+//   OLD facility form : counted only up to March 2026 (<= 202603)
+//   NEW facility form : counted only from April 2026  (>= 202604)
+// COMMUNITY (HF04) is a separate dataset and runs continuously — no cutover.
+const OLD_FORM_END   = 202603;
+const NEW_FORM_START = 202604;
+
+// ── FETCH MAP ─────────────────────────────────────────────────────
+const ALL_DX = [
+  ...Object.entries(OLD_FAC_DE).map(([de,label])=>({de, label, src:'old', ds:OLD_FAC_DS})),
+  ...Object.entries(NEW_FAC_DE).map(([de,label])=>({de, label, src:'new', ds:NEW_FAC_DS})),
+  ...Object.entries(COM_DE)    .map(([de,label])=>({de, label, src:'com', ds:COM_DS})),
 ];
+const DX_MAP   = {}; ALL_DX.forEach(d=>{ DX_MAP[d.de] = d; });
+const DX_PARAM = ALL_DX.map(d=>d.de).join(';');
+
+// ═══════════════════════════════════════════════════════════════════
+//  CATEGORY OPTION COMBOS — the full disaggregation behind each element
+// ═══════════════════════════════════════════════════════════════════
+// These are NOT sent in the query — dx is at data-element level, so analytics
+// aggregates them all. They are declared here so the Methodology panel can show
+// exactly which age / sex cells sit behind every variable the tool reads.
+
+// OLD facility form — Ages_0-59m_5-14y_15+y
+const OLD_AGE_COC = [
+  {label:'0-59m',  uid:'m5T8uBNB8aN'},
+  {label:'05-14y', uid:'j7j6iaknOFn'},
+  {label:'15+y',   uid:'zK1aiw8zFac'},
+];
+// OLD facility form — OPD uses its own two-group split
+const OLD_OPD_COC = [
+  {label:'0-59m', uid:'HXqTYVuY7MO'},
+  {label:'5+y',   uid:'YmxEkqHdy64'},
+];
+// COMMUNITY (HF04) — Ages_2-59m_5-14y_15+y · 02-59m is treated as 0-59m
+const COM_AGE_COC = [
+  {label:'02-59m → 0-59m', raw:'02-59m', group:'0-59m',  uid:'NtjMVmRfvHH'},
+  {label:'05-14y',         raw:'05-14y', group:'05-14y', uid:'qDXW7WMLT99'},
+  {label:'15+y',           raw:'15+y',   group:'15+y',   uid:'mdjRPpvLKdu'},
+];
+// NEW facility form (2025_HF01) — every age category, male and female.
+// 11 keyed age categories x 2 sexes = 22 combos per element.
+// The calculated 1-11m combo is not a data-entry field and is not listed.
+const NEW_AGE_BANDS = [
+  {band:'0-7d',   group:'0-59m', male:'X1fJr7y51lU', female:'ajwU95HMY2p'},
+  {band:'08-28d', group:'0-59m', male:'QVABDpl0H4k', female:'wOsJkGpglpx'},
+  {band:'1-5m',   group:'0-59m', male:'EBG5ZbRgj46', female:'z0s3iTdlbsd'},
+  {band:'06-11m', group:'0-59m', male:'KIJHMZSahcW', female:'aCwYAbE3GHL'},
+  {band:'12-59m', group:'0-59m', male:'CcMrNXzzVHL', female:'YHJ1j33ZMs5'},
+  {band:'05-09y', group:'05-14y',male:'eGhQxrBx3sy', female:'i4MRLwVtIGa'},
+  {band:'10-14y', group:'05-14y',male:'oZ7YgBgNGRd', female:'UI2y7qIOkvz'},
+  {band:'15-19y', group:'15+y',  male:'OzqClEP84wm', female:'vshWQEGCCTp'},
+  {band:'20-44y', group:'15+y',  male:'ztWgelWML6b', female:'fLgy2fpBWrb'},
+  {band:'45-59y', group:'15+y',  male:'zqNF6erLupJ', female:'eaWE8YjN4j0'},
+  {band:'60+y',   group:'15+y',  male:'hGJdT29m3P6', female:'g2NiIyG3PLj'},
+];
+
+// NOT INCLUDED — 1-11m (M QFTvC3ZBlaE / F NonO0cPD8ZS). This combo is
+// CALCULATED, not keyed: data-entry staff never type into it, it is derived
+// from 1-5m + 06-11m. The register below lists only the cells staff actually
+// fill in, which is what reporting status is about.
+
+// ── FLAT COC REGISTER — every category option combo the tool counts ─────────
+// One entry per COC: which source it belongs to, its age category, its sex,
+// and the age group it rolls into. `label` is the constructed description used
+// until the authoritative DHIS2 name is fetched into COC_NAMES.
+const ALL_COC = [
+  ...OLD_AGE_COC.map(c => ({uid:c.uid, src:'old', form:'Old facility form',
+      age:c.label, sex:'—', group:c.label, label:c.label,
+      applies:'7 old-form elements (all except OPD)'})),
+  ...OLD_OPD_COC.map(c => ({uid:c.uid, src:'old', form:'Old facility form',
+      age:c.label, sex:'—', group:c.label, label:c.label,
+      applies:'OPD (New and follow-up curative) only'})),
+  ...NEW_AGE_BANDS.flatMap(b => [
+    {uid:b.male,   src:'new', form:'New facility form (2025_HF01)', age:b.band, sex:'Male',
+     group:b.group, label:`${b.band}, Male`,   applies:'all 8 new-form elements'},
+    {uid:b.female, src:'new', form:'New facility form (2025_HF01)', age:b.band, sex:'Female',
+     group:b.group, label:`${b.band}, Female`, applies:'all 8 new-form elements'},
+  ]),
+  ...COM_AGE_COC.map(c => ({uid:c.uid, src:'com', form:'Community (HF04)',
+      age:c.raw || c.label, sex:'—', group:c.group || c.label, label:c.label,
+      applies:'all 5 community elements'})),
+];
+
+// Authoritative COC names, fetched from DHIS2 metadata at run time.
+// Empty until the pipeline runs; the constructed `label` is shown meanwhile.
+let COC_NAMES = {};
+async function rs_fetchCocNames() {
+  const ids = [...new Set(ALL_COC.map(c=>c.uid))];
+  const resp = await dhis2(`/api/categoryOptionCombos.json?filter=id:in:[${ids.join(',')}]` +
+                           `&fields=id,displayName,name&paging=false`);
+  (resp.categoryOptionCombos||[]).forEach(c => {
+    COC_NAMES[c.id] = c.displayName || c.name;
+  });
+  return Object.keys(COC_NAMES).length;
+}
+
+// Which COC set belongs to each data element
+function cocSetFor(de) {
+  if (de === 'jkVioQxQcnk') return {kind:'list', name:'OPD age split (0-59m / 5+y)', rows:OLD_OPD_COC};
+  if (OLD_FAC_DE[de])       return {kind:'list', name:'Ages_0-59m_5-14y_15+y',       rows:OLD_AGE_COC};
+  if (COM_DE[de])           return {kind:'list', name:'Ages_2-59m_5-14y_15+y',       rows:COM_AGE_COC};
+  if (NEW_FAC_DE[de])       return {kind:'bands',name:'22 combos (11 age categories × Male/Female)'};
+  return null;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  VARIABLE REFERENCE — rendered from the constants above, so what the
+//  Methodology shows can never drift from what the tool actually queries.
+// ═══════════════════════════════════════════════════════════════════
+// Data-element labels contain raw < and > ("Malaria treated with ACT <24 hours"),
+// which innerHTML would parse as a tag — always escape before injecting.
+function esc(t) {
+  return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function rs_buildVariableReference() {
+  const TH = 'padding:5px 8px;border:1px solid var(--border);font-weight:800;text-align:left;';
+  const TD = 'padding:4px 8px;border:1px solid var(--border);vertical-align:top;';
+  const UID= TD + 'font-family:monospace;font-size:10px;';
+  let n = 0, html = '';
+
+  const SOURCES = [
+    {key:'old', title:'OLD FACILITY FORM &mdash; HF01 Outpatient Morbidity',
+     ds:OLD_FAC_DS, win:'counted up to March 2026', de:OLD_FAC_DE, hdr:'var(--blue-lt)', col:'var(--blue)'},
+    {key:'new', title:'NEW FACILITY FORM &mdash; 2025_HF01 Outpatient Morbidity &amp; Mortality Summary',
+     ds:NEW_FAC_DS, win:'counted from April 2026', de:NEW_FAC_DE, hdr:'#fff3cd', col:'#7a5c00'},
+    {key:'com', title:'COMMUNITY &mdash; HF04 Community Based Services <span style="font-weight:400;font-size:10px;background:#e8f5e9;color:#155724;border-radius:3px;padding:1px 6px;">ALSO DRIVES CHW TRACKING</span>',
+     ds:COM_DS, win:'no cutover, runs continuously &middot; reported at Level 6, rolled up to the parent PHU &mdash; and read at Level 6 on its own for per-CHW status',
+     de:COM_DE, hdr:'#e8f5e9', col:'#155724'},
+  ];
+
+  SOURCES.forEach(src => {
+    const ids = Object.keys(src.de);
+    html += `<p style="margin:16px 0 6px 0;font-weight:700;color:var(--blue-dk);">${src.title}<br>
+      <span style="font-weight:400;font-size:11px;color:var(--muted);">Dataset <code style="font-size:10px;">${src.ds}</code> &middot; Monthly &middot; ${src.win} &middot; ${ids.length} data element(s)</span></p>`;
+    html += `<table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:6px;">
+      <thead><tr style="background:${src.hdr};">
+        <th style="${TH}color:${src.col};">#</th>
+        <th style="${TH}color:${src.col};">Data element</th>
+        <th style="${TH}color:${src.col};">DE UID</th>
+        <th style="${TH}color:${src.col};">Category option combos aggregated</th>
+      </tr></thead><tbody>`;
+    ids.forEach((de,i) => {
+      n++;
+      const cs = cocSetFor(de);
+      let cocCell;
+      if (!cs) cocCell = '<span style="color:var(--muted);">—</span>';
+      else if (cs.kind === 'list')
+        cocCell = `<span style="font-size:10px;color:var(--muted);">${cs.name}</span><br>` +
+          cs.rows.map(r=>`<code style="font-size:10px;">${r.uid}</code> <span style="font-size:10px;">${r.label}</span>`).join('<br>');
+      else
+        cocCell = `<span style="font-size:10px;color:var(--muted);">${cs.name} &mdash; listed in full below</span>`;
+      html += `<tr${i%2?' style="background:#f8fbff;"':''}>
+        <td style="${TD}">${n}</td>
+        <td style="${TD}">${esc(src.de[de])}</td>
+        <td style="${UID}">${de}</td>
+        <td style="${TD}">${cocCell}</td></tr>`;
+    });
+    html += '</tbody></table>';
+  });
+
+  // ── Full COC register: one row per category option combo ──
+  const bySrc = {old:[], new:[], com:[]};
+  ALL_COC.forEach(c => bySrc[c.src].push(c));
+  const named = ALL_COC.filter(c => COC_NAMES[c.uid]).length;
+
+  html += `<p style="margin:20px 0 6px 0;font-weight:700;color:var(--blue-dk);">CATEGORY OPTION COMBOS &mdash; all ${ALL_COC.length}, in full
+    <span style="font-weight:400;font-size:11px;color:var(--muted);">&middot; the exact combo behind every value the tool reads &mdash; data-entry fields only</span></p>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:8px;">
+      ${named
+        ? `<strong style="color:${named===ALL_COC.length?'#155724':'#7a5c00'};">DHIS2 names loaded for ${named} of ${ALL_COC.length}</strong> &mdash; the <em>Name in DHIS2</em> column is the authoritative <code>displayName</code> fetched from <code>/api/categoryOptionCombos</code>. Any combo still showing a grey constructed description was not returned by the instance &mdash; worth checking that UID.`
+        : `<em>Not yet loaded.</em> The <em>Name in DHIS2</em> column is filled with the authoritative <code>displayName</code> fetched from <code>/api/categoryOptionCombos</code> when the extract runs; until then the constructed description is shown in grey.`}
+    </p>`;
+
+  const COC_SRC = [
+    {key:'old', title:'OLD FACILITY FORM COCs', hdr:'var(--blue-lt)', col:'var(--blue)', stripe:'#f8fbff'},
+    {key:'new', title:'NEW FACILITY FORM COCs (2025_HF01)', hdr:'#fff3cd', col:'#7a5c00', stripe:'#fffdf5'},
+    {key:'com', title:'COMMUNITY COCs (HF04)', hdr:'#e8f5e9', col:'#155724', stripe:'#f6fbf7'},
+  ];
+  let cn = 0;
+  COC_SRC.forEach(src => {
+    const rows = bySrc[src.key];
+    html += `<p style="margin:14px 0 4px 0;font-weight:700;font-size:11.5px;color:${src.col};">${src.title}
+      <span style="font-weight:400;color:var(--muted);">&middot; ${rows.length} combo(s)</span></p>`;
+    html += `<table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:6px;">
+      <thead><tr style="background:${src.hdr};">
+        <th style="${TH}color:${src.col};">#</th>
+        <th style="${TH}color:${src.col};">COC UID</th>
+        <th style="${TH}color:${src.col};">Name in DHIS2</th>
+        <th style="${TH}color:${src.col};">Age category</th>
+        <th style="${TH}color:${src.col};">Sex</th>
+        <th style="${TH}color:${src.col};">Rolls into</th>
+        <th style="${TH}color:${src.col};">Applies to</th>
+      </tr></thead><tbody>`;
+    rows.forEach((c,i) => {
+      cn++;
+      const real = COC_NAMES[c.uid];
+      const nameCell = real
+        ? `<strong>${esc(real)}</strong>`
+        : `<span style="color:var(--muted);">${esc(c.label)} <span style="font-size:9px;">(constructed)</span></span>`;
+      const sexCell = c.sex === 'Male'   ? '<span style="color:#0077BB;font-weight:700;">Male</span>'
+                    : c.sex === 'Female' ? '<span style="color:#CC3311;font-weight:700;">Female</span>'
+                    : '<span style="color:var(--muted);">not disaggregated</span>';
+      html += `<tr${i%2?` style="background:${src.stripe};"`:''}>
+        <td style="${TD}">${cn}</td>
+        <td style="${UID}">${c.uid}</td>
+        <td style="${TD}">${nameCell}</td>
+        <td style="${TD}"><strong>${esc(c.age)}</strong></td>
+        <td style="${TD}">${sexCell}</td>
+        <td style="${TD}">${esc(c.group)}</td>
+        <td style="${TD}font-size:10px;color:var(--muted);">${esc(c.applies)}</td></tr>`;
+    });
+    html += '</tbody></table>';
+  });
+
+  const nMale   = ALL_COC.filter(c=>c.sex==='Male').length;
+  const nFemale = ALL_COC.filter(c=>c.sex==='Female').length;
+  html += `<div style="background:var(--blue-lt);border-radius:6px;padding:10px 14px;margin-top:12px;font-size:11.5px;line-height:1.8;">
+      <strong>Totals:</strong> ${ALL_DX.length} data elements &mdash;
+      ${Object.keys(OLD_FAC_DE).length} old form,
+      ${Object.keys(NEW_FAC_DE).length} new form,
+      ${Object.keys(COM_DE).length} community &middot;
+      <code style="font-size:10px;">dx</code> parameter ${DX_PARAM.length} characters.<br>
+      <strong>${ALL_COC.length} category option combos counted</strong> &mdash;
+      ${bySrc.old.length} old form, ${bySrc.new.length} new form, ${bySrc.com.length} community &middot;
+      ${nMale} male, ${nFemale} female, ${ALL_COC.length-nMale-nFemale} not sex-disaggregated.<br>
+      <span style="color:var(--muted);">Every combo listed is aggregated by the element-level <code>dx</code> query &mdash;
+      a value in any single one of them marks the facility-month as reported.</span>
+    </div>`;
+  return html;
+}
+// The 5 HF04 elements that decide CHW status — rendered from COM_DE
+function rs_renderChwVariables() {
+  const el = document.getElementById('chwVarRows'); if (!el) return;
+  el.innerHTML = Object.entries(COM_DE).map(([uid,label],i) =>
+    `<tr${i%2?' style="background:#f6fbf7;"':''}>
+       <td style="padding:4px 8px;border:1px solid var(--border);">${esc(label)}</td>
+       <td style="padding:4px 8px;border:1px solid var(--border);font-family:monospace;font-size:10px;">${uid}</td>
+     </tr>`).join('');
+}
+
+function rs_renderVariableReference() {
+  const html = rs_buildVariableReference();
+  ['varRefConfig','varRefMethod'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.innerHTML = html;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  EXCLUSION RULES — applied BEFORE any data is fetched
+// ═══════════════════════════════════════════════════════════════════
+// 1. Laboratories are not health facilities. Many are typed "Hospital" in the
+//    source (e.g. "Bo Regional Hospital Laboratory"), inflating the Hospital
+//    count and sitting in the denominator forever reporting nothing.
+// 2. Marie Stopes facilities are excluded by NMCP request (specialised SRH).
+// 3. Facilities whose type cannot be derived from the name are excluded.
+function isLaboratory(name){ return /\bLABORATOR/i.test(name||''); }
+function isMarieStopes(name){ return /MARIE\s*STOPES/i.test(name||''); }
+function exclusionReason(name){
+  if (isLaboratory(name))  return 'Laboratory — not a health facility';
+  if (isMarieStopes(name)) return 'Marie Stopes — excluded by NMCP';
+  return null;
+}
 
 
 
@@ -777,7 +1292,15 @@ const RS_PALETTES = {
 let ST = {
   config: null,
   orgHierarchy: {},        // {ouId: {id,name,districtName,chiefdomName,hfCode}}
-  rawSums: {},             // {ouId: {period: sum}}
+  rawSums: {},             // {ouId: {period: sum across all sources}}
+  srcSums: {},             // {ouId: {period: {old,new,com}}}
+  excluded: [],            // [{ou_id,facility,hfType,districtName,chiefdomName,reason}]
+  chwRegistry: {},         // {l6Id: {id,name,l5Id,facility,hfType,district,chiefdom}}
+  chwSums: {},             // {l6Id: {period: HF04 total}}
+  chwReportData: [],       // [{chwId,name,l5Id,Date,status,...}]
+  cutViol: {},             // {ouId|period|src: violation} — PHUs reporting on the wrong form
+  cutIgnored: {oldAfter:0,newBefore:0},
+  cutIgnoredVal: {oldAfter:0,newBefore:0},
   reportData: [],          // [{hf_uid,ouId,Date,status,districtName,chiefdomName}]
   selectedPalette: 'blackYellow',
   geoCache: { chiefdomGeo:null, districtGeo:null, bbox:null },
@@ -872,7 +1395,9 @@ async function rs_startPipeline() {
   if(!start || !end || start > end) { showAlert('Select a valid date range.','warn'); return; }
 
   ST.config = { start, end, periods: genPeriods(start, end) };
-  ST.orgHierarchy = {}; ST.rawSums = {}; ST.reportData = {};
+  ST.orgHierarchy = {}; ST.rawSums = {}; ST.srcSums = {}; ST.excluded = []; ST.reportData = [];
+  ST.cutViol = {}; ST.cutIgnored = {oldAfter:0,newBefore:0}; ST.cutIgnoredVal = {oldAfter:0,newBefore:0};
+  ST.chwRegistry = {}; ST.chwSums = {}; ST.chwReportData = [];
 
   document.getElementById('configCard').style.display    = 'none';
   document.getElementById('progressSection').style.display = 'block';
@@ -883,9 +1408,9 @@ async function rs_startPipeline() {
   setPill('Running…','rgba(255,193,7,.5)');
 
   [
-    ['s1','Fetch Level-5 facilities · classify by name (Hospital/Clinic/CHC/CHP/MCHP) · map Level-6 CHW/ETR to parent'],
+    ['s1','Fetch Level-5 facilities · classify by name · apply exclusions (labs, Marie Stopes, unrecognised) · map Level-6 CHW/ETR to parent'],
     ['s2','Assigning HF codes'],
-    ['s3','Fetching EPI data values'],
+    ['s3','Fetch all reporting data — 21 data elements, three sources, Level-5 + Level-6'],
     ['s4','Determining reporting status'],
     ['s5','Computing aggregates'],
     ['s6','Loading GeoJSON'],
@@ -903,25 +1428,36 @@ async function rs_startPipeline() {
 
     // Fetch Level-5 and Level-6 in parallel — one extra call, no extra wait.
     const [ouData5, ouData6] = await Promise.all([
-      dhis2(`/api/organisationUnits.json?level=${LEVEL_PHU}&fields=id,displayName,ancestors[id,displayName,level]&paging=false`),
-      dhis2(`/api/organisationUnits.json?level=${LEVEL_PHU+1}&fields=id,ancestors[id,level]&paging=false`),
+      dhis2(`/api/organisationUnits.json?level=${LEVEL_PHU}&fields=id,displayName,ancestors[id,displayName,level]&paging=false&pageSize=50000`),
+      dhis2(`/api/organisationUnits.json?level=${LEVEL_COM}&fields=id,displayName,ancestors[id,level]&paging=false&pageSize=50000`),
     ]);
 
     const ous   = ouData5.organisationUnits || [];
     let skipped = 0;
     const typeCounts = {};
     ASSESSED_TYPES.forEach(t => { typeCounts[t] = 0; });
+    ST.excluded = [];
 
     ous.forEach(ou => {
       const hfType = getHFType(ou.displayName);
-      if (!ASSESSED_TYPES.includes(hfType)) { skipped++; return; }
       const anc   = (ou.ancestors||[]).sort((a,b)=>a.level-b.level);
       const dist  = anc.find(a=>a.level===LEVEL_DIST);
       const chief = anc.find(a=>a.level===LEVEL_CHIEF);
-      ST.orgHierarchy[ou.id] = {
-        id:ou.id, name:ou.displayName, hfType,
+      const rec = {
+        ou_id: ou.id, facility: ou.displayName, hfType,
         districtName: dist  ? dist.displayName  : '',
         chiefdomName: chief ? chief.displayName : '',
+      };
+      // ── EXCLUSIONS (before any data is fetched) ──
+      const reason = exclusionReason(ou.displayName);
+      if (reason) { ST.excluded.push({...rec, reason}); return; }
+      if (!ASSESSED_TYPES.includes(hfType)) {
+        skipped++; ST.excluded.push({...rec, reason:'Unrecognised facility type'}); return;
+      }
+      ST.orgHierarchy[ou.id] = {
+        id:ou.id, name:ou.displayName, hfType,
+        districtName: rec.districtName,
+        chiefdomName: rec.chiefdomName,
         hfCode: '',
       };
       typeCounts[hfType]++;
@@ -930,23 +1466,43 @@ async function rs_startPipeline() {
     // Build childToL5: Level-6 OU id → its Level-5 ancestor id
     // Only map to a Level-5 that is in our assessed hierarchy.
     const childToL5 = {};
+    ST.chwRegistry = {};   // {l6Id: {id,name,l5Id,facility,hfType,district,chiefdom}}
     (ouData6.organisationUnits || []).forEach(ou6 => {
       const anc  = (ou6.ancestors||[]).sort((a,b)=>a.level-b.level);
       const l5   = anc.find(a=>a.level===LEVEL_PHU);
       if (l5 && ST.orgHierarchy[l5.id]) {
         childToL5[ou6.id] = l5.id;
+        const parent = ST.orgHierarchy[l5.id];
+        ST.chwRegistry[ou6.id] = {
+          id: ou6.id, name: ou6.displayName || ou6.id,
+          l5Id: l5.id, facility: parent.name, hfType: parent.hfType,
+          district: parent.districtName, chiefdom: parent.chiefdomName,
+        };
       }
     });
     ST.config.childToL5 = childToL5;
-
     const nFac    = Object.keys(ST.orgHierarchy).length;
     const nChild6 = Object.keys(childToL5).length;
+    const exclByReason = {};
+    ST.excluded.forEach(e => { exclByReason[e.reason] = (exclByReason[e.reason]||0) + 1; });
     setStep('s1','done',
       `${nFac} assessed facilities · ` +
       ASSESSED_TYPES.map(t=>`${t}: ${typeCounts[t]}`).join(' · ') +
-      ` · ${skipped} other types excluded · ${nChild6} Level-6 CHW/ETR mapped`
+      ` · ${ST.excluded.length} excluded (` +
+      Object.entries(exclByReason).map(([r,n])=>`${n} ${r.split('—')[0].trim().toLowerCase()}`).join(', ') +
+      `) · ${nChild6} Level-6 CHW/ETR mapped`
     );
     setProgress(12);
+
+    // ── Metadata: authoritative category-option-combo names ──
+    // One call. Populates COC_NAMES so the Methodology panel shows the real
+    // DHIS2 displayName for every combo instead of a constructed description.
+    try {
+      const nCoc = await rs_fetchCocNames();
+      rs_renderVariableReference();
+rs_renderChwVariables();
+      console.log(`COC names loaded: ${nCoc}/${ALL_COC.length}`);
+    } catch(e) { console.warn('COC name lookup failed, using constructed labels', e); }
 
     // ── Step 2: HF codes ──
     setStep('s2','running');
@@ -957,41 +1513,101 @@ async function rs_startPipeline() {
     });
     setStep('s2','done',`HF001…HF${nFac}`); setProgress(18);
 
-    // ── Step 3: Fetch data values — Level-5 with children=true ─────────────
-    // children=true tells DHIS2 to include data from all children (Level-6
-    // CHW/ETR) automatically. The returned rows will have orgUnit = Level-6 ID,
-    // which we then roll up to Level-5 via childToL5 — same logic as before
-    // but we only need to batch the 1730 Level-5 IDs, not ~2500+ combined.
-    // This keeps batch count identical to the original v14 speed.
+    // ── Step 3: Fetch all data — analytics, one call per year ───────────────
+    // Querying ou:LEVEL-5;LEVEL-6 returns every PHU and every CHW/ETR post in
+    // the country in a single pass, so no org-unit batching is needed at all.
+    // dx is at data-element level, so analytics aggregates over every category
+    // option combo — exactly what a reporting-status check needs. Analytics
+    // returns only non-empty cells, so the payload stays small.
     setStep('s3','running');
-    const ouIds = Object.keys(ST.orgHierarchy);   // 1730 Level-5 only
-    const ouB = [], pB = [];
-    for(let i=0;i<ouIds.length;i+=60) ouB.push(ouIds.slice(i,i+60));
-    for(let i=0;i<ST.config.periods.length;i+=6)  pB.push(ST.config.periods.slice(i,i+6));
-    const total = ouB.length * pB.length; let done=0;
-    ST.rawSums = {};
-    for(const ob of ouB) {
-      for(const pb of pB) {
-        // children=true — DHIS2 returns Level-6 CHW rows under Level-5 OUs
-        const url = `/api/dataValueSets.json?dataElement=${DE_UIDS.join(',')}&orgUnit=${ob.join(',')}&period=${pb.join(',')}&children=true`;
-        const resp = await dhis2(url);
-        (resp.dataValues||[]).forEach(dv=>{
-          const val = parseFloat(dv.value) || 0;
-          if (!val) return;
-          // Roll Level-6 up to Level-5 parent; Level-5 IDs pass through unchanged
-          const effectiveId = childToL5[dv.orgUnit] || dv.orgUnit;
-          // Only accumulate for OUs in our assessed hierarchy
-          if (!ST.orgHierarchy[effectiveId]) return;
-          if(!ST.rawSums[effectiveId]) ST.rawSums[effectiveId]={};
-          ST.rawSums[effectiveId][dv.period] = (ST.rawSums[effectiveId][dv.period]||0) + val;
-        });
-        done++;
-        setStep('s3','running',`Batch ${done}/${total} · ${pb[0]}→${pb[pb.length-1]}`);
-        setProgress(18 + Math.round((done/total)*42));
-        await sleep(120); // gentle pacing so the proxy isn't hammered
-      }
+    const ouIds = Object.keys(ST.orgHierarchy);
+    ST.rawSums    = {};   // {ouId: {period: total across all sources}}
+    ST.srcSums    = {};   // {ouId: {period: {old,new,com}}}
+    ST.comRollup  = 0;    // Level-6 values rolled up to a Level-5 PHU
+    ST.chwSums    = {};   // {l6Id: {period: HF04 total}} — per-CHW reporting
+    ST.cutIgnored    = {oldAfter:0, newBefore:0};
+    ST.cutIgnoredVal = {oldAfter:0, newBefore:0};
+    ST.cutViol       = {};   // PHUs reporting on the wrong form (recorded, never used)
+
+    // One analytics call per year: every data element (all COCs aggregated),
+    // every month in range, every Level-5 PHU and Level-6 CHW/ETR post.
+    const yearsInRange = [];
+    ST.config.periods.forEach(p => {
+      const y = p.slice(0,4); if(!yearsInRange.includes(y)) yearsInRange.push(y);
+    });
+    for (let yi = 0; yi < yearsInRange.length; yi++) {
+      const yr  = yearsInRange[yi];
+      const pes = ST.config.periods.filter(p => p.slice(0,4) === yr);
+      setStep('s3','running',`Year ${yr} — ${pes.length} month(s) · ${ALL_DX.length} data elements · Level-5 + Level-6 (${yi+1}/${yearsInRange.length})`);
+      const url = '/api/analytics.json'
+                + '?dimension=dx:' + DX_PARAM
+                + '&dimension=pe:' + pes.join(';')
+                + '&dimension=ou:LEVEL-' + LEVEL_PHU + ';LEVEL-' + LEVEL_COM
+                + '&displayProperty=NAME&paging=false&ignoreLimit=true';
+      const resp = await dhis2(url);
+      (resp.rows||[]).forEach(row => {
+        const [de, period, ouId, rawVal] = row;
+        const val = parseFloat(rawVal) || 0; if (!val) return;
+        const map = DX_MAP[de]; if (!map) return;
+
+        // ── LEVEL-6 ROLLUP ──
+        // Community (HF04) is reported by CHW/ETR posts at Level 6 and rolls up
+        // to the parent PHU. Facility forms are never reported at Level 6, so a
+        // Level-6 row for a facility data element is ignored.
+        const isL6 = !!childToL5[ouId];
+        if (isL6 && map.src !== 'com') return;
+        const effectiveId = childToL5[ouId] || ouId;
+        if (!ST.orgHierarchy[effectiveId]) return;   // excluded or non-assessed
+        if (isL6) {
+          ST.comRollup++;
+          // Per-CHW detail. HF04 (old community form) only — that is the single
+          // form a CHW keys into, and it is not subject to the facility cutover.
+          if(!ST.chwSums[ouId]) ST.chwSums[ouId] = {};
+          ST.chwSums[ouId][period] = (ST.chwSums[ouId][period]||0) + val;
+        }
+
+        // ── FORM CUTOVER ──
+        // Old form after March 2026 and new form before April 2026 are ignored:
+        // they must not make a facility look like it reported on a form that
+        // was not in use. Community (HF04) is unaffected.
+        const pNum   = parseInt(period, 10);
+        const badOld = map.src === 'old' && pNum > OLD_FORM_END;
+        const badNew = map.src === 'new' && pNum < NEW_FORM_START;
+        if (badOld || badNew) {
+          if (badOld) { ST.cutIgnored.oldAfter++;  ST.cutIgnoredVal.oldAfter  += val; }
+          else        { ST.cutIgnored.newBefore++; ST.cutIgnoredVal.newBefore += val; }
+          const ou = ST.orgHierarchy[effectiveId];
+          const mo = parseInt(period.slice(4,6), 10) - 1;
+          const vk = `${effectiveId}|${period}|${map.src}`;
+          if (!ST.cutViol[vk]) ST.cutViol[vk] = {
+            ou_id: effectiveId, facility: ou.name, hfType: ou.hfType,
+            district: ou.districtName, chiefdom: ou.chiefdomName,
+            period, year: period.slice(0,4), month: mo+1, month_name: MONTH_NAMES[mo],
+            form: badOld ? 'Old form' : 'New form (2025_HF01)',
+            rule: badOld ? 'Old form used AFTER March 2026'
+                         : 'New form used BEFORE April 2026',
+            elements: [], total: 0,
+          };
+          const v = ST.cutViol[vk];
+          if (!v.elements.includes(map.label)) v.elements.push(map.label);
+          v.total += val;
+          return;   // IGNORED — never enters rawSums, never affects reporting status
+        }
+
+        if(!ST.rawSums[effectiveId]) ST.rawSums[effectiveId] = {};
+        ST.rawSums[effectiveId][period] = (ST.rawSums[effectiveId][period]||0) + val;
+        if(!ST.srcSums[effectiveId]) ST.srcSums[effectiveId] = {};
+        if(!ST.srcSums[effectiveId][period]) ST.srcSums[effectiveId][period] = {old:0,new:0,com:0};
+        ST.srcSums[effectiveId][period][map.src] += val;
+      });
+      setProgress(18 + Math.round(((yi+1)/yearsInRange.length)*42));
+      await sleep(120); // gentle pacing so the proxy isn't hammered
     }
-    setStep('s3','done',`Data fetched · ${Object.keys(childToL5).length} Level-6 OUs rolled up`);
+    setStep('s3','done',
+      `${ALL_DX.length} data elements fetched across ${yearsInRange.length} year(s) · ` +
+      `${ST.comRollup.toLocaleString()} Level-6 values rolled up · ` +
+      `${(ST.cutIgnored.oldAfter+ST.cutIgnored.newBefore).toLocaleString()} wrong-form values ignored across ${Object.keys(ST.cutViol).length.toLocaleString()} facility-month(s)`
+    );
     setProgress(60);
 
     // ── Step 4: Reporting status ──
@@ -1002,14 +1618,31 @@ async function rs_startPipeline() {
       const ou = ST.orgHierarchy[ouId];
       ST.config.periods.forEach(per=>{
         const status = ((ST.rawSums[ouId]||{})[per]||0) > 0 ? 1 : 0;
+        const s      = (ST.srcSums[ouId]||{})[per] || {old:0,new:0,com:0};
         ST.reportData.push({
           hf_uid: ou.hfCode, ouId, Date:`${per.slice(0,4)}-${per.slice(4,6)}`,
           status, districtName: ou.districtName, chiefdomName: ou.chiefdomName,
           hfType: ou.hfType,
+          facStatus: (s.old + s.new) > 0 ? 1 : 0,   // old or new facility form
+          comStatus: s.com > 0 ? 1 : 0,             // HF04 community (Level-6 rollup)
         });
         if(status) reported++; else notReported++;
       });
     });
+    // ── CHW reporting status (Level 6, HF04 only) ──
+    ST.chwReportData = [];
+    Object.values(ST.chwRegistry).forEach(chw => {
+      ST.config.periods.forEach(per => {
+        ST.chwReportData.push({
+          chwId: chw.id, name: chw.name, l5Id: chw.l5Id,
+          facility: chw.facility, hfType: chw.hfType,
+          district: chw.district, chiefdom: chw.chiefdom,
+          Date: `${per.slice(0,4)}-${per.slice(4,6)}`, period: per,
+          status: ((ST.chwSums[chw.id]||{})[per]||0) > 0 ? 1 : 0,
+        });
+      });
+    });
+
     const activeHFs = new Set(ST.reportData.filter(r=>r.status).map(r=>r.hf_uid));
     const neverHFs  = new Set(ouIds.map(id=>ST.orgHierarchy[id].hfCode)).size - activeHFs.size;
     const allHFs    = [...new Set(ST.reportData.map(r=>r.hf_uid))];
@@ -1061,7 +1694,10 @@ async function rs_startPipeline() {
     try { rs_drawBothHeatmaps(); } catch(e){ drawErrors.push('Heatmaps: '+e.message); }
     try { rs_renderGeoMaps();    } catch(e){ drawErrors.push('Geo maps: '+e.message); }
     try { rs_buildTable();       } catch(e){ drawErrors.push('Table: '+e.message); }
+    try { rs_renderExcluded();   } catch(e){ drawErrors.push('Excluded: '+e.message); }
+    try { rs_renderFormRule();   } catch(e){ drawErrors.push('Wrong form: '+e.message); }
     try { trk_init();            } catch(e){ drawErrors.push('Tracking: '+e.message); }
+    try { chw_init();            } catch(e){ drawErrors.push('CHW tracking: '+e.message); }
 
     if(drawErrors.length) {
       setStep('s8','error','Draw errors: ' + drawErrors.join(' | '));
@@ -1081,6 +1717,10 @@ async function rs_startPipeline() {
     document.getElementById('statsRow').innerHTML = [
       `<div class="stat-pill">${nFac} facilities (5 assessed types)</div>`,
       typePills,
+      `<div class="stat-pill warn">${(ST.excluded||[]).length} excluded (labs · Marie Stopes · unrecognised)</div>`,
+      (Object.keys(ST.cutViol||{}).length
+        ? `<div class="stat-pill err">${Object.keys(ST.cutViol).length} facility-months on the wrong form (ignored)</div>`
+        : `<div class="stat-pill ok">No wrong-form reporting</div>`),
       `<div class="stat-pill ok">${nFacActive} active (reported ≥1 month)</div>`,
       `<div class="stat-pill warn">${nFacNever} inactive (never reported)</div>`,
       `<div class="stat-pill">${ST.config.periods.length} months · ${start} → ${end}</div>`,
@@ -1105,7 +1745,9 @@ async function rs_startPipeline() {
 
 function rs_reset() {
   ST = {
-    config:null, orgHierarchy:{}, rawSums:{}, reportData:[],
+    config:null, orgHierarchy:{}, rawSums:{}, srcSums:{}, excluded:[], reportData:[],
+    chwRegistry:{}, chwSums:{}, chwReportData:[],
+    cutViol:{}, cutIgnored:{oldAfter:0,newBefore:0}, cutIgnoredVal:{oldAfter:0,newBefore:0},
     selectedPalette:'blackYellow',
     geoCache:{chiefdomGeo:null,districtGeo:null,bbox:null},
     geoDistrictRates:{}, geoChiefdomRates:{}, geoChiefdomHits:[],
@@ -2538,6 +3180,407 @@ function rs_exportCSV() {
 // ═══════════════════════════════════════════════════════════════════
 //  CODE DOWNLOADS
 // ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
+//  CHW TRACKING  (Level 6 · HF04 Community Based Services only)
+// ═══════════════════════════════════════════════════════════════════
+// CHW / ETR posts are Level-6 units under a PHU, named CHW01 upward. A CHW is
+// REPORTING for a month if any of the 5 HF04 data elements carries a non-zero
+// value at that Level-6 unit. HF04 is the only form a CHW keys into, so no form
+// cutover applies. Only facilities with at least one CHW are listed.
+let CHW = { year:null };
+
+// Natural sort so CHW02 < CHW10 rather than CHW10 < CHW02
+function chwNatCmp(a, b) {
+  return String(a).localeCompare(String(b), undefined, {numeric:true, sensitivity:'base'});
+}
+
+function chw_init() {
+  const years = [...new Set((ST.config?.periods||[]).map(p=>p.slice(0,4)))].sort();
+  const ySel = document.getElementById('chwYear');
+  if (!ySel) return;
+  ySel.innerHTML = years.map(y=>`<option value="${y}">${y}</option>`).join('');
+  ySel.value = years[years.length-1];
+  CHW.year = years[years.length-1];
+  chw_render();
+}
+
+// Per-CHW summary for the selected year
+function chw_summary(year) {
+  const months = [...new Set((ST.config?.periods||[])
+    .filter(p=>p.slice(0,4)===year).map(p=>p.slice(4,6)))].sort();
+  const byChw = {};
+  ST.chwReportData.forEach(r => {
+    if (r.Date.slice(0,4) !== year) return;
+    if (!byChw[r.chwId]) byChw[r.chwId] = {
+      chwId:r.chwId, name:r.name, l5Id:r.l5Id, facility:r.facility, hfType:r.hfType,
+      district:r.district, chiefdom:r.chiefdom, months:{}, reported:0 };
+    const rec = byChw[r.chwId];
+    rec.months[r.Date.slice(5,7)] = r.status;
+    if (r.status) rec.reported++;
+  });
+  Object.values(byChw).forEach(c => {
+    c.total  = months.length;
+    c.rate   = c.total ? Math.round(c.reported/c.total*100) : 0;
+    c.active = c.reported > 0;   // reported at least once this year
+  });
+  return { months, list:Object.values(byChw) };
+}
+
+function chw_render() {
+  const tree = document.getElementById('chwTree'); if (!tree) return;
+  const year = document.getElementById('chwYear')?.value || CHW.year;
+  CHW.year = year;
+  const q = (document.getElementById('chwSearch')?.value||'').toLowerCase().trim();
+  const showRep  = document.getElementById('chwShowRep')?.checked  !== false;
+  const showNrep = document.getElementById('chwShowNrep')?.checked !== false;
+
+  const {months, list} = chw_summary(year);
+
+  // ── Stats ──
+  const nChw     = list.length;
+  const nActive  = list.filter(c=>c.active).length;
+  const facIds   = new Set(list.map(c=>c.l5Id));
+  const facWithReporting = new Set(list.filter(c=>c.active).map(c=>c.l5Id));
+  const repCM    = list.reduce((s,c)=>s+c.reported,0);
+  const denomCM  = nActive * (months.length||1);
+  const rate     = denomCM ? Math.round(repCM/denomCM*100) : 0;
+  document.getElementById('chwStats').innerHTML = [
+    `<div class="stat-pill">${facIds.size.toLocaleString()} facilities with ≥1 CHW</div>`,
+    `<div class="stat-pill">${nChw.toLocaleString()} CHW posts (Level 6)</div>`,
+    `<div class="stat-pill ok">${nActive.toLocaleString()} reporting (≥1 month in ${year})</div>`,
+    `<div class="stat-pill warn">${(nChw-nActive).toLocaleString()} never reported in ${year}</div>`,
+    `<div class="stat-pill">${facWithReporting.size.toLocaleString()} facilities with ≥1 reporting CHW</div>`,
+    `<div class="stat-pill ok">${rate}% CHW reporting rate (reporting CHWs)</div>`,
+    `<div class="stat-pill">${months.length} month(s) in ${year}</div>`,
+  ].join('');
+
+  if (!nChw) {
+    tree.innerHTML = `<div class="trk-empty">No Level-6 CHW posts found under the assessed facilities.</div>`;
+    return;
+  }
+
+  // ── Group: district → facility → [CHW] ──
+  const grouped = {};
+  list.forEach(c => {
+    if (!showRep  &&  c.active) return;
+    if (!showNrep && !c.active) return;
+    if (q && ![c.name,c.facility,c.chiefdom,c.district].join(' ').toLowerCase().includes(q)) return;
+    const d = c.district || 'Unknown District';
+    const f = c.facility || c.l5Id;
+    if (!grouped[d]) grouped[d] = {};
+    if (!grouped[d][f]) grouped[d][f] = {chiefdom:c.chiefdom, hfType:c.hfType, chws:[]};
+    grouped[d][f].chws.push(c);
+  });
+
+  const distNames = Object.keys(grouped).sort();
+  if (!distNames.length) {
+    tree.innerHTML = `<div class="trk-empty">No CHWs match your search or filters.</div>`;
+    return;
+  }
+
+  const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  tree.innerHTML = '';
+  distNames.forEach(dist => {
+    const facs = grouped[dist];
+    const facNames = Object.keys(facs).sort(chwNatCmp);
+    const allChw = facNames.flatMap(f=>facs[f].chws);
+    const dAct = allChw.filter(c=>c.active).length;
+
+    const distEl = document.createElement('div');
+    distEl.className = 'trk-district';
+    const head = document.createElement('div');
+    head.className = 'trk-dist-head';
+    head.innerHTML =
+      `<span class="trk-dist-name">${esc(dist)}</span>
+       <span class="trk-dist-pills">
+         <span class="trk-dist-pill">${facNames.length} facility(ies)</span>
+         <span class="trk-dist-pill">${allChw.length} CHW(s)</span>
+         <span class="trk-dist-pill rep">${dAct} reporting</span>
+         <span class="trk-dist-pill nrep">${allChw.length-dAct} silent</span>
+         <span class="trk-dist-chev">▶</span>
+       </span>`;
+    const body = document.createElement('div');
+    body.className = 'trk-dist-body';
+    head.onclick = () => {
+      body.classList.toggle('open');
+      head.querySelector('.trk-dist-chev').textContent = body.classList.contains('open') ? '▼' : '▶';
+    };
+
+    facNames.forEach(fac => {
+      const info = facs[fac];
+      const chws = info.chws.sort((a,b)=>chwNatCmp(a.name,b.name));
+      const fAct = chws.filter(c=>c.active).length;
+
+      const facEl = document.createElement('div');
+      facEl.className = 'trk-chiefdom';
+      const fHead = document.createElement('div');
+      fHead.className = 'trk-chief-head';
+      fHead.innerHTML =
+        `<span class="trk-chief-name">${esc(fac)} <span style="font-weight:400;color:var(--muted);font-size:11px;">· ${esc(info.hfType)} · ${esc(info.chiefdom)}</span></span>
+         <span class="trk-chief-pills">
+           <span class="trk-chief-pill">${chws.length} CHW(s)</span>
+           <span class="trk-chief-pill rep">${fAct} reporting</span>
+           <span class="trk-chief-pill nrep">${chws.length-fAct} silent</span>
+           <span class="trk-chief-chev">▶</span>
+         </span>`;
+      const fBody = document.createElement('div');
+      fBody.className = 'trk-chief-body';
+      fHead.onclick = (e) => {
+        e.stopPropagation();
+        fBody.classList.toggle('open');
+        fHead.querySelector('.trk-chief-chev').textContent = fBody.classList.contains('open') ? '▼' : '▶';
+      };
+
+      // Per-CHW month grid
+      let tbl = `<table class="data-table" style="font-size:11px;">
+        <thead><tr>
+          <th style="text-align:left;">CHW</th>
+          ${months.map(m=>`<th style="text-align:center;">${MON[parseInt(m,10)-1]}</th>`).join('')}
+          <th style="text-align:center;">Reported</th>
+          <th style="text-align:center;">Rate</th>
+          <th style="text-align:center;">Status</th>
+        </tr></thead><tbody>`;
+      chws.forEach(c => {
+        tbl += `<tr>
+          <td style="font-weight:700;">${esc(c.name)}</td>
+          ${months.map(m => c.months[m]
+              ? '<td style="text-align:center;background:#d4edda;color:#155724;font-weight:700;">✓</td>'
+              : '<td style="text-align:center;background:#f8d7da;color:#721c24;">·</td>').join('')}
+          <td style="text-align:center;">${c.reported}/${c.total}</td>
+          <td style="text-align:center;font-weight:700;">${c.rate}%</td>
+          <td style="text-align:center;">${c.active
+              ? '<span style="color:#155724;font-weight:700;">Reporting</span>'
+              : '<span style="color:#721c24;font-weight:700;">Never reported</span>'}</td>
+        </tr>`;
+      });
+      tbl += '</tbody></table>';
+      fBody.innerHTML = tbl;
+
+      facEl.appendChild(fHead); facEl.appendChild(fBody);
+      body.appendChild(facEl);
+    });
+
+    distEl.appendChild(head); distEl.appendChild(body);
+    tree.appendChild(distEl);
+  });
+}
+
+function chw_expandAll(open) {
+  document.querySelectorAll('#chwTree .trk-dist-body').forEach(b => {
+    b.classList.toggle('open', open);
+    const c = b.previousElementSibling?.querySelector('.trk-dist-chev'); if (c) c.textContent = open?'▼':'▶';
+  });
+  document.querySelectorAll('#chwTree .trk-chief-body').forEach(b => {
+    b.classList.toggle('open', open);
+    const c = b.previousElementSibling?.querySelector('.trk-chief-chev'); if (c) c.textContent = open?'▼':'▶';
+  });
+}
+
+// ── Downloads ──
+function chw_download(which, fmt) {
+  const year = CHW.year || (document.getElementById('chwYear')?.value);
+  const {months, list} = chw_summary(year);
+
+  if (which === 'facilities') {
+    // One row per facility that has at least one CHW
+    const byFac = {};
+    list.forEach(c => {
+      if (!byFac[c.l5Id]) byFac[c.l5Id] = {district:c.district, chiefdom:c.chiefdom,
+        facility:c.facility, hfType:c.hfType, l5Id:c.l5Id, n:0, nRep:0, repCM:0};
+      const f = byFac[c.l5Id];
+      f.n++; if (c.active) f.nRep++; f.repCM += c.reported;
+    });
+    const hdr = ['District','Chiefdom','Facility','Type','Facility OU ID','CHWs',
+                 'Reporting CHWs','Silent CHWs','CHW-months reported','CHW-months possible','Rate %'];
+    const rows = Object.values(byFac)
+      .sort((a,b)=>chwNatCmp(a.district+a.facility, b.district+b.facility))
+      .map(f => {
+        const denom = f.nRep * (months.length||1);
+        return [f.district, f.chiefdom, f.facility, f.hfType, f.l5Id, f.n, f.nRep, f.n-f.nRep,
+                f.repCM, denom, denom ? Math.round(f.repCM/denom*100) : 0];
+      });
+    return chw_write(hdr, rows, `CHW_Facilities_with_CHW_${year}`, fmt, 'Facilities with CHW');
+  }
+
+  const sel = which === 'reporting' ? list.filter(c=>c.active)
+            : which === 'silent'    ? list.filter(c=>!c.active)
+            : list;
+  const hdr = ['District','Chiefdom','Facility','Type','CHW','CHW OU ID',
+               ...months.map(m=>MON_SHORT[parseInt(m,10)-1]),
+               'Months reported','Months possible','Rate %','Status'];
+  const rows = sel
+    .sort((a,b)=>chwNatCmp(a.district+a.facility+a.name, b.district+b.facility+b.name))
+    .map(c => [c.district, c.chiefdom, c.facility, c.hfType, c.name, c.chwId,
+      ...months.map(m=>c.months[m]?1:0),
+      c.reported, c.total, c.rate, c.active?'Reporting':'Never reported']);
+  const label = which === 'reporting' ? 'Reporting' : which === 'silent' ? 'Not Reporting' : 'All';
+  chw_write(hdr, rows, `CHW_${label.replace(/ /g,'_')}_${year}`, fmt, label);
+}
+const MON_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function chw_write(hdr, rows, fname, fmt, sheet) {
+  if (fmt === 'xlsx') {
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([hdr, ...rows]), sheet.slice(0,31));
+    XLSX.writeFile(wb, fname + '.xlsx');
+    return;
+  }
+  const csv = [hdr, ...rows]
+    .map(r => r.map(c => `"${String(c==null?'':c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  triggerDL(csv, fname + '.csv');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  WRONG FORM — form-window rule violations (display only)
+// ═══════════════════════════════════════════════════════════════════
+// Values reported on a facility form OUTSIDE its own window. They are IGNORED
+// everywhere — they never set a reporting flag — and are surfaced here only so
+// the offending PHUs can be followed up.
+function rs_getViolations() {
+  const list = Object.values(ST.cutViol||{});
+  list.sort((a,b)=> a.rule.localeCompare(b.rule) || a.period.localeCompare(b.period)
+    || (a.district||'').localeCompare(b.district||'') || (a.facility||'').localeCompare(b.facility||''));
+  const nFac      = new Set(list.map(v=>v.ou_id)).size;
+  const oldAfter  = list.filter(v=>v.form === 'Old form');
+  const newBefore = list.filter(v=>v.form !== 'Old form');
+  return { list, nFac, oldAfter, newBefore,
+    sumOld: oldAfter.reduce((s,v)=>s+v.total,0),
+    sumNew: newBefore.reduce((s,v)=>s+v.total,0) };
+}
+const VIO_HDR = ['OU ID','District','Chiefdom','Facility','Type','Year','Month','Period',
+                 'Form Used','Rule Broken','Data Elements','Value Ignored'];
+function rs_vioRows() {
+  return rs_getViolations().list.map(v => [v.ou_id, v.district, v.chiefdom, v.facility, v.hfType,
+    v.year, v.month_name, v.period, v.form, v.rule, v.elements.join(' | '), v.total]);
+}
+function rs_downloadViolations(fmt) {
+  const rows = rs_vioRows();
+  const stamp = `${(ST.config&&ST.config.start)||''}_${(ST.config&&ST.config.end)||''}`;
+  if (fmt === 'xlsx') {
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([VIO_HDR, ...rows]), 'Wrong Form');
+    XLSX.writeFile(wb, `NMCP_Reporting_Wrong_Form_${stamp}.xlsx`);
+    return;
+  }
+  const csv = [VIO_HDR, ...rows]
+    .map(r => r.map(c => `"${String(c==null?'':c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  triggerDL(csv, `NMCP_Reporting_Wrong_Form_${stamp}.csv`);
+}
+
+// Facility-months reporting on each facility form, month by month, after cutover
+function rs_getFormCoverage() {
+  const per = {};
+  ST.config.periods.forEach(p => {
+    per[p] = { period:p, label:`${MONTH_NAMES[parseInt(p.slice(4,6),10)-1]} ${p.slice(0,4)}`,
+               old:0, new:0, com:0, any:0 };
+  });
+  Object.keys(ST.srcSums||{}).forEach(ouId => {
+    Object.entries(ST.srcSums[ouId]).forEach(([p,s]) => {
+      const row = per[p]; if(!row) return;
+      if (s.old > 0) row.old++;
+      if (s.new > 0) row.new++;
+      if (s.com > 0) row.com++;
+      if (s.old > 0 || s.new > 0 || s.com > 0) row.any++;
+    });
+  });
+  return Object.values(per).sort((a,b)=>a.period.localeCompare(b.period));
+}
+
+function rs_renderFormRule() {
+  const ci = ST.cutIgnored || {oldAfter:0,newBefore:0};
+  const cv = ST.cutIgnoredVal || {oldAfter:0,newBefore:0};
+  document.getElementById('cutInfo').innerHTML = `
+    <div style="background:#fff3cd;border:1.5px solid var(--gold);border-radius:6px;padding:12px 16px;font-size:12px;line-height:1.7;">
+      <strong>Cutover applied.</strong> New form data entry starts <strong>April 2026</strong>.<br>
+      <span style="color:#dc2626;font-weight:700;">Old form</span> — counted up to <b>March 2026</b>; later values ignored
+      (${ci.oldAfter.toLocaleString()} value(s), ${cv.oldAfter.toLocaleString()} total).<br>
+      <span style="color:#15803d;font-weight:700;">New form (2025_HF01)</span> — counted from <b>April 2026</b>; earlier values ignored
+      (${ci.newBefore.toLocaleString()} value(s), ${cv.newBefore.toLocaleString()} total).
+    </div>`;
+
+  const cov = rs_getFormCoverage();
+  document.getElementById('formHead').innerHTML =
+    `<tr><th>Month</th><th style="color:#dc2626;">Old form</th><th style="color:#15803d;">New form (2025_HF01)</th>` +
+    `<th style="color:var(--teal);">Community (HF04)</th><th>Reporting PHUs</th></tr>`;
+  document.getElementById('formBody').innerHTML = cov.map(p =>
+    `<tr><td>${p.label}</td>` +
+    `<td style="color:#dc2626;">${p.old.toLocaleString()}</td>` +
+    `<td style="color:#15803d;">${p.new.toLocaleString()}</td>` +
+    `<td style="color:var(--teal);">${p.com.toLocaleString()}</td>` +
+    `<td><strong>${p.any.toLocaleString()}</strong></td></tr>`).join('');
+
+  const {list, nFac, oldAfter, newBefore, sumOld, sumNew} = rs_getViolations();
+  const box = document.getElementById('vioBox');
+  if (!list.length) {
+    box.innerHTML = '<div class="alert" style="margin:10px 0;background:#d4edda;border-color:#28a745;color:#155724;">' +
+      '<strong>No violations.</strong> Every PHU reported on the correct form for its period.</div>';
+    return;
+  }
+  box.innerHTML = `
+    <div class="alert alert-err" style="margin:10px 0;">
+      <strong>${list.length.toLocaleString()} facility-month(s) across ${nFac.toLocaleString()} PHU(s) reported on the wrong form.</strong><br>
+      These values are <b>IGNORED</b> in every calculation — they never mark a facility as reported.
+      Listed here only so the PHUs can be followed up.
+    </div>
+    <div style="background:#f8fbff;border:1px solid var(--border);border-radius:6px;padding:10px 14px;margin-bottom:10px;font-size:12px;line-height:1.7;">
+      <span style="color:#dc2626;font-weight:700;">Old form used AFTER March 2026</span>: ${oldAfter.length.toLocaleString()} facility-month(s) · ${sumOld.toLocaleString()} ignored<br>
+      <span style="color:#15803d;font-weight:700;">New form used BEFORE April 2026</span>: ${newBefore.length.toLocaleString()} facility-month(s) · ${sumNew.toLocaleString()} ignored
+    </div>
+    <div class="data-table-wrap" style="max-height:360px;"><table class="data-table">
+      <thead><tr>
+        <th>District</th><th>Chiefdom</th><th>Facility</th><th>Type</th><th>Month</th>
+        <th>Form Used</th><th>Rule Broken</th><th>Data Elements</th><th>Value ignored</th>
+      </tr></thead>
+      <tbody>${list.map(v => {
+        const col = v.form === 'Old form' ? '#dc2626' : '#15803d';
+        return `<tr>
+          <td>${esc(v.district)}</td><td>${esc(v.chiefdom)}</td><td>${esc(v.facility)}</td><td>${esc(v.hfType)}</td>
+          <td>${v.month_name} ${v.year}</td>
+          <td style="color:${col};font-weight:700;">${v.form}</td>
+          <td>${v.rule}</td>
+          <td style="font-size:10px;color:var(--muted);">${v.elements.map(esc).join(' · ')}</td>
+          <td style="text-align:right;">${v.total.toLocaleString()}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table></div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  EXCLUDED FACILITIES
+// ═══════════════════════════════════════════════════════════════════
+const EXCL_HDR = ['OU ID','District','Chiefdom','Facility','Type in source','Exclusion reason'];
+function rs_exclRows() {
+  return (ST.excluded||[]).map(e =>
+    [e.ou_id, e.districtName, e.chiefdomName, e.facility, e.hfType, e.reason]);
+}
+function rs_renderExcluded() {
+  const rows = rs_exclRows();
+  const q = (document.getElementById('exclSearch')?.value || '').toLowerCase();
+  const shown = q ? rows.filter(r => r.join(' ').toLowerCase().includes(q)) : rows;
+
+  const byReason = {};
+  rows.forEach(r => { byReason[r[5]] = (byReason[r[5]]||0) + 1; });
+  document.getElementById('exclStats').innerHTML =
+    `<div class="stat-pill warn">${rows.length} excluded in total</div>` +
+    Object.entries(byReason).map(([r,n]) => `<div class="stat-pill">${n} — ${r}</div>`).join('');
+
+  document.getElementById('exclBody').innerHTML = shown.length
+    ? shown.map(r => `<tr>${r.map((c,i) =>
+        `<td${i===0?' style="font-family:monospace;font-size:10px;"':''}>${esc(c)}</td>`).join('')}</tr>`).join('')
+    : `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">No excluded facilities match.</td></tr>`;
+}
+function rs_downloadExcluded(fmt) {
+  const rows = rs_exclRows();
+  if (fmt === 'xlsx') {
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([EXCL_HDR, ...rows]), 'Excluded');
+    XLSX.writeFile(wb, 'excluded_facilities.xlsx');
+    return;
+  }
+  const csv = [EXCL_HDR, ...rows]
+    .map(r => r.map(c => `"${String(c==null?'':c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  triggerDL(csv, 'excluded_facilities.csv');
+}
+
 function triggerDL(content, fname) {
   const a=document.createElement('a');
   a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(content);
@@ -2556,43 +3599,97 @@ BASE_URL <- "https://sl.dhis2.org/hmis23"
 USERNAME <- "your_username"; PASSWORD <- "your_password"
 START_YM <- "${s}"; END_YM <- "${e}"
 
-DE_UIDS <- c("FJafyE1kzs4","Rijj3Fp9ksg","Sz13vbo2Qwh","mXS2g1AiPsS","p6zQLDFjSfd",
-             "wU8EdHifSLa","XKTCuR0W3YN","jkVioQxQcnk","wfaQBIVQxWo","YWvx4zYdp92",
-             "T7xH8GwWpEM","h3zJa6hAgib","Imkks0HAl7E")
+# ── 21 data elements across three sources ───────────────────────────────
+# dx is queried at DATA ELEMENT level, so analytics aggregates every COC:
+#   old form + community = 3 age groups; new form = 11 keyed age categories
+#   x 2 sexes (calculated combos such as 1-11m are not data-entry fields).
+OLD_FAC_DE <- c("FJafyE1kzs4","Rijj3Fp9ksg","Sz13vbo2Qwh","mXS2g1AiPsS",
+                "p6zQLDFjSfd","wU8EdHifSLa","XKTCuR0W3YN","jkVioQxQcnk")   # HF01 (old)
+NEW_FAC_DE <- c("dHcZ3eDjKU0","AwLklDAVtvq","Bn5tLFYdmRD","AMrdoWsiHMa",
+                "ofCoyRXAweZ","ht4jvP2ppBI","zV9set4PXcm","VvwkIKdMtK7")   # 2025_HF01 (new)
+COM_DE     <- c("wfaQBIVQxWo","YWvx4zYdp92","T7xH8GwWpEM",
+                "h3zJa6hAgib","Imkks0HAl7E")                               # HF04 community
+ALL_DE  <- c(OLD_FAC_DE, NEW_FAC_DE, COM_DE)
+DE_SRC  <- setNames(c(rep("old",length(OLD_FAC_DE)), rep("new",length(NEW_FAC_DE)),
+                      rep("com",length(COM_DE))), ALL_DE)
+
+# Form cutover: new facility form starts April 2026. Community is unaffected.
+OLD_FORM_END <- 202603L; NEW_FORM_START <- 202604L
+
+# Exclusions applied before any data is fetched
+ASSESSED_TYPES <- c("Hospital","Clinic","CHC","CHP","MCHP")
+hf_type <- function(n){
+  u <- toupper(n); suf <- tail(strsplit(trimws(u),"\\\\s+")[[1]],1)
+  if(suf=="HOSPITAL") return("Hospital"); if(suf=="MCHP") return("MCHP")
+  if(suf=="CHC") return("CHC");           if(suf=="CHP") return("CHP")
+  cs <- c("CLINIC","CLINNIC","CLINNC","CLIMIC","CLINC","CLINIK","CLENIC","CLINCC","CLIN")
+  if(suf %in% cs || any(sapply(cs, function(c) grepl(c,u,fixed=TRUE)))) return("Clinic")
+  if(suf=="HOME" || grepl("NURSING HOME",u,fixed=TRUE)) return("Clinic")
+  if(grepl("HOSPITAL",u)) return("Hospital"); if(grepl("MCHP",u)) return("MCHP")
+  if(grepl("CHC",u)) return("CHC");           if(grepl("CHP",u)) return("CHP")
+  "Other"
+}
+exclusion_reason <- function(n){
+  if(grepl("\\\\bLABORATOR", n, ignore.case=TRUE)) return("Laboratory - not a health facility")
+  if(grepl("MARIE\\\\s*STOPES", n, ignore.case=TRUE)) return("Marie Stopes - excluded by NMCP")
+  NA_character_
+}
 
 auth <- authenticate(USERNAME, PASSWORD)
 dhis2 <- function(path) fromJSON(content(GET(paste0(BASE_URL,path),auth),"text",encoding="UTF-8"),flatten=TRUE)
 
 gen_periods <- function(s,e) format(seq(as.Date(paste0(s,"-01")),as.Date(paste0(e,"-01")),by="month"),"%Y%m")
 
-# Fetch hierarchy
-ou_data <- dhis2("/api/organisationUnits.json?level=5&fields=id,displayName,ancestors[id,displayName,level]&paging=false")
-hier <- lapply(ou_data$organisationUnits, function(ou) {
-  dist  <- Filter(function(a) a$level==2, ou$ancestors)
-  chief <- Filter(function(a) a$level==4, ou$ancestors)
-  list(id=ou$id, name=ou$displayName,
-       districtName=if(length(dist))dist[[1]]$displayName else "",
-       chiefdomName =if(length(chief))chief[[1]]$displayName else "")
-})
-names(hier) <- sapply(hier,function(x)x$id)
+# Fetch hierarchy — Level 5 (PHU) and Level 6 (CHW / ETR posts)
+FIELDS <- "id,displayName,level,ancestors[id,displayName,level]"
+ou5 <- dhis2(paste0("/api/organisationUnits.json?level=5&fields=",FIELDS,"&paging=false&pageSize=50000"))
+ou6 <- dhis2(paste0("/api/organisationUnits.json?level=6&fields=",FIELDS,"&paging=false&pageSize=50000"))
 
-# Fetch data
+hier <- list(); excluded <- list(); child_to_l5 <- list()
+for(ou in ou5$organisationUnits){
+  anc   <- ou$ancestors
+  dist  <- Filter(function(a) a$level==2, anc)
+  chief <- Filter(function(a) a$level==4, anc)
+  rec <- list(id=ou$id, name=ou$displayName, hfType=hf_type(ou$displayName),
+              districtName=if(length(dist))dist[[1]]$displayName else "",
+              chiefdomName=if(length(chief))chief[[1]]$displayName else "")
+  reason <- exclusion_reason(ou$displayName)
+  if(!is.na(reason)){ rec$reason <- reason; excluded[[length(excluded)+1]] <- rec; next }
+  if(!(rec$hfType %in% ASSESSED_TYPES)){
+    rec$reason <- "Unrecognised facility type"; excluded[[length(excluded)+1]] <- rec; next }
+  hier[[ou$id]] <- rec
+}
+for(ou in ou6$organisationUnits){
+  l5 <- Filter(function(a) a$level==5, ou$ancestors)
+  if(length(l5) && !is.null(hier[[l5[[1]]$id]])) child_to_l5[[ou$id]] <- l5[[1]]$id
+}
+cat(length(hier)," facilities included, ",length(excluded)," excluded\\n",sep="")
+
+# Fetch data — one analytics call per year, Level 5 + Level 6, all 21 data elements
 periods <- gen_periods(START_YM, END_YM)
 ou_ids  <- names(hier)
-ou_batches <- split(ou_ids, ceiling(seq_along(ou_ids)/60))
-p_batches  <- split(periods, ceiling(seq_along(periods)/6))
-raw_sums   <- list()
-
-for(ob in ou_batches) for(pb in p_batches) {
-  path <- paste0("/api/dataValueSets.json?dataElement=",paste(DE_UIDS,collapse=","),
-                 "&orgUnit=",paste(ob,collapse=","),"&period=",paste(pb,collapse=","),"&children=false")
-  dvs <- dhis2(path)$dataValues
-  if(!is.null(dvs)&&nrow(dvs)>0) for(i in seq_len(nrow(dvs))){
-    dv <- dvs[i,]; ou <- dv$orgUnit; per <- dv$period
-    if(!ou %in% names(raw_sums)) raw_sums[[ou]] <- list()
-    raw_sums[[ou]][[per]] <- (raw_sums[[ou]][[per]]%||%0) + (as.numeric(dv$value)%||%0)
+raw_sums <- list()
+for(yr in unique(substr(periods,1,4))){
+  pes  <- periods[substr(periods,1,4)==yr]
+  path <- paste0("/api/analytics.json?dimension=dx:",paste(ALL_DE,collapse=";"),
+                 "&dimension=pe:",paste(pes,collapse=";"),
+                 "&dimension=ou:LEVEL-5;LEVEL-6&paging=false&ignoreLimit=true")
+  rws <- dhis2(path)$rows
+  if(!is.null(rws) && length(rws)) for(i in seq_len(nrow(rws))){
+    de <- rws[i,1]; per <- rws[i,2]; ou <- rws[i,3]; val <- suppressWarnings(as.numeric(rws[i,4]))
+    if(is.na(val) || val==0) next
+    src <- DE_SRC[[de]]; if(is.null(src)) next
+    is_l6 <- !is.null(child_to_l5[[ou]])
+    if(is_l6 && src!="com") next                      # facility forms never at Level 6
+    eff <- if(is_l6) child_to_l5[[ou]] else ou
+    if(is.null(hier[[eff]])) next                     # excluded / non-assessed
+    pnum <- as.integer(per)
+    if(src=="old" && pnum >  OLD_FORM_END)   next     # form cutover
+    if(src=="new" && pnum <  NEW_FORM_START) next
+    if(is.null(raw_sums[[eff]])) raw_sums[[eff]] <- list()
+    raw_sums[[eff]][[per]] <- (raw_sums[[eff]][[per]]%||%0) + val
   }
-  Sys.sleep(0.06)
+  cat("  ",yr," done\\n",sep="")
 }
 
 # Status table
@@ -2672,9 +3769,45 @@ USERNAME = "your_username"; PASSWORD = "your_password"
 START_YM = "${s}"; END_YM = "${e}"
 auth = HTTPBasicAuth(USERNAME, PASSWORD)
 
-DE_UIDS = ["FJafyE1kzs4","Rijj3Fp9ksg","Sz13vbo2Qwh","mXS2g1AiPsS","p6zQLDFjSfd",
-           "wU8EdHifSLa","XKTCuR0W3YN","jkVioQxQcnk","wfaQBIVQxWo","YWvx4zYdp92",
-           "T7xH8GwWpEM","h3zJa6hAgib","Imkks0HAl7E"]
+# ── 21 data elements across three sources ───────────────────────────────
+# dx is queried at DATA ELEMENT level, so analytics aggregates every COC:
+#   old form + community = 3 age groups; new form = 11 keyed age categories
+#   x 2 sexes (calculated combos such as 1-11m are not data-entry fields).
+OLD_FAC_DE = ["FJafyE1kzs4","Rijj3Fp9ksg","Sz13vbo2Qwh","mXS2g1AiPsS",
+              "p6zQLDFjSfd","wU8EdHifSLa","XKTCuR0W3YN","jkVioQxQcnk"]   # HF01 (old)
+NEW_FAC_DE = ["dHcZ3eDjKU0","AwLklDAVtvq","Bn5tLFYdmRD","AMrdoWsiHMa",
+              "ofCoyRXAweZ","ht4jvP2ppBI","zV9set4PXcm","VvwkIKdMtK7"]   # 2025_HF01 (new)
+COM_DE     = ["wfaQBIVQxWo","YWvx4zYdp92","T7xH8GwWpEM",
+              "h3zJa6hAgib","Imkks0HAl7E"]                               # HF04 community
+ALL_DE = OLD_FAC_DE + NEW_FAC_DE + COM_DE
+DE_SRC = {**{d:"old" for d in OLD_FAC_DE},
+          **{d:"new" for d in NEW_FAC_DE},
+          **{d:"com" for d in COM_DE}}
+
+# Form cutover: new facility form starts April 2026. Community is unaffected.
+OLD_FORM_END, NEW_FORM_START = 202603, 202604
+
+# Exclusions applied before any data is fetched
+ASSESSED_TYPES = ["Hospital","Clinic","CHC","CHP","MCHP"]
+CLINIC_SUFFIXES = ["CLINIC","CLINNIC","CLINNC","CLIMIC","CLINC","CLINIK","CLENIC","CLINCC","CLIN"]
+def hf_type(n):
+    u = (n or "").upper(); suf = u.strip().split()[-1] if u.strip() else ""
+    if suf == "HOSPITAL": return "Hospital"
+    if suf == "MCHP":     return "MCHP"
+    if suf == "CHC":      return "CHC"
+    if suf == "CHP":      return "CHP"
+    if suf in CLINIC_SUFFIXES or any(c in u for c in CLINIC_SUFFIXES): return "Clinic"
+    if suf == "HOME" or "NURSING HOME" in u: return "Clinic"
+    if "HOSPITAL" in u: return "Hospital"
+    if "MCHP" in u:     return "MCHP"
+    if "CHC" in u:      return "CHC"
+    if "CHP" in u:      return "CHP"
+    return "Other"
+def exclusion_reason(n):
+    import re
+    if re.search(r"\\bLABORATOR", n or "", re.I):   return "Laboratory - not a health facility"
+    if re.search(r"MARIE\\s*STOPES", n or "", re.I): return "Marie Stopes - excluded by NMCP"
+    return None
 
 def dhis2(path):
     r = requests.get(BASE_URL+path, auth=auth); r.raise_for_status(); return r.json()
@@ -2685,36 +3818,59 @@ def gen_periods(s,e):
     while cur<=end: result.append(cur.strftime("%Y%m")); cur+=relativedelta(months=1)
     return result
 
-# Hierarchy
+# Hierarchy — Level 5 (PHU) and Level 6 (CHW / ETR posts)
 print("Fetching hierarchy...")
-ou_data = dhis2("/api/organisationUnits.json?level=5&fields=id,displayName,ancestors[id,displayName,level]&paging=false")
-hier = {}
-for ou in ou_data.get("organisationUnits",[]):
+FIELDS = "id,displayName,level,ancestors[id,displayName,level]"
+ou5 = dhis2(f"/api/organisationUnits.json?level=5&fields={FIELDS}&paging=false&pageSize=50000")
+ou6 = dhis2(f"/api/organisationUnits.json?level=6&fields={FIELDS}&paging=false&pageSize=50000")
+
+hier, excluded, child_to_l5 = {}, [], {}
+for ou in ou5.get("organisationUnits",[]):
     anc  = sorted(ou.get("ancestors",[]),key=lambda a:a["level"])
     dist = next((a for a in anc if a["level"]==2),{})
     chie = next((a for a in anc if a["level"]==4),{})
-    hier[ou["id"]] = {"id":ou["id"],"name":ou["displayName"],
-                      "districtName":dist.get("displayName",""),
-                      "chiefdomName":chie.get("displayName","")}
-print(f"  {len(hier)} facilities")
+    rec = {"id":ou["id"],"name":ou["displayName"],"hfType":hf_type(ou["displayName"]),
+           "districtName":dist.get("displayName",""),
+           "chiefdomName":chie.get("displayName","")}
+    reason = exclusion_reason(ou["displayName"])
+    if reason:                       excluded.append({**rec,"reason":reason});                     continue
+    if rec["hfType"] not in ASSESSED_TYPES:
+        excluded.append({**rec,"reason":"Unrecognised facility type"});                            continue
+    hier[ou["id"]] = rec
+for ou in ou6.get("organisationUnits",[]):
+    l5 = next((a for a in sorted(ou.get("ancestors",[]),key=lambda a:a["level"]) if a["level"]==5),None)
+    if l5 and l5["id"] in hier: child_to_l5[ou["id"]] = l5["id"]
+print(f"  {len(hier)} facilities included · {len(excluded)} excluded · {len(child_to_l5)} Level-6 posts mapped")
+pd.DataFrame(excluded).to_csv("excluded_facilities.csv", index=False)
 
-# Data
-periods    = gen_periods(START_YM, END_YM)
-ou_ids     = list(hier.keys())
-ou_batches = [ou_ids[i:i+60] for i in range(0,len(ou_ids),60)]
-p_batches  = [periods[i:i+6] for i in range(0,len(periods),6)]
-raw_sums   = {}
-total=len(ou_batches)*len(p_batches); done=0
-for ob in ou_batches:
-    for pb in p_batches:
-        path=("/api/dataValueSets.json?dataElement="+",".join(DE_UIDS)+
-              "&orgUnit="+",".join(ob)+"&period="+",".join(pb)+"&children=false")
-        for dv in dhis2(path).get("dataValues",[]):
-            raw_sums.setdefault(dv["orgUnit"],{})
-            per=dv["period"]
-            raw_sums[dv["orgUnit"]][per]=raw_sums[dv["orgUnit"]].get(per,0)+(float(dv["value"]) if dv["value"] else 0)
-        done+=1; print(f"\\r  {done}/{total}",end="",flush=True); time.sleep(0.06)
-print()
+# Data — one analytics call per year, Level 5 + Level 6, all 21 data elements
+periods  = gen_periods(START_YM, END_YM)
+ou_ids   = list(hier.keys())
+raw_sums = {}
+cut_ignored = {"old_after":0,"new_before":0}; com_rollup = 0
+for yr in sorted({p[:4] for p in periods}):
+    pes  = [p for p in periods if p[:4]==yr]
+    path = ("/api/analytics.json?dimension=dx:"+";".join(ALL_DE)+
+            "&dimension=pe:"+";".join(pes)+
+            "&dimension=ou:LEVEL-5;LEVEL-6&paging=false&ignoreLimit=true")
+    for de, per, ou_id, raw in dhis2(path).get("rows",[]):
+        try: val = float(raw)
+        except (TypeError, ValueError): continue
+        if not val: continue
+        src = DE_SRC.get(de)
+        if src is None: continue
+        is_l6 = ou_id in child_to_l5
+        if is_l6 and src != "com": continue          # facility forms never at Level 6
+        eff = child_to_l5.get(ou_id, ou_id)
+        if eff not in hier: continue                 # excluded / non-assessed
+        if is_l6: com_rollup += 1
+        pnum = int(per)
+        if src == "old" and pnum >  OLD_FORM_END:   cut_ignored["old_after"]  += 1; continue
+        if src == "new" and pnum <  NEW_FORM_START: cut_ignored["new_before"] += 1; continue
+        raw_sums.setdefault(eff,{})
+        raw_sums[eff][per] = raw_sums[eff].get(per,0) + val
+    print(f"  {yr} done")
+print(f"  {com_rollup} Level-6 values rolled up · {sum(cut_ignored.values())} out-of-window form values ignored")
 
 # Status table
 rows=[]
@@ -3137,6 +4293,7 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     document.getElementById('tab-'+tab).classList.add('active');
     if(tab==='geomaps') setTimeout(()=>{ rs_buildMonthlyGrid(); attachChiefdomListeners(); },200);
     if(tab==='tracking') setTimeout(()=>{ trk_render(); },100);
+    if(tab==='chw')      setTimeout(()=>{ chw_render(); },100);
   });
 });
 
@@ -3144,6 +4301,10 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
 rs_buildPaletteGrid();
 rs_buildMapPaletteGrid();
 rs_updateAnnualLegendBar();
+
+// Render the full variable + COC reference into both methodology panels,
+// straight from the constants the fetch loop uses.
+rs_renderVariableReference();
 
 
 // ═══════════════════════════════════════════════════════════════════
