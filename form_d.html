@@ -363,42 +363,212 @@ body {
 <script>
 // ==================== FACILITY LIST ====================
 // MOCM pilot: 10 selected facilities, Bo District.
-const DISTRICT = "Bo";
 
 
 // district | chiefdom | phu | facility_type
-const PILOT_FACILITIES = [
-  { district:"Bo", chiefdom:"Badjia Chiefdom",     phu:"Njagbahun (Badjia) MCHP",   type:"MCHP" },
-  { district:"Bo", chiefdom:"Baoma Chiefdom",      phu:"Faabu CHP",                 type:"CHP"  },
-  { district:"Bo", chiefdom:"Baoma Chiefdom",      phu:"Gerehun CHC",               type:"CHC"  },
-  { district:"Bo", chiefdom:"Baoma Chiefdom",      phu:"Mbundorbu MCHP",            type:"MCHP" },
-  { district:"Bo", chiefdom:"Bongor Chiefdom",     phu:"Mamboma (Bongor) CHP",      type:"CHP"  },
-  { district:"Bo", chiefdom:"Bumpe Ngao Chiefdom", phu:"Bumpe CHC",                 type:"CHC"  },
-  { district:"Bo", chiefdom:"Bumpe Ngao Chiefdom", phu:"Mokoba MCHP",               type:"MCHP" },
-  { district:"Bo", chiefdom:"Bumpe Ngao Chiefdom", phu:"Yengema (Bumpe Ngao) MCHP", type:"MCHP" },
-  { district:"Bo", chiefdom:"Tikonko Chiefdom",    phu:"Gondama (Tikonko) CHC",     type:"CHC"  },
-  { district:"Bo", chiefdom:"Tikonko Chiefdom",    phu:"Griema MCHP",               type:"MCHP" }
-];
+/* ==================== FACILITY CASCADE ====================
+   Region > District > Chiefdom > Health Facility > Facility Type, over the whole
+   country: 1448 health facilities from the DHIS2 organisation unit list, packed
+   into one string so the form still works with no network at all.
 
+   Packed format, all four levels in one line:
+     District>Chiefdom:Facility~T;Facility~T|Chiefdom:...^District>...
+   Type codes: C is CHC, P is CHP, M is MCHP.
 
-// only the chiefdoms that hold a pilot facility
-function chiefdomsIn(district){
-  const set = new Set();
-  PILOT_FACILITIES.forEach(f => { if (f.district === district) set.add(f.chiefdom); });
-  return Array.from(set).sort();
+   DHIS2 has no region level, so the region of a district is read from REGION_OF.
+
+   A file named cascading.csv sitting beside the form replaces the packed list
+   when the form is served over http. It may carry either
+   region,district,chiefdom,phu,facility_type or the DHIS2 export columns
+   adm1,adm2,adm3,hf,facility_type. Nothing else needs changing to move to a new
+   facility list: drop the CSV in the folder. */
+
+const REGION_OF = {
+  "Bo District":"Southern",
+  "Bombali District":"Northern",
+  "Bonthe District":"Southern",
+  "Falaba District":"Northern",
+  "Kailahun District":"Eastern",
+  "Kambia District":"North West",
+  "Karene District":"North West",
+  "Kenema District":"Eastern",
+  "Koinadugu District":"Northern",
+  "Kono District":"Eastern",
+  "Moyamba District":"Southern",
+  "Port Loko District":"North West",
+  "Pujehun District":"Southern",
+  "Tonkolili District":"Northern",
+  "Western Area Rural District":"Western Area",
+  "Western Area Urban District":"Western Area"
+};
+const FACILITY_TYPE_CODES = { C:"CHC", P:"CHP", M:"MCHP" };
+
+const CASCADE_PACKED = "Bo District>Badjia Chiefdom:Ngelehun (Badjia) CHC~C;Njagbahun (Badjia) MCHP~M;Njandama MCHP~M|Bagbwe Chiefdom:Barlie MCHP~M;Benduma (Bagbwe) MCHP~M;Kondiama MCHP~M;Kpetema (Bagbwe) MCHP~M;Mendewa MCHP~M;Ngalu CHC~C;Samie Buma MCHP~M|Baoma Chiefdom:Baoma Station CHP~P;Blamawo MCHP~M;Faabu CHP~P;Foindu (Baoma) MCHP~M;Gbahama (Baoma) CHP~P;Gerehun CHC~C;Golu MCHP~M;Jembe CHC~C;Jormu (Baoma) MCHP~M;Kigbai MCHP~M;Kpunbu MCHP~M;Mbundorbu MCHP~M;Pelewahun (Baoma) MCHP~M;Tugbebu CHP~P;Yakaji MCHP~M;Yamandu CHC~C|Bargbo Chiefdom:Bum Kaku MCHP~M;Gbangbalia MCHP~M;Jimmi CHC~C;Kakama MCHP~M;Kasse MCHP~M;Limba CHP~P;Mano Yorgbo MCHP~M;Momajo CHP~P;Niagorehun (Bargbo) CHP~P;Senehun Ngolan MCHP~M|Bo City:Aethel CHP~P;Agape Way CHP~P;Batiama Layout MCHP~M;Bo School Bay CHP~P;Breakthrough MCHP~M;Brima Town CHP~P;EDC Unit CHP~P;Favour MCHP~M;Gbanja Town MCHP~M;Gbotima CHP~P;Genda CHP~P;Genda MCHP~M;Haikel CHP~P;Kakua Static CHC~C;Kandeh Town CHP~P;Kowama (Kakua) CHP~P;Lewaibu CHP~P;Lyn Maternity MCHP~M;Manjiama CHC~C;Mid Land MCHP~M;Morning Star CHP~P;Nafaya MCHP~M;Needy CHP~P;New Police Barracks CHC~C;Praise Foundation CHC~C;Red Cross (Bo City) CHC~C;Simbo Town CHP~P;Tengbewabu MCHP~M;Topkoi Town CHP~P;UNIMUS MCHP~M;Yemoh Town CHC~C|Bongor Chiefdom:Gbaama MCHP~M;Lowoma (Bongor) MCHP~M;Mamboma (Bongor) CHC~C;Telu CHC~C|Bumpe Ngao Chiefdom:Bongor (Bumpe Ngao) MCHP~M;Buma MCHP~M;Bumpe CHC~C;Kabiyama MCHP~M;Kaniya MCHP~M;Kpetema (Bumpe Ngao) CHP~P;Makayonie MCHP~M;Mokoba MCHP~M;Mokpende MCHP~M;Ngolahun (Bumpe Ngao) CHC~C;Niagorehun Vaakie MCHP~M;Sahn (Bumpe Ngao) CHP~P;Serabu (Bumpe Ngao) CHC~C;Taninahun (Bumpe Ngao) CHP~P;Walihun (Bumpe Ngao) MCHP~M;Yengema (Bumpe Ngao) MCHP~M|Gbo Chiefdom:Gbaiima CHC~C;Sembehun Mamagewoh CHC~C|Jaiama Chiefdom:Koribondo CHC~C;Mano-Jaiama CHP~P;Niayahun CHP~P|Kakua Chiefdom:Bandajuma MCHP~M;Fengehun MCHP~M;Fullawahun MCHP~M;Gbongboma MCHP~M;Gender CHP~P;Keindeyella MCHP~M;Maguama CHP~P;Manjiama CHC~C;Massah Memorial Maternity MCHP~M;Ndegbomie MCHP~M;Nduvuibu MCHP~M;United Methodist Church Manjama CHC~C;Veronical MCHP~M|Komboya Chiefdom:Gumahun MCHP~M;Komboya Gbauja MCHP~M;Kpamajama MCHP~M;Mano (Komboya) MCHP~M;Niagorehun (Komboya) MCHP~M;Njala (Komboya) CHC~C;Teibor CHP~P|Lugbu Chiefdom:Bontiwo MCHP~M;Feiba CHP~P;Hima MCHP~M;Karleh MCHP~M;Kpetewoma CHP~P;Ngieyehun MCHP~M;Sumbuya (Lugbu) CHC~C;Upper Saama MCHP~M;Yambama CHP~P|Niawa Lenga Chiefdom:Korbu MCHP~M;Nengbema CHP~P;Ngogbebu MCHP~M;Pendebu MCHP~M;Sahn (Niawa Lenga) CHC~C|Selenga Chiefdom:Damballa CHC~C;Gbangba MCHP~M|Tikonko Chiefdom:Gondama (Tikonko) CHC~C;Griema MCHP~M;Haikal CHP~P;Kassama MCHP~M;Mattru on the Rail MCHP~M;Mendewa CHP~P;Sebehun Tarbay MCHP~M;Sembehun 17 (Tikonko) CHP~P;Theresa Hakim CHP~P;Tikonko (Bo) CHC~C;Towama MCHP~M;Veronica MCHP~M;Zion CHC~C|Valunia Chiefdom:Baomahun CHC~C;Foya (Valunia) CHP~P;Grima (Valunia) CHP~P;Kenema Blango CHC~C;Kpewama MCHP~M;Kpuabu MCHP~M;Mongere CHC~C;Ngolahun Jabaty CHP~P;Pujehun (Valunia) CHP~P|Wonde Chiefdom:Bathurst MCHP~M;Fanima (Wonde) MCHP~M;Gboyama CHC~C;Kambawama MCHP~M^Bombali District>Biriwa Chiefdom:Bumban CHP~P;Bumbanday MCHP~M;Kagbaneh CHC~C;Kagbankona MCHP~M;Kakorla MCHP~M;Kamabai CHC~C;Kamasikie CHP~P;Kamathudgu MCHP~M;Kanikay MCHP~M;Karina CHP~P;Kathakeya CHP~P;Kayainkassa CHP~P;Kayonkoro CHP~P;Manjoro MCHP~M|Bombali Sebora Chiefdom:Maboleh CHP~P;Maforay (Bombali Sebora) CHP~P;Makama CHP~P;Makump CHP~P;Masory CHP~P;Pate-Bana Masimbo CHP~P;Patebana CHC~C;Robat CHP~P|Bombali Serry Chiefdom:Rokonta CHC~C|Gbanti (Bombali) Chiefdom:Kunsho CHP~P;Panlap CHP~P;Stocco CHP~P;Yoni (Gbanti) CHP~P|Gbendembu Chiefdom:Gbendembu CHC~C;Kortohun MCHP~M;Madina Loko CHP~P;Mamaka (Gbendembu) MCHP~M;Mambala MCHP~M|Kamaranka Chiefdom:Kamaranka CHC~C;Makaiba MCHP~M;Makassa MCHP~M;Rosint MCHP~M;Royeama CHP~P|Magbaimba Ndohahun Chiefdom:Hunduwa MCHP~M;Kagbere CHC~C;Mambiama MCHP~M;Manjaka MCHP~M|Makarie Chiefdom:Fullah Town 1 (Makarie) CHP~P;Karefay Themne CHP~P;Kerefay Loko MCHP~M;Kolisokoh CHP~P;Mabayo MCHP~M;Magbaikoli MCHP~M;Makarie MCHP~M;Mangay Loko MCHP~M;Masongbo (Makarie) CHC~C;Mateneh MCHP~M;Punthun MCHP~M;Thonkoba CHP~P;Yainkassa CHP~P|Makeni City:Bombali Police CHC~C;Fullah Town 2 (Makeni City) CHP~P;Red Cross (Makeni City) CHP~P;Teko Barracks CHP~P;Tonko CHP~P|Mara Chiefdom:Kiampkakolo MCHP~M;Manewa MCHP~M;Mara CHC~C|Ngowahun Chiefdom:Kalangba (Ngowahun) CHC~C;Maharie CHP~P;Makiteh (Ngowahun) MCHP~M;Masongbo Loko CHP~P;Tambiama CHP~P|Paki Masabong Chiefdom:Kathanta Bana CHP~P;Kathekeya Kaboli CHP~P;Makeni Lol MCHP~M;Makolor CHP~P;Mapaki CHC~C;Masabong Pil MCHP~M;Masingbi Lol MCHP~M|Safroko Limba Chiefdom:Binkolo CHC~C;Kabombeh MCHP~M;Kabonka MCHP~M;Kagbo MCHP~M;Kapethe MCHP~M;Kateneh MCHP~M;Kayasie CHP~P;Mabonkani MCHP~M;Maselleh MCHP~M;Masongbo Limba MCHP~M^Bonthe District>Bendu-Cha Chiefdom:Bendu (Bendu-Cha) CHC~C;Foya (Bendu-Cha) CHP~P;Giebina CHP~P;Mindohun MCHP~M;Mo-Davies CHP~P;Taigbe CHP~P|Bonthe Town:Red Cross (Bonthe) CHP~P;York Island CHP~P|Bum Chiefdom:Karlleh MCHP~M;Madina (Bum) CHC~C;Mammy CHP~P;Ngepehun CHP~P;Ngessehun MCHP~M;Sogballeh MCHP~M;Tassor CHP~P;Torma Bum CHP~P|Dema Chiefdom:Bumpetoke (Dema) CHP~P;Mbaoma (Dema) CHP~P;Tissana (Dema) CHC~C;Tombay CHP~P|Imperi Chiefdom:Gaindema CHP~P;Gbamgbaia CHC~C;Gbamgbama CHC~C;Jangallor CHP~P;Junctionla MCHP~M;Mo-Kepay CHP~P;Mogbwemo CHC~C;Mokaba MCHP~M;Moriba Town (Imperri) CHC~C;Victoria MCHP~M;Yargoi CHP~P|Jong Chiefdom:Barbar MCHP~M;Gambia CHC~C;Gbaninga CHP~P;Jorma CHP~P;Kabati CHP~P;Komende (Jong) MCHP~M;Mattru CHC~C;Mo-Savie MCHP~M;Mogbwe MCHP~M;Mongerewa MCHP~M;Moyowa MCHP~M;Red Cross (Mattru) CHP~P;Segbwema (Jong) CHP~P;Semabu (Jong) CHP~P;Tissana (Jong) CHP~P|Kpanda Kemoh Chiefdom:Gambia Popayma MCHP~M;Gbongeh MCHP~M;Lawana (Kpanda Kemo) MCHP~M;Mottuo CHC~C;Senjehun MCHP~M|Kwamebai Krim Chiefdom:Benduma CHC~C;Hoya CHP~P;Massah Kpoanguma CHP~P;Mosenteh CHP~P;Tei CHP~P;Topain CHP~P|Nongoba Bullom Chiefdom:Batahall CHP~P;Gbamani CHP~P;Gbap CHC~C;Maamu MCHP~M;Mbaoma Kpengeh CHC~C;Mbaoma Kpengeh CHP~P;Minah CHP~P;Ngaringa MCHP~M;Sembehun (Nongoba Bullom) MCHP~M;Subu MCHP~M;Torma Gbagba CHP~P;Waiba MCHP~M|Sittia Chiefdom:Delken CHC~C;Delken MCHP~M;Mania MCHP~M;Mbokie MCHP~M;Mo-Sandi CHP~P;Ngepay CHP~P;Sanhaya CHP~P;Yoni (Sittia) CHC~C|Sogbini Chiefdom:Grima (Sogbini) CHP~P;Kanga (Sogbini) MCHP~M;Kpetema (Sogbini) MCHP~M;Mandu CHP~P;Ngueh MCHP~M;Tihun CHC~C|Yawbeko Chiefdom:Mobefa MCHP~M;Sargor CHP~P;Senehun Gbloh MCHP~M;Talia (Yawbeko) CHC~C;Tuakan CHP~P^Falaba District>Barawa Wollay Chiefdom:Banadakafaia CHP~P;Bandakoro MCHP~M;Firawa CHC~C;Konombaia CHP~P;Kulanko MCHP~M|Delmandugu Chiefdom:Deldu Kamaron MCHP~M;Mansadu CHC~C;Masadu CHC~C;Mongo Kamaron CHP~P;Seremudu MCHP~M;Tambalia Balia MCHP~M|Dembelia-Sinkunia Chiefdom:Fullamansa MCHP~M;Gbindi CHP~P;Manna MCHP~M;Sinkunia CHC~C|Folosaba Dembelia Chiefdom:Dogoloya CHP~P;Koromasilaia MCHP~M;Largo MCHP~M;Musaia (Dembelia) CHC~C|Folosaba Kamba Chiefdom:Gbentu CHC~C;Hamdalia MCHP~M;Kalia MCHP~M;Kamba Mamudia CHP~P|Kabelia Chiefdom:Ganya CHP~P|Kamadugu Yiraia Chiefdom:Dankawalie CHC~C;Kamadu Badala MCHP~M;Kamadu Sokuralla CHP~P;Yiraia CHP~P|Kulor Saradu Chiefdom:Bandapirie CHP~P;Durukoro MCHP~M;Kulia CHP~P;Yarawadu MCHP~M|Mongo Chiefdom:Mongo Bendugu CHC~C;Mongo Karifaia MCHP~M;Seria CHP~P;Walia MCHP~M|Morifindu Chiefdom:Gberefeh MCHP~M;Kombili CHP~P;Serekolia CHC~C;Tubah MCHP~M|Neya Chiefdom:Banboria MCHP~M;Kurubonla CHC~C;Mansofinia CHP~P;Porpon MCHP~M|Nyedu Chiefdom:Bumbukoro CHC~C;Masonia MCHP~M|Sulima Chiefdom:Falaba CHC~C;Gberia Timbakor CHP~P;Kaliyereh MCHP~M;Koindu Kura CHP~P;Sonkoya MCHP~M^Kailahun District>Dea Chiefdom:Baiwala CHP~P;Nagbena CHP~P;Sienga CHP~P|Jahn Chiefdom:Gbeika CHP~P|Jawei Chiefdom:Bombohun MCHP~M;Daru CHC~C;Kambama CHP~P;Kortuma MCHP~M;Mamabu CHP~P;Njala-Grima CHP~P;Nyeama CHP~P;Pellie CHP~P;Pewama CHP~P|Kissi Kama Chiefdom:Dia CHC~C;Foidu CHP~P|Kissi Teng Chiefdom:Bayama (Kissi Teng) CHP~P;Kangama (Kissi Teng) CHP~P;Koindu CHC~C|Kissi Tongi Chiefdom:Buedu CHC~C;Dawa CHP~P;Gbandiwulo CHP~P;Madopolahun CHP~P;Sandia (Kissi Tongi) MCHP~M;Voahun CHP~P;Weh CHP~P|Luawa Chiefdom:Bandajuma Sinneh MCHP~M;Baoma (Luawa) CHP~P;Dodo-Kortuma CHP~P;Gbalahun CHP~P;Gbeworbu Gao CHP~P;Giema (Luawa) CHP~P;Jengbellu CHP~P;Konjo (Luawa) CHP~P;Kpandebu (Luawa) MCHP~M;Luawa Under Fives CHC~C;Madina (Luawa) MCHP~M;Mano-Sewalu CHP~P;Mende Buima MCHP~M;Morfindor CHP~P;Ngiehun (Luawa) CHP~P;Nyandehun (Luawa) CHP~P;Sandeyallu CHP~P;Sengema (Luawa) CHP~P;Talia (Luawa) MCHP~M|Malema Chiefdom:Bumpeh (Malema) CHP~P;Fobu CHP~P;Jojoima CHC~C;Madina (Malema) CHP~P;Njama (Malema) MCHP~M|Mandu Chiefdom:Baiima CHP~P;Levuma (Mandu) CHP~P;Mobai CHC~C;Yoyah CHP~P|Njaluahun Chiefdom:Bandajuma Kpolihun CHP~P;Dambu CHC~C;Follah MCHP~M;Laleihun (Njaluahun) CHP~P;Mano-Menima CHP~P;Niahun Gbuyama CHP~P;Nixon Under Fives CHC~C;Nyandehun Nguvoihun CHP~P;Pendembu-Njeigbla CHP~P;Segbwema (Njaluahun) MCHP~M|Peje Bongre Chiefdom:Gbahama (Peje Bongre) CHP~P;Grima MCHP~M;Mamboma (Peje Bongre) CHP~P;Manowa CHC~C;Ngolahun MCHP~M;Pujehun (Peje Bongre) CHP~P|Peje West Chiefdom:Bunumbu CHC~C;Jokibu CHP~P;Peje Baoma CHP~P;Pejewa (Peje West) CHP~P|Penguia Chiefdom:Kono-Bendu CHP~P;Lalehun CHP~P;Sandaru (Penguia) CHC~C;Woroma CHP~P|Upper Bambara Chiefdom:Bomaru CHP~P;Jenneh MCHP~M;Mendekelema (Upper Bambara) CHP~P;Pendembu (Upper Bambara) CHC~C;Siama (Upper Bambara) CHP~P|Yawei Chiefdom:Bandajuma CHC~C;Bendu CHP~P;Kwellu-Ngieya CHP~P;Macca CHP~P;Malema (Yawei) CHP~P;Massayeima CHP~P^Kambia District>Bramaia Chiefdom:Gbolon MCHP~M;Kanku Bramaia MCHP~M;Kukuna CHC~C;Shekaia MCHP~M|Dixon Chiefdom:Fodaya MCHP~M;Mafaray CHP~P|Gbinleh Chiefdom:Gbalamuya CHC~C;Magbengbeh MCHP~M;Tawuya MCHP~M;Worreh MCHP~M|Konimaka Chiefdom:Barakuya MCHP~M;Konta (Bramaia) CHP~P|Magbema Chiefdom:Barmoi Luma CHP~P;Dibia CHP~P;Gbonkomaria CHP~P;Kamba MCHP~M;Magbethy MCHP~M;Mathuraneh MCHP~M;Menicurve MCHP~M;Mile 18 MCHP~M;Modia MCHP~M;Red Cross (Magbema) CHP~P;Rokupr CHC~C;Senthai MCHP~M;Wullah Thenkle MCHP~M|Mambolo Chiefdom:Kalainkay MCHP~M;Macoth MCHP~M;Mambolo (Kambia) CHC~C;Mayakie MCHP~M;Rokel (Mambolo) MCHP~M;Romando MCHP~M;Rotain Bana CHP~P;Tombo Wallah CHP~P|Masumgbala Chiefdom:Kania CHC~C;Kawula CHC~C|Munu Thalla Chiefdom:Banka Makuloh MCHP~M;Barmoi Munu CHC~C;Gbalan Thallan MCHP~M|Samu Chiefdom:Bapuya CHP~P;Kangbor MCHP~M;Kassirie CHC~C;Kortimoh MCHP~M;Koya (Samu) MCHP~M;Kychom CHC~C;Mafufuneh CHC~C;Mange Bissan MCHP~M;Mapotolon CHC~C;Moribaya MCHP~M;Rokai MCHP~M;Rosinor CHP~P;Soriebolomia MCHP~M;Yelieboya CHP~P|Tonko Limba Chiefdom:Bubuya MCHP~M;Kamagbewu MCHP~M;Kamassasa CHC~C;Kamawala MCHP~M;Kasoria CHP~P;Katherie MCHP~M;Layia Gboray CHP~P;Madina (Tonko Limba) CHC~C;Masaralie MCHP~M;Masselleh CHP~P;Masunthun CHP~P;Mile 14 CHP~P;Numea CHP~P;Samaia MCHP~M;Sellah Kafta MCHP~M;Timbo MCHP~M;Yebaya MCHP~M^Karene District>Buya Chiefdom:Kamasondo CHC~C;Manumtheneh MCHP~M;Masamboi MCHP~M;Rosint Buya MCHP~M|Dibia Chiefdom:Gbinti CHC~C;Gbombana MCHP~M;Magborognor MCHP~M;Roctolon MCHP~M;Rogballan (Dibia) CHP~P|Gbanti (Karene) Chiefdom:Borongoh Makarankay MCHP~M;Gbainkfay MCHP~M;Gbanti CHP~P;Gbinti Maria MCHP~M;Gbonkobana MCHP~M;Kambia CHP~P|Gormbahun Chiefdom:BatKanu CHC~C;Kiamunday MCHP~M;Magbaingba MCHP~M;Matoto MCHP~M|Mafonda Makerembay Chiefdom:Gbonkonka MCHP~M;Rochain Loko CHP~P|Romende Chiefdom:Foredugu MCHP~M;Gbomsamba MCHP~M;Mabureh Mende MCHP~M;Rokamba MCHP~M;Worreh Bana MCHP~M|Safroko Chiefdom:Maron CHP~P|Sanda Loko Chiefdom:Kamalo CHC~C;Laiya MCHP~M;Laminaya CHP~P;Madina Fullah MCHP~M;Maharibo CHP~P;Marcorba Loko MCHP~M;Mayolla CHP~P;Rochain Salcost CHP~P;Rothatha MCHP~M|Sanda Magbolonthor Chiefdom:Gbogbodo MCHP~M;Kantia MCHP~M;Komneh CHP~P;Magbolonthor MCHP~M;Sendugu CHC~C|Sanda Tendaren Chiefdom:Mabunduka CHC~C;Malontho MCHP~M;Manack MCHP~M;Mateboi CHC~C;Rogbin MCHP~M;Rokulan CHC~C;Royanka Lol CHP~P|Sella Limba Chiefdom:Kabba Ferry CHP~P;Kagboray MCHP~M;Kamabaio MCHP~M;Kamakwie CHP~P;Kamawornie MCHP~M;Kaponkie MCHP~M;Kathanta Yimbor CHC~C;Masankorie CHP~P|Tambaka Simibungie Chiefdom:Komoya CHP~P;Samaya MCHP~M|Tambaka Yobangie Chiefdom:Dombaya CHP~P;Fintonia CHC~C;Sanya MCHP~M^Kenema District>Dama Chiefdom:Diamei MCHP~M;Gao MCHP~M;Giema (Dama) CHP~P;Konia (Dama) MCHP~M;Konjo (Dama) CHP~P;Kpandebu CHC~C;Lileima MCHP~M;Loppa CHP~P;Majihun MCHP~M;Patama MCHP~M;Tawahun MCHP~M;Tokpombu (Dama) CHP~P|Dodo Chiefdom:Dodo CHC~C;Guala MCHP~M;Kundorma CHP~P;Mbowohun CHP~P|Gaura Chiefdom:Joru CHC~C;Kokoru CHP~P;Mendekelema (Gaura) CHP~P;Perrie MCHP~M;Sandaru (Gaura) MCHP~M;Sembehun (Gaura) MCHP~M;Tikonko (Gaura) MCHP~M;Venima CHP~P|Gorama Mende Chiefdom:Bambara Kaima CHP~P;Fomaya CHP~P;Konta (Gorama Mende) CHP~P;Kortuhun (Gorama Mende) MCHP~M;Mondema CHC~C;Ngiegboiye CHP~P;Njagbewema (Gorama Mende) MCHP~M;Punduru CHP~P;Tungie CHC~C|Kandu Leppiama Chiefdom:Baoma Oil Mill CHC~C;Diema MCHP~M;Gbado CHP~P;Levuma (Kandu Leppiama) CHC~C;Sembehun (Kandu Leppiama) MCHP~M|Kenema City:Burma 2 MCHP~M;Degbuama MCHP~M;Gbo-Kakajama 1 MCHP~M;Gbo-Kakajama 2 MCHP~M;Gbo-Lambayama 1 CHC~C;Gbo-Lambayama 2 MCHP~M;Kenema Under Fives CHP~P;Kondebotihun MCHP~M;Koyagbema MCHP~M;Kpayama 1 MCHP~M;Kpayama 2 MCHP~M;Kpetema (Kenema City) CHC~C;Lango Town MCHP~M;Nongowa Static MCHP~M;Nyandeyama MCHP~M;Red Cross (Kenema City) CHP~P;Samai Town CHC~C;Torkpombu MCHP~M|Koya (Kenema) Chiefdom:Baoma (Koya) CHC~C;Bongor (Koya) MCHP~M;Jui (Koya) CHP~P;Menima MCHP~M;Njaluahun (Koya) MCHP~M;Nyandehun (Koya) MCHP~M;Serabu (Koya) CHP~P|Langroma Chiefdom:Woyama MCHP~M;Yabaima CHP~P|Lower Bambara Chiefdom:Bomie MCHP~M;Foindu (Lower Bambara) CHC~C;Foindu (Lower Bambara) CHP~P;Kamboma (Lower Bambara) CHC~C;Kamboma (Lower Bambara) MCHP~M;Komende Getewalu CHP~P;Komende Luyema MCHP~M;Konjo (Lower Bambara) CHC~C;Konjo (Lower Bambara) MCHP~M;Kornia Kpindema CHP~P;Kpandebu (Lower Bambara) CHC~C;Kpandebu (Lower Bambara) MCHP~M;Kpetema (Lower Bambara) CHP~P;Lowoma (Lower Bambara) CHC~C;Ngiehun (Lower Bambara) CHC~C;Njagbahun (Lower Bambara) MCHP~M;Panguma CHC~C;Pelewahun (Lower Bambara) MCHP~M;Saama CHP~P;Sandeyiema MCHP~M;Sembiema MCHP~M;Semewabu MCHP~M;Tongo CHC~C;Wiema CHC~C|Malegohun Chiefdom:Bendu (Malegohun) CHC~C;Benduma (Malegohun) MCHP~M;Helegombu MCHP~M;Ngiehun Konjo CHP~P|Niawa Chiefdom:Bandawor MCHP~M;Gandorhun (Niawa) CHP~P;Sendumei CHC~C|Nomo Chiefdom:Baoma (Nomo) CHP~P;Damabara MCHP~M;Faama CHC~C|Nongowa Chiefdom:Bambawo MCHP~M;Hangah CHC~C;Jormu (Nongowa) CHP~P;Komende (Nongowa) MCHP~M;Konabu MCHP~M;Largo CHC~C;Massahun MCHP~M;Ngelehun (Nongowa) MCHP~M;Niahun Buima MCHP~M;Niekabu CHC~C;Panderu MCHP~M;Potehun MCHP~M;Talia (Nongowa) CHC~C;Vaahun MCHP~M|Simbaru Chiefdom:Boajibu CHC~C;Gbageima MCHP~M|Small Bo Chiefdom:Blama CHC~C;Doujo CHP~P;Gelehun MCHP~M;London (Blama) MCHP~M;Nyangbe-Bo MCHP~M;Sarabu CHP~P;Tobanda CHC~C|Tunkia Chiefdom:Belebu CHP~P;Fayiema CHP~P;Gbeworbu CHP~P;Gegbwema CHC~C;Gorahun CHC~C;Jao (Tunkia) CHP~P;Mano Ngiebla CHP~P;Ngiewahun CHP~P;Nyiemiga MCHP~M;Shenge MCHP~M|Wandor Chiefdom:Baama CHC~C;Bambara MCHP~M;Faala CHP~P;Gendema MCHP~M;Kamboma (Wandor) MCHP~M^Koinadugu District>Diang Chiefdom:Badala MCHP~M;Dalakuru CHP~P;Diang Kamaron MCHP~M;Diang Sokurala MCHP~M;Foria CHP~P;Kania (Diang) CHP~P;Kondembaia CHC~C;Lengekoro CHP~P;Nyawulia MCHP~M;Solia MCHP~M;Waia MCHP~M;Yara CHP~P;Yiben MCHP~M|Gbonkorbor Kayaka Chiefdom:Kakarima MCHP~M;Kasassie CHP~P;Madina Gbonkorbor CHP~P;Sawuria CHP~P|Kallian Chiefdom:Alkalia CHP~P;Kandeya MCHP~M;Kumala CHP~P;Sesawulia MCHP~M;Tukolie CHP~P;Worombalia MCHP~M|Kamukeh Chiefdom:Kambalia MCHP~M;Kambia MCHP~M;Mandia MCHP~M;Thellia CHP~P|Kasunko Kakellay Chiefdom:Fadugu CHC~C;Kagbasia MCHP~M;Kassasie Kakeleh MCHP~M;Madina Kamandie MCHP~M;Sawuria CHP~P|Nieni Chiefdom:Fankoya CHP~P;Kaya MCHP~M;Krutor CHP~P;Mangae MCHP~M;Safinia MCHP~M;Sumbaria CHP~P;Yiffin CHC~C|Sengbeh Chiefdom:Bambukoro CHP~P;Bambukura MCHP~M;Gbenikoro MCHP~M;Koinadugu 2 CHC~C;Kondeya (Sengbeh) MCHP~M;Momorimaria MCHP~M|Thamiso Chiefdom:Kamathoi MCHP~M;Karasa MCHP~M;Kasanikoro CHP~P|Wara Wara Bafodia Chiefdom:Bafodia CHC~C;Kadanso MCHP~M;Kakoya MCHP~M;Karpakie MCHP~M;Sakuta MCHP~M;Samamaia MCHP~M|Wara Wara Yagala Chiefdom:Heremakono CHP~P;Kabala Static CHC~C;Kayako MCHP~M;Konkoba MCHP~M;Mamudia Koro MCHP~M;Sarakoh MCHP~M;Senekedugu CHP~P;Yataya CHP~P^Kono District>Fiama Chiefdom:Bandasuma (Fiama) CHP~P;Bombordu CHP~P;Gbetema (Fiama) MCHP~M;Njagbwema (Fiama) CHC~C;Yekior MCHP~M|Gbane Chiefdom:Bandama (Gbane) MCHP~M;Fembedu CHP~P;Foindu (Gbane) CHP~P;Gandorhun (Gbane) CHC~C;Kanekor MCHP~M;Kuangor MCHP~M;Mbaoma (Gbane) CHP~P;Sunga MCHP~M|Gbane Kandor Chiefdom:Koardu CHC~C;Sindadu MCHP~M|Gbense Chiefdom:Boroma CHP~P;Gbangadu MCHP~M;Koakor MCHP~M;Musa and Family CHC~C;Quidadu MCHP~M;Small Sefadu CHP~P|Gorama Kono Chiefdom:Bunabu CHP~P;Kangama (Gorama Kono) CHC~C;Njagbwema (Gorama Kono) CHP~P;Torkpumbu MCHP~M|Kamara Chiefdom:Peyima CHP~P;Samiquidu MCHP~M;Sukudu (Kamara) CHP~P;Tombodu CHC~C|Koidu New Sembehun City:Adama Martha Memorial CHC~C;Kamadu CHP~P;Kensay CHP~P;Kimbadu CHC~C;Kissi Bona CHP~P;Koakoyima CHC~C;Koeyor CHP~P;Koidu Static CHC~C;Koidu Static CHP~P;Simbakoro MCHP~M;Small Sefadu CHP~P|Lei Chiefdom:Foakor MCHP~M;Gbongongor MCHP~M;Kenewa MCHP~M;Koima (Lei) MCHP~M;Komba Yendeh CHC~C;Kongoifeh CHP~P;Kulunbaya CHP~P;Kunundu MCHP~M;Saiama (Lei) CHP~P|Mafindor Chiefdom:Kamiendor CHC~C;Kamiendor MCHP~M;Koindu-Kuteh MCHP~M;Sambaya (Mafindor) CHP~P|Nimikoro Chiefdom:Bumpeh (Nimikoro) CHC~C;Bumpeh (Nimikoro) CHP~P;Gondama (Nimikoro) MCHP~M;Jaiama CHC~C;Mansundu (Nimikoro) MCHP~M;Motema CHC~C;Ngaiya MCHP~M;Njagbwema (Nimikoro) CHC~C;Njagbwema (Nimikoro) CHP~P;Njala (Nimikoro) CHC~C;Seidu MCHP~M;Senjekoro MCHP~M;Tongorma MCHP~M;Yengema (Nimikoro) CHC~C|Nimiyama Chiefdom:Condama CHP~P;Jaiama Sewafe CHC~C;Massabendu MCHP~M;Ngo Town CHP~P;Peya MCHP~M;Sandia (Nimiyama) MCHP~M;Walihun (Nimiyama) MCHP~M|Sandor Chiefdom:Bangambaya CHP~P;Dunamor CHP~P;Fabandu MCHP~M;Fanema MCHP~M;Fensedu MCHP~M;Gbambiadu MCHP~M;Gbeya MCHP~M;Kayima CHC~C;Kochero MCHP~M;Koima (Sandor) MCHP~M;Kondeya (Sandor) MCHP~M;Mansundu (Sandor) MCHP~M;Samandu MCHP~M;Seidu Sandor MCHP~M;Taiya MCHP~M;Tefeya CHC~C;Tefeya CHP~P;Wordu CHP~P;Yardu CHC~C;Yardu MCHP~M;Yengema Sandor CHP~P;Yormandu CHC~C|Soa Chiefdom:Bandasuma (Soa) MCHP~M;Feuror MCHP~M;Foindu Mongor CHP~P;Gbamandu MCHP~M;Kainkordu CHC~C;Kainkordu CHP~P;Kamindu MCHP~M;Manjama CHC~C;Manjama MCHP~M;Semendu MCHP~M;Sukudu (Soa) MCHP~M|Tankoro Chiefdom:Adama Marth Memorial CHC~C;Baiama CHC~C;Kensay CHP~P;Kimbadu CHC~C;Kissi Bona CHP~P;Koakoyima CHC~C;Koyadu CHC~C;Tongoro MCHP~M;Woama CHP~P|Toli Chiefdom:Kondewakoro MCHP~M;Kpetema (Toli) MCHP~M^Moyamba District>Bagruwa Chiefdom:Benkeh MCHP~M;Kawaya CHP~P;Mokassie CHP~P;Mosenegor MCHP~M;Ngiebu CHC~C;Sembehun (Bagruwa) CHC~C;Sembehunwo MCHP~M|Bumpeh Chiefdom:Belletin CHP~P;Bumpeh River CHP~P;Mende Town MCHP~M;Moforay MCHP~M;Mokaiyegbeh MCHP~M;Mosella CHP~P;Motorbong MCHP~M;Moyeamoh CHP~P;Rotifunk CHC~C;Sahun (Bumpeh) MCHP~M;Samu CHP~P;Seweima MCHP~M;Yenkessa MCHP~M|Dasse Chiefdom:Bambuibu Tommy MCHP~M;Hope Rising CHP~P;Kabaima MCHP~M;Kenema Gbandoma MCHP~M;Mano (Dasse) CHC~C;Mogbaske CHP~P;Taninihun Kapuima MCHP~M|Fakunya Chiefdom:Falaba MCHP~M;Gandorhun (Fakunya) CHC~C;Mokalley MCHP~M;Mokorewa MCHP~M;Moyamba Junction CHC~C;Moyollo MCHP~M;Njagbahun (Fakunya) MCHP~M;Rotawa CHP~P|Kaiyamba Chiefdom:Gbonjeima MCHP~M;Kangahun CHC~C;Komende (Kaiyamba) MCHP~M;Korgbotuma MCHP~M;Levuma (Kaiyamba) MCHP~M;Moyamba Static 1 CHP~P;Moyamba Static 2 CHC~C;Salina CHP~P;Yoyema MCHP~M|Kamajei Chiefdom:Gondama (Kamajei) CHP~P;Joyah MCHP~M;Mogbuama MCHP~M;Senehun (Kamajei) CHC~C|Kargboro Chiefdom:Bumpetoke (Kargboro) CHP~P;Mokaisumana CHP~P;Mokandoh CHP~P;Mokobo MCHP~M;Mokonbetty MCHP~M;Mopailleh MCHP~M;Ngeihun (Kargboro) MCHP~M;Plaintain Island MCHP~M;Shenge CHC~C;Yorgbofore CHC~C;Yorgbofore MCHP~M;Youndu CHP~P|Kongbora Chiefdom:Bauya (Kongbora) CHC~C;Lawana (Kongbora) MCHP~M;Levuma Nyomeh CHP~P;Magbenka CHP~P;Taninihun Mboka MCHP~M|Kori Chiefdom:Bai Largo MCHP~M;Fogbo (Kori) CHP~P;Gbuihun MCHP~M;Judy Smith CHP~P;Juma MCHP~M;Konda CHP~P;Manjeihun MCHP~M;Mosongo MCHP~M;Njala (Kori) CHC~C;Taiama (Kori) CHC~C;United Methodist Church Taiama CHP~P;Waiima (Kori) MCHP~M|Kowa Chiefdom:Bendu (Kowa) MCHP~M;Mofombo MCHP~M;Njama (Kowa) CHC~C;Tabe MCHP~M|Lower Banta Chiefdom:Gbangbatoke CHC~C;Kanga (Lower Banta) MCHP~M;Mokanji CHC~C;Mokotawa CHP~P;Moriba Town (Lower Banta) CHC~C;Moriba Town (Lower Banta) CHP~P;Mosenesie Junction CHP~P;Njagbahun (Lower Banta) MCHP~M|Ribbi Chiefdom:Bradford CHC~C;Ferry CHP~P;Mabang (Ribbi) MCHP~M;Mogbongisseh MCHP~M;Mokorbu MCHP~M;Motoni CHC~C;Motoni MCHP~M;Motonkoh MCHP~M;Rokolor MCHP~M;Suen CHP~P|Timdale Chiefdom:Bomotoke CHC~C;Mokaiyamba MCHP~M;Mokpanabom MCHP~M;Mosagbeh MCHP~M;Mosanda CHP~P|Upper Banta Chiefdom:Children of the Nation Ngolala CHP~P;Gondama (Upper Banta) MCHP~M;Modonkor CHP~P;Mogomgbe MCHP~M;Mokelleh CHC~C^Port Loko District>Bake-Loko Chiefdom:Gbonkoh Kereneh MCHP~M;Kamaranka Under Fives CHP~P;Malal CHP~P;Sierra Leone Church Maforki CHP~P|Bureh Chiefdom:Bureh MCHP~M;Kalangba (Bureh) MCHP~M;Mange CHC~C;Masseseh MCHP~M|Kaffu Bullom Chiefdom:Conakry Dee CHC~C;Evans CHC~C;Gbaneh Bana CHP~P;Gbaneh Lol MCHP~M;Kasongha CHP~P;Lungi Under Fives CHP~P;Mahera CHC~C;Mamankie MCHP~M;Mkamsondo MCHP~M;Modia CHC~C;St John of God CHP~P;Tagrin CHC~C;Yongoro CHC~C|Kamasondo Chiefdom:Benkia MCHP~M;Bundulai MCHP~M;Katongha MCHP~M;Konta Wallah CHC~C;Malap CHP~P;Mana 2 CHP~P;Mapillah MCHP~M;Pepel CHC~C|Kasseh Chiefdom:Barmoi CHP~P;Kagbantama CHP~P;Kawengha MCHP~M;Rogballan (Kasseh) MCHP~M;Romeni MCHP~M|Koya (Port Loko) Chiefdom:Kissy Koya MCHP~M;Komrabai Ngolla CHP~P;Kurankoh CHP~P;M'baimba Adama MCHP~M;Mabora MCHP~M;Magbeni MCHP~M;Makalie MCHP~M;Makarankay CHP~P;Makiteh (Koya) CHP~P;Malenki MCHP~M;Masiaka (Koya) CHC~C;Masumana CHP~P;Mawoma MCHP~M;Mile 38 CHC~C;Rofoindu CHP~P;Rokon MCHP~M;Sumbuya (Koya) CHP~P;Warima (Koya) MCHP~M|Lokomasama Chiefdom:Babara CHC~C;Bailor CHP~P;Gbainty Wallah CHP~P;Kalangba (Lokomasama) MCHP~M;Kargbulor CHP~P;Masulamani CHP~P;Mathen MCHP~M;Menika CHP~P;Musaia (Lokomasama) CHP~P;Petifu Junction CHC~C|Maconteh Chiefdom:Mabain MCHP~M;Minthomore CHP~P|Maforki Chiefdom:Mabonie CHP~P;Mafoimara CHP~P;Maforay (Maforki) MCHP~M;Magbengbenra MCHP~M;Makaba MCHP~M;Mapawn MCHP~M;Maronko MCHP~M;New Maforki CHP~P;Petifu (Maforki) MCHP~M;Rogbere Junction CHC~C|Makama Chiefdom:Kambia Makama CHP~P;Malekuray CHC~C|Marampa Chiefdom:Lunsar CHC~C;Magbele MCHP~M;Magbill CHP~P;Makabo MCHP~M;Mamusa MCHP~M;Mange Acre CHC~C;Rolembray MCHP~M|Masimera Chiefdom:Katick CHP~P;Konta Line CHC~C;Mamaligie MCHP~M;Masimera CHC~C;Mathineh CHP~P;Mayola Lal Ratun MCHP~M;Mayombo MCHP~M;Nonkoba CHP~P;Rokassa CHC~C;Rokel (Masimera) MCHP~M;Rotheren MCHP~M;Rothuma MCHP~M;Royeiben CHP~P|Port Loko City:Port Loko Under Fives CHP~P|Tainkatopa Chiefdom:Asheea MCHP~M;Robaka MCHP~M;Rogbaneh MCHP~M^Pujehun District>Barri Chiefdom:Bandasuma (Barri) CHC~C;Jeoma Barri MCHP~M;Konia (Barri) MCHP~M;Kundorwahun CHP~P;Njaluahun (Barri) CHP~P;Potoru CHC~C;Saahun (Barri) MCHP~M;Tambeiyama MCHP~M;Taninahun (Barri) MCHP~M;Vaama (Barri) CHP~P;Waiima (Barri) MCHP~M|Galliness Chiefdom:Bandama (Galliness) MCHP~M;Blama Massaquoi CHC~C;Fonikoh MCHP~M;Funyehun CHP~P;Kpetema (Galliness) MCHP~M;Kpowubu MCHP~M;Makorma CHP~P|Kabonde Chiefdom:Pehala CHC~C|Kpaka Chiefdom:Liya MCHP~M;Massam CHC~C;Saahun (Kpaka) MCHP~M;Semabu (Kpaka) MCHP~M;Sumbuya Bessima CHP~P|Kpanga Chiefdom:Basalleh MCHP~M;Blama Puilla MCHP~M;Bomu Samba MCHP~M;Dandabu CHP~P;Gbondapi CHC~C;Gibina MCHP~M;Mandeima MCHP~M;Pujehun Static CHC~C;Salima Samba MCHP~M;Sawula MCHP~M;Sorbeh Grima MCHP~M;Taninahun Makemuma MCHP~M;Tongay MCHP~M;Vawahun Kayimba MCHP~M|Kpanga Krim Chiefdom:Bayama MCHP~M;Borborbu MCHP~M;Gobaru CHC~C;Vaama (Kpanga Krim) MCHP~M|Makpele Chiefdom:Dumagbe MCHP~M;Gbaa (Makpele) CHP~P;Gbahama (Makpele) MCHP~M;Gissiwolo MCHP~M;Gofor CHP~P;Ndombu MCHP~M;Pewa MCHP~M;Zimmi CHC~C|Malen Chiefdom:Bendu (Malen) MCHP~M;Hongai CHP~P;Jao (Malen) MCHP~M;Ngandorhun MCHP~M;Nianyahun MCHP~M;Nyandehun (Malen) MCHP~M;Sahn (Malen) CHC~C;Sengema (Malen) CHP~P;Taninahun (Malen) CHP~P|Mano Sakrim Chiefdom:Bengani MCHP~M;Gombu MCHP~M;Kassay MCHP~M;Mano Gbongema CHC~C;Mende MSK MCHP~M;Nyandehun (Mano Sakrim) MCHP~M;Senbengu MCHP~M|Peje Chiefdom:Bongay MCHP~M;Bumbeh MCHP~M;Futa Pejeh CHC~C;Helebu Pejeh MCHP~M;Pejewa (Futa Peje) MCHP~M|Perri Chiefdom:Blama Perri MCHP~M;Bomi MCHP~M;Bumpeh (Perri) CHC~C;Falaba CHP~P;Kowama (Perri) MCHP~M;Ngajubaoma/Missibu MCHP~M;Saama Perri MCHP~M|Soro Gbeima Chiefdom:Fairo CHC~C;Fanima (Soro) CHP~P;Futa Golawoma MCHP~M;Gondama Massaquoi MCHP~M;Jendema CHC~C;Koijeh MCHP~M;Malema 1 MCHP~M;Malema 2 MCHP~M;Navai MCHP~M;Sengama Soro MCHP~M;Sulima CHP~P;Tindor MCHP~M;Wai MCHP~M|Sowa Chiefdom:Bandajuma Sowa CHC~C;Geoma Jarjoh CHP~P;Lower Komende MCHP~M;Upper Komende MCHP~M;Vaawahun Sowa MCHP~M|Yakemoh Kpukumu Krim Chiefdom:Bangorma MCHP~M;Borma (Yakemu Kpukumu) MCHP~M;Karlu CHC~C;Kombeima MCHP~M;Kombopi MCHP~M;Messima MCHP~M;Saama Sowunde MCHP~M^Tonkolili District>Dansogoia Chiefdom:Bassaia MCHP~M;Bumbuna CHC~C;Kemedugu MCHP~M;New Ferengbeya CHP~P|Gbokolenken Masankong Chiefdom:Mansumana CHP~P;Warrima (Gbonkolenken) MCHP~M|Gbokolenken Mayeppoh Chiefdom:Makonkorie CHP~P;Mayepoh CHC~C;Mayepoh CHP~P;Petifu Mayepoh MCHP~M|Gbokolenken Polie Chiefdom:Mabankra MCHP~M;Mabarr Polie MCHP~M;Magbolu Ferry MCHP~M;Maraka MCHP~M;Mathamp MCHP~M|Gbokolenken Yele Chiefdom:Mafay MCHP~M;Manowo CHC~C;Yeben MCHP~M;Yele CHC~C|Kafe Chiefdom:Kamarugu MCHP~M;Masumbrie CHC~C|Kalantuba Chiefdom:Kamasaypana MCHP~M;Kathombo MCHP~M|Kholifa Mabang Chiefdom:Komrabai Station MCHP~M;Mabai (Kholifa Mabang) MCHP~M;Mabang (Kholifa Mabang) CHC~C;Mamanso Kafla MCHP~M;Marunia MCHP~M;Mathinkalol MCHP~M|Kholifa Mamuntha Chiefdom:Maborie MCHP~M;Magbass CHP~P;Mamuntha MCHP~M;Masagbill MCHP~M;Masoko MCHP~M;Mayossoh MCHP~M|Kholifa Rowalla Chiefdom:Alim MCHP~M;Mabai (Kholifa Rowalla) MCHP~M;Mabom CHC~C;Malone MCHP~M;Masanga MCHP~M|Kunike Barina Chiefdom:Makali CHC~C;Makoni Line MCHP~M;Mapamurie MCHP~M;Massaba MCHP~M;Wonkibor MCHP~M|Kunike Fulawusu Chiefdom:Fothaneh Bana MCHP~M;Mafulka MCHP~M;Magbanabom MCHP~M;Magbanto Bana MCHP~M;Mamanso Sanka CHP~P;Petifu Mandugu MCHP~M|Kunike Sanda Chiefdom:Fothaneh Junction MCHP~M;Kamanthor MCHP~M;Mabineh MCHP~M;Maconteh Tama MCHP~M;Masiaka (Kunike Sanda) MCHP~M;Masingbi CHC~C;Matholey MCHP~M;Petifuline CHP~P|Malal Chiefdom:Makoba Bana MCHP~M;Robina CHP~P;Rochen Malal CHP~P|Sambaya Bendugu Chiefdom:Bendugu CHC~C;Dankawalia CHP~P;Kholifaga MCHP~M;Kunya CHP~P;Ninkikoro MCHP~M|Simiria Chiefdom:Mabontor CHC~C;Mabontor CHP~P;Makonthanday MCHP~M;Masumbrie CHC~C;Mayassoh MCHP~M|Tane Chiefdom:Makelleh MCHP~M;Makona MCHP~M;Makrugbeh CHP~P;Mananthelie MCHP~M;Mangaybana MCHP~M;Masankoro MCHP~M;Mathonkara MCHP~M;Mathufulie MCHP~M;Matotoka CHC~C;Rosengbeh MCHP~M|Yoni Mabanta Chiefdom:Bakeloko CHP~P;Bath Bana MCHP~M;Magbaesa MCHP~M;Magbaft MCHP~M;Magbassabana MCHP~M;Magbosie MCHP~M;Makeni-Rokfullah MCHP~M;Makundu MCHP~M;Matawa MCHP~M;Petifu Fulamasa CHP~P;Robarie MCHP~M;Ronietta MCHP~M;Rorocks CHC~C|Yoni Mamala Chiefdom:Bonkababay CHP~P;Foindu (Yoni Mamala) MCHP~M;Hinistas CHC~C;Kumrabai Yoni CHP~P;Macrogba CHP~P;Magboki Road Mile 91 CHP~P;Magbosie MCHP~M;Makelleh CHP~P;Mamaka (Yoni Mamala) MCHP~M;Mananie MCHP~M;Masengbeh CHP~P;Maseperr MCHP~M;Mathoir CHC~C;Mayorgbor MCHP~M;Rochen Kamandao CHP~P;Rokimbi MCHP~M;United Methodist Church Yonibana CHC~C;Yonibana MCHP~M^Western Area Rural District>Koya Rural Zone:Crossing MCHP~M;Fogbo (Koya Rural) MCHP~M;Madaka MCHP~M;Makobeh MCHP~M;Makonkonday MCHP~M;Malambay CHP~P;Masorie CHP~P;MedZain MCHP~M;Newton CHC~C;Songo CHC~C|Mountain Rural Zone:Charlotte CHP~P;Fourah Bay College CHC~C;Gloucester CHP~P;Leicester (Mountain Rural) CHP~P;Regent (Mountain Rural) CHC~C|Waterloo Rural Zone:Benguema Grassfield MCHP~M;Campbell Town CHP~P;Cashew Farm MCHP~M;Deep Eye Water MCHP~M;Grafton CHC~C;Hastings CHC~C;John Thorpe MCHP~M;Kissy Town CHP~P;Lumpa CHP~P;Mabureh CHP~P;MacDonald MCHP~M;Margaret and Johnny MCHP~M;Matainkay and Masantigie MCHP~M;MedZain MCHP~M;New London MCHP~M;Rogbangba MCHP~M;Rokel (Waterloo Rural) CHP~P;TECT Jui CHP~P;Waterloo CHC~C;White Stone MCHP~M;Yams Farm CHP~P|York Rural Zone:Adonkia CHP~P;Banana Island MCHP~M;Goderich CHC~C;Hamilton MCHP~M;Kent CHP~P;Lakka/Ogoo Farm CHC~C;Mambo CHP~P;Metchen MCHP~M;Sussex MCHP~M;Tissana (York Rural) MCHP~M;Tokeh MCHP~M;Tombo (York Rural) CHC~C;York CHC~C^Western Area Urban District>Central 1 Zone:Blessed Mokaba Central CHP~P;Parliament CHC~C;Susan's Bay CHC~C|Central 2 Zone:Kroo Bay CHC~C|East 1 Zone:Fourah Bay Community MCHP~M;Kargbo Dockyard CHP~P;Mabella CHC~C;Ola During Under Fives CHP~P;Principal Medical Office (Cline Town) CHP~P;Ross Road CHC~C|East 2 Zone:Coconut Farm MCHP~M;Ginger Hall CHC~C;Julipha Ashobie Corner MCHP~M;Mabella CHC~C;Quarry MCHP~M|East 3 Zone:AWAKE CHP~P;Ad-Bangs Quarry MCHP~M;Al-Khatab CHC~C;Allen Town CHC~C;Approved School CHC~C;Calaba Town CHC~C;Family Home Movement CHP~P;Haja Neneh CHC~C;Iscon CHP~P;Kissy CHC~C;Kola Tree MCHP~M;Koya Town CHC~C;Kuntorloh CHP~P;Looking Town MCHP~M;Madina (East 3) CHC~C;Mayemi MCHP~M;Moyiba CHC~C;Orugu MCHP~M;Rokupa Under Fives CHP~P;St Joseph's CHC~C;Tassoh MCHP~M;Thunder Hill MCHP~M;UPAL MCHP~M;Up-Wata CHP~P;Wellington CHC~C|West 1 Zone:Grey Bush CHC~C;Kingtom Police Under Fives CHP~P;St Anthony's CHC~C|West 2 Zone:EPI Headquarter (New England) CHP~P;George Brook CHC~C;Grey Bush CHC~C;Kingharman Road Under Fives CHP~P;New England CHP~P|West 3 Zone:Family CHP~P;Hill Station CHP~P;Juba Military (MI Room) CHP~P;Lumley Under Fives CHP~P;Malama MCHP~M;Murray Town (MI Room) CHP~P;Murray Town CHC~C;Pentagon CHP~P;Scan Drive MCHP~M;Sea Coach Aberdeen CHC~C;Signal Hill MCHP~M;Sunshine MCHP~M;Thompson Bay MCHP~M;Wilberforce CHC~C";
+
+var CASCADE_ROWS = [];
+var CASCADE_INDEX = { regions:[], districts:{}, chiefdoms:{}, phus:{}, types:{} };
+var CASCADE_SOURCE = "built in list";
+
+function unpackCascade(packed){
+  var out = [];
+  String(packed).split("^").forEach(function(dBlock){
+    var dParts = dBlock.split(">");
+    var district = dParts[0];
+    if(!district) return;
+    (dParts[1] || "").split("|").forEach(function(cBlock){
+      var cParts = cBlock.split(":");
+      var chiefdom = cParts[0];
+      if(!chiefdom) return;
+      (cParts[1] || "").split(";").forEach(function(entry){
+        if(!entry) return;
+        var bits = entry.split("~");
+        var ty = FACILITY_TYPE_CODES[bits[1]] || bits[1] || "";
+        out.push({ region: REGION_OF[district] || "", district: district, chiefdom: chiefdom,
+                   phu: bits[0], type: ty, facilityType: ty });
+      });
+    });
+  });
+  return out;
 }
-function phusIn(district, chiefdom){
-  return PILOT_FACILITIES
-    .filter(f => f.district === district && f.chiefdom === chiefdom)
-    .sort((a,b) => a.phu.localeCompare(b.phu));
+
+function indexCascade(rows){
+  var idx = { regions:[], districts:{}, chiefdoms:{}, phus:{}, types:{} };
+  rows.forEach(function(r){
+    if(!r.district || !r.chiefdom || !r.phu) return;
+    var region = r.region || REGION_OF[r.district] || "Not classified";
+    if(idx.regions.indexOf(region) === -1) idx.regions.push(region);
+    if(!idx.districts[region]) idx.districts[region] = [];
+    if(idx.districts[region].indexOf(r.district) === -1) idx.districts[region].push(r.district);
+    if(!idx.chiefdoms[r.district]) idx.chiefdoms[r.district] = [];
+    if(idx.chiefdoms[r.district].indexOf(r.chiefdom) === -1) idx.chiefdoms[r.district].push(r.chiefdom);
+    var ck = r.district + "|" + r.chiefdom;
+    if(!idx.phus[ck]) idx.phus[ck] = [];
+    idx.phus[ck].push({ phu: r.phu, type: r.type });
+    idx.types[ck + "|" + r.phu] = r.type;
+  });
+  idx.regions.sort();
+  Object.keys(idx.districts).forEach(function(k){ idx.districts[k].sort(); });
+  Object.keys(idx.chiefdoms).forEach(function(k){ idx.chiefdoms[k].sort(); });
+  Object.keys(idx.phus).forEach(function(k){
+    idx.phus[k].sort(function(a,b){ return a.phu.localeCompare(b.phu); });
+  });
+  return idx;
 }
-function typeOf(district, chiefdom, phu){
-  const hit = PILOT_FACILITIES.find(f => f.district === district && f.chiefdom === chiefdom && f.phu === phu);
-  return hit ? hit.type : "";
+
+function setCascade(rows, source){
+  CASCADE_ROWS = rows;
+  CASCADE_INDEX = indexCascade(rows);
+  CASCADE_SOURCE = source || CASCADE_SOURCE;
+}
+setCascade(unpackCascade(CASCADE_PACKED), "built in list");
+
+function regionsList(){ return CASCADE_INDEX.regions.slice(); }
+function districtsIn(region){ return (CASCADE_INDEX.districts[region] || []).slice(); }
+function chiefdomsIn(district){ return (CASCADE_INDEX.chiefdoms[district] || []).slice(); }
+function phusIn(district, chiefdom){ return (CASCADE_INDEX.phus[district + "|" + chiefdom] || []).slice(); }
+function typeOf(district, chiefdom, phu){ return CASCADE_INDEX.types[district + "|" + chiefdom + "|" + phu] || ""; }
+function regionOf(district){
+  if(!district) return "";
+  if(REGION_OF[district]) return REGION_OF[district];
+  for(var i=0;i<CASCADE_ROWS.length;i++){ if(CASCADE_ROWS[i].district === district) return CASCADE_ROWS[i].region; }
+  return "";
+}
+
+/* ---------- cascading.csv, when one is provided beside the form ---------- */
+function cascadeCsvLine(line){
+  var out = [], inQ = false, cur = "";
+  for(var i=0;i<line.length;i++){
+    var ch = line[i];
+    if(ch === '"') inQ = !inQ;
+    else if(ch === ',' && !inQ){ out.push(cur); cur = ""; }
+    else cur += ch;
+  }
+  out.push(cur);
+  return out.map(function(s){ return s.trim(); });
+}
+
+function parseCascadeCsv(text){
+  var lines = String(text).replace(/^\uFEFF/, "").trim().split(/\r?\n/);
+  if(lines.length < 2) return [];
+  var head = cascadeCsvLine(lines[0]).map(function(h){ return h.toLowerCase(); });
+  function col(names){
+    for(var i=0;i<names.length;i++){ var k = head.indexOf(names[i]); if(k !== -1) return k; }
+    return -1;
+  }
+  var iR = col(["region","adm0","region_name"]);
+  var iD = col(["district","adm1","district_name"]);
+  var iC = col(["chiefdom","adm3","chiefdom_name"]);
+  var iP = col(["phu","hf","facility","health_facility","facility_name"]);
+  var iT = col(["facility_type","type","hf_type"]);
+  if(iD === -1 || iC === -1 || iP === -1) return [];
+  var rows = [];
+  for(var n=1;n<lines.length;n++){
+    if(!lines[n].trim()) continue;
+    var c = cascadeCsvLine(lines[n]);
+    var district = c[iD] || "", chiefdom = c[iC] || "", phu = c[iP] || "";
+    if(!district || !chiefdom || !phu) continue;
+    var rowType = iT !== -1 ? (c[iT] || "") : "";
+    rows.push({
+      region: iR !== -1 ? (c[iR] || REGION_OF[district] || "") : (REGION_OF[district] || ""),
+      district: district, chiefdom: chiefdom, phu: phu,
+      type: rowType, facilityType: rowType
+    });
+  }
+  return rows;
+}
+
+/* Reads cascading.csv if it is there and repopulates the region dropdown from it.
+   A missing file, a file that will not parse, or a page opened straight off the
+   phone with no server all leave the built in list in place. */
+function loadCascadeCsv(onDone){
+  try{
+    /* a page opened straight off the phone has no server to ask, so do not try */
+    if(!/^https?:$/.test(location.protocol)) return;
+    fetch('cascading.csv', { cache: 'no-store' }).then(function(res){
+      if(!res.ok) throw new Error('no csv');
+      return res.text();
+    }).then(function(text){
+      var rows = parseCascadeCsv(text);
+      if(!rows.length) return;
+      setCascade(rows, 'cascading.csv (' + rows.length + ' facilities)');
+      if(typeof onDone === 'function') onDone();
+    }).catch(function(){ /* built in list stays in use */ });
+  }catch(e){ /* fetch not available, built in list stays in use */ }
 }
 function escOpt(s){ return String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
 
 // ==================== CASCADE ====================
+/* ---------- region and district dropdowns ---------- */
+function populateRegions(){
+  var r = document.getElementById("regionSelect");
+  if(!r) return;
+  var keep = r.value;
+  r.innerHTML = '<option value="">Select Region...</option>' + regionsList().map(function(x){
+    return '<option' + (x === keep ? ' selected' : '') + '>' + escOpt(x) + '</option>';
+  }).join('');
+  if(keep) updateDistrict();
+}
+function updateDistrict(){
+  var regionEl = document.getElementById("regionSelect");
+  var region = regionEl ? regionEl.value : "";
+  var d = document.getElementById("districtSelect");
+  if(!d) return;
+  var list = region ? districtsIn(region) : [];
+  if(list.length){
+    d.innerHTML = '<option value="">Select District...</option>' + list.map(function(x){ return '<option>' + escOpt(x) + '</option>'; }).join('');
+    d.disabled = false;
+  } else {
+    d.innerHTML = '<option value="">Select Region first</option>';
+    d.disabled = true;
+  }
+  var c = document.getElementById("chiefdomSelect");
+  if(c){ c.innerHTML = '<option value="">Select District first</option>'; c.disabled = true; }
+  var p = document.getElementById("phuSelect");
+  if(p){ p.innerHTML = '<option value="">Select Chiefdom first</option>'; p.disabled = true; }
+  var t = document.getElementById("facilityTypeSelect");
+  if(t){ t.innerHTML = '<option value="">Select PHU first</option>'; t.disabled = true; }
+}
+
 function updateChiefdom() {
   const district = document.getElementById("districtSelect")?.value;
   const chiefdomSelect = document.getElementById("chiefdomSelect");
@@ -551,12 +721,14 @@ function buildAllSections() {
 
   // SECTION 0: Demographics — District > Chiefdom > PHU > Facility Type
   html += `<div class="section-page" id="section0"><div class="section-header">1. FACILITY DEMOGRAPHICS</div><div class="section-card">
-    <div class="question-row"><div class="question-text">District <span class="required-star">*</span></div><select class="form-select" id="districtSelect" onchange="updateChiefdom()"><option>${DISTRICT}</option></select></div>
+    <div class="question-row"><div class="question-text">Region <span class="required-star">*</span></div><select class="form-select" id="regionSelect" onchange="updateDistrict()"><option value="">Select Region...</option></select></div>
+    <div class="question-row"><div class="question-text">District <span class="required-star">*</span></div><select class="form-select" id="districtSelect" onchange="updateChiefdom()" disabled><option value="">Select Region first</option></select></div>
     <div class="question-row"><div class="question-text">Chiefdom <span class="required-star">*</span></div><select class="form-select" id="chiefdomSelect" onchange="updatePHU()" disabled><option value="">Select District first</option></select></div>
     <div class="question-row"><div class="question-text">Health Facility (PHU) <span class="required-star">*</span></div><select class="form-select" id="phuSelect" onchange="updateFacilityType()" disabled><option value="">Select Chiefdom first</option></select></div>
     <div class="question-row"><div class="question-text">Health Facility Type <span class="required-star">*</span></div><select class="form-select" id="facilityTypeSelect" disabled><option value="">Select PHU first</option></select></div>
     <div class="question-row"><div class="question-text">Supervisor Name <span class="required-star">*</span></div><input class="form-input" id="supervisor" type="text" placeholder="Supervisor name"></div>
     <div class="question-row"><div class="question-text">Date of Visit <span class="required-star">*</span></div><input class="form-input" id="visitdate" type="date"></div>
+    <div class="question-row"><div class="question-text">Type of visit <span class="required-star">*</span></div><div class="options-group-vertical" id="group_visit_type"><label class="radio-option"><input type="radio" name="visit_type" value="Initial visit" onchange="updateAns('visit_type','Initial visit'); updateRadioVisuals('group_visit_type')"> Initial visit</label><label class="radio-option"><input type="radio" name="visit_type" value="Follow up visit" onchange="updateAns('visit_type','Follow up visit'); updateRadioVisuals('group_visit_type')"> Follow up visit</label></div></div>
   </div></div>`;
 
   // SECTION 1: Staff Observation
@@ -649,7 +821,7 @@ function buildAllSections() {
   html += `<div class="section-page" id="section10"><div class="section-header">11. GAP ANALYSIS & ACTION PLAN</div><div class="section-card">
     <div class="question-row"><div class="question-text">Biggest gap(s) identified during last HF visit</div><textarea class="form-textarea" id="lastgaps" rows="2" placeholder="1)... 2)... 3)..." oninput="updateAns('lastgaps',this.value)"></textarea></div>
     <div class="question-row"><div class="question-text">Action plan from previous visit</div><textarea class="form-textarea" id="prevplan" rows="2" placeholder="Describe action plan..." oninput="updateAns('prevplan',this.value)"></textarea></div>
-    <div class="question-row"><div class="question-text">Were these gaps addressed?</div><div class="options-group-vertical" id="gapaddr"><label class="radio-option"><input type="radio" name="gapaddr" value="Not addressed" onchange="updateAns('gapaddr','Not addressed'); updateRadioVisuals('gapaddr')"> Not addressed</label><label class="radio-option"><input type="radio" name="gapaddr" value="Partially addressed" onchange="updateAns('gapaddr','Partially addressed'); updateRadioVisuals('gapaddr')"> Partially addressed</label><label class="radio-option"><input type="radio" name="gapaddr" value="Completely addressed" onchange="updateAns('gapaddr','Completely addressed'); updateRadioVisuals('gapaddr')"> Completely addressed</label><label class="radio-option"><input type="radio" name="gapaddr" value="Initial Visit" onchange="updateAns('gapaddr','Initial Visit'); updateRadioVisuals('gapaddr')"> Initial Visit</label></div></div>
+    <div class="question-row"><div class="question-text">Were these gaps addressed?</div><div class="options-group-vertical" id="gapaddr"><label class="radio-option"><input type="radio" name="gapaddr" value="Not addressed" onchange="updateAns('gapaddr','Not addressed'); updateRadioVisuals('gapaddr')"> Not addressed</label><label class="radio-option"><input type="radio" name="gapaddr" value="Partially addressed" onchange="updateAns('gapaddr','Partially addressed'); updateRadioVisuals('gapaddr')"> Partially addressed</label><label class="radio-option"><input type="radio" name="gapaddr" value="Completely addressed" onchange="updateAns('gapaddr','Completely addressed'); updateRadioVisuals('gapaddr')"> Completely addressed</label></div></div>
     <div class="question-row"><div class="question-text">Biggest gap(s) identified today</div><textarea class="form-textarea" id="todaygaps" rows="2" placeholder="1)... 2)..." oninput="updateAns('todaygaps',this.value)"></textarea></div>
     <div class="question-row"><div class="question-text">Was immediate feedback provided?</div><div class="options-group-vertical" id="immfeedback"><label class="radio-option"><input type="radio" name="immfeedback" value="Yes" onchange="updateAns('immfeedback','Yes'); updateRadioVisuals('immfeedback')"> Yes</label><label class="radio-option"><input type="radio" name="immfeedback" value="No" onchange="updateAns('immfeedback','No'); updateRadioVisuals('immfeedback')"> No</label></div></div>
     <div class="question-row"><div class="question-text">How was feedback provided?</div><div class="options-group-check" id="feedbackhow"><label class="check-option"><input type="checkbox" value="FMC Engagement" onchange="updateCheck('feedbackHow',this.value,this)"> FMC Engagement</label><label class="check-option"><input type="checkbox" value="Escalate to DHMT" onchange="updateCheck('feedbackHow',this.value,this)"> Escalate to DHMT</label><label class="check-option"><input type="checkbox" value="Mentoring/Coaching" onchange="updateCheck('feedbackHow',this.value,this)"> Mentoring/Coaching</label><label class="check-option"><input type="checkbox" value="Document" onchange="updateCheck('feedbackHow',this.value,this)"> Document</label><label class="check-option"><input type="checkbox" value="Demonstration" onchange="updateCheck('feedbackHow',this.value,this)"> Demonstration</label></div></div>
@@ -739,6 +911,7 @@ function switchTab(tab) {
 }
 function getDemographics() {
   return {
+    region: document.getElementById("regionSelect")?.value || "",
     district: document.getElementById("districtSelect")?.value || "",
     chiefdom: document.getElementById("chiefdomSelect")?.value || "",
     phu: document.getElementById("phuSelect")?.value || "",
@@ -749,6 +922,7 @@ function getDemographics() {
 }
 function validateForm() {
   const d = getDemographics();
+  if(!d.region){ alert("Select Region"); return false; }
   if(!d.district){ alert("Select District"); return false; }
   if(!d.chiefdom){ alert("Select Chiefdom"); return false; }
   if(!d.phu){ alert("Select Health Facility"); return false; }
@@ -773,6 +947,7 @@ function renderSummary(){
   const demo = ans._demographics || getDemographics();
   document.getElementById('sum_date').textContent = 'Saved: ' + (ans._submitted || new Date().toLocaleString());
   let html = `<div class="summary-section"><div class="summary-section-title">Facility Information</div>
+    <div class="summary-item"><span class="summary-label">Region</span><span class="summary-value">${demo.region||"—"}</span></div>
     <div class="summary-item"><span class="summary-label">District</span><span class="summary-value">${demo.district||'—'}</span></div>
     <div class="summary-item"><span class="summary-label">Chiefdom</span><span class="summary-value">${demo.chiefdom||'—'}</span></div>
     <div class="summary-item"><span class="summary-label">Health Facility</span><span class="summary-value">${demo.phu||'—'}</span></div>
@@ -916,7 +1091,7 @@ function getPayload(){
     resubmission: RECORD.accepted > 0,
     submittedAt: new Date().toLocaleString(),
     submittedBy: d.supervisor,
-    district: d.district, chiefdom: d.chiefdom, phu: d.phu, facility_type: d.facility_type,
+    region: d.region, district: d.district, chiefdom: d.chiefdom, phu: d.phu, facility_type: d.facility_type,
     visit_date: d.visitdate,
     gps_lat: GPS.lat, gps_lng: GPS.lng, gps_accuracy: GPS.accuracy, gps_taken: GPS.taken,
     rows: labelledRows(),
@@ -1287,7 +1462,10 @@ function applyRecord(rec){
   saveRecord();
 
   var district = document.getElementById('districtSelect');
-  if(district){ district.value = rec.district || 'Bo'; updateChiefdom(); }
+  var region = document.getElementById('regionSelect');
+  var savedRegion = rec.region || regionOf(rec.district);
+  if(region && savedRegion){ region.value = savedRegion; updateDistrict(); }
+  if(district){ district.value = rec.district || ''; updateChiefdom(); }
   if(rec.chiefdom){ document.getElementById('chiefdomSelect').value = rec.chiefdom; updatePHU(); }
   if(rec.phu){ document.getElementById('phuSelect').value = rec.phu; updateFacilityType(); }
   var sup = document.getElementById('supervisor'); if(sup) sup.value = rec.submittedBy || '';
@@ -1655,6 +1833,11 @@ function dashboardHtml(res){
    stale travels to NMDR. Hidden rows are ignored by the required check, left
    out of the answered count, and recorded as "Skipped". */
 var ROW_RULES = [
+  /* 11.1 to 11.3 look back at the previous visit, so an initial visit
+     jumps straight to 11.4 and nothing stale is recorded */
+  { key:'lastgaps', when:function(){ return ans.visit_type === 'Follow up visit'; } },
+  { key:'prevplan', when:function(){ return ans.visit_type === 'Follow up visit'; } },
+  { key:'gapaddr',  when:function(){ return ans.visit_type === 'Follow up visit'; } },
   { key:'test_type',       when:function(){ return ans.test_ordered === 'Yes'; } },
   { key:'test_result',     when:function(){ return ans.test_ordered === 'Yes'; } },
   { key:'result_recorded', when:function(){ return ans.test_ordered === 'Yes'; } },
@@ -1740,7 +1923,7 @@ function draftEsc(v){
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-var BUILD = "2026-07-28d";     // shown in the DRAFTS panel, so you can tell a stale phone
+var BUILD = "2026-08-27a";     // shown in the DRAFTS panel, so you can tell a stale phone
 var PAGE_RELOADS_FOR_NEW = true;   // how this form clears itself for the next facility
 var DRAFTS_KEY = "mocm_drafts_" + FORM_MARK;
 
@@ -2298,8 +2481,8 @@ var USERS = [
 /* everything is declared by this point, so the form can start */
 buildAllSections();
 setObsCount(0);          // no card opens until a number is typed
-document.getElementById("districtSelect").value = DISTRICT;
-updateChiefdom();
+populateRegions();
+loadCascadeCsv(populateRegions);
 const _vd = document.getElementById("visitdate");
 if (_vd) _vd.value = new Date().toISOString().split('T')[0];
 setTimeout(() => {
