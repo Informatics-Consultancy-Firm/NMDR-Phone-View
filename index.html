@@ -122,19 +122,22 @@
         .sidebar-overlay.visible { display: block; }
 
         /* SIDEBAR */
+        /* The sidebar is a three part column: header, the scrolling nav, footer.
+           The sidebar itself must NOT scroll. Only .nav-scroll does, otherwise
+           two nested scrollers fight each other and neither moves. */
         .sidebar {
             width: 260px;
             background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dk) 100%);
-            position: sticky; top: 0; height: 100vh;
-            flex-shrink: 0; overflow-y: auto;
+            position: sticky; top: 0;
+            height: 100vh; height: 100dvh;
+            max-height: 100vh; max-height: 100dvh;
+            flex-shrink: 0; overflow: hidden;
             display: flex; flex-direction: column;
             box-shadow: 2px 0 15px rgba(0,0,0,0.15);
             transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
             z-index: 960;
         }
-        .sidebar::-webkit-scrollbar { width: 4px; }
-        .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
-        .sidebar-header { padding: 18px 20px; border-bottom: 2px solid rgba(255,255,255,0.1); flex-shrink: 0; display: flex; align-items: center; }
+        .sidebar-header { flex: 0 0 auto; padding: 18px 20px; border-bottom: 2px solid rgba(255,255,255,0.1); flex-shrink: 0; display: flex; align-items: center; }
         .sidebar-brand { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
         .brand-icon { width: 34px; height: 34px; background: var(--gold); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--blue); flex-shrink: 0; }
         .brand-logo-img { width: 42px; height: 42px; object-fit: contain; border-radius: 8px; background: #fff; padding: 3px; flex-shrink: 0; }
@@ -142,7 +145,22 @@
         .brand-sub   { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 0.5px; display: block; }
         .sidebar-close { display: none; width: 30px; height: 30px; background: rgba(255,255,255,0.1); border: none; border-radius: 6px; cursor: pointer; align-items: center; justify-content: center; color: white; flex-shrink: 0; margin-left: 8px; font-size: 18px; line-height: 1; }
         .sidebar-close:hover { background: rgba(255,255,255,0.2); }
-        .nav-scroll { flex: 1; padding: 10px 0; overflow-y: auto; }
+                /* flex:1 alone is not enough: a flex child defaults to min-height:auto and
+           refuses to shrink below its content, so the list grows past the sidebar
+           and nothing scrolls. min-height:0 is what makes the scroll work. */
+        .nav-scroll {
+            flex: 1 1 auto; min-height: 0; height: auto;
+            padding: 10px 0 18px;
+            overflow-y: auto; overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.28) transparent;
+        }
+        .nav-scroll::-webkit-scrollbar { width: 6px; }
+        .nav-scroll::-webkit-scrollbar-track { background: transparent; }
+        .nav-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.28); border-radius: 3px; }
+        .nav-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.45); }
         .nav-section-label { padding: 16px 18px 5px; font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.35); letter-spacing: 2px; text-transform: uppercase; }
         .nav-item { width: 100%; background: transparent; border: none; color: rgba(255,255,255,0.7); padding: 14px 16px; text-align: left; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.18s; border-left: 3px solid transparent; display: flex; align-items: center; gap: 10px; }
         .nav-item:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.95); border-left-color: var(--gold); }
@@ -158,7 +176,7 @@
         .nav-chevron { width: 13px; height: 13px; transition: transform 0.2s; opacity: 0.5; flex-shrink: 0; stroke: currentColor; fill: none; }
         .nav-group-btn.open .nav-chevron { transform: rotate(180deg); opacity: 0.8; }
         .nav-group-children { overflow: hidden; max-height: 0; transition: max-height 0.3s ease; background: rgba(0,0,0,0.18); }
-        .nav-group-children.open { max-height: 2000px; }
+        .nav-group-children.open { max-height: 6000px; }
         .nav-child { width: 100%; background: transparent; border: none; color: rgba(255,255,255,0.6); padding: 12px 16px 12px 24px; text-align: left; font-family: inherit; font-size: 12px; font-weight: 400; cursor: pointer; transition: all 0.15s; border-left: 3px solid transparent; display: block; }
         .nav-child:hover { color: rgba(255,255,255,0.95); background: rgba(255,255,255,0.08); border-left-color: rgba(255,193,7,0.5); }
         .nav-child.active { color: #fff !important; background: rgba(255,193,7,0.18) !important; border-left: 3px solid var(--gold) !important; font-weight: 700 !important; }
@@ -173,7 +191,7 @@
             color: #fff !important; background: rgba(255,193,7,0.12) !important;
             border-left: 3px solid rgba(255,193,7,0.6) !important; font-weight:700 !important;
         }
-        .sidebar-footer { padding: 12px 14px; flex-shrink: 0; border-top: 1px solid rgba(255,255,255,0.08); }
+        .sidebar-footer { flex: 0 0 auto; padding: 12px 14px; flex-shrink: 0; border-top: 1px solid rgba(255,255,255,0.08); }
         .logout-btn { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.6); padding: 9px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.18s; font-family: inherit; }
         .logout-btn:hover { background: rgba(255,80,80,0.15); border-color: rgba(255,120,120,0.3); color: #ffaaaa; }
         .install-btn { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.28); color: #fff; padding: 9px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.18s; font-family: inherit; margin-bottom: 8px; }
@@ -200,7 +218,7 @@
         @media (max-width: 768px) {
             body { display: block; }
             .topbar { display: flex; }
-            .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 280px; transform: translateX(-100%); height: 100%; }
+            .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 280px; transform: translateX(-100%); height: 100%; max-height: 100%; overflow: hidden; }
             .sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,0.3); }
             .sidebar-close { display: flex; }
             .main { width: 100%; padding: 68px 10px 16px; min-height: 100vh; }
@@ -1460,13 +1478,47 @@ function openGroup(groupId){
     var c=document.getElementById('children-'+groupId),b=document.querySelector('[data-group="'+groupId+'"]');
     if(c)c.classList.add('open');if(b)b.classList.add('open');
 }
+/* Nested groups animate on max-height. A fixed ceiling clips a long list and,
+   worse, clips a parent when a child group opens inside it. So a group opens to
+   its own measured height, then goes to none once the animation is done, and
+   every ancestor is released at the same time. */
+function _navIsOpen(c){
+    var m=c.style.maxHeight;
+    return m!=='' && m!=='0' && m!=='0px';
+}
+function _navRelease(c){
+    if(!c) return;
+    c.style.maxHeight='none';
+}
+function _navReleaseAncestors(el){
+    var p=el.parentElement;
+    while(p){
+        if(p.classList && (p.classList.contains('nav-group-children') ||
+            (p.id && /Children$/.test(p.id)))){
+            if(_navIsOpen(p) || p.classList.contains('open')) _navRelease(p);
+        }
+        if(p.classList && p.classList.contains('nav-scroll')) break;
+        p=p.parentElement;
+    }
+}
+/* if the element cannot be measured yet, fall back to a generous ceiling rather
+   than opening to zero and looking broken */
+function _navHeight(c){ var h=c.scrollHeight; return (h && h>0) ? h+'px' : '6000px'; }
+function _navOpen(c){
+    c.style.maxHeight=_navHeight(c);
+    setTimeout(function(){ if(_navIsOpen(c)){ _navRelease(c); _navReleaseAncestors(c); } },320);
+    _navReleaseAncestors(c);
+}
+function _navClose(c){
+    if(c.style.maxHeight==='none'){ c.style.maxHeight=_navHeight(c); void c.offsetHeight; }
+    c.style.maxHeight='0';
+}
 function toggleNestedGroup(childrenId,chevronId,toggleId,e){
     if(e)e.stopPropagation();
     var c=document.getElementById(childrenId),ch=document.getElementById(chevronId),t=toggleId?document.getElementById(toggleId):null;
     if(!c)return;
-    var isOpen=c.style.maxHeight!=='0px'&&c.style.maxHeight!==''&&c.style.maxHeight!=='0';
-    if(isOpen){c.style.maxHeight='0';if(ch)ch.style.transform='';if(t)t.classList.remove('active');}
-    else{c.style.maxHeight='2000px';if(ch)ch.style.transform='rotate(180deg)';if(t)t.classList.add('active');}
+    if(_navIsOpen(c)){ _navClose(c); if(ch)ch.style.transform=''; if(t)t.classList.remove('active'); }
+    else{ _navOpen(c); if(ch)ch.style.transform='rotate(180deg)'; if(t)t.classList.add('active'); }
 }
 
 var MED_DRIVE_KEYS = {
@@ -1506,6 +1558,14 @@ function toggleGroup(groupId){
     if(!c||!b)return;
     var isOpen=c.classList.contains('open');
     c.classList.toggle('open',!isOpen);b.classList.toggle('open',!isOpen);
+    /* the class only sets a ceiling; release it so a long section is never clipped */
+    if(!isOpen){
+        c.style.maxHeight=_navHeight(c);
+        setTimeout(function(){ if(c.classList.contains('open')) c.style.maxHeight='none'; },320);
+    } else {
+        if(c.style.maxHeight==='none'){ c.style.maxHeight=_navHeight(c); void c.offsetHeight; }
+        c.style.maxHeight='';
+    }
 }
 document.querySelectorAll('.nav-group-btn[data-group]').forEach(function(btn){ btn.addEventListener('click',function(){ toggleGroup(this.getAttribute('data-group')); }); });
 
