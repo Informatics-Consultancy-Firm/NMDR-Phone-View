@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLNMDR &mdash; Portal Navigation</title>
+<style>
+/* ---------- harvested portal styles ---------- */
+:root { --blue: #2c6793; --blue-dk: #1f4a6a; --blue-lt: #e8f0f7; --white: #ffffff; --bg: #f0f5f9; --border: #d0dde8; --muted: #6c7a89; --gold: #ffc107; }
+.sidebar-overlay { display: none; position: fixed; inset: 0px; z-index: 950; background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(2px); }
+.sidebar-overlay.visible { display: block; }
+.sidebar { width: 260px; background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dk) 100%); position: static; height: auto; align-self: stretch; flex-shrink: 0; overflow: visible; display: flex; flex-direction: column; box-shadow: rgba(0, 0, 0, 0.15) 2px 0px 15px; transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1); z-index: 960; }
+.sidebar-header { padding: 18px 20px; border-bottom: 2px solid rgba(255, 255, 255, 0.1); flex-shrink: 0; display: flex; align-items: center; }
+.sidebar-brand { display: flex; align-items: center; gap: 10px; flex: 1 1 0%; min-width: 0px; }
+.sidebar-close { display: none; width: 30px; height: 30px; background: rgba(255, 255, 255, 0.1); border: none; border-radius: 6px; cursor: pointer; align-items: center; justify-content: center; color: white; flex-shrink: 0; margin-left: 8px; font-size: 18px; line-height: 1; }
+.sidebar-close:hover { background: rgba(255, 255, 255, 0.2); }
+.nav-scroll { flex: 1 0 auto; padding: 10px 0px; overflow: visible; }
+.nav-section-label { padding: 16px 18px 5px; font-size: 9px; font-weight: 700; color: rgba(255, 255, 255, 0.35); letter-spacing: 2px; text-transform: uppercase; }
+.nav-item { width: 100%; background: transparent; border-top: none; border-right: none; border-bottom: none; border-image: initial; color: rgba(255, 255, 255, 0.7); padding: 14px 16px; text-align: left; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.18s; border-left: 3px solid transparent; display: flex; align-items: center; gap: 10px; }
+.nav-item:hover { background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.95); border-left-color: var(--gold); }
+.nav-item.active { background: rgba(255, 255, 255, 0.15); color: white; border-left-color: var(--gold); font-weight: 600; }
+.nav-item .nav-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.75; stroke: currentcolor; fill: none; }
+.nav-item.active .nav-icon { opacity: 1; }
+.nav-group-btn { width: 100%; background: transparent; border-top: none; border-right: none; border-bottom: none; border-image: initial; color: rgba(255, 255, 255, 0.7); padding: 14px 16px; text-align: left; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.18s; border-left: 3px solid transparent; display: flex; align-items: center; gap: 10px; }
+.nav-group-btn:hover { background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.95); border-left-color: rgba(255, 193, 7, 0.5); }
+.nav-group-btn.open { color: white; border-left-color: var(--gold); background: rgba(255, 255, 255, 0.08); }
+.nav-group-btn .nav-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.75; stroke: currentcolor; fill: none; }
+.nav-group-btn.open .nav-icon { opacity: 1; }
+.nav-group-label { flex: 1 1 0%; }
+.nav-chevron { width: 13px; height: 13px; transition: transform 0.2s; opacity: 0.5; flex-shrink: 0; stroke: currentcolor; fill: none; }
+.nav-group-btn.open .nav-chevron { transform: rotate(180deg); opacity: 0.8; }
+.nav-group-children { overflow: hidden; max-height: 0px; transition: max-height 0.3s; background: rgba(0, 0, 0, 0.18); }
+.nav-group-children.open { max-height: 4000px; }
+.nav-child { width: 100%; background: transparent; border-top: none; border-right: none; border-bottom: none; border-image: initial; color: rgba(255, 255, 255, 0.6); padding: 12px 16px 12px 24px; text-align: left; font-family: inherit; font-size: 12px; font-weight: 400; cursor: pointer; transition: 0.15s; border-left: 3px solid transparent; display: block; }
+.nav-child:hover { color: rgba(255, 255, 255, 0.95); background: rgba(255, 255, 255, 0.08); border-left-color: rgba(255, 193, 7, 0.5); }
+.nav-child.active { color: rgb(255, 255, 255) !important; background: rgba(255, 193, 7, 0.18) !important; border-left: 3px solid var(--gold) !important; font-weight: 700 !important; }
+.nav-l1-toggle { align-items: center; justify-content: space-between; display: flex !important; font-weight: 600 !important; color: rgba(255, 255, 255, 0.85) !important; padding: 13px 14px 13px 24px !important; font-size: 12.5px !important; }
+.nav-l2 { padding: 11px 14px 11px 36px !important; font-size: 12px !important; }
+.nav-l2-toggle { align-items: center; justify-content: space-between; width: 100%; background: transparent; border-top: none; border-right: none; border-bottom: none; border-image: initial; cursor: pointer; font-family: inherit; border-left: 3px solid transparent; display: flex !important; font-weight: 600 !important; color: rgba(255, 255, 255, 0.8) !important; padding: 11px 14px 11px 36px !important; font-size: 12px !important; }
+.nav-l3 { padding: 10px 14px 10px 50px !important; font-size: 11.5px !important; }
+.nav-l3-toggle { align-items: center; justify-content: space-between; width: 100%; background: transparent; border-top: none; border-right: none; border-bottom: none; border-image: initial; cursor: pointer; font-family: inherit; border-left: 3px solid transparent; display: flex !important; font-weight: 600 !important; color: rgba(255, 255, 255, 0.75) !important; padding: 10px 14px 10px 50px !important; font-size: 11.5px !important; }
+.nav-l4 { padding: 9px 14px 9px 64px !important; font-size: 11px !important; }
+.nav-item.active { background: rgba(255, 193, 7, 0.18) !important; color: white !important; border-left-color: var(--gold) !important; font-weight: 700 !important; }
+.nav-l1-toggle.active, .nav-l2-toggle.active, .nav-l3-toggle.active { color: rgb(255, 255, 255) !important; background: rgba(255, 193, 7, 0.12) !important; border-left: 3px solid rgba(255, 193, 7, 0.6) !important; font-weight: 700 !important; }
+.sidebar-footer { padding: 12px 14px; flex-shrink: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+.logout-btn { width: 100%; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); color: rgba(255, 255, 255, 0.6); padding: 9px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.18s; font-family: inherit; }
+.logout-btn:hover { background: rgba(255, 80, 80, 0.15); border-color: rgba(255, 120, 120, 0.3); color: rgb(255, 170, 170); }
+.install-btn { width: 100%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.28); color: rgb(255, 255, 255); padding: 9px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.18s; font-family: inherit; margin-bottom: 8px; }
+.install-btn:hover { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.45); }
+.update-btn { width: 100%; background: rgba(255, 193, 7, 0.12); border: 1px solid rgba(255, 193, 7, 0.35); color: var(--gold); padding: 9px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.18s; font-family: inherit; margin-bottom: 8px; }
+.update-btn:hover { background: rgba(255, 193, 7, 0.2); border-color: rgba(255, 193, 7, 0.55); }
+
+/* ---------- page shell ---------- */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #eef3f7; }
+body {
+    font-family: 'Roboto', 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+    padding: 18px;
+}
+.sheet {
+    max-width: 1240px;
+    margin: 0 auto;
+    box-shadow: 0 10px 34px rgba(0,0,0,0.22);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.board { width: 100% !important; }
+.board img { display: block; }
+.new-badge { display:inline-block; background:var(--gold); color:var(--blue-dk); font-size:9px; font-weight:800; letter-spacing:0.6px; padding:2px 7px; border-radius:9px; margin-left:8px; vertical-align:middle; }
+
+@media screen and (max-width: 1000px) { .board > div:nth-child(2) { column-count: 2 !important; } }
+@media screen and (max-width: 640px)  { .board > div:nth-child(2) { column-count: 1 !important; } }
+
+@page { size: A4 portrait; margin: 0; }
+@media print {
+    html, body { background: #173f5e; padding: 0; }
+    .sheet { max-width: none; box-shadow: none; border-radius: 0; }
+    .board {
+        width: 1196px !important;
+        height: 1690px;
+        zoom: 0.6637;
+        display: flex; flex-direction: column;
+        overflow: hidden;
+        page-break-after: avoid;
+        break-after: avoid;
+    }
+    .sheet { page-break-inside: avoid; break-inside: avoid; }
+    .board > div:nth-child(2) { column-count: 3 !important; column-gap: 26px !important; }
+    .board > div:last-child { margin-top: auto; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+
+<div class="sheet">
+<div style="background:linear-gradient(135deg,#245d85 0%,#173f5e 100%);padding:0;font-family:Roboto,Arial,Helvetica,sans-serif;" class="board">
+
+<div style="display:flex;align-items:center;gap:18px;padding:22px 26px 18px;border-bottom:1px solid rgba(255,255,255,0.16);">
+    <img src="data:image/jpeg;base64,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" alt="Ministry of Health, Government of Sierra Leone" style="width:78px;height:78px;flex-shrink:0;border-radius:50%;background:#fff;object-fit:contain;box-shadow:0 2px 8px rgba(0,0,0,.22);">
+    <div style="min-width:0;flex:1;">
+        <div style="color:#fff;font-size:26px;font-weight:700;letter-spacing:1.6px;">SLNMDR</div>
+        <div style="color:#fff;font-size:15px;font-weight:500;margin-top:4px;">Sierra Leone National Malaria Data Repository</div>
+        <div style="color:#ffd66b;font-size:13px;font-weight:600;margin-top:5px;">(An Analytical Platform for Informed Decision Making)</div>
+        <div style="color:#e6f0f8;font-size:10.5px;font-weight:700;letter-spacing:1.7px;margin-top:6px;">PORTAL NAVIGATION · ALL SECTIONS EXPANDED · UPDATED 10 SEP 2026</div>
+    </div>
+</div>
+
+<div style="column-count:3;column-gap:26px;padding:18px 22px 6px;">
+
+<div style="break-inside:avoid;margin-bottom:14px;">
+<div class="nav-section-label" style="padding-top:6px;color:#ffd66b;font-weight:700;opacity:1;">Overview</div>
+<div class="nav-group" style="background-color:rgba(10,42,66,0.55);">
+    <button class="nav-group-btn open active" style="color:#fff;font-weight:700;opacity:1;">
+        <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:1;"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="nav-group-label">Welcome</span>
+    </button>
+    <div class="nav-group-children open" style="background-color:rgba(10,42,66,0.55);">
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">NMDR Architecture &amp; Data Flow</button>
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">NMDR Use Cases &mdash; WHO AFRO</button>
+    </div>
+</div>
+</div>
+
+<div style="break-inside:avoid;margin-bottom:14px;">
+<div class="nav-section-label" style="margin-top:10px;padding-top:6px;color:#ffd66b;font-weight:700;opacity:1;">1.0 Malaria Surveillance</div>
+<div class="nav-group" style="background-color:rgba(10,42,66,0.55);">
+    <button class="nav-group-btn open" style="color:#fff;font-weight:700;opacity:1;">
+        <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" style="opacity:1;"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        <span class="nav-group-label">1.0 Malaria Surveillance</span>
+    </button>
+    <div class="nav-group-children open" style="background-color:rgba(10,42,66,0.55);">
+        <button class="nav-child nav-l1-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>1.0.1 Malaria Epi</span></button>
+        <div style="background-color:rgba(10,42,66,0.55);">
+            <button class="nav-child nav-l2-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>1.0.1.1 HMIS (Monthly)</span></button>
+            <div style="background-color:rgba(10,42,66,0.55);">
+                <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">1.0.1.1.1 Data Extraction</button>
+                <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">1.0.1.1.2 Malaria Epi Dashboard</button>
+            </div>
+            <button class="nav-child nav-l2-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>1.0.1.2 eIDSR (Weekly)</span></button>
+            <div style="background-color:rgba(10,42,66,0.55);">
+                <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">1.0.1.2.1 Data Extraction</button>
+                <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">1.0.1.2.2 Dashboard</button>
+            </div>
+        </div>
+        <button class="nav-child nav-l1-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>1.0.2 Monitoring &amp; Evaluation</span></button>
+        <div style="background-color:rgba(10,42,66,0.55);">
+            <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">1.0.2.1 Data Quality Assessment</button>
+            <button class="nav-child nav-l2-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>1.0.2.2 Key Malaria Data Elements</span></button>
+            <div style="background-color:rgba(10,42,66,0.55);">
+                <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">1.0.2.2.1 Fever Suspected Malaria</button>
+                <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">1.0.2.2.2 Tested</button>
+                <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">1.0.2.2.3 Confirmed Malaria Case</button>
+                <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">1.0.2.2.4 Confirmed and Treated</button>
+                <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">1.0.2.2.5 Presumptive Treatment</button>
+                <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">1.0.2.2.6 Treated</button>
+            </div>
+            <button class="nav-child nav-l2-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>1.0.2.3 Key Malaria Indicators</span></button>
+            <div style="background-color:rgba(10,42,66,0.55);">
+                <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">1.0.2.3.1 Reporting Rate</button>
+                <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">1.0.2.3.2 Testing Rate</button>
+                <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">1.0.2.3.3 Test Positivity Rate</button>
+                <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">1.0.2.3.4 Confirmed &amp; Treatment Rate</button>
+            </div>
+            <button class="nav-child nav-l2-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>1.0.2.4 Comparative Analysis on Key Indicators</span></button>
+            <div style="background-color:rgba(10,42,66,0.55);">
+                <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">1.0.2.4.1 Under Five</button>
+                <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">1.0.2.4.2 All Ages</button>
+            </div>
+        </div>
+        <button class="nav-child nav-l1-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>1.0.3 Therapeutic Efficacy Study</span></button>
+        <div style="background-color:rgba(10,42,66,0.55);">
+            <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">1.0.3.1 Data</button>
+            <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">1.0.3.2 Report</button>
+            <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">1.0.3.3 Dashboard</button>
+        </div>
+    </div>
+</div>
+</div>
+
+<div style="break-inside:avoid;margin-bottom:14px;">
+<div class="nav-section-label" style="margin-top:10px;padding-top:6px;color:#ffd66b;font-weight:700;opacity:1;">2.0 Supply Chain</div>
+<div class="nav-group" style="background-color:rgba(10,42,66,0.55);">
+    <button class="nav-group-btn open" style="color:#fff;font-weight:700;opacity:1;">
+        <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" style="opacity:1;"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        <span class="nav-group-label">2.0 Supply Chain Management</span>
+    </button>
+    <div class="nav-group-children open" style="background-color:rgba(10,42,66,0.55);">
+        <button class="nav-child nav-l1-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>2.0.1 Quantification</span></button>
+        <div style="background-color:rgba(10,42,66,0.55);">
+            <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">2.0.1.1 Data</button>
+            <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">2.0.1.2 Dashboard</button>
+        </div>
+        <button class="nav-child nav-l1-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>2.0.2 Supply Tracking</span></button>
+        <div style="background-color:rgba(10,42,66,0.55);">
+            <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">2.0.2.1 Data</button>
+            <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">2.0.2.2 Dashboard</button>
+        </div>
+    </div>
+</div>
+</div>
+
+<div style="break-inside:avoid;margin-bottom:14px;">
+<div class="nav-section-label" style="margin-top:10px;padding-top:6px;color:#ffd66b;font-weight:700;opacity:1;">3.0 Interventions</div>
+<div class="nav-group" style="background-color:rgba(10,42,66,0.55);">
+    <button class="nav-group-btn open" style="color:#fff;font-weight:700;opacity:1;">
+        <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" style="opacity:1;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span class="nav-group-label">3.0 Interventions</span>
+    </button>
+    <div class="nav-group-children open" style="background-color:rgba(10,42,66,0.55);">
+        <button class="nav-child nav-l2-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>3.0.1 Routine Interventions</span></button>
+        <div style="background-color:rgba(10,42,66,0.55);">
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">3.0.1.1 PMC</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">3.0.1.2 Malaria Vaccine</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">3.0.1.3 Penta</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">3.0.1.4 Measles</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">3.0.1.5 Vitamin A</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">3.0.1.6 IPTp</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">3.0.1.7 ANC</button>
+        </div>
+        <button class="nav-child nav-l2-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>3.0.2 Campaign Interventions</span></button>
+        <div style="background-color:rgba(10,42,66,0.55);">
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">3.0.2.1 Mass ITN</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">3.0.2.2 SBD</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">3.0.2.3 IRS</button>
+        </div>
+    </div>
+</div>
+</div>
+
+<div style="break-inside:avoid;margin-bottom:14px;">
+<div class="nav-section-label" style="margin-top:10px;padding-top:6px;color:#ffd66b;font-weight:700;opacity:1;">4.0 Vector Control</div>
+<div class="nav-group" style="background-color:rgba(10,42,66,0.55);">
+    <button class="nav-group-btn open" style="color:#fff;font-weight:700;opacity:1;">
+        <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" style="opacity:1;"><path d="M12 2a4 4 0 014 4v1h1a2 2 0 012 2v1a2 2 0 01-2 2h-1v1a4 4 0 01-8 0v-1H7a2 2 0 01-2-2V9a2 2 0 012-2h1V6a4 4 0 014-4z"/></svg>
+        <span class="nav-group-label">4.0 Vector Control</span>
+    </button>
+    <div class="nav-group-children open" style="background-color:rgba(10,42,66,0.55);">
+        <button class="nav-child nav-l1-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>4.0.1 Entomology</span></button>
+        <div style="background-color:rgba(10,42,66,0.55);">
+            <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">4.0.1.1 Data</button>
+            <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">4.0.1.2 Report</button>
+            <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">4.0.1.3 Dashboard</button>
+        </div>
+        <button class="nav-child nav-l1-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>4.0.2 Insecticide Resistance</span></button>
+        <div style="background-color:rgba(10,42,66,0.55);">
+            <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">4.0.2.1 Data</button>
+            <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">4.0.2.2 Report</button>
+            <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">4.0.2.3 Dashboard</button>
+        </div>
+    </div>
+</div>
+</div>
+
+<div style="break-inside:avoid;margin-bottom:14px;">
+<div class="nav-section-label" style="margin-top:10px;padding-top:6px;color:#ffd66b;font-weight:700;opacity:1;">5.0 Resources</div>
+<div class="nav-group" style="background-color:rgba(10,42,66,0.55);">
+    <button class="nav-group-btn open" style="color:#fff;font-weight:700;opacity:1;">
+        <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" style="opacity:1;"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+        <span class="nav-group-label">5.0 Resources</span>
+    </button>
+    <div class="nav-group-children open" style="background-color:rgba(10,42,66,0.55);">
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">5.0.1 User Guide</button>
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">5.0.2 Monthly Bulletin</button>
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">5.0.3 Malaria Programme Docs</button>
+        <button class="nav-child nav-l2-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>5.0.4 Survey</span></button>
+        <div style="background-color:rgba(10,42,66,0.55);">
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">5.0.4.1 Data</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">5.0.4.2 Report</button>
+        </div>
+        <button class="nav-child nav-l2-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>5.0.5 Data Collection Apps</span></button>
+        <div style="background-color:rgba(10,42,66,0.55);">
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">5.0.5.1 SBD</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">5.0.5.2 MOCM (PHU)</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">5.0.5.3 MOCM (Hospital)</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">5.0.5.4 MOCM (Lab)</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">5.0.5.5 Warehouse Assessment</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">5.0.5.6 SBC Coaching (Form K)</button>
+        </div>
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">5.0.6 Analytics Learning</button>
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">5.0.7 GF Implementation Plan<span class="new-badge">NEW</span></button>
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">5.0.8 NMCP Partners Mapping<span class="new-badge">NEW</span></button>
+    </div>
+</div>
+</div>
+
+<div style="break-inside:avoid;margin-bottom:14px;">
+<div class="nav-section-label" style="margin-top:10px;padding-top:6px;color:#ffd66b;font-weight:700;opacity:1;">6.0 D-MAT Automation</div>
+<div class="nav-group" style="background-color:rgba(10,42,66,0.55);">
+    <button class="nav-group-btn open" style="color:#fff;font-weight:700;opacity:1;">
+        <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" style="opacity:1;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span class="nav-group-label">6.0 D-MAT (Automation)</span>
+    </button>
+    <div class="nav-group-children open" style="background-color:rgba(10,42,66,0.55);">
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">6.0.1 Data Quality Assessment</button>
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">6.0.2 Reporting</button>
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">6.0.3 Suspected</button>
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">6.0.4 Tested</button>
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">6.0.5 Confirmed Cases</button>
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">6.0.6 Confirmed and Treated</button>
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">6.0.7 Confirmed and Not Treated</button>
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">6.0.8 Presumptive Treatment</button>
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">6.0.9 Total Treated</button>
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">6.0.10 Test Positivity Rate</button>
+        <button class="nav-child nav-l2-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>6.0.11 Comparative Analysis</span></button>
+        <div style="background-color:rgba(10,42,66,0.55);">
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">6.0.11.1 Under 5</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">6.0.11.2 All Ages</button>
+        </div>
+    </div>
+</div>
+</div>
+
+<div style="break-inside:avoid;margin-bottom:14px;">
+<div class="nav-section-label" style="margin-top:10px;padding-top:6px;color:#ffd66b;font-weight:700;opacity:1;">7.0 Retrospective Analysis</div>
+<div class="nav-group" style="background-color:rgba(10,42,66,0.55);">
+    <button class="nav-group-btn open" style="color:#fff;font-weight:700;opacity:1;">
+        <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" style="opacity:1;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span class="nav-group-label">7.0 Retrospective Analysis</span>
+    </button>
+    <div class="nav-group-children open" style="background-color:rgba(10,42,66,0.55);">
+        <button class="nav-child nav-l2-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>7.0.1 SNT 2015&#8211;2025<span class="new-badge">UPDATED</span></span></button>
+        <div style="background-color:rgba(10,42,66,0.55);">
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">7.0.1.1 Datasets</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">7.0.1.2 Codes</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">7.0.1.3 Outputs</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">7.0.1.4 Report</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">7.0.1.5 SNT Manual</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">7.0.1.6 Intervention Targeting</button>
+        </div>
+        <button class="nav-child nav-l2-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>7.0.2 MPR 2021&#8211;2023<span class="new-badge">UPDATED</span></span></button>
+        <div style="background-color:rgba(10,42,66,0.55);">
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">7.0.2.1 Datasets</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">7.0.2.2 Codes</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">7.0.2.3 Outputs</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">7.0.2.4 Report</button>
+        </div>
+        <button class="nav-child nav-l2-toggle" style="color:#fff;font-weight:500;opacity:1;"><span>7.0.3 Other Analysis</span></button>
+        <div style="background-color:rgba(10,42,66,0.55);">
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">7.0.3.1 Trend Analysis (All Ages)</button>
+            <button class="nav-child nav-l3" style="color:#fff;font-weight:500;opacity:1;">7.0.3.2 Trend Analysis (Under 5)</button>
+        </div>
+    </div>
+</div>
+</div>
+
+<div style="break-inside:avoid;margin-bottom:14px;">
+<div class="nav-section-label" style="margin-top:10px;padding-top:6px;color:#ffd66b;font-weight:700;opacity:1;">8.0 Finance</div>
+<div class="nav-group" style="background-color:rgba(10,42,66,0.55);">
+    <button class="nav-group-btn open" style="color:#fff;font-weight:700;opacity:1;">
+        <svg class="nav-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" style="opacity:1;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        <span class="nav-group-label">8.0 Finance</span>
+    </button>
+    <div class="nav-group-children open" style="background-color:rgba(10,42,66,0.55);">
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">8.0.1 Data</button>
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">8.0.2 Report</button>
+        <button class="nav-child nav-l2" style="color:#fff;font-weight:500;opacity:1;">8.0.3 Dashboard</button>
+    </div>
+</div>
+</div>
+
+</div>
+
+<div style="display:flex;gap:12px;align-items:center;padding:16px 26px 20px;border-top:1px solid rgba(255,255,255,0.16);margin-top:6px;">
+    <span style="display:inline-flex;align-items:center;gap:8px;border-radius:7px;padding:10px 18px;font-size:13.5px;font-weight:700;letter-spacing:0.3px;background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.4);">Login</span>
+    <span style="display:inline-flex;align-items:center;gap:8px;border-radius:7px;padding:10px 18px;font-size:13.5px;font-weight:700;letter-spacing:0.3px;background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.4);">Logout</span>
+    <span style="display:inline-flex;align-items:center;gap:8px;border-radius:7px;padding:10px 18px;font-size:13.5px;font-weight:700;letter-spacing:0.3px;background:rgba(255,193,7,0.16);color:#ffc107;border:1px solid rgba(255,193,7,0.55);">Update</span>
+</div>
+</div>
+</div>
+
+</body>
+</html>
