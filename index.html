@@ -77,6 +77,17 @@
         .role-btn.chiefdom  { background: #b4652c; color: white; }
         .role-btn.phu       { background: #6c7a89; color: white; }
         .role-btn.datacollector { background: #2a6f7a; color: white; grid-column: 1 / -1; }
+        .role-btn.icfsl     { background: #2a6f7a; color: white; }
+        .role-btn.chai      { background: #5b4a8b; color: white; }
+        .role-btn.crs       { background: #8a3b3b; color: white; }
+        .role-btn.pmi       { background: #3d6b2f; color: white; }
+
+        /* Sign in: Ministry of Health / Partners tabs */
+        .login-tabs { display: flex; gap: 4px; background: var(--blue-lt); border-radius: 12px; padding: 4px; margin: 0 0 16px; }
+        .login-tab { flex: 1; border: none; background: transparent; color: var(--blue-dk); font-family: inherit; font-size: 14px; font-weight: 600; padding: 11px 12px; border-radius: 9px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+        .login-tab:hover { background: rgba(44,103,147,0.08); }
+        .login-tab.active { background: var(--blue); color: white; box-shadow: 0 2px 8px rgba(31,74,106,0.25); }
+        .login-tab:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
         .role-btn.admin-btn { background: #1a3a5c; color: white; width: 100%; font-size: 13px; padding: 12px; border-radius: 10px; }
         .role-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.15); filter: brightness(1.08); }
 
@@ -359,12 +370,22 @@
         <h1>Welcome to NMDR</h1>
         <h2>Who are you?</h2>
         <p>Select your role to access the National Malaria Data Repository</p>
-        <div class="role-buttons">
+        <div class="login-tabs" role="tablist" aria-label="Sign in as">
+            <button type="button" class="login-tab active" data-group="moh" role="tab" aria-selected="true" aria-controls="mohRoles">Ministry of Health</button>
+            <button type="button" class="login-tab" data-group="partners" role="tab" aria-selected="false" aria-controls="partnerRoles">Partners</button>
+        </div>
+        <div class="role-buttons" id="mohRoles" role="tabpanel">
             <button class="role-btn national" data-role="national">National Staff</button>
             <button class="role-btn district"  data-role="district">District Staff</button>
             <button class="role-btn chiefdom"  data-role="chiefdom">Chiefdom Supervisor</button>
             <button class="role-btn phu"       data-role="phu">PHU Staff</button>
             <button class="role-btn datacollector" data-role="datacollector">Data Collector</button>
+        </div>
+        <div class="role-buttons" id="partnerRoles" role="tabpanel" style="display:none;">
+            <button class="role-btn icfsl" data-role="icfsl">ICF-SL</button>
+            <button class="role-btn chai"  data-role="chai">CHAI</button>
+            <button class="role-btn crs"   data-role="crs">CRS</button>
+            <button class="role-btn pmi"   data-role="pmi">PMI Evolve</button>
         </div>
         <button class="role-btn admin-btn" data-role="admin" style="margin-top:4px">&#128274; Admin</button>
         <div id="passwordArea" class="password-input">
@@ -1165,8 +1186,15 @@ var rolePasswords = {
     chiefdom: 'Chiefdom@2026',
     phu:      'Phu@2026',
     datacollector: 'ds@2026',
+    icfsl:    'ICF@2026',
+    chai:     'CHAI@2026!',
+    crs:      'CRS@2026$',
+    pmi:      'PMI@2026#',
     admin:    'admin'
 };
+
+/* Partner sign ins. Partners see only the Welcome page and the 5.0.5 Data Collection Tools. */
+var PARTNER_NAMES = { icfsl: 'ICF-SL', chai: 'CHAI', crs: 'CRS', pmi: 'PMI Evolve' };
 
 var DMAT_TABS = ['dmat-dqa','dmat-reporting','dmat-suspected','dmat-tested',
                  'dmat-confirmed','dmat-treated','dmat-confirmed-not-treated',
@@ -1202,6 +1230,10 @@ var roleAccess = {
                .concat(ME_SUMMARY_TABS).concat(ME_DETAIL_TABS)
                .concat(MALARIA_EPI_TABS).concat(TES_TABS),
     datacollector: ['welcome'].concat(DCT_TABS),
+    icfsl:    ['welcome'].concat(DCT_TABS),
+    chai:     ['welcome'].concat(DCT_TABS),
+    crs:      ['welcome'].concat(DCT_TABS),
+    pmi:      ['welcome'].concat(DCT_TABS),
     admin:    ['welcome','me-dqa','me-detailed',
                'user-guide','bulletins','mpd','survey-data','survey-report',
                'analytics-training','snt','mpr','other-trend-allages','other-trend-u5',
@@ -1237,7 +1269,11 @@ function enableTabsForRole(role) {
         var visible = hasAllowed(wrap);
         wrap.style.display = visible ? '' : 'none';
         var toggle = wrap.previousElementSibling;
-        if (toggle && toggle.tagName === 'BUTTON') toggle.style.display = visible ? '' : 'none';
+        // setProperty with important, because .nav-l2-toggle carries display:flex !important
+        if (toggle && toggle.tagName === 'BUTTON') {
+            if (visible) toggle.style.removeProperty('display');
+            else toggle.style.setProperty('display', 'none', 'important');
+        }
     });
 
     document.querySelectorAll('.nav-group').forEach(function(group){
@@ -1247,13 +1283,13 @@ function enableTabsForRole(role) {
         if (label && label.classList.contains('nav-section-label')) label.style.display = visible ? '' : 'none';
     });
 
-    /* Data collectors only have this one group, so open it for them.
+    /* Data collectors and partners only have this one group, so open it for them.
        The else branch matters because logging out reopens the modal without
        reloading the page, so the next role must not inherit an open dropdown. */
     var dct    = document.getElementById('dctChildren');
     var chev   = document.getElementById('dctChevron');
     var dctBtn = document.getElementById('dctToggle');
-    if (role === 'datacollector') {
+    if (role === 'datacollector' || PARTNER_NAMES[role]) {
         openGroup('resources');
         if (dct)    dct.style.maxHeight = '2000px';
         if (chev)   chev.style.transform = 'rotate(180deg)';
@@ -1279,6 +1315,7 @@ document.querySelectorAll('.role-btn').forEach(function(btn){
         usernameEl.value         = '';
         pwEl.placeholder         = (selectedRole === 'admin') ? 'Password'
                                    : (selectedRole === 'datacollector') ? 'Password for data collectors'
+                                   : PARTNER_NAMES[selectedRole] ? 'Password for ' + PARTNER_NAMES[selectedRole]
                                    : 'Password for ' + selectedRole + ' staff';
     });
 });
@@ -1301,6 +1338,27 @@ function verifyPassword() {
 
 document.getElementById('submitRolePassword').addEventListener('click', verifyPassword);
 document.getElementById('rolePassword').addEventListener('keypress', function(e){ if(e.key==='Enter') verifyPassword(); });
+
+/* Ministry of Health / Partners tabs. Switching clears any half finished sign in so a
+   password typed for one role is never checked against another. */
+function nmcpLoginTab(group) {
+    document.querySelectorAll('#roleModal .login-tab').forEach(function(t){
+        var on = t.getAttribute('data-group') === group;
+        t.classList.toggle('active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    document.getElementById('mohRoles').style.display     = (group === 'moh')      ? '' : 'none';
+    document.getElementById('partnerRoles').style.display = (group === 'partners') ? '' : 'none';
+    selectedRole = null;
+    document.getElementById('passwordArea').style.display  = 'none';
+    document.getElementById('passwordError').style.display = 'none';
+    document.getElementById('rolePassword').value = '';
+    var u = document.getElementById('roleUsername');
+    u.value = ''; u.style.display = 'none';
+}
+document.querySelectorAll('#roleModal .login-tab').forEach(function(t){
+    t.addEventListener('click', function(){ nmcpLoginTab(this.getAttribute('data-group')); });
+});
 
 /* SESSION
    The signed in role is remembered so a reload, a closed tab, or the Update
@@ -1600,6 +1658,7 @@ document.getElementById('logoutBtn').addEventListener('click',function(){
     document.getElementById('passwordArea').style.display='none';
     document.getElementById('rolePassword').value='';
     document.getElementById('passwordError').style.display='none';
+    nmcpLoginTab('moh');
     document.getElementById('roleModal').style.display='flex';
     document.body.style.overflow='hidden';
     closeHmisFrame();
